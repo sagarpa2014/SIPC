@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="solicitudPago" namespace="/solicitudPago" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<!-- INICIALIZACION DE DOCUMENTOS DE LA SOLICITUD DE PAGO -->
+        <action name="capInicializacionSolPago" method="capInicializacionSolPago" class="mx.gob.comer.sipc.action.solicitudpago.InicializacionSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capInicializacionSolPago</result>
+            <result name="success" type="tiles">capInicializacionSolPago</result>
+        </action>
+        <action name="registraInicializacionSP" method="registraInicializacionSP" class="mx.gob.comer.sipc.action.solicitudpago.InicializacionSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capInicializacionSolPago</result>
+            <result name="success" type="tiles">capInicializacionSolPago</result>
+        </action>
+        <action name="programasConfigExpediente" method="programasConfigExpediente" class="mx.gob.comer.sipc.action.solicitudpago.InicializacionSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">inicializacionSolPago</result>
+            <result name="success" type="tiles">inicializacionSolPago</result>
+        </action>
+        <action name="getDetalleConfExpPrograma" method="getDetalleConfExpPrograma" class="mx.gob.comer.sipc.action.solicitudpago.InicializacionSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capInicializacionSolPago</result>
+            <result name="success" type="tiles">capInicializacionSolPago</result>
+        </action>       
+        <action name="verificarProgramaConfigurado" method="verificarProgramaConfigurado" class="mx.gob.comer.sipc.action.solicitudpago.InicializacionSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/inicializacionPago/verificarProgramaConfigurado.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/inicializacionPago/verificarProgramaConfigurado.jsp</result>
+        </action>
+        
+        <!-- ASIGNACION DE CARTA DE ADHESION A ESPECIALISTA -->
+        <action name="listarAsignacionCAEspecialista" method="listarAsignacionCAEspecialista" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listarAsignacionCAEspecialista</result>
+            <result name="success" type="tiles">listarAsignacionCAEspecialista</result>
+        </action>
+        <action name="ejecutaBusquedaAsignacionCAaEspecialista" method="ejecutaBusquedaAsignacionCAaEspecialista" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listarAsignacionCAEspecialista</result>
+            <result name="success" type="tiles">listarAsignacionCAEspecialista</result>
+        </action>
+        <action name="getDetalleAsigCAaEspecialista" method="getDetalleAsigCAaEspecialista" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capAsignacionCartaAdhesion</result>
+            <result name="success" type="tiles">capAsignacionCartaAdhesion</result>
+        </action>                
+        <action name="capAsignacionSolPago" method="capAsignacionSolPago" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capAsignacionCartaAdhesion</result>
+            <result name="success" type="tiles">capAsignacionCartaAdhesion</result>
+        </action>
+        <action name="agregarCamposAsignacionCA" method="agregarCamposAsignacionCA" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/agregarCamposAsigancionCA.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/agregarCamposAsigancionCA.jsp</result>
+        </action>
+         <action name="recuperaFechaCartaAdhesion" method="recuperaFechaCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/fechaCartaAdhesion.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/fechaCartaAdhesion.jsp</result>
+        </action>
+        <action name="registraAsignacionCartaAdhesion" method="registraAsignacionCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="fileUpload">
+				<param name="maximumSize">12582912</param>
+			</interceptor-ref>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capAsignacionCartaAdhesion</result>
+            <result name="success" type="tiles">capAsignacionCartaAdhesion</result>
+        </action>
+        
+        <!--SOLICITUD DE PAGO DE LA CARTA ADHESION -->
+        <action name="listarPrograma" method="listarPrograma" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listarPrograma</result>
+            <result name="success" type="tiles">listarPrograma</result>
+        </action>
+        <action name="verCartaAdehsionAsignadas" method="verCartaAdehsionAsignadas" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listarCartaAdhesion</result>
+            <result name="success" type="tiles">listarCartaAdhesion</result>
+        </action>  
+        <action name="selecAccionDocumentacion" method="selecAccionDocumentacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">selecAccionDocumentacion</result>
+            <result name="success" type="tiles">selecAccionDocumentacion</result>
+        </action>
+        <!-- DOCUMENTACION -->
+        <action name="capDocumentacion" method="capDocumentacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentacion.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentacion.jsp</result>
+        </action>
+        <action name="alcanceDocumentacion" method="alcanceDocumentacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+        </action>
+        <action name="sustituirArchivo" method="sustituirArchivo" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+        </action>    
+        <action name="docParcial" method="docParcial" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+        </action>
+        <action name="activarNuevasObservaciones" method="activarNuevasObservaciones" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/documentos.jsp</result>
+        </action>        
+        <action name="registraCapDocumentacion" method="registraCapDocumentacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/respuestaRegistraDocumentacion.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/respuestaRegistraDocumentacion.jsp</result>
+        </action>
+        <!-- FIANZA -->
+        <action name="capFianza" method="capFianza" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/fianza/capFianza.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/fianza/capFianza.jsp</result>
+        </action>
+        <action name="registraCapFianza" method="registraCapFianza" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/fianza/respuestaRegistraFianza.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/fianza/respuestaRegistraFianza.jsp</result>
+        </action>
+        <action name="habilitarOficioObservacion" method="habilitarOficioObservacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/habilitaOficioObservacion.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/habilitaOficioObservacion.jsp</result>
+        </action>   
+        <action name="recuperaOficioObservacion" method="recuperaOficioObservacion" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/recuperaOficioObservacion.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/recuperaOficioObservacion.jsp</result>
+        </action>   
+		<action name="recuperaDocRequeridos" method="recuperaDocRequeridos" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/recuperaDocRequeridos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/recuperaDocRequeridos.jsp</result>
+        </action>
+        
+        
+        <!-- DATOS ESTADO DE CUENTA -->
+        <action name="capEstadoCuenta" method="capEstadoCuenta" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input"  type="tiles">capEstadoCuenta</result>
+            <result name="success"  type="tiles">capEstadoCuenta</result>
+        </action>
+        <action name="validarCuentaBancaria" method="validarCuentaBancaria" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/respuestaValidaClabe.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/respuestaValidaClabe.jsp</result>
+        </action>
+        <action name="validarConfirmacionCtaBancaria" method="validarConfirmacionCtaBancaria" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/respuestaConfValidaClabe.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/respuestaConfValidaClabe.jsp</result>
+        </action>
+        <action name="capturarOtraCuenta" method="capturarOtraCuenta" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/otraCuenta.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/otraCuenta.jsp</result>
+        </action>
+        <action name="registraCuentaBancaria" method="registraCuentaBancaria" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capEstadoCuenta</result>
+            <result name="input" type="tiles">capEstadoCuenta</result>
+        </action>
+        <action name="recuperaDatosPlaza" method="recuperaDatosPlaza" class="mx.gob.comer.sipc.action.solicitudpago.EstadoDeCuentaAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/datosPlazaBancaria.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/datosPlazaBancaria.jsp</result>
+        </action>
+      
+        <!-- RELACION DE CERTIFICADO DE DEPOSITO -->
+        <action name="capCertificadoDeposito" method="capCertificadoDeposito" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input"  type="tiles">capCertificadoDeposito</result>
+            <result name="success"  type="tiles">capCertificadoDeposito</result>
+        </action>
+        <action name="agregarCertificadoDeposito" method="agregarCertificadoDeposito" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/agregaCertificadoDeposito.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/agregaCertificadoDeposito.jsp</result>
+        </action>
+        <action name="validaClaveBodega" method="validaClaveBodega" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/respuestaValidaClaveBodega.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/respuestaValidaClaveBodega.jsp</result>
+        </action>
+        <action name="cargaMasiva" method="cargaMasiva" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/capMasivaCertificadoDeposito.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/capMasivaCertificadoDeposito.jsp</result>
+        </action>
+        <action name="cargaIndividual" method="cargaIndividual" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/capIndividualCertificadoDeposito.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/capIndividualCertificadoDeposito.jsp</result>
+        </action>
+		<action name="registroManualCertificadoDeposito" method="registroManualCertificadoDeposito" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capCertificadoDeposito</result>
+            <result name="input" type="tiles">capCertificadoDeposito</result>
+        </action>
+		<action name="registraArchivoCertificadoDeposito" method="registroArchivoCertificadoDeposito" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capCertificadoDeposito</result>
+            <result name="input" type="tiles">capCertificadoDeposito</result>
+        </action>
+		<action name="verDetalleBodegas" method="verDetalleBodegas" class="mx.gob.comer.sipc.action.solicitudpago.CertificadoDepositoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/verDetalleBodegas.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/verDetalleBodegas.jsp</result>
+        </action>        
+        
+        
+        <!--ANEXO 32-D -->
+        <action name="capAnexo32D" method="capAnexo32D" class="mx.gob.comer.sipc.action.solicitudpago.Anexo32DAction">
+			<interceptor-ref name="chksession"/>    
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>    
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capAnexo32D</result>
+            <result name="input" type="tiles">capAnexo32D</result>
+        </action>
+        <action name="registraAnexo32D" method="registraAnexo32D" class="mx.gob.comer.sipc.action.solicitudpago.Anexo32DAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capAnexo32D</result>
+            <result name="input" type="tiles">capAnexo32D</result>
+        </action>
+        <action name="capSolicitudPago" method="capSolicitudPago" class="mx.gob.comer.sipc.action.solicitudpago.SolicitudPagoAction">
+			<interceptor-ref name="chksession"/>    
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>    
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capSolicitudPago</result>
+            <result name="input" type="tiles">capSolicitudPago</result>
+        </action>
+        <action name="registraSolicitudPago" method="registraSolicitudPago" class="mx.gob.comer.sipc.action.solicitudpago.SolicitudPagoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capSolicitudPago</result>
+            <result name="input" type="tiles">capSolicitudPago</result>
+        </action>
+        
+        
+        <!--DICTAMEN CONTABLE DEL AUDITOR -->
+        <action name="capAuditorSolPago" method="capAuditorSolPago" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capAuditorSolPago</result>
+            <result name="input" type="tiles">capAuditorSolPago</result>
+        </action>
+        
+        <action name="agregarAuditorVolumen" method="agregarAuditorVolumen" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/agregaAuditorVolumen.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/agregaAuditorVolumen.jsp</result>
+        </action>        
+        <action name="registrarAuditorSolPago" method="registrarAuditorSolPago" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capAuditorSolPago</result>
+            <result name="input" type="tiles">capAuditorSolPago</result>
+        </action>
+        <action name="validarNumeroAuditor" method="validarNumeroAuditor" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/respuestaNumeroAuditor.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/respuestaNumeroAuditor.jsp</result>
+        </action>
+        
+        <!-- TRAMITE DE PAGO -->
+        <action name="listarProgramasPagosCartaAdhesion" method="listarProgramasPagosCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listaProgramasPagos</result>
+            <result name="success" type="tiles">listaProgramasPagos</result>
+        </action>
+        <action name="verCartaAdhesionAsignadasPagos" method="verCartaAdhesionAsignadasPagos" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">listaCartaAdhesionPagos</result>
+            <result name="success" type="tiles">listaCartaAdhesionPagos</result>
+        </action>
+        <action name="detallePagosCartaAdhesion" method="detallePagosCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">detallePagosCA</result>
+            <result name="success" type="tiles">detallePagosCA</result>
+        </action>
+        <action name="capturaPagoCartaAdhesion" method="capturaPagoCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/solicitudPago/capturaPago/respuestadetallePagosCA.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/capturaPago/respuestadetallePagosCA.jsp</result>
+        </action>
+        <action name="recuperaDatosCuenta" method="recuperaDatosCuenta" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/datosCuentaBancaria.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/datosCuentaBancaria.jsp</result>
+        </action>             
+        <action name="consigueAtentaNota" method="consigueAtentaNota" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCA.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCA.jsp</result>
+        </action>                     
+        
+        <action name="consultaPagosCartaAdhesion" method="consultaPagosCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">consultaPagosCA</result>
+            <result name="success" type="tiles">consultaPagosCA</result>
+        </action>
+        <action name="detalleEditarPagosCartaAdhesion" method="detalleEditarPagosCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">detalleEditarPagosCA</result>
+            <result name="success" type="tiles">detalleEditarPagosCA</result>
+        </action>
+        <action name="editarPagoCartaAdhesion" method="editarPagoCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/solicitudPago/capturaPago/respuestadetalleEditarPagosCA.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/capturaPago/respuestadetalleEditarPagosCA.jsp</result>
+        </action>
+        
+        <action name="consultaCartaAdhesionSP" method="consultaCartaAdhesionSP" class="mx.gob.comer.sipc.action.solicitudpago.RelacionDoctosSolPagoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listarCartaAdhesion</result>
+            <result name="input" type="tiles">listarCartaAdhesion</result>
+        </action>        
+        <action name="vistaPreviaAtentaNota" method="vistaPreviaAtentaNota" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/vistaPreviaAtentaNota.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/vistaPreviaAtentaNota.jsp</result>
+        </action>
+        
+        <action name="incioGenAN" method="incioGenAN" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/generacionAtentaNota.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/generacionAtentaNota.jsp</result>
+        </action>
+        <action name="generaANMasiva" method="generaANMasiva" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/generacionAtentaNota.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/generacionAtentaNota.jsp</result>
+        </action>
+        
+        <!-- CONSTANCIAS DE ALMACENAMIENTO -->
+        <action name="capConstanciasAlmacenamiento" method="capConstanciasAlmacenamiento" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input"  type="tiles">capConstanciasAlmacenamiento</result>
+            <result name="success"  type="tiles">capConstanciasAlmacenamiento</result>
+        </action>
+        <action name="agregarConstanciaAlmacenamiento" method="agregarConstanciaAlmacenamiento" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/agregarConstanciaAlmacenamiento.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/agregarConstanciaAlmacenamiento.jsp</result>
+        </action>
+        <action name="validaClaveBodega" method="validaClaveBodega" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/respuestaValidaClaveBodega.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/respuestaValidaClaveBodega.jsp</result>
+        </action>
+        <action name="cargaMasivaCons" method="cargaMasivaCons" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/capMasivaConstanciasAlmacenamiento.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/capMasivaConstanciasAlmacenamiento.jsp</result>
+        </action>
+        <action name="cargaIndividualCons" method="cargaIndividualCons" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/capIndividualConstanciasAlmacenamiento.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/capIndividualConstanciasAlmacenamiento.jsp</result>
+        </action>
+		<action name="registroManualConstanciasAlmacenamiento" method="registroManualConstanciasAlmacenamiento" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capConstanciasAlmacenamiento</result>
+            <result name="input" type="tiles">capConstanciasAlmacenamiento</result>
+        </action>
+		<action name="registroArchivoConstanciasAlmacenamiento" method="registroArchivoConstanciasAlmacenamiento" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capConstanciasAlmacenamiento</result>
+            <result name="input" type="tiles">capConstanciasAlmacenamiento</result>
+        </action>
+		<action name="verDetalleBodegas" method="verDetalleBodegas" class="mx.gob.comer.sipc.action.solicitudpago.ConstanciasAlmacenamientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/verDetalleBodegas.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/verDetalleBodegas.jsp</result>
+        </action>
+        
+    </package>
+</struts>

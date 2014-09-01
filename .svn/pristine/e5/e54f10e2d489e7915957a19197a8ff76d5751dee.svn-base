@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="inscripcion" namespace="/inscripcion" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<!-- INSCRIPCION -->
+		<action name="busquedaSolicitudIns" method="busquedaSolicitudIns" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listaSolicitudInscripcion</result>
+            <result name="input" type="tiles">listaSolicitudInscripcion</result>
+        </action>
+        <action name="ejecutaBusquedaSolicitudIns" method="ejecutaBusquedaSolicitudIns" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listaSolicitudInscripcion</result>
+            <result name="input" type="tiles">listaSolicitudInscripcion</result>
+        </action>
+        <action name="getDetalleSolIns" method="getDetalleSolIns" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaInscripcion</result>
+            <result name="input" type="tiles">capturaInscripcion</result>
+        </action>
+        
+        <action name="capturarInscripcion" method="capturarInscripcion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaInscripcion</result>
+            <result name="input" type="tiles">capturaInscripcion</result>
+        </action>      
+        <action name="verificarDatosComprador" method="verificarDatosComprador" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/datosInscripcion.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/datosInscripcion.jsp</result>
+        </action>
+        <action name="validarFolioInscripcion" method="validarFolioInscripcion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/respuestaValidaFolioSI.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/respuestaValidaFolioSI.jsp</result>
+        </action>        
+        <action name="registrarSolicitudInscripcion" method="registrarSolicitudInscripcion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="fileUpload">
+				<param name="maximumSize">12582912</param>
+			</interceptor-ref>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaInscripcion</result>
+            <result name="input" type="tiles">capturaInscripcion</result>
+        </action>
+        <action name="generarFolioCartaAdhesion" method="generarFolioCartaAdhesion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaInscripcion</result>
+            <result name="input" type="tiles">capturaInscripcion</result>
+        </action>
+        
+        <action name="acreditar" method="acreditar" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditar.jsp</result>
+            <result name="input" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditar.jsp</result>
+        </action>
+        <action name="acreditarSI" method="acreditarSI" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditarSI.jsp</result>
+            <result name="input" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditarSI.jsp</result>
+        </action>
+        <action name="acreditarDictaminacion" method="acreditarDictaminacion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditarDictaminacion.jsp</result>
+            <result name="input" >/WEB-INF/paginas/inscripcion/solicitudInscripcion/acreditarDictaminacion.jsp</result>
+        </action>
+        <action name="generarAcuseAsigCartaAdhesion" method="generarAcuseAsigCartaAdhesion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        
+        <!-- ASIGNACION CUOTAS ESQUEMA CARTA ADHESION -->
+        <action name="recuperaCuotasInicEsquema" method="recuperaCuotasInicEsquema" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">asignacionCartaAdhesion</result>
+            <result name="input" type="tiles">asignacionCartaAdhesion</result>
+        </action>
+        <action name="asignarCECartaAdhesion" method="asignarCECartaAdhesion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">asignacionCartaAdhesion</result>
+            <result name="input" type="tiles">asignacionCartaAdhesion</result>
+        </action>
+        <!-- Du -->
+         <action name="agregaCultivoVariedadEstadoCA" method="agregaCultivoVariedadEstadoCA" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivoEstado.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivoEstado.jsp</result>
+        </action>
+        <action name="validarVolumenXCultivoVariedad" method="validarVolumenXCultivoVariedad" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/volumenXCV.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/volumenXCV.jsp</result>
+        </action>
+        <action name="recuperaVariedadByCultivoEdoAsigCA" method="recuperaVariedadByCultivoEdoAsigCA" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/variedad.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/variedad.jsp</result>
+        </action>
+        <action name="recuperaCultivoByEstadoAsigCA" method="recuperaCultivoByEstadoAsigCA" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivo.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivo.jsp</result>
+        </action>        
+        
+        <!-- INICIALIZACION DE APOYO -->
+        <action name="capturarInicializacionPrograma" method="capturarInicializacionPrograma" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturarInicializacionPrograna</result>
+            <result name="input" type="tiles">capturarInicializacionPrograna</result>
+        </action>        
+       
+        <action name="agregaCultivoEstadoIniProg" method="agregaCultivoEstadoIniProg" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/inscripcion/inicializacionPrograma/agregaCultivoEstadoIniProg.jsp</result>
+            <result name="input" >/WEB-INF/paginas/inscripcion/inicializacionPrograma/agregaCultivoEstadoIniProg.jsp</result>
+        </action>  
+        <action name="registroInicializaEsquema" method="registroInicializaEsquema" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="fileUpload">
+				<param name="maximumSize">12582912</param>
+			</interceptor-ref>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">lstInicializaPrograma</result>
+            <result name="input" type="tiles">capturarInicializacionPrograna</result>
+        </action> 
+        <action name="selectCriterioPago" method="selectCriterioPago" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/criterioPago.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/criterioPago.jsp</result>
+        </action>
+        <action name="listarProgramas" method="listarProgramas" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">lstInicializaPrograma</result>
+            <result name="input" type="tiles">lstInicializaPrograma</result>
+        </action>
+        <action name="consigueNumCiclos" method="consigueNumCiclos" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/ciclos.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/ciclos.jsp</result>
+        </action>   
+        <action name="getDetalleInicialiciacionPrograma" method="getDetalleInicialiciacionPrograma" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input" type="tiles">capturarInicializacionPrograna</result>
+            <result name="success" type="tiles">capturarInicializacionPrograna</result>
+        </action> 
+        <action name="selectNumEtapas" method="selectNumEtapas" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/selectNumEtapa.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/selectNumEtapa.jsp</result>
+        </action>
+        <action name="agregarVolumenPorCultivoVariedad" method="agregarVolumenPorCultivoVariedad" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/agregaVolumenPorCultivoVariedad.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/agregaVolumenPorCultivoVariedad.jsp</result>
+        </action>
+               
+         <action name="recuperaCultivoByVariedad" method="recuperaCultivoByVariedad" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/variedad.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/variedad.jsp</result>
+        </action>
+        <action name="recuperaCultivoByVariedadVXCV" method="recuperaCultivoByVariedadVXCV" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/variedadVXCV.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/variedadVXCV.jsp</result>
+        </action>
+       <action name="validarAcronimo" method="validarAcronimo" class="mx.gob.comer.sipc.action.inscripcion.InicializacionProgramaAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/inscripcion/inicializacionPrograma/validarAcronimo.jsp</result>
+            <result name="success">/WEB-INF/paginas/inscripcion/inicializacionPrograma/validarAcronimo.jsp</result>
+        </action>
+        
+        <!-- OFICIO DE ENTREGA DE CARTAS DE ADHESION -->
+        <action name="oficioEntregaCartas" method="oficioEntregaCartas" class="mx.gob.comer.sipc.action.inscripcion.OficioEntregaCartasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">oficioEntregaCartas</result>
+            <result name="input" type="tiles">oficioEntregaCartas</result>
+        </action>
+        <action name="recuperaCartasEntregar" method="recuperaCartasEntregar" class="mx.gob.comer.sipc.action.inscripcion.OficioEntregaCartasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/cartasOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/cartasOficio.jsp</result>
+        </action>
+        <action name="vistaPreviaOficio" method="vistaPreviaOficio" class="mx.gob.comer.sipc.action.inscripcion.OficioEntregaCartasAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/vistaPreviaOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/vistaPreviaOficio.jsp</result>
+        </action>
+        <action name="generarOficioEntregaCartas" method="generarOficioEntregaCartas" class="mx.gob.comer.sipc.action.inscripcion.OficioEntregaCartasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/resultadoGeneracionOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/oficioEntregaCartas/resultadoGeneracionOficio.jsp</result>
+        </action>
+        <action name="consigueOficio" method="consigueOficio" class="mx.gob.comer.sipc.action.inscripcion.OficioEntregaCartasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="selectAccionAlcanceEdicion" method="selectAccionAlcanceEdicion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/datosInscripcion.jsp</result>
+			<result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/datosInscripcion.jsp</result>
+		</action> 
+		<action name="complementoPorAmpliacion" method="complementoPorAmpliacion" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/complementoXAmpliacion.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/complementoXAmpliacion.jsp</result>
+        </action>
+        <action name="agregaCultivoVariedadEstadoCAComp" method="agregaCultivoVariedadEstadoCAComp" class="mx.gob.comer.sipc.action.inscripcion.InscripcionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivoEstado.jsp</result>
+            <result name="input">/WEB-INF/paginas/inscripcion/solicitudInscripcion/cultivoEstado.jsp</result>
+        </action>
+    </package>
+</struts>

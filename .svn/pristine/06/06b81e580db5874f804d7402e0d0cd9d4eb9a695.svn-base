@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.multipart.maxSize" value="37748736"/>
+
+    <package name="default" namespace="/" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<default-action-ref name="index"/>
+		<action name="index">
+            <result type="tiles">index</result>
+        </action>
+        <action name="acceso" method="acceso" class="mx.gob.comer.sipc.action.AccesoAction">
+				<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+			<result name="success" type="tiles">inicio</result>
+			<result name="input" type="tiles">index</result>
+        </action>       
+        <action name="salir" method="salir" class="mx.gob.comer.sipc.action.AccesoAction">
+        		<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+        	<result name="success" type="tiles">index</result>
+        	<result name="input" type="tiles">index</result>
+        </action>
+        <action name="devuelveArchivo" method="devuelveArchivo" class="mx.gob.comer.sipc.action.EntregaArchivoAction">
+        		<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+        	<result name="success" type="tiles">index</result>
+        	<result name="input" type="tiles">index</result>
+        </action>
+        <action name="devuelveArchivoByRuta" method="devuelveArchivoByRuta" class="mx.gob.comer.sipc.action.EntregaArchivoAction">
+        		<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+        	<result name="success" type="tiles">index</result>
+        	<result name="input" type="tiles">index</result>
+        </action>
+        <action name="cierraAviso" method="cierraAviso" class="mx.gob.comer.sipc.action.AccesoAction">
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+			<result name="success">/WEB-INF/paginas/comunes/avisos.jsp</result>
+			<result name="input">/WEB-INF/paginas/comunes/avisos.jsp</result>
+        </action> 
+        <action name="bienvenido" method="bienvenido" class="mx.gob.comer.sipc.action.AccesoAction">
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+			<result name="success" type="tiles">inicio</result>
+			<result name="input" type="tiles">inicio</result>
+        </action> 
+        
+        
+    </package>
+    <include file="pagos.xml"/>
+    <include file="reportes.xml"/>
+    <include file="inscripcion.xml"/>
+    <include file="catalogos.xml"/>
+    <include file="solicitudPago.xml"/>
+   
+</struts>

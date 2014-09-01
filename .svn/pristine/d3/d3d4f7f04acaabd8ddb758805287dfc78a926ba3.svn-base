@@ -1,0 +1,241 @@
+<%@taglib uri="/struts-tags" prefix="s"%>
+ <script>
+ $(function() {
+		$("#tabs").tabs();
+	});
+
+</script>
+
+<s:form action="ejecutaAlta" onsubmit="">
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="tabs">	
+	  <ul>
+	    <li><a href="#tabs-1">Ubicaci&oacute;n Bodega</a></li>
+	    <li><a href="#tabs-2">Datos Generales</a></li>
+	    <!-- <li><a href="#tabs-3">Datos del Propietario</a></li>  -->
+	  </ul>	
+	  <div id="tabs-1">
+		  <fieldset>
+		  	<div class="izquierda">
+				<label class="left1">Clave Bodega:</label>
+				<font class="arial14boldVerde"><s:property value="%{bodegasV.claveBodega}"/></font>
+			</div>
+			<div class="derecha">
+				<label class="left1">Fecha Registro:</label>
+				<font class="arial12bold"><s:text name="fecha"><s:param value="%{bodegasV.fechaRegistro}"/></s:text></font>
+			</div>
+			<div class="clear"></div> 	
+		  </fieldset>
+		  <br>
+		  <fieldset>  	
+		  	<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Estado:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.nombreEstado}"/></font>
+		  			</td>
+		  			<td>&nbsp;</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>DDR:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.nombreDdr}"/></font>
+		  			</td>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>CADER:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.nombreDdr}"/></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Municipio:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.nombreMunicipio}"/></font>
+		  			</td>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Ejido:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.nombreEjido}"/></font>
+		  			</td>
+		  		</tr>
+		  	</table>
+		  </fieldset>
+		  <br>
+		  <fieldset>
+		  	<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td>
+		  				<label ><span class="norequerido">*</span>Latitud:</label>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.latitudGrados}"/></font>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.latitudMinutos}"/></font>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.latitudSegundos}"/></font>
+		  			</td>
+		  			<td>
+		  				<label ><span class="norequerido">*</span>Longitud:</label>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.longitudGrados}"/></font>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.longitudMinutos}"/></font>
+		  			</td>
+		  			<td>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.longitudSegundos}"/></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>&nbsp;</td>
+		  			<td>grados</td>
+		  			<td>minutos</td>
+		  			<td>segundos</td>
+		  			<td>&nbsp;</td>
+		  			<td>grados</td>
+		  			<td>minutos</td>
+		  			<td>segundos</td>
+		  		</tr>
+		  	</table> 		  
+		  </fieldset>
+	  </div>
+	  <div id="tabs-2">
+	  	<fieldset>
+	  		<table class= "clean" style="width: 100%">
+	  			<tr>
+	  				<td>
+	  					<label class="left1"><span class="norequerido">*</span>Clasificaci&oacute;n:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.clasificacion}"/></font>
+	  				</td>
+	  				<td>
+	  					<label ><span class="norequerido">*</span>Nivel:</label>	
+	  				</td>
+	  				<td>
+	  					<label ><span class="norequerido">*</span>Uso:</label>
+	  				</td>
+	  				<td><font class="arial12bold"><s:property value="%{bodegasV.uso1}"/></font></td>
+	  				<td><font class="arial12bold"><s:property value="%{bodegasV.uso2}"/></font></td>
+	  				<td><font class="arial12bold"><s:property value="%{bodegasV.uso3}"/></font></td>
+	  				<td>
+	  					<label class="left1"><span class="norequerido">*</span>RFC operador:</label>
+	  					<font class="arial12bold"></font>
+	  				</td>	  				
+	  			</tr>
+	  		</table>			
+	  	</fieldset>
+	  	<br>
+	  	<fieldset>
+	  		<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td colspan="3">
+		  				<label class="left1"><span class="norequerido">*</span>Nombre Bodega:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.nombre}"/></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td colspan="3">
+		  				<label class="left1"><span class="norequerido">*</span>Conocida como:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.aliasBodega}"/></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td colspan="3">
+		  				<label class="left1"><span class="norequerido">*</span>Domicilio:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.direccion}"/></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>C&oacute;digo Postal:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.codigoPostal}"/></font>
+		  			</td>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Tel&eacute;fono:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.telefono}"/></font>
+		  			</td>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Fax:</label>
+						<font class="arial12bold"><s:property value="%{bodegasV.fax}"/></font>
+		  			</td>
+		  		</tr>  
+		  	</table>
+	  	</fieldset>
+	  	<br>
+	  	<fieldset>
+	  		<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Gerente o Almacenista:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.gerente}"/></font>	
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1"><span class="norequerido">*</span>Correo electr&oacute;nico:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.correoElectronico}"/></font>	
+		  			</td>
+		  		</tr>
+		  	</table>
+	  	</fieldset>  
+	  </div>
+	  <!-- 
+	  <div id="tabs-3">
+	  	<fieldset>
+	  		<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td>
+		  				<label class="left1">RFC del propietario:</label>
+		  				<font class="arial12bold"><s:property value="%{bodegasV.rfcPropietario}"/></font>
+		  				
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1">Nombre:</label>
+		  				<font class="arial12bold"></font>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1">Paterno:</label>
+		  				<font class="arial12bold"></font>
+		  			</td>		  			
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1">Materno:</label>
+		  				<font class="arial12bold"></font>		  						
+		  			</td>
+		  		</tr>
+		  	</table>	  		
+	  	</fieldset>
+	  	<br>
+	  	<fieldset>
+	  		<table class= "clean" style="width: 100%">
+		  		<tr>
+		  			<td>
+		  				<label class="left1">Domicilio:</label>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1">Localidad:</label>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>
+		  				<label class="left1">C&oacute;digo Postal:</label>
+		  			</td>
+		  		</tr>
+		  	</table>	  		
+	  	</fieldset>
+	  </div>
+	   -->	
+	</div>
+	<br>
+	<div class="izquierda"><a href="<s:url value="/catalogos/busquedaBodegas"/>" onclick="" title="" >&lt;&lt; Regresar</a></div>
+</s:form>

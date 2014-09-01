@@ -1,0 +1,8 @@
+fecha={0, date,dd-MMM-yyyy}
+fecha.hora={0, date,dd/MM/yyyy HH\:mm\:ss}
+volumen={0,number,#,###,###,###,###.000}
+volumenSinComas={0,number,###.000}
+importe={0,number,#,###,###,###,###.00}
+importeSinComas={0,number,###.00}
+contador={0,number,#,###,###,###,###}
+

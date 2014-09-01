@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<!--**************** Definición de master template *************  -->
+	<definition name="masterTemplate" template="/WEB-INF/paginas/template/template.jsp">
+		<put-attribute name="body" value="Here goes the body" />
+	</definition>
+	<definition name="masterTemplateSimple" template="/WEB-INF/paginas/template/templateSimple.jsp">
+		<put-attribute name="body" value="Here goes the body" />
+	</definition>
+	<definition name="processTemplate" template="/WEB-INF/paginas/template/process.jsp">
+		<put-attribute name="body" value="Here goes the body" />
+	</definition>
+	<definition name="morewidthtemplate" template="/WEB-INF/paginas/template/morewidthtemplate.jsp">
+		<put-attribute name="body" value="Here goes the body" />
+	</definition>
+	<definition name="index" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/login.jsp" />
+	</definition>
+	<definition name="inicio" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/inicio.jsp" />
+	</definition>
+	<definition name="capturaPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/capturaPagos/capturarDatosPagos.jsp" />
+	</definition>
+	<definition name="busquedaPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/busquedaPagos/busquedaPagos.jsp" />
+	</definition>
+	<definition name="archivoTesofeEnvio" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/archivoTesofeEnvio.jsp"/>
+	</definition>
+	<definition name="archivoEnvio" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/archivoEnvio.jsp" />
+	</definition>
+	<definition name="errorPage" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/error.jsp" />
+	</definition>
+	<definition name="busquedaOficioPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/busquedaPagos/busquedaOficioPagos.jsp" />
+	</definition>
+	<definition name="edicionPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/capturaPagos/edicionPagos.jsp" />
+	</definition>
+		<definition name="ProcesaArchivosPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/procesaArchivosPagos.jsp" />
+	</definition>
+	<definition name="cargaArchivosEnvio" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/cargaArchivosEnvio.jsp" />
+	</definition>
+	<definition name="consultarPagosTesofe" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/consultaPagosTesofe.jsp" />
+	</definition>
+	<definition name="rechazos" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/rechazos.jsp" />
+	</definition>
+	<definition name="aplicados" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/aplicados.jsp" />
+	</definition>
+	<definition name="resultadoGeneracionExcel" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcel.jsp" />
+	</definition>
+	<definition name="descargarArchivo" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/descargaArchivo.jsp" />
+	</definition>
+	<definition name="procesando" extends="processTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/enProceso.jsp" />
+	</definition>
+	<definition name="detallesOficioPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/detallesOficioPagos.jsp" />
+	</definition>
+	<definition name="capturaReporteDinamico" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteDinamico/capturaReporteDinamico.jsp" />
+	</definition>	
+	<definition name="reporteMonitorGlobal" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteMonitorGlobal.jsp" />		
+	</definition>			
+	<definition name="reporteMonitorPrograma" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteMonitorPrograma.jsp" />		
+	</definition>
+	<definition name="resultadoGeneracionExcelRepG" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepG.jsp" />
+	</definition>
+	<definition name="resultadoGeneracionExcelRepP" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepP.jsp" />
+	</definition>	
+	<definition name="reporteConcentradoPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteConcentradoPagos.jsp" />		
+	</definition>			
+	<definition name="resultadoGeneracionExcelRepC" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepC.jsp" />
+	</definition>
+	<definition name="reporteDetConcentradoPagos" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteDetConcentradoPagos.jsp" />		
+	</definition>
+	<definition name="resultadoGeneracionExcelRepDC" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepDC.jsp" />
+	</definition>
+	<definition name="reporteDetConcentradoPagosEtapas" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/reporteDetConcentradoPagosEtapas.jsp" />		
+	</definition>
+	<definition name="resultadoGeneracionExcelRepDEC" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepDEC.jsp" />
+	</definition>
+	<!-- Carga de documentos de inscripcion -->
+	<definition name="capCargaDoctosInscripcion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/capCargaDoctosInscripcion.jsp" />
+	</definition>
+	<!-- SOLICITUD DE INSCRIPCION -->
+	<definition name="listaSolicitudInscripcion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/solicitudInscripcion/listaSolicitudInscripcion.jsp" />
+	</definition>
+	<definition name="capturaInscripcion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/solicitudInscripcion/capturaInscripcion.jsp" />
+	</definition>
+	<definition name="respuestaSI" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/solicitudInscripcion/respuestaSI.jsp" />
+	</definition>
+	<definition name="asignacionCartaAdhesion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/solicitudInscripcion/asignacionCartaAdhesion.jsp" />
+	</definition>
+	<!-- INICIALIZACION DE ESQUEMA -->
+	<definition name="capturarInicializacionPrograna" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/inicializacionPrograma/inicializacionPrograma.jsp" />
+	</definition>
+	<definition name="lstInicializaPrograma" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/inicializacionPrograma/lstInicializaPrograma.jsp" />
+	</definition>
+	
+	<!-- Compradores -->
+	<definition name="compradores" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/compradores/compradores.jsp" />
+	</definition>
+	<definition name="datosComprador" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/compradores/datosCompradores.jsp" />
+	</definition>
+	<definition name="verExpedientes" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/compradores/verExpedientes.jsp" />
+	</definition>
+	
+	<!-- Auditores -->
+	<definition name="auditores" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/auditores/auditores.jsp" />
+	</definition>
+	<definition name="datosAuditor" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/auditores/datosAuditores.jsp" />
+	</definition>
+	<definition name="verExpedientesAuditor" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/auditores/verExpedientes.jsp" />
+	</definition>	
+	<!-- Procesamiento archivo de rechazo de la respuesta de pagos -->
+	<definition name="ProcesaArchivosPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/procesaArchivosPagos.jsp" />
+	</definition>
+	
+	<!-- INICIALIZACION DE SOLICITUD DE PAGO -->
+	<definition name="capInicializacionSolPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/inicializacionPago/capInicializacionSolPago.jsp" />
+	</definition>
+	<definition name="inicializacionSolPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/inicializacionPago/inicializacionSolPago.jsp" />
+	</definition>
+	
+	
+	<!-- ASIGNACION DE CARTA DE ADHESION A ESPECIALISTA -->
+	<definition name="listarAsignacionCAEspecialista" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/listarAsignacionCAEspecialista.jsp" />
+	</definition>	
+	<definition name="capAsignacionCartaAdhesion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/asignacionCartaAdhesion/capAsignacionCartaAdhesion.jsp" />
+	</definition>
+	
+	<!-- DOCUMENTACION SOLICITUD DE PAGO DE LA CARTA ADHESION -->	
+	<definition name="listarPrograma" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/listarPrograma.jsp"/>
+	</definition>
+	<definition name="listarCartaAdhesion" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/listarCartaAdhesion.jsp"/>
+	</definition>
+	
+	<definition name="selecAccionDocumentacion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/selecAccionDocumentacion.jsp" />
+	</definition>
+	<!-- CAPTURA DE ESTADO DE CUENTA -->
+	<definition name="capEstadoCuenta" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/estadoCuenta/capEstadoCuenta.jsp"/>
+	</definition>
+	<!-- CAPTURA DE ANEXO 32-->
+	<definition name="capAnexo32D" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/anexo32D/capAnexo32D.jsp"/>
+	</definition>
+	<definition name="capSolicitudPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/solicitudPago/capSolicitudPago.jsp"/>
+	</definition>	
+	<!-- CAPTURA DE RELACION DE CERTIFICADOS -->
+	<definition name="capCertificadoDeposito" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/capCertificadoDeposito.jsp"/>
+	</definition>
+	<definition name="agregaCertificadoDeposito" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/certificadoDeposito/agregaCertificadoDeposito.jsp"/>
+	</definition>	
+	<!-- CAPTURA DE RELACION DE CONSTANCIAS -->
+	<definition name="capConstanciasAlmacenamiento" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/capConstanciasAlmacenamiento.jsp"/>
+	</definition>
+	<definition name="agregarConstanciaAlmacenamiento" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/constanciasAlmacenamiento/agregarConstanciaAlmacenamiento.jsp"/>
+	</definition>	
+	<!-- CAPTURA DE AUDITOR EXTERNO EN SOLICITUD DE PAGO-->
+	<definition name="capAuditorSolPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/capAuditorSolPago.jsp"/>
+	</definition>
+		
+	<!-- Representantes -->
+	<definition name="representantes" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/representantes/representantesLegales.jsp" />
+	</definition>
+	<definition name="datosRepresentantes" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/representantes/datosRepresentantes.jsp" />
+	</definition>
+	<definition name="verExpedientesRepresentante" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/representantes/verExpedientes.jsp" />
+	</definition>
+	
+	<definition name="autorizacionPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/autorizacionPagos/autorizacionPagos.jsp" />
+	</definition>
+	<definition name="realizaBusquedaAutorizacionPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/autorizacionPagos/autorizacionPagos.jsp" />
+	</definition>
+	
+	<!-- tramite pago -->
+	<definition name="listaProgramasPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/listaProgramasPagos.jsp"/>
+	</definition>
+	<definition name="listaCartaAdhesionPagos" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/listaCartaAdhesionPagos.jsp"/>
+	</definition>
+	<definition name="detallePagosCartaAdhesion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCartaAdhesion.jsp"/>
+	</definition>	
+	<definition name="detallePagosCA" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCA.jsp"/>
+	</definition>
+	<definition name="consultaPagosCA" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/consultaPagosCA.jsp"/>
+	</definition>	
+	<definition name="detalleEditarPagosCartaAdhesion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detalleEditarPagosCartaAdhesion.jsp"/>
+	</definition>	
+	<definition name="detalleEditarPagosCA" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detalleEditarPagosCA.jsp"/>
+	</definition>
+	
+	<!-- OFICIO DE ENTREGA DE CARTAS DE ADHESION -->
+	<definition name="oficioEntregaCartas" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/inscripcion/oficioEntregaCartas/oficioEntregaCartas.jsp" />
+	</definition>
+	
+	<!-- BODEGAS -->
+	<definition name="busquedaBodegas" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/bodegas/busquedaBodegas.jsp" />
+	</definition>
+	<definition name="detalleBodegas" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/bodegas/detalleBodegas.jsp" />
+	</definition>
+	
+</tiles-definitions>

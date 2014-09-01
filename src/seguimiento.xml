@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="seguimiento" namespace="/seguimiento" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<action name="listSeguimiento" method="listSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listSeguimiento</result>
+            <result name="input" type="tiles">listSeguimiento</result>
+        </action>  
+        <action name="consultaSeguimiento" method="consultaSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listSeguimiento</result>
+            <result name="input" type="tiles">listSeguimiento</result>
+        </action> 
+        <action name="capSeguimiento" method="capSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capSeguimiento</result>
+            <result name="input" type="tiles">capSeguimiento</result>
+        </action>
+        <action name="registroSeguimientoCA" method="registroSeguimientoCA" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>			
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listSeguimiento</result>
+            <result name="input" type="tiles">capSeguimiento</result>
+        </action>    
+        <action name="validaClaveBodega" method="validaClaveBodega" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/seguimiento/respuestaValidaClaveBodega.jsp</result>
+            <result name="input">/WEB-INF/paginas/seguimiento/respuestaValidaClaveBodega.jsp</result>
+        </action>
+         <action name="vistaPreviaOficio" method="vistaPreviaOficio" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/seguimiento/vistaPreviaOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/seguimiento/vistaPreviaOficio.jsp</result>
+        </action>
+        <action name="generarReporteSeguimiento" method="generarReporteSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/seguimiento/resultadoGeneracionOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/seguimiento/resultadoGeneracionOficio.jsp</result>
+        </action>
+        <action name="consigueOficio" method="consigueOficio" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+		<action name="consultaReporteConsolidado" method="consultaReporteConsolidado" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteConsolidado</result>
+            <result name="input" type="tiles">consultarReporteConsolidado</result>
+        </action>
+        <action name="realizarConsultaReporteConsolidado" method="realizarConsultaReporteConsolidado" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteConsolidado</result>
+            <result name="input" type="tiles">consultarReporteConsolidado</result>
+        </action>
+        <action name="exportaReporteConsolidado" method="exportaReporteConsolidado" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepConSeg</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+		<action name="consultaReporteDetalle" method="consultaReporteDetalle" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteDetalle</result>
+            <result name="input" type="tiles">consultarReporteDetalle</result>
+        </action>
+        <action name="realizarConsultaReporteDetalle" method="realizarConsultaReporteDetalle" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteDetalle</result>
+            <result name="input" type="tiles">consultarReporteDetalle</result>
+        </action>
+        <action name="exportaReporteDetalle" method="exportaReporteDetalle" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepDetSeg</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcel" method="consigueArchivoExcel" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+		<action name="consultaReporteResumenAvance" method="consultaReporteResumenAvance" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteResumenAvance</result>
+            <result name="input" type="tiles">consultarReporteResumenAvance</result>
+        </action>
+        <action name="realizarConsultaReporteResumenAva" method="realizarConsultaReporteResumenAva" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarReporteResumenAvance</result>
+            <result name="input" type="tiles">consultarReporteResumenAvance</result>
+        </action>
+        <action name="exportaReporteResumenAva" method="exportaReporteResumenAva" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepResAva</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="recuperaVariedadByCultivo" method="recuperaVariedadByCultivo" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/seguimiento/variedad.jsp</result>
+            <result name="success">/WEB-INF/paginas/seguimiento/variedad.jsp</result>
+        </action>
+    </package>
+</struts>

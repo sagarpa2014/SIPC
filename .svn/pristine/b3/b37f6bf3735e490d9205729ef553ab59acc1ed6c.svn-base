@@ -1,0 +1,20 @@
+
+
+public class Prueba {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		String folio = "SAA624";
+		if(folio.matches("^([A-Z]{1,2})(\\d{1,10})$")){
+			System.out.println("es correcto");
+		}
+		
+		
+		String archivo = "8OBS201308201044";
+	
+		archivo = archivo.replace("OBS", "");
+		System.out.println("Archivo "+archivo);
+	}
+}

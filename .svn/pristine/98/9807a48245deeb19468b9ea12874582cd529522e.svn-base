@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="pagos" namespace="/pagos" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<action name="capturaPagos" method="capturaPagos" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaPagos</result>
+            <result name="input" type="tiles">capturaPagos</result>
+        </action>
+        <action name="capturaEdicionPago" method="capturaEdicionPago" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">edicionPagos</result>
+            <result name="input" type="tiles">edicionPagos</result>
+        </action>
+		<action name="actualizarPago" method="actualizarPago" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">edicionPagos</result>
+            <result name="input" type="tiles">edicionPagos</result>
+        </action>
+           <action name="eliminarPago" method="eliminarPago" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaPagos</result>
+            <result name="input" type="tiles">busquedaPagos</result>
+        </action>
+         <action name="recuperaEdoCompradoresByPrograma" method="recuperaEdoCompradoresByPrograma" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/edoCompradorByPrograma.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/edoCompradorByPrograma.jsp</result>
+        </action>
+        <action name="datosComprador" method="datosComprador" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/datosComprador.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/datosComprador.jsp</result>
+        </action>
+        <action name="recuperaDatosPlaza" method="recuperaDatosPlaza" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/datosPlazaBancaria.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/datosPlazaBancaria.jsp</result>
+        </action>
+        <!-- Por descontinuar -->
+        <action name="agregaEdoPorVolumen" method="agregaEdoPorVolumen" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/agregaEdoPorVolumen.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/agregaEdoPorVolumen.jsp</result>
+        </action>
+         <action name="validarCuentaBancaria" method="validarCuentaBancaria" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/respuestaValidaClabe.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/respuestaValidaClabe.jsp</result>
+        </action>
+        <action name="validarConfirmacionCtaBancaria" method="validarConfirmacionCtaBancaria" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/respuestaConfValidaClabe.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/respuestaConfValidaClabe.jsp</result>
+        </action>
+        <action name="agregarEditarPago" method="agregarEditarPago" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaPagos</result>
+            <result name="input" type="tiles">capturaPagos</result>
+        </action>
+        
+        <action name="capturarOtraCuenta" method="capturarOtraCuenta" class="mx.gob.comer.sipc.pagos.action.PagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/capturaPagos/otraCuenta.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/capturaPagos/otraCuenta.jsp</result>
+        </action>
+
+        <action name="busquedaPagos" method="busquedaPagos" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaPagos</result>
+            <result name="input" type="tiles">busquedaPagos</result>
+        </action>
+        <action name="realizarBusqueda" method="realizarBusqueda" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaPagos</result>
+            <result name="input" type="tiles">busquedaPagos</result>
+        </action>
+        <action name="detallesPago" method="detallesPago" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/busquedaPagos/detallesPago.jsp</result>
+            <result name="input">/WEB-INF/paginas/busquedaPagos/detallesPago.jsp</result>
+        </action>
+        <action name="exportaConsultaPagos" method="exportaConsultaPagos" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="recuperaCompradoresByPrograma" method="recuperaCompradoresByPrograma" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/busquedaPagos/lstCompradores.jsp</result>
+            <result name="input">/WEB-INF/paginas/busquedaPagos/lstCompradores.jsp</result>
+        </action>
+        
+        <action name="archivoTesofeEnvio" method="archivoTesofeEnvio" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">archivoTesofeEnvio</result>
+            <result name="input" type="tiles">archivoTesofeEnvio</result>
+        </action>
+        <action name="oficioEnvio" method="oficioEnvio" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/oficioEnvio.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/oficioEnvio.jsp</result>
+        </action>
+        <action name="archivoEnvio" method="archivoEnvio" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/archivoEnvio.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/archivoEnvio.jsp</result>
+        </action>
+        <action name="recuperaPagos" method="recuperaPagos" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/pagosOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/pagosOficio.jsp</result>
+        </action>
+         <action name="vistaPreviaOficio" method="vistaPreviaOficio" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+         	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/vistaPreviaOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/vistaPreviaOficio.jsp</result>
+        </action>
+        <action name="generarOficioEnvioCGCDGAF" method="generarOficioEnvioCGCDGAF" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/resultadoGeneracionOficio.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/resultadoGeneracionOficio.jsp</result>
+        </action>
+        <action name="consigueOficio" method="consigueOficio" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="generaArchivoPagosTesofe" method="generaArchivoPagosTesofe" class="mx.gob.comer.sipc.pagos.action.GeneraArchivoPagosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">archivoEnvio</result>
+            <result name="input" type="tiles">archivoEnvio</result>
+        </action>
+        <action name="validaNumeroSecuenciaArchivo" method="validaNumeroSecuenciaArchivo" class="mx.gob.comer.sipc.pagos.action.GeneraArchivoPagosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/respuestaValidaNumeroArchivo.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/respuestaValidaNumeroArchivo.jsp</result>
+        </action>
+		<action name="viewLog" method="execute" class="mx.gob.comer.sipc.pagos.action.ShowLogAction">
+			<interceptor-ref name="chksession"/>
+			<result name="success" type="stream">
+			 	<param name="contentType">${contentType}</param>
+			 	<param name="inputName">inputStream</param>
+			 	<param name="contentDisposition">attachment; filename="${l}"</param>
+			 	<param name="bufferSize">${bufferSize}</param>
+			</result>
+			<result type="tiles" name="error">errorPage</result> 
+		</action>        
+		<action name="descargarArchivoPagosEnvio" method="descargarArchivoPagosEnvio" class="mx.gob.comer.sipc.pagos.action.GeneraArchivoPagosTesofeAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />
+			<result name="success" type="tiles">archivoEnvio</result>
+			<result name="input" type="tiles">archivoEnvio</result>
+		</action>
+		<action name="consultaOficiosEnvioTesofe" method="consultaOficiosEnvioTesofe" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaOficioPagos</result>
+            <result name="input" type="tiles">busquedaOficioPagos</result>
+        </action>
+        <action name="realizarConOficiosEnvioTesofe" method="realizarConOficiosEnvioTesofe" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaOficioPagos</result>
+            <result name="input" type="tiles">busquedaOficioPagos</result>
+        </action>
+     
+		<action name="cargarArchivo" method="cargarArchivo"
+			class="mx.gob.comer.sipc.pagos.action.ProcesamientoArchivosPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">ProcesaArchivosPagos</result>
+			<result name="success" type="tiles">ProcesaArchivosPagos</result>
+		</action>
+		<!-- Archivo de rechazo -->
+		<action name="ProcesarArchivoPagosRec" method="ProcesarArchivoPagosRec"
+			class="mx.gob.comer.sipc.pagos.action.ProcesamientoArchivosPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">ProcesaArchivosPagos</result>
+			<result name="success" type="tiles">ProcesaArchivosPagos</result>
+		</action>
+		<action name="capturaCargaArchivoTesofe" method="capturaCargaArchivoTesofe" class="mx.gob.comer.sipc.pagos.action.CargaArchivosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">cargaArchivosEnvio</result>
+			<result name="success" type="tiles">cargaArchivosEnvio</result>
+		</action>
+		
+		<action name="cargarArchivoTesofe" method="cargarArchivoTesofe" class="mx.gob.comer.sipc.pagos.action.CargaArchivosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />	
+			<result name="success" type="redirectAction">
+		         <param name="actionName">realizarConOficiosEnvioTesofe</param>
+		         <param name="namespace">/pagos</param>
+		         <param name="idOficio">${idOficio}</param>		         
+		         <param name="oficioCGC">${oficioCGC}</param>		         
+		         <param name="folioCLC">${folioCLC}</param>		         
+		         <param name="msjOk">${msjOk}</param>		         
+      		</result>	
+			<!-- <result name="input" type="tiles">cargaArchivosEnvio</result>
+			<result name="success" type="tiles">cargaArchivosEnvio</result> -->
+		</action>
+		<action name="detalleOficioPagos" method="detalleOficioPagos" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/busquedaPagos/detallesOficioPago.jsp</result>
+			<result name="success">/WEB-INF/paginas/busquedaPagos/detallesOficioPago.jsp</result>
+		</action>
+		
+		
+		<action name="busquedaAutorizacionPagos" method="busquedaAutorizacionPagos" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">autorizacionPagos</result>
+			<result name="success" type="tiles">autorizacionPagos</result>
+		</action>
+		<action name="recuperaProgByEspecialista" method="recuperaProgByEspecialista" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/pagos/autorizacionPagos/lstProgramas.jsp</result>
+			<result name="success">/WEB-INF/paginas/pagos/autorizacionPagos/lstProgramas.jsp</result>
+		</action>		
+ 
+<!--	
+		<action name="recuperaCompByPrograma" method="recuperaCompByPrograma" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/pagos/autorizacionPagos/lstCompradores.jsp</result>
+			<result name="success">/WEB-INF/pagos/paginas/autorizacionPagos/lstCompradores.jsp</result>
+		</action>		
+-->	
+		<action name="realizaBusquedaAutorizacionPago" method="realizaBusquedaAutorizacionPago" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">realizaBusquedaAutorizacionPago</result>
+			<result name="success" type="tiles">realizaBusquedaAutorizacionPago</result>
+		</action>	
+		
+		<action name="detallesAutorizacionPago" method="detallesAutorizacionPago" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/pagos/autorizacionPagos/autorizacionPagos.jsp</result>
+			<result name="success">/WEB-INF/pagos/paginas/autorizacionPagos/autorizacionPagos.jsp</result>
+		</action>
+		
+		<action name="registrarAutorizacion" method="registrarAutorizacion" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input" type="tiles">autorizacionPagos</result>
+			<result name="success" type="tiles">autorizacionPagos</result>
+		</action>
+
+        <action name="recuperaCartasAdhesionByPrograma" method="recuperaCartasAdhesionByPrograma" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/busquedaPagos/lstCartasAdhesion.jsp</result>
+            <result name="input">/WEB-INF/paginas/busquedaPagos/lstCartasAdhesion.jsp</result>
+        </action>
+		<action name="recuperaFileByEstatus" method="recuperaFileByEstatus" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/pagos/autorizacionPagos/recuperaFileByEstatus.jsp</result>
+			<result name="success">/WEB-INF/paginas/pagos/autorizacionPagos/recuperaFileByEstatus.jsp</result>
+		</action>
+		
+		<action name="recuperaCartasByComprador" method="recuperaCartasByComprador" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/busquedaPagos/lstCartasAdhesion.jsp</result>
+            <result name="input">/WEB-INF/paginas/busquedaPagos/lstCartasAdhesion.jsp</result>
+        </action>
+
+        <action name="consigueAtentaNota" method="consigueAtentaNota" class="mx.gob.comer.sipc.pagos.action.AutorizacionPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="input" type="tiles">autorizacionPagos</result>
+			<result name="success" type="tiles">autorizacionPagos</result>
+        </action>                     
+		<action name="regresaOficioPagos" method="regresaOficioPagos" class="mx.gob.comer.sipc.pagos.action.BusquedaPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaOficioPagos</result>
+            <result name="input" type="tiles">busquedaOficioPagos</result>
+        </action>
+    </package>
+</struts>

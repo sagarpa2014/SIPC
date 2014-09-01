@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="catalogos" namespace="/catalogos" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		
+		<!-- Compradores -->
+		<action name="busquedaCompradores" method="busquedaCompradores" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">compradores</result>
+            <result name="input" type="tiles">compradores</result>
+        </action>
+         <action name="ejecutaBusquedaCompradores" method="ejecutaBusquedaCompradores" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">compradores</result>
+            <result name="input" type="tiles">compradores</result>
+        </action>
+        <action name="agregarComprador" method="agregarComprador" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosComprador</result>
+            <result name="input" type="tiles">datosComprador</result>
+        </action>
+		<action name="detallesComprador" method="detallesComprador" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/compradores/detallesComprador.jsp</result>
+            <result name="input">/WEB-INF/paginas/compradores/detallesComprador.jsp</result>
+        </action>
+        <action name="verExpediente" method="verExpediente" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">verExpedientes</result>
+            <result name="input" type="tiles">verExpedientes</result>
+        </action>
+        <action name="registrarComprador" method="registrarComprador" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">compradores</result>
+            <result name="input" type="tiles">compradores</result>
+        </action>
+        <action name="recuperaDatosComprador" method="recuperaDatosComprador" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosComprador</result>
+            <result name="input" type="tiles">datosComprador</result>
+        </action>
+        <action name="datosRepLegal" method="datosRepLegal" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/compradores/datosRepLegal.jsp</result>
+            <result name="input">/WEB-INF/paginas/compradores/datosRepLegal.jsp</result>
+        </action>
+        <action name="cargarExpedienteComprador" method="cargarExpedienteComprador" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">verExpedientes</result>
+            <result name="input" type="tiles">verExpedientes</result>
+        </action>
+        <action name="datosFiscales" method="datosFiscales" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/compradores/datosFiscales.jsp</result>
+            <result name="input">/WEB-INF/paginas/compradores/datosFiscales.jsp</result>
+        </action>
+        <action name="recuperaDatosRepLegal" method="recuperaDatosRepLegal" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/compradores/recuperaDatosRepLegal.jsp</result>
+            <result name="input">/WEB-INF/paginas/compradores/recuperaDatosRepLegal.jsp</result>
+        </action>
+        <action name="cambiarEstatus" method="cambiarEstatus" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">compradores</result>
+            <result name="input" type="tiles">compradores</result>
+        </action>
+
+
+
+        <!-- Auditores -->
+        <action name="busquedaAuditores" method="busquedaAuditores" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">auditores</result>
+            <result name="input" type="tiles">auditores</result>
+        </action>
+        <action name="agregarAuditor" method="agregarAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosAuditor</result>
+            <result name="input" type="tiles">datosAuditor</result>
+        </action>
+        <action name="verExpedientesAuditor" method="verExpedientesAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">verExpedientesAuditor</result>
+            <result name="input" type="tiles">verExpedientesAuditor</result>
+        </action>
+        <action name="recuperaMunicipioByEstado" method="recuperaMunicipioByEstado" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/auditores/municipios.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/municipios.jsp</result>
+        </action>
+          <action name="recuperaLocalidadesByMunicipio" method="recuperaLocalidadesByMunicipio" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/auditores/localidades.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/localidades.jsp</result>
+        </action>    
+        <action name="registrarAuditor" method="registrarAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">auditores</result>
+            <result name="input" type="tiles">auditores</result>
+        </action>
+        <action name="ejecutaBusquedaAuditor" method="ejecutaBusquedaAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">auditores</result>
+            <result name="input" type="tiles">auditores</result>
+        </action>
+		<action name="detallesAuditor" method="detallesAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/auditores/detallesAuditores.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/detallesAuditores.jsp</result>
+        </action>
+                <action name="recuperaDatosAuditor" method="recuperaDatosAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosAuditor</result>
+            <result name="input" type="tiles">datosAuditor</result>
+        </action>
+                <action name="cargarExpedienteAuditor" method="cargarExpedienteAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">verExpedientesAuditor</result>
+            <result name="input" type="tiles">verExpedientesAuditor</result>
+        </action>  
+        
+        <action name="validarNumeroAuditor" method="validarNumeroAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/auditores/respuestaValidaNumAuditor.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/respuestaValidaNumAuditor.jsp</result>
+        </action>
+        <action name="cambiarEstatusAuditor" method="cambiarEstatusAuditor" class="mx.gob.comer.sipc.catalogos.action.AuditoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">auditores</result>
+            <result name="input" type="tiles">auditores</result>
+        </action>
+        
+        <!-- Representantes Legales -->
+         <action name="ejecutaBusquedaRepLegal" method="ejecutaBusquedaRepLegal" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">representantes</result>
+            <result name="input" type="tiles">representantes</result>
+        </action>		
+		<action name="busquedaRepLegal" method="busquedaRepLegal" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">representantes</result>
+            <result name="input" type="tiles">representantes</result>
+        </action>
+        <action name="registrarRepLegal" method="registrarRepLegal" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">representantes</result>
+            <result name="input" type="tiles">representantes</result>
+        </action>
+        <action name="verExpedientesRepLegal" method="verExpedientesRepLegal" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">verExpedientesRepresentante</result>
+            <result name="input" type="tiles">verExpedientesRepresentante</result>
+        </action>
+        <action name="agregarRepLegal" method="agregarRepLegal" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosRepresentantes</result>
+            <result name="input" type="tiles">datosRepresentantes</result>
+        </action>
+        <action name="cargarExpedienteRepresentante" method="cargarExpedienteRepresentante" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">verExpedientesRepresentante</result>
+            <result name="input" type="tiles">verExpedientesRepresentante</result>
+        </action>
+		<action name="detallesRepresentante" method="detallesRepresentante" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/representantes/detallesRepresentante.jsp</result>
+            <result name="input">/WEB-INF/paginas/representantes/detallesRepresentante.jsp</result>
+        </action>
+        <action name="recuperaMunicipioByEstado" method="recuperaMunicipioByEstado" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/auditores/municipios.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/municipios.jsp</result>
+        </action>
+          <action name="recuperaLocalidadesByMunicipio" method="recuperaLocalidadesByMunicipio" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/auditores/localidades.jsp</result>
+            <result name="input">/WEB-INF/paginas/auditores/localidades.jsp</result>
+        </action>  
+        <action name="recuperaDatosRepresentante" method="recuperaDatosRepresentante" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosRepresentantes</result>
+            <result name="input" type="tiles">datosRepresentantes</result>
+        </action>
+        <action name="validaRfc" method="validaRfc" class="mx.gob.comer.sipc.catalogos.action.RepresentanteLegalAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/representantes/respuestaValidaRfc.jsp</result>
+            <result name="input">/WEB-INF/paginas/representantes/respuestaValidaRfc.jsp</result>
+        </action>
+        <action name="validarRfc" method="validarRfc" class="mx.gob.comer.sipc.catalogos.action.CompradoresAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/compradores/respuestaValidaRfc.jsp</result>
+            <result name="input">/WEB-INF/paginas/compradores/respuestaValidaRfc.jsp</result>
+        </action>
+		
+		<!-- BODEGAS -->
+        
+        <action name="detalleBodegas" method="detalleBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">detalleBodegas</result>
+            <result name="input" type="tiles">detalleBodegas</result>
+        </action>
+        
+        <action name="busquedaBodegas" method="busquedaBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">busquedaBodegas</result>
+            <result name="input" type="tiles">busquedaBodegas</result>
+        </action>
+        
+        <action name="ejecutaBusquedaBodegas" method="ejecutaBusquedaBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">busquedaBodegas</result>
+            <result name="input" type="tiles">busquedaBodegas</result>
+        </action>
+        
+		<!-- INTERPRETE SQL -->
+        <action name="ejecutaSQL" method="ejecutaSQL" class="mx.gob.comer.sipc.action.InterpreteSQLAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">interpreteSQL</result>
+            <result name="input" type="tiles">interpreteSQL</result>
+        </action>
+        <action name="exportaResultadoSQL" method="exportaResultadoSQL" class="mx.gob.comer.sipc.action.InterpreteSQLAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelResultadoSQL</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcel" method="consigueArchivoExcel" class="mx.gob.comer.sipc.action.InterpreteSQLAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>        
+        
+    </package>
+</struts>
