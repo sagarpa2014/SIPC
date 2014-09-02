@@ -35,15 +35,18 @@ import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.CiclosProgramasV;
+import mx.gob.comer.sipc.vistas.domain.CompradorExpedientesV;
 import mx.gob.comer.sipc.vistas.domain.CuotasEsquemaV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 import mx.gob.comer.sipc.vistas.domain.ProgramaCultivo;
 import mx.gob.comer.sipc.vistas.domain.ProgramasV;
 import mx.gob.comer.sipc.vistas.domain.RepresentanteCompradorV;
 import mx.gob.comer.sipc.vistas.domain.SolicitudInscripcionV;
+
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;
 import org.hibernate.JDBCException; 
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -214,6 +217,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	private List<PagosV> lstPagosV;
 	private double totalVolEnTramPago;
 	private double totalImpEnTramPago;
+	private List<CompradorExpedientesV> lstCompradorExpedientesV;
 	
 	public String busquedaSolicitudIns(){
 		try{
@@ -385,6 +389,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	
 	public String verificarDatosComprador(){
 		try {	
+			boolean actaConstitutiva = false, rfc = false, comprobanteDomicilio=false;
 			//Verifica si los datos del comprador estan completos
 		    comprador = cDAO.consultaComprador(idComprador).get(0);
 		    if( (comprador.getClaveMunicipio()==null)
@@ -398,10 +403,43 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		    
 		    lstRepresentanteV = cDAO.consultaRepresentanteCompradorV(0, idComprador);
 		    if(lstRepresentanteV.size()==0){
-		    	msjError = "Debe capturar todos los datos del comprador";
+		    	msjError = "Debe capturar todos los datos del comprador en el apartado de representante legal";
 		    	datosCompradorCompleto = 0;
 		    	return SUCCESS;
 		    }
+		    
+		    lstCompradorExpedientesV = cDAO.consultaCompradoresExpedientesV(0,idComprador,0);
+		    if(lstCompradorExpedientesV.size()==0){
+		    	msjError = "Debe cargar los expedientes correspondientes del comprador";
+		    	datosCompradorCompleto = 0;
+		    	return SUCCESS;
+		    }
+		    for(CompradorExpedientesV cev:  lstCompradorExpedientesV){
+		    	if(cev.getIdExpediente().intValue()==23){
+		    		actaConstitutiva = true;
+		    	}else if(cev.getIdExpediente().intValue()==24){
+		    		rfc= true;
+		    	}else if (cev.getIdExpediente().intValue()==25){
+		    		comprobanteDomicilio = true;
+		    	}
+		    }
+		    
+		    if(!actaConstitutiva){
+		    	msjError = "Debe cargar el acta constitutiva del comprador, por favor verifique";
+		    	datosCompradorCompleto = 0;
+		    	return SUCCESS;
+		    }
+		    if(!rfc){
+		    	msjError = "Debe cargar el rfc del comprador, por favor verifique";
+		    	datosCompradorCompleto = 0;
+		    	return SUCCESS;
+		    }
+		    if(!comprobanteDomicilio){
+		    	msjError = "Debe cargar el comprobante de domicilio del comprador, por favor verifique";
+		    	datosCompradorCompleto = 0;
+		    	return SUCCESS;
+		    }
+		    
 		    datosCompradorCompleto = 1;
 		    
 		    if(registrar == 0 || registrar ==1 || registrar == 3 || registrar == 4 ){
