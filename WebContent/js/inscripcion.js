@@ -89,7 +89,7 @@ function chkCamposSolInscripcion(){
 			if(idPrograma == 34){
 				patron = /^([A-Z]{2,3})|([A-Z]{2}\d{1})\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
 			}else{
-				patron = /^[A-Z]{2,3}\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
+				patron = /^[A-Z]{2,5}\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
 			}
 			if(!folioSI.match(patron)){
 				console.log("no match cadena "+folioSI);
@@ -689,7 +689,7 @@ function recuperaCultivoByVariedad(idCultivo, count){
 			}
 		}
 		
-		textSelect = '<select id="va'+count+'">'+cadenaOption+'</select>';
+		textSelect = '<select name="selectedVariedad" id="va'+count+'">'+cadenaOption+'</select>';
 		$('#variedad'+count).html(textSelect);	
 		
 	}
@@ -2150,7 +2150,7 @@ function agregarNumCamposCultivoEstadoIniProg(){
 		var tds = '<tr>';
 		tds += '<td>'+numCampos+'</td>';
 		tds += '<td id="contenedorCultivoEdo'+numCampos+'"></td>';
-		tds += '<td id="variedad'+numCampos+'"><select id="va'+numCampos+'"><option value="-1">-- Seleccione una opción --</option></select></td>';
+		tds += '<td id="variedad'+numCampos+'"><select name="selectedVariedad" id="va'+numCampos+'"><option value="-1">-- Seleccione una opción --</option></select></td>';
 		tds += '<td id="contenedorListEdo'+numCampos+'"></td>';
 		if(idCriterioPago == 1){
 			tds += '<td><input type="text" id="v'+numCampos+'" name="cuota" maxlength="15" class="cantidad" size="20" ></td>';
