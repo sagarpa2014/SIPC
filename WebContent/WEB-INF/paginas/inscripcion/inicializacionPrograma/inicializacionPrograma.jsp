@@ -89,7 +89,7 @@
 		<div class="clear"></div>
 		<div>
 			<label class="left1"><span class="requerido">*</span>Definici&oacute;n  de Acr&oacute;nimo:</label>
-			<s:textfield id="acronimoCA" name="acronimoCA"  maxlength="3" size="5"  value="%{acronimoCA}"/>
+			<s:textfield id="acronimoCA" name="acronimoCA"  maxlength="5" size="5"  value="%{acronimoCA}"/>
 		</div>
 		<div class="clear"></div>
 		<div id="validarAcronimo"></div>
