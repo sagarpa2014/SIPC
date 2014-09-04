@@ -262,3 +262,5 @@ a.botonDev:hover {margin: auto; background-image:url(../images/devolucionOn.jpg)
 
 a.DescargaArchHist:link  {color: #088A08;  cursor: pointer; font-size:8px; font-family:Helvetica; }
 a.DescargaArchHist:hover {text-decoration: none; color:#BA8537; font-size:8px; font-family:Helvetica; font-weight:bold;}
+#browserDesactualizado{ display: none; }
+

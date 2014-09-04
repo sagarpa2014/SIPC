@@ -14,6 +14,7 @@ import mx.gob.comer.sipc.vistas.domain.CartaAdhesionEtapaVolImpV;
 import mx.gob.comer.sipc.vistas.domain.OficioPagosV;
 import mx.gob.comer.sipc.vistas.domain.PagosCartasAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleCAV;
+import mx.gob.comer.sipc.vistas.domain.PagosDetalleSBV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleGroupV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
@@ -694,5 +695,59 @@ public class PagosDAO {
 		return lst;
 	}
 	
-	
+
+	@SuppressWarnings("unchecked")
+	public List<PagosDetalleSBV> consultaPagosDetalleSBV(long idPagoDetalle, long idPago) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<PagosDetalleSBV> lst=null;
+		if (idPagoDetalle != 0 && idPagoDetalle != -1){
+			consulta.append("where idPagoDetalle = ").append(idPagoDetalle);
+		}
+		
+		if (idPago != 0 && idPago != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idPago=").append(idPago);
+			}else{
+				consulta.append("where idPago=").append(idPago);
+			}
+		}
+		
+		consulta.insert(0, "From PagosDetalleSBV ").append(" ORDER BY estado ");
+		lst= session.createQuery(consulta.toString()).list();	
+		return lst;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PagosDetalleSBV> consultaPagosDetalleSBVSession(long idPagoDetalle, long idPago) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<PagosDetalleSBV> lst=null;
+		try{
+			session = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+			transaction = session.beginTransaction();
+
+			if (idPagoDetalle != 0 && idPagoDetalle != -1){
+				consulta.append("where idPagoDetalle = ").append(idPagoDetalle);
+			}
+			
+			if (idPago != 0 && idPago != -1){
+				if(consulta.length()>0){
+					consulta.append(" and idPago=").append(idPago);
+				}else{
+					consulta.append("where idPago=").append(idPago);
+				}
+			}
+			
+			consulta.insert(0, "From PagosDetalleSBV ").append(" ORDER BY estado ");
+			lst= session.createQuery(consulta.toString()).list();	
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally{
+			if (session != null && session.isOpen()){
+				session.close();
+			}
+		}
+
+		return lst;
+	}
+
 }// fin de clase

@@ -84,6 +84,7 @@
 		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleGroupV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleSBV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.ArchivosPagosV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaCompradorV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.OficioPagosV"/>

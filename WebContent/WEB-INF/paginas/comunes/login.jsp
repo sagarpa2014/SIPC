@@ -5,7 +5,7 @@
 </s:if>
 <div id="dialogo_1"></div>	
 <s:if test="%{#session.nombreUsuario == null }" >
-	<div id="login">
+	<div id="login" class="elementoOculto">
 		<h1>Bienvenido</h1>
 		<s:form name="forma" action="acceso" id="frmLog" onsubmit="return chkCamposLogin();">
 				<label>Usuario:</label>
@@ -22,5 +22,34 @@
 	</div>
 </s:if>
 
+<div id="browserDesactualizado" class="advertencia">Su navegador no esta actualizado, el sistema soporta Internet Explorer, Firefox y Chrome en sus ultimas versiones</div>
 
+<script>
+	$(document).ready(function() { 
+		var navegador = JSON.stringify(bowser);
+		var version = parseInt(bowser.version);
+		if(navegador.indexOf("Internet Explorer")!=-1){
+			if(version < 12){
+				$("#login").fadeOut('slow');
+				$("#browserDesactualizado").fadeIn('slow');
+			}else{
+				$("#login").fadeIn('slow');
+			}
+		}else if(navegador.indexOf("Firefox")!=-1){
+			if(version < 29){
+				$("#login").fadeOut('slow');
+				$("#browserDesactualizado").fadeIn('slow');
+			}else{
+				$("#login").fadeIn('slow');
+			}
+		}else if(navegador.indexOf("Chrome")!=-1){
+			if(version < 36){
+				$("#login").fadeOut('slow');
+				$("#browserDesactualizado").fadeIn('slow');
+			}else{
+				$("#login").fadeIn('slow');
+			}
+		}			
+	});    
+</script>
 

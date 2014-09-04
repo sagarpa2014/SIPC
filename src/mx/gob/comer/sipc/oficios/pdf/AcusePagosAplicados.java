@@ -1,7 +1,6 @@
 package mx.gob.comer.sipc.oficios.pdf;
 
 import java.awt.Color;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,6 +13,7 @@ import mx.gob.comer.sipc.dao.ReportesDAO;
 import mx.gob.comer.sipc.pagos.action.AcusesPagosAction;
 import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.vistas.domain.OficioCompradorProgramaV;
+import mx.gob.comer.sipc.vistas.domain.PagosDetalleSBV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleV;
 
 import com.lowagie.text.Document;
@@ -63,7 +63,7 @@ public class AcusePagosAplicados extends PdfPageEventHelper {
 			/*Consigue los datos del pago*/
 			if(Integer.parseInt(idPagos[i]) != -1){
 				OficioCompradorProgramaV ocpv=rDAO.consultaOficioCompradorProgramaVSession(Integer.parseInt(idPagos[i])).get(0);
-				List<PagosDetalleV> pagoDet=pDAO.consultaPagosDetalleVSession(0,Integer.parseInt(idPagos[i]));
+				List<PagosDetalleSBV> pagoDet=pDAO.consultaPagosDetalleSBVSession(0,Integer.parseInt(idPagos[i]));
 				document.newPage();
 				getEncabezado();
 				addEmptyLine(1);
@@ -105,7 +105,7 @@ public class AcusePagosAplicados extends PdfPageEventHelper {
 		document.add(table1);
 	}
 	
-	private void getCuerpo(OficioCompradorProgramaV ocpv, List<PagosDetalleV> pagoDet) throws DocumentException{
+	private void getCuerpo(OficioCompradorProgramaV ocpv, List<PagosDetalleSBV> pagoDet) throws DocumentException{
 		float[] w = {25,25,25,25}; // 25%
 		PdfPCell cell = null;
 		PdfPTable t = new PdfPTable(w);
@@ -115,7 +115,7 @@ public class AcusePagosAplicados extends PdfPageEventHelper {
 		cell =createCell(parrafo, 0, 2, 1);
 		t.addCell(cell);
 		Date fechaActual = new Date();
-		String fechaActualS = TextUtil.consigueNombreDia(new SimpleDateFormat("EEEE").format(fechaActual).toString()).toLowerCase()+", "
+		String fechaActualS = TextUtil.consigueNombreDia(new SimpleDateFormat("EEEE").format(fechaActual).toString())+", "
 							 +new SimpleDateFormat("dd").format(fechaActual).toString()+" de "
 							 +TextUtil.consigueMes(Integer.parseInt(new SimpleDateFormat("MM").format(fechaActual).toString())).toLowerCase()+" de "
 							 +new SimpleDateFormat("yyyy").format(fechaActual).toString();

@@ -17,6 +17,7 @@
 <script type="text/javascript" language="JavaScript" src="<s:url value="/js/calendar.js" />"></script>
 <script type="text/javascript" language="JavaScript" src="<s:url value="/js/calendar-es.js" />"></script>
 <script type="text/javascript" language="JavaScript" src="<s:url value="/js/calendar-setup.js" />"></script>
+<script type="text/javascript" src="<s:url value="/js/bowser.min.js" />"></script>
 <!-- 
 <style type="text/css">
 	  body {

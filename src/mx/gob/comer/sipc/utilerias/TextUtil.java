@@ -54,20 +54,20 @@ public class TextUtil {
 	}
 	public static String  consigueNombreDia(String nombreDia){
 		nombreDia = nombreDia.toUpperCase();
-		if(nombreDia.equals("MONDAY")){
-			return "lunes";
-		}else if(nombreDia.equals("TUESDAY")){
-			return "martes";
-		}else if(nombreDia.equals("WEDNESDAY")){
-			return "miércoles";
-		}else if(nombreDia.equals("THURSDAY")){
-			return "jueves";
-		}else if(nombreDia.equals("FRIDAY")){
-			return "viernes";
-		}else if(nombreDia.equals("SATURDAY")){
-			return "sabado";
-		}else if(nombreDia.equals("SONDAY")){
-			return "domingo";
+		if(nombreDia.equals("MONDAY")||nombreDia.equals("LUNES")){
+			return "Lunes";
+		}else if(nombreDia.equals("TUESDAY")||nombreDia.equals("MARTES")){
+			return "Martes";
+		}else if(nombreDia.equals("WEDNESDAY")||nombreDia.equals("MIÉRCOLES")){
+			return "Miércoles";
+		}else if(nombreDia.equals("THURSDAY")||nombreDia.equals("JUEVES")){
+			return "Jueves";
+		}else if(nombreDia.equals("FRIDAY")||nombreDia.equals("VIERNES")){
+			return "Viernes";
+		}else if(nombreDia.equals("SATURDAY")||nombreDia.equals("SÁBADO")){
+			return "Sábado";
+		}else if(nombreDia.equals("SONDAY")||nombreDia.equals("DOMINGO")){
+			return "Domingo";
 		}
 		return "";
 	}
