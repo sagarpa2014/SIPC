@@ -29,7 +29,7 @@
 		var navegador = JSON.stringify(bowser);
 		var version = parseInt(bowser.version);
 		if(navegador.indexOf("Internet Explorer")!=-1){
-			if(version < 12){
+			if(version < 11){
 				$("#login").fadeOut('slow');
 				$("#browserDesactualizado").fadeIn('slow');
 			}else{
