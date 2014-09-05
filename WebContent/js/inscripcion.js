@@ -518,9 +518,11 @@ function chkCamposBusquedaSI(){
 	var folioSI = $('#folioSI').val();
 	var folioCartaAdhesion = $('#folioCartaAdhesion').val();
 	var idPrograma = $('#idPrograma').val();
+	var nombreComprador = $('#nombreComprador').val();
 	
 	if(idPrograma == -1 && (folioSI == null || folioSI=="") 
-		&&(folioCartaAdhesion == null || folioCartaAdhesion=="" )){
+		&&(folioCartaAdhesion == null || folioCartaAdhesion=="" )
+		&& (nombreComprador == null || nombreComprador=="" ) ){
 		$('#dialogo_1').html('Debe seleccionar al menos un dato, para consultar la solicitud');
 		abrirDialogo();
 		return false;

@@ -303,6 +303,57 @@ public class InscripcionDAO {
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}
+
+	
+	@SuppressWarnings("unchecked")
+	public List<SolicitudInscripcionV> consultaSolicitudInscripcionVBusqueda(long idSI, int idPrograma, String folioSI, String folioCartaAdhesion, int idArea, String comprador) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<SolicitudInscripcionV> lst=null;
+		if (idSI != 0 && idSI != -1){
+			consulta.append("where idSI = ").append(idSI);
+		}
+		if (idPrograma != 0 && idPrograma != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idPrograma=").append(idPrograma);
+			}else{
+				consulta.append("where idPrograma=").append(idPrograma);
+			}
+		}
+		if (folioSI != null && !folioSI.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and folioSI='").append(folioSI).append("'");
+			}else{
+				consulta.append("where folioSI='").append(folioSI).append("'");
+			}
+		}
+		if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and folioCartaAdhesion LIKE '%").append(folioCartaAdhesion).append("%' ");
+			}else{
+				consulta.append("where folioCartaAdhesion LIKE '%").append(folioCartaAdhesion).append("%' ");
+			}
+		}
+		
+		if (idArea != 0 && idArea!= 0){
+			if(consulta.length()>0){
+				consulta.append(" and idArea=").append(idArea);
+			}else{
+				consulta.append("where idArea=").append(idArea);
+			}
+		}
+		
+		if (comprador != null && !comprador.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and comprador LIKE '%").append(comprador).append("%' ");
+			}else{
+				consulta.append("where comprador LIKE '%").append(comprador).append("%' ");
+			}
+		}
+		consulta.insert(0, "From SolicitudInscripcionV ").append(" order by  folioSI");
+		lst= session.createQuery(consulta.toString()).list();	
+		return lst;
+	}
+
 	
 	//@SuppressWarnings("unchecked")
 	/*public List<CartasAdhesion> consultaCartaAdhesion(long idCarta, long consecutivoCarta) throws JDBCException {

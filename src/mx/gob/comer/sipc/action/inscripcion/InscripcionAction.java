@@ -219,6 +219,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	private double totalImpEnTramPago;
 	private List<CompradorExpedientesV> lstCompradorExpedientesV;
 	
+	
 	public String busquedaSolicitudIns(){
 		try{
 			//Recupera lista de programas
@@ -244,9 +245,9 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			session = ActionContext.getContext().getSession();			
 			if((Integer)session.get("idPerfil") == 5){
 				int idArea = (Integer)session.get("idArea");
-				lstSolInsV = iDAO.consultaSolicitudInscripcionV(0, idPrograma, folioSI, folioCartaAdhesion, idArea);
+				lstSolInsV = iDAO.consultaSolicitudInscripcionVBusqueda(0, idPrograma, folioSI, folioCartaAdhesion, idArea, nombreComprador);
 			}else{
-				lstSolInsV = iDAO.consultaSolicitudInscripcionV(0, idPrograma, folioSI, folioCartaAdhesion, 0);
+				lstSolInsV = iDAO.consultaSolicitudInscripcionVBusqueda(0, idPrograma, folioSI, folioCartaAdhesion, 0, nombreComprador);
 			}
 			folioSI = null;
 			folioCartaAdhesion = null;
@@ -1298,6 +1299,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		return SUCCESS;
 	}
 	
+	
 	public Double getVolumenApoyar() {
 		return volumenApoyar;
 	}
@@ -1929,7 +1931,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	}
 
 	public void setFolioCartaAdhesion(String folioCartaAdhesion) {
-		this.folioCartaAdhesion = folioCartaAdhesion;
+		this.folioCartaAdhesion = folioCartaAdhesion.trim();
 	}
 
 	public Integer getPeriodoDOFSI() {
@@ -2087,7 +2089,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	}
 
 	public void setNombreComprador(String nombreComprador) {
-		this.nombreComprador = nombreComprador;
+		this.nombreComprador = nombreComprador.trim();
 	}
 
 	public String getObsSolInscripcion() {

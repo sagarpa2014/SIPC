@@ -21,6 +21,10 @@
 			<label class="left1">Carta Adhesi&oacute;n:</label>
 			<s:textfield id="folioCartaAdhesion" name="folioCartaAdhesion" maxlength="30" size="30"/>
 		</div>
+		<div>
+			<label class="left1">Participante:</label>
+			<s:textfield id="nombreComprador" name="nombreComprador" maxlength="30" size="30"/>
+		</div>
 		<div>	
 			<label class="left1"><span class="requerido">*</span>Programa:</label>
 			<s:select id="idPrograma" name="idPrograma" list="lstProgramasV" listKey="idPrograma" listValue="%{descripcionCorta}" headerKey="-1" headerValue="-- Seleccione una opción --"  onclick="" onchange="" value="%{}"/>
