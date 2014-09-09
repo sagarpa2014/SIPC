@@ -208,7 +208,7 @@ public class OficioEntregaCartasAction  extends ActionSupport implements Servlet
 						  .append(lstPersonal.get(0).getPaterno())
 						  .append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
 					emisor.setNombre(emi.toString().toUpperCase());
-					emisor.setPuesto(emisor.getPuesto().toUpperCase());
+					emisor.setPuesto("EL DIRECTOR GENERAL");
 				}				
 //			}
 			//Recupera los cpp

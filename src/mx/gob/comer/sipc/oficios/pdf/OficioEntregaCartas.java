@@ -31,7 +31,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 	
 	// Configuracion de fuentes
 	//private final Font ARIALBOLD10 = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
-	private final Font TIMESROMAN10 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN10BOLD = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
 	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08 = FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
@@ -65,7 +65,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		Image img1 = Image.getInstance(ata.getRutaMarcaAgua()); 
 		img1.setAlignment(Image.MIDDLE | Image.UNDERLYING); 
 		document.add(img1);
-		if(ata.getLstCartasV().size()>10){
+		if(ata.getLstCartasV().size()>8){
 			getCuerpo();
 			addEmptyLine(1);
 			getEmisor();
@@ -83,13 +83,13 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		
 		Paragraph pOficio = new Paragraph();
 		pOficio.setAlignment(Element.ALIGN_RIGHT);
-		pOficio.add(new Chunk("ANEXO AL OFICIO "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio(), TIMESROMAN10));
+		pOficio.add(new Chunk("ANEXO AL OFICIO "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio(), TIMESROMAN10BOLD));
 		pOficio.setSpacingAfter(10f);
 		document.add(pOficio);
 		
 		
 		pTitulo.setAlignment(Element.ALIGN_CENTER);
-		pTitulo.add(new Chunk("DETALLE DE CARTAS DE ADHESIÓN", TIMESROMAN10));
+		pTitulo.add(new Chunk("DETALLE DE CARTAS DE ADHESIÓN", TIMESROMAN10BOLD));
 		pTitulo.setSpacingAfter(10f);
 		document.add(pTitulo);
 		
@@ -140,7 +140,8 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			table1.setWidthPercentage(100);
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
-			enunciado.add(new Chunk("ASERCA\nCoordinación General de Comercialización\n"+ata.getDireccionEmisor(), TIMESROMAN12));
+			enunciado.add(new Chunk("A S E R C A\nCoordinación General de Comercialización", TIMESROMAN10BOLD));
+			enunciado.add(new Chunk("\n"+ata.getDireccionEmisor(), TIMESROMAN10NORMAL));
 			enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 			cell =	createCell(null, 0, 2, 1, sagarpa);
 			table1.addCell(cell);
@@ -170,6 +171,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 
 		parrafo= new Paragraph("Me refiero al "+ata.getNombrePrograma()+".", TIMESROMAN12);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 		addEmptyLine(1);
 		StringBuilder texto = new StringBuilder();
@@ -177,11 +179,12 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			 .append("firmadas por las partes que en ellas intervienen de los participantes que acontinuación se indican.");
 		parrafo = new Paragraph(texto.toString(), TIMESROMAN12);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 		addEmptyLine(1);	
 		
 		pTitulo.setAlignment(Element.ALIGN_CENTER);
-		pTitulo.add(new Chunk("DETALLE DE CARTAS DE ADHESIÓN", TIMESROMAN10));
+		pTitulo.add(new Chunk("DETALLE DE CARTAS DE ADHESIÓN", TIMESROMAN10BOLD));
 		pTitulo.setSpacingAfter(10f);
 		document.add(pTitulo);
 		
@@ -198,7 +201,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		cell = new PdfPCell(parrafo);
 		cell =createCell(parrafo, 0, 1, 11);
 		t.addCell(cell);
-		parrafo =  new Paragraph("Carta de Adhesión", TIMESROMAN08);
+		parrafo =  new Paragraph("Carta de Adhesión", TIMESROMAN08); 
 		cell = new PdfPCell(parrafo);
 		cell =createCell(parrafo, 0, 1, 2);
 		t.addCell(cell);		
@@ -228,6 +231,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 	private void getCuerpo() throws DocumentException{
 		parrafo= new Paragraph("Me refiero al "+ata.getNombrePrograma()+".", TIMESROMAN12);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 		addEmptyLine(1);
 		StringBuilder texto = new StringBuilder();
@@ -235,6 +239,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			 .append("firmadas por las partes que en ellas intervienen de los participantes que acontinuación se indican.");
 		parrafo = new Paragraph(texto.toString(), TIMESROMAN12);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 		addEmptyLine(1);
 		parrafo = new Paragraph("Sin más por el momento reciba un cordial saludo.", TIMESROMAN12);
@@ -242,14 +247,14 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 	}
 
 	private void getEmisor() throws DocumentException {
-		parrafo = new Paragraph("A T E N T A M E N T E", TIMESROMAN12);
+		parrafo = new Paragraph("A T E N T A M E N T E", TIMESROMAN10BOLD);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);	
-		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMAN12);
+		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMAN10BOLD);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
 		addEmptyLine(3);
-		parrafo = new Paragraph(ata.getEmisor().getNombre(), TIMESROMAN12);
+		parrafo = new Paragraph(ata.getEmisor().getNombre(), TIMESROMAN10BOLD);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
 	}
