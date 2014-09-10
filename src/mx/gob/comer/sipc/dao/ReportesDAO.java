@@ -281,6 +281,7 @@ public class ReportesDAO {
 		String condicionFechaPago="";
 		String condicionEstado="";
 		String condicionCultivo="";
+		String condicionVariedad="";
 		String condicionBodega="";
 		
 		StringBuilder sqlTramitados = new StringBuilder();
@@ -436,6 +437,10 @@ public class ReportesDAO {
 						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";						
+					}else{
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";	
 					}
 				} else {
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -485,6 +490,10 @@ public class ReportesDAO {
 						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
 						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
 						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+					}else{
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
 					}
 				} else {				
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps, pagos_detalle pd ";
@@ -514,6 +523,10 @@ public class ReportesDAO {
 					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+				}else{
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -561,6 +574,10 @@ public class ReportesDAO {
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+				}else{
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}
 			} else {							
 				selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -575,6 +592,47 @@ public class ReportesDAO {
 			if(idBodega > 0){
 				condicionBodega +=" and t.id_bodega = "+idBodega+" ";
 			}
+			
+			if(variedad > 0){				
+				elementSelect[agrupacionVariedad]=" t.id_variedad, t.variedad,";
+				elementGroupBy[agrupacionVariedad]=" t.id_variedad, t.variedad,";
+				elementOrderBy[agrupacionVariedad]=" t.variedad,";
+				condicionBodega += " and coalesce(pd.id_variedad,0)=t.id_variedad ";
+				if(idVariedad > 0){
+					condicionBodega +=" and t.id_variedad = "+idVariedad+" ";
+				}
+			}
+
+		}else if(variedad != 0){
+			if(tipoReporte == 1){
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){					
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+				}else{
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+				}
+			} else {							
+				selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
+				selectVolumen="(select coalesce(sum(pd.volumen),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
+				selectImporte="(select coalesce(sum(pd.importe),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
+			}
+			
+			elementSelect[agrupacionVariedad]=" t.id_variedad, t.variedad,";
+			elementGroupBy[agrupacionVariedad]=" t.id_variedad, t.variedad,";
+			elementOrderBy[agrupacionVariedad]=" t.variedad,";
+			condicionVariedad += "ps.id_pago = pd.id_pago and coalesce(pd.id_variedad,0)=t.id_variedad ";
+			
+			if(idVariedad > 0){
+				condicionVariedad +=" and t.id_variedad = "+idVariedad+" ";
+			}
+			
 		}
 		
 		for(int i=0; i<elementSelect.length;i++){
@@ -644,7 +702,35 @@ public class ReportesDAO {
 					sqlVolumenTramitados.append(condicionEstado);
 					sqlImporteTramitados.append(condicionEstado);
 				}				
-			} else {
+			} else if(variedad != 0){
+				sqlTramitados.append(selectCount+condicionVariedad);
+				sqlVolumenTramitados.append(selectVolumen+condicionVariedad);
+				sqlImporteTramitados.append(selectImporte+condicionVariedad);
+				
+				sqlTramitados.append(" where ps.id_oficio is not null ");
+				sqlVolumenTramitados.append(" where ps.id_oficio is not null ");
+				sqlImporteTramitados.append(" where ps.id_oficio is not null ");
+				if(programa != 0){
+					sqlTramitados.append(condicionPrograma);
+					sqlVolumenTramitados.append(condicionPrograma);
+					sqlImporteTramitados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlTramitados.append(condicionComprador);
+					sqlVolumenTramitados.append(condicionComprador);
+					sqlImporteTramitados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlTramitados.append(condicionOficio);
+					sqlVolumenTramitados.append(condicionOficio);
+					sqlImporteTramitados.append(condicionOficio);
+				}
+				if(estado != 0){
+					sqlTramitados.append(condicionEstado);
+					sqlVolumenTramitados.append(condicionEstado);
+					sqlImporteTramitados.append(condicionEstado);
+				}
+			}else {
 				sqlTramitados.append(selectCount+" where ps.id_oficio is not null ");
 				sqlVolumenTramitados.append(selectVolumen+" where ps.id_oficio is not null ");
 				sqlImporteTramitados.append(selectImporte+" where ps.id_oficio is not null ");
@@ -688,7 +774,13 @@ public class ReportesDAO {
 					sqlTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");					
 					sqlVolumenTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
 					sqlImporteTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
-				}				
+				}else{
+					if(estado != 0 || cultivo > 0 || variedad > 0 || bodega > 0 ){
+						sqlTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio ");					
+						sqlVolumenTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio ");
+						sqlImporteTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio");
+					}					
+				}
 			} else {
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
 					sqlTramitados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
