@@ -207,9 +207,10 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		    		//consecutivoArchivo = archivosPagosDAO.getMaximoConsecutivoArchivoPagos(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fecha));
 		
 		    		// Obtiene secuencia inicial y final del ultimo archivo de pagos generado en el dia 
-		    		secuenciaFinalMaximoArchivo = archivosPagosDAO.getSecuenciaFinalMaximoArchivo(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fecha));
+		    		secuenciaFinalMaximoArchivo = archivosPagosDAO.getSecuenciaFinalMaximoArchivo(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fechaPresentacion));
 		    		secuenciaInicialArchivo = secuenciaFinalMaximoArchivo + 1;
 		    		j = secuenciaInicialArchivo;
+		    		System.out.println("Secuencia archivo despues de consultar "+j);
 		    		//secuencia = new Long(1);
 		    		
 		    		numSecuencia = 1;
@@ -259,6 +260,7 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		    			}
 		
 		    			// Clave de Rastreo
+		    			System.out.println("secuencia archivo j"+j);
 		    			String claveRastreo = obtenClaveRastreo(ramoGenerador, oficinaGeneradora, j, fechaAplicacionPago, fechaPresentacion);
 		    			for(;claveRastreo.length()<30;){
 		    				claveRastreo+=" ";
