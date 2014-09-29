@@ -1097,6 +1097,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 						aca.setIdPrograma(idPrograma);
 						if(idCriterioPago == 1 || idCriterioPago == 3){
 							aca.setVolumen(capVolumen[i]);
+							aca.setImporte(capImporte[i]);
 							aca.setCuota(capCuota[i]);
 						}else if(idCriterioPago==2){						
 							aca.setImporte(capImporte[i]);
