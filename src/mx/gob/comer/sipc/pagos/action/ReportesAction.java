@@ -23,7 +23,6 @@ import mx.gob.comer.sipc.vistas.domain.ReporteDetConcentradoPagosEtapasV;
 import mx.gob.comer.sipc.vistas.domain.ReporteDetConcentradoPagosV;
 import mx.gob.comer.sipc.vistas.domain.RespuestaPagosV;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;
 import org.hibernate.JDBCException;
@@ -503,11 +502,37 @@ public class ReportesAction extends ActionSupport implements SessionAware,  Serv
 				}
 
 				// Volumen Subtotal
-		        sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre()+p.getVolumen4toTrimestre()), cf));
-		        sumaSubtotalVolumenTrimestres+=p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre()+p.getVolumen4toTrimestre();
+				if(trimestre==0){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen1erTrimestre()), cf));
+					sumaSubtotalVolumenTrimestres+=p.getVolumen1erTrimestre();
+				}else if(trimestre==1){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()), cf));
+					sumaSubtotalVolumenTrimestres+=p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre();
+				}else if(trimestre==2){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre()), cf));
+					sumaSubtotalVolumenTrimestres+=p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre();
+				}else if(trimestre==3){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre()+p.getVolumen4toTrimestre()), cf));
+					sumaSubtotalVolumenTrimestres+=p.getVolumen1erTrimestre()+p.getVolumen2doTrimestre()+p.getVolumen3erTrimestre()+p.getVolumen4toTrimestre();
+				}
+
+		       
 				// Importe Subtotal
-				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre()+p.getImporte4toTrimestre()), cf));
-				sumaSubtotalImporteTrimestres+=p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre()+p.getImporte4toTrimestre();
+		        if(trimestre==0){
+		        	sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getImporte1erTrimestre()), cf));
+		        	sumaSubtotalImporteTrimestres+=p.getImporte1erTrimestre();
+				}else if(trimestre==1){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getImporte1erTrimestre()+p.getImporte2doTrimestre()), cf));
+					sumaSubtotalImporteTrimestres+=p.getImporte1erTrimestre()+p.getImporte2doTrimestre();
+				}else if(trimestre==2){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre()), cf));
+					sumaSubtotalImporteTrimestres+=p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre();
+				}else if(trimestre==3){
+					sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre()+p.getImporte4toTrimestre()), cf));
+					sumaSubtotalImporteTrimestres+=p.getImporte1erTrimestre()+p.getImporte2doTrimestre()+p.getImporte3erTrimestre()+p.getImporte4toTrimestre();
+				}
+				
+				
 		        // Estados
 				sheet.addCell( new Label(col++,row, p.getEstados(), cf));
 		        // Ciclo
