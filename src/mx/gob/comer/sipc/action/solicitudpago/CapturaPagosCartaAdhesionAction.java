@@ -971,7 +971,11 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 							totalVolApoEdoCulVarCA += Double.parseDouble(item); 
 						}//item diferente de null, de vacio y mayor a cero
 					}//end mientras it.hasNext()	
-					if(!totalVolApoEdoCulVarCA.equals(volumenPago)){
+					
+					System.out.println("totalVolApoEdoCulVarCA "+totalVolApoEdoCulVarCA);
+					totalVolApoEdoCulVarCA = Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(totalVolApoEdoCulVarCA));
+					if(totalVolApoEdoCulVarCA.doubleValue() != volumenPago.doubleValue()){
+					//if(!TextUtil.formateaNumeroComoVolumenSinComas(totalVolApoEdoCulVarCA).equals(volumenPago)){
 						errorSistema = 1; 
 						addActionError("El total volumen a apoyar: "+totalVolApoEdoCulVarCA+
 								   " no puede ser mayor al volumen pagado: "+volumenPago+
