@@ -227,4 +227,19 @@ public class Utilerias implements ServletResponseAware {
 		
 		return bandera;
 	}
+	
+	public static int borrarArchivo(String ruta) throws Exception{
+		int error = 0;
+		File f = new File(ruta);
+		if(f.exists()){
+			if(!f.delete()){
+				AppLogger.error("errores","Error al eliminar el archivo: "+ruta);
+				error = 1;
+			}else{
+				AppLogger.info("app","Se borro archivo: "+ruta);
+			}
+		}
+		
+		return error;
+	}
 }

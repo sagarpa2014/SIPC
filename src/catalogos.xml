@@ -253,14 +253,55 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
         	<result name="success" type="tiles">busquedaBodegas</result>
             <result name="input" type="tiles">busquedaBodegas</result>
-        </action>
-        
+        </action>        
         <action name="ejecutaBusquedaBodegas" method="ejecutaBusquedaBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
 			<interceptor-ref name="chksession"/> 
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
         	<result name="success" type="tiles">busquedaBodegas</result>
             <result name="input" type="tiles">busquedaBodegas</result>
         </action>
+         <action name="registraBodega" method="registraBodega" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/respuestaDetalleBodegas.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/respuestaDetalleBodegas.jsp</result>
+        </action>
+        <action name="validaComposicionClaveBodega" method="validaComposicionClaveBodega" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/ubicacionBodegas.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/ubicacionBodegas.jsp</result>
+        </action>
+        <action name="recuperaMunicipioByEdoBodegas" method="recuperaMunicipioByEdoBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/municipios.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/municipios.jsp</result>
+        </action>
+         <action name="recuperaLocalidadesByMunicipioBodegas" method="recuperaLocalidadesByMunicipioBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/localidades.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/localidades.jsp</result>
+        </action>
+        <action name="recuperaLocalidadesByMunicipioBodegas" method="recuperaLocalidadesByMunicipioBodegas" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/localidades.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/localidades.jsp</result>
+        </action>
+        
+        <action name="recuperaDatosRepresentanteBodega" method="recuperaDatosRepresentanteBodega" class="mx.gob.comer.sipc.catalogos.action.BodegasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/bodegas/respuestaDatosRepresentate.jsp</result>
+            <result name="input" >/WEB-INF/paginas/bodegas/respuestaDatosRepresentate.jsp</result>
+        </action>
+        
+       
         
 		<!-- INTERPRETE SQL -->
         <action name="ejecutaSQL" method="ejecutaSQL" class="mx.gob.comer.sipc.action.InterpreteSQLAction">

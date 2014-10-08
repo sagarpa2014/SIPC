@@ -31,6 +31,7 @@ public class Usuarios {
 	private String materno;
 	private Integer idArea;
 	private Integer idEspecialista;
+	private String area;
 
 	
 	public Usuarios(){
@@ -120,6 +121,16 @@ public class Usuarios {
 	
 	public void setIdEspecialista(Integer idEspecialista) {
 		this.idEspecialista = idEspecialista;
+	}
+
+
+	@Column(name = "area")
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
 	}	 
 	  
 	

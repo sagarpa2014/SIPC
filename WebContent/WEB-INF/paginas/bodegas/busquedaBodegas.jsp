@@ -43,7 +43,7 @@
 						<display:column  property="nombre" title="Nombre Bodega"/>						
 						<display:column  property="direccion" title="Direcci&oacute;n"/>
 						<display:column title="Ver Detalle"  headerClass="sortable">
-							<a href='<s:url value="/catalogos/detalleBodegas?claveBodega=%{#attr.r.claveBodega}"/>' class="botonVerDetalles" title="" ></a>
+							<a href='<s:url value="/catalogos/detalleBodegas?claveBodega=%{#attr.r.claveBodega}&registrar=2"/>' class="botonVerDetalles" title="" ></a>
 			 			</display:column>			 			
 					</display:table>
 				</div>

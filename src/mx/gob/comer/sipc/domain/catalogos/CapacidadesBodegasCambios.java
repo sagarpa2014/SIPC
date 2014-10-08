@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "capacidades_bodegas")
-public class CapacidadesBodegas {
+@Table(name = "capacidades_bodegas_cambios")
+public class CapacidadesBodegasCambios {
 	
 	private String claveBodega;
 	private Double capacidadBodega;

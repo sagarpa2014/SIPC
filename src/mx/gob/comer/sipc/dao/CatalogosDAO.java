@@ -2,6 +2,11 @@ package mx.gob.comer.sipc.dao;
 import java.util.List;
 
 
+
+
+
+
+
 import mx.gob.comer.sipc.domain.AuditoresExternos;
 import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Comprador;
@@ -25,11 +30,13 @@ import mx.gob.comer.sipc.domain.ProgramaComprador;
 import mx.gob.comer.sipc.domain.Usuarios;
 import mx.gob.comer.sipc.domain.catalogos.AlmacenGeneralDeposito;
 import mx.gob.comer.sipc.domain.catalogos.AreasResponsables;
+import mx.gob.comer.sipc.domain.catalogos.BodegaUso;
 import mx.gob.comer.sipc.domain.catalogos.Bodegas;
 import mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegas;
 import mx.gob.comer.sipc.domain.catalogos.Ciclo;
 import mx.gob.comer.sipc.domain.catalogos.Componente;
 import mx.gob.comer.sipc.domain.catalogos.CriterioPago;
+import mx.gob.comer.sipc.domain.catalogos.Ejido;
 import mx.gob.comer.sipc.domain.catalogos.Especialista;
 import mx.gob.comer.sipc.domain.catalogos.EstadosCivil;
 import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
@@ -47,8 +54,14 @@ import mx.gob.comer.sipc.vistas.domain.*;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
+
+
+
+
 
 
 
@@ -1280,8 +1293,12 @@ public class CatalogosDAO {
         
 	}	
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<RepresentanteLegalV> consultaRepresentanteLegalV(long idRepresentante)throws JDBCException {
+		return consultaRepresentanteLegalV(idRepresentante, null);
+	}
+	@SuppressWarnings("unchecked")
+	public List<RepresentanteLegalV> consultaRepresentanteLegalV(long idRepresentante, String rfc)throws JDBCException {
 		StringBuilder consulta = new StringBuilder();
 
 		List<RepresentanteLegalV> lst = null;
@@ -1289,6 +1306,13 @@ public class CatalogosDAO {
         	consulta.append("where idRepresentante = ").append(idRepresentante);
         }
         
+        if (rfc != null && !rfc.isEmpty()) {
+			if (consulta.length() > 0) {
+				consulta.append(" and rfc ='").append(rfc).append("' ");
+			} else {
+				consulta.append(" where rfc ='").append(rfc).append("' ");
+			}
+		}
         consulta.insert(0, "From RepresentanteLegalV ").append("order by nombre");
 		lst = session.createQuery(consulta.toString()).list();
 	
@@ -1379,6 +1403,8 @@ public class CatalogosDAO {
 		return lst;
 		
 	}
+	
+	
 	
 	public List<ProgramaCartasV> consultaCarta(String carta) throws Exception,JDBCException {
 		return consultaCarta(0, 0, carta, null);
@@ -1732,7 +1758,99 @@ public class CatalogosDAO {
 
 		return lst;
 	}
-
-
+	
+	//consulta catalogo de caders
+	@SuppressWarnings("unchecked")
+	public List<CadersV> consultaCadersV(long idCader, int idEstado, long ddr, long cader) throws Exception, JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		
+		List<CadersV> lst=null;
+		
+		if (idCader != 0 && idCader != -1) {
+			consulta.append("where idCader = ").append(idCader);
+		}
+		
+		if(idEstado != 0 && idEstado != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idEstado =").append(idEstado);
+			}else{
+				consulta.append("where idEstado =").append(idEstado);
+			}
+		}
+		
+		if(ddr != 0 && ddr != -1){
+			if(consulta.length()>0){
+				consulta.append(" and ddr =").append(ddr);
+			}else{
+				consulta.append("where ddr =").append(ddr);
+			}
+		}
+		
+		if(cader != 0 && cader!= -1){
+			if(consulta.length()>0){
+				consulta.append(" and cader =").append(cader);
+			}else{
+				consulta.append("where cader =").append(cader);
+			}
+		}
+		consulta.insert(0, "From CadersV ");
+		lst = session.createQuery(consulta.toString()).list();
+				
+		return lst;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Ejido> consultaEjido(long idEjido, int idEstado){
+		List<Ejido> lst=null;
+		StringBuilder consulta= new StringBuilder();
+		
+		if (idEjido != 0 && idEjido != -1) {
+			consulta.append("where idEjido = ").append(idEjido);
+		}
+		
+		if(idEstado != 0 && idEstado != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idEstado =").append(idEstado);
+			}else{
+				consulta.append("where idEstado =").append(idEstado);
+			}
+		}
+		
+		consulta.insert(0, "From Ejido ");
+		lst = session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<BodegaUso> consultaBodegaUsuo(String clave){
+		List<BodegaUso> lst=null;
+		StringBuilder consulta= new StringBuilder();
+		
+		if (clave != null  && !clave.isEmpty()) {
+			consulta.append("where clave = '").append(clave).append("'");
+		}	
+		
+		consulta.insert(0, "From BodegaUso ");
+		lst = session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Estado> consultaEstado(String idEstado) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Estado> lst=null;
+		if (idEstado != null && !idEstado.equals("")){
+			consulta.append("where idEstado in (").append(idEstado).append(")");
+		}
+		consulta.insert(0, "From Estado ").append(" ORDER BY nombre");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}	
 	
 }

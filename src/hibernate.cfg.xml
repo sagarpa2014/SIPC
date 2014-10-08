@@ -178,6 +178,13 @@
  		<!-- Rendicion de Cuentas -->
  		<mapping class="mx.gob.comer.sipc.vistas.domain.RendicionCuentasV"/>
  		
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.BodegasCambios"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegasCambios"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.CadersV"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Ejido"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.BodegaUso"/>
+ 		
+ 		
  		
  		 		
 	</session-factory>

@@ -31,6 +31,6 @@ $(document).ready(function(){
 	}); 
 </script>
 <div id="detalleBodegas">
-	<s:include value="/WEB-INF/paginas/bodegas/detalleBodegas.jsp"/>
+	<s:include value="detalleBodegas.jsp"/>
 </div>
 

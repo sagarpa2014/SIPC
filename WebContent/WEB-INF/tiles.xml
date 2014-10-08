@@ -264,9 +264,8 @@
 		<put-attribute name="body" value="/WEB-INF/paginas/bodegas/busquedaBodegas.jsp" />
 	</definition>
 	<definition name="detalleBodegas" extends="masterTemplate">
-		<put-attribute name="body" value="/WEB-INF/paginas/bodegas/detalleBodegas.jsp"/>
+		<put-attribute name="body" value="/WEB-INF/paginas/bodegas/contenidoBodegas.jsp"/>
 	</definition>
-	
 	<!-- FINIQUITO -->
 	<definition name="finiquito" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/documentos/finiquito.jsp"/>

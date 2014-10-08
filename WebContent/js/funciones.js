@@ -261,3 +261,97 @@ function cerrarErrorOficio(){
 		$("#reporte2").fadeIn('3000');	
 	});
 }
+
+function convierteAmayuscula(id){
+	var tmp = $('#'+id).val().toUpperCase(); 
+	$('#'+id).val(tmp);
+}
+
+function validarVolumen(volumen, id, msj){	
+	if(volumen!=null && volumen !=''){		
+		var patron =/^\d{1,7}((\.\d{1,3})|(\.))?$/;
+		if (!volumen.match(patron)){	
+			if(id!=0){
+				$('#'+id).val(null);
+			}
+			if(msj==1){
+				$('#dialogo_1').html('El valor capturado es incorrecto, se deben capturar decimales y aceptan hasta 7 digitos a la izquierda y 3 máximo a la derecha');
+				abrirDialogo();
+			}
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+}
+
+function validarDigitos(volumen, id, msj){	
+	if(volumen!=null && volumen !=''){		
+		var patron =/^\d{1,4}$/;
+		if (!volumen.match(patron)){	
+			if(id!=0){
+				$('#'+id).val(null);
+			}
+			if(msj==1){
+				$('#dialogo_1').html('El valor capturado es incorrecto, se deben capturar solo numeros');
+				abrirDialogo();
+				return false;
+			}
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+}
+
+function getTotalAlmacenamiento(volumen, id, msj){
+	if(volumen!=null && volumen!=''){
+		if(volumen>0){
+			var v = validarVolumen(volumen, id, msj);
+			if(v==0){
+				return false;
+			}
+		} else {
+			$('#'+id).val(0);
+		}
+	
+		var totalVolumenAlmacenamiento = 0;	
+		var capacidadBodega =  $('#capacidadBodega').val();
+		var capacidadTechada =  $('#capacidadTechada').val();
+		var capacidadSilos =  $('#capacidadSilos').val();
+		var intemperie =  $('#intemperie').val();
+		if(capacidadBodega!=null && capacidadBodega !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadBodega));	
+		}	
+		if(capacidadTechada!=null && capacidadTechada !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadTechada));	 
+		}	
+		if(capacidadSilos!=null && capacidadSilos !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadSilos));	
+		}
+		if(intemperie!=null && intemperie !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(intemperie));	
+		}
+		$('#totalAlmacenamiento').val(totalVolumenAlmacenamiento.toFixed(3));
+	} else {
+		$('#'+id).val(null);
+		var totalVolumenAlmacenamiento = 0;	
+		var capacidadBodega =  $('#capacidadBodega').val();
+		var capacidadTechada =  $('#capacidadTechada').val();
+		var capacidadSilos =  $('#capacidadSilos').val();
+		var intemperie =  $('#intemperie').val();
+		if(capacidadBodega!=null && capacidadBodega !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadBodega));	
+		}	
+		if(capacidadTechada!=null && capacidadTechada !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadTechada));	 
+		}	
+		if(capacidadSilos!=null && capacidadSilos !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(capacidadSilos));	
+		}
+		if(intemperie!=null && intemperie !=''){
+			totalVolumenAlmacenamiento = (totalVolumenAlmacenamiento+parseFloat(intemperie));	
+		}
+		$('#totalAlmacenamiento').val(totalVolumenAlmacenamiento.toFixed(3));		
+	}
+}

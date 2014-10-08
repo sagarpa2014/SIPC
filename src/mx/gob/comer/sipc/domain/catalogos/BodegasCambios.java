@@ -10,8 +10,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "bodegas")
-public class Bodegas {
+@Table(name = "bodegas_cambios")
+public class BodegasCambios {
 	
 	private Integer idBodega;
 	private String claveBodega;

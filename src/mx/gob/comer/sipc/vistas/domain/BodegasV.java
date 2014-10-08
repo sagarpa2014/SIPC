@@ -26,7 +26,7 @@ public class BodegasV {
 	private String nombreMunicipio;
 	private Integer ejido;
 	private String nombreEjido;
-	private String rfcPropietario;
+//	private String rfcPropietario;
 	private Date fechaRegistro;
 	private Double latitudGrados;
 	private Double latitudMinutos;
@@ -34,7 +34,7 @@ public class BodegasV {
 	private Double longitudGrados;
 	private Double longitudMinutos;
 	private Double longitudSegundos;
-	private Double clasificacion;
+	private Integer clasificacion;
 	private String rfcBodega;
 	private String nombre;
 	private String direccion;
@@ -50,40 +50,48 @@ public class BodegasV {
 	private String uso1;
 	private String uso2;
 	private String uso3;
-	private String capacidadBodega;
+	private Double capacidadBodega;
 	private Integer noSilos;
-	private String capacidadSilos;
-	private String capacidadIntemperie;
-	private String capacidadTechada;
-	private String totalAlmacenamiento;
+	private Double capacidadSilos;
+	private Double capacidadIntemperie;
+	private Double capacidadTechada;
+	private Double totalAlmacenamiento;
 	private Integer numRampas;
-	private String capacidadRampas;
+	private Double capacidadRampas;
 	private Integer numSecadoras;
-	private String capacidadSecado;
+	private Double capacidadSecado;
 	private Integer numCargas;
-	private String capacidadCargas;
+	private Double capacidadCargas;
 	private String piso;
-	private String capacidadPiso;
+	private Double capacidadPiso;
 	private String ffcc;
-	private String capacidadFfcc;
+	private Double capacidadFfcc;
 	private String espuelaFfcc;
-	private String capacidadEspuela;
-	private String capacidadRecepcion;
-	private String capacidadEmbarque;
+	private Double capacidadEspuela;
+	private Double capacidadRecepcion;
+	private Double capacidadEmbarque;
+	private Double capacidadCamionera;
+	private String camionera;
 	private String equipoAnalisis;
 	private String aplicaNormasCalidad;
 	private String observaciones;
-	private String nombrePropietario;
-	private String paternoPropietario;
-	private String maternoPropietario;
-	private String curpPropietario;
-	private String callePropietario;
-	private String localidadPropietario;
-	private String cpPropietario;
-	private String telefonoPropietario;
-	private String faxPropietario;
-	private String correoPropietario;	
-	       
+	private String domicilioFiscal;
+	private String calle;
+	private String numeroBodega;
+	private String personaAutorizada1;
+	private String puestoPersonaAutorizada1;
+	private String personaAutorizada2;
+	private String puestoPersonaAutorizada2;
+	private String rutaCroquisBodega;
+	private String nombreArchivoCroquis;
+	private Integer idRepresentante;
+	private String rfcReplegal;
+	private Integer idLocalidadBodega;
+	private Integer idEstadoDomFiscal;
+	private Integer claveMunicipioDomFiscal;
+	private Date fechaCalibracion;
+	
+	
 	@Id
 	@Column(name = "id_bodega")	
 	public Integer getIdBodega() {
@@ -124,9 +132,6 @@ public class BodegasV {
 	public void setNombreEstado(String nombreEstado) {
 		this.nombreEstado = nombreEstado;
 	}
-	
-	
-	
 	
 	@Column(name = "ddr")
 	public Integer getDdr() {
@@ -189,13 +194,13 @@ public class BodegasV {
 	public void setNombreEjido(String nombreEjido) {
 		this.nombreEjido = nombreEjido;
 	}
-	@Column(name = "rfc_propietario")
-	public String getRfcPropietario() {
-		return rfcPropietario;
-	}
-	public void setRfcPropietario(String rfcPropietario) {
-		this.rfcPropietario = rfcPropietario;
-	}
+//	@Column(name = "rfc_propietario")
+//	public String getRfcPropietario() {
+//		return rfcPropietario;
+//	}
+//	public void setRfcPropietario(String rfcPropietario) {
+//		this.rfcPropietario = rfcPropietario;
+//	}
 	
 	@Column(name = "fecha_registro")
 	public Date getFechaRegistro() {
@@ -254,10 +259,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "clasificacion")
-	public Double getClasificacion() {
+	public Integer getClasificacion() {
 		return clasificacion;
 	}
-	public void setClasificacion(Double clasificacion) {
+	public void setClasificacion(Integer clasificacion) {
 		this.clasificacion = clasificacion;
 	}
 	
@@ -383,10 +388,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_bodega")
-	public String getCapacidadBodega() {
+	public Double getCapacidadBodega() {
 		return capacidadBodega;
 	}
-	public void setCapacidadBodega(String capacidadBodega) {
+	public void setCapacidadBodega(Double capacidadBodega) {
 		this.capacidadBodega = capacidadBodega;
 	}
 	
@@ -399,34 +404,34 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_silos")
-	public String getCapacidadSilos() {
+	public Double getCapacidadSilos() {
 		return capacidadSilos;
 	}
-	public void setCapacidadSilos(String capacidadSilos) {
+	public void setCapacidadSilos(Double capacidadSilos) {
 		this.capacidadSilos = capacidadSilos;
 	}
 	
 	@Column(name = "capacidad_intemperie")
-	public String getCapacidadIntemperie() {
+	public Double getCapacidadIntemperie() {
 		return capacidadIntemperie;
 	}
-	public void setCapacidadIntemperie(String capacidadIntemperie) {
+	public void setCapacidadIntemperie(Double capacidadIntemperie) {
 		this.capacidadIntemperie = capacidadIntemperie;
 	}
 	
 	@Column(name = "capacidad_techada")
-	public String getCapacidadTechada() {
+	public Double getCapacidadTechada() {
 		return capacidadTechada;
 	}
-	public void setCapacidadTechada(String capacidadTechada) {
+	public void setCapacidadTechada(Double capacidadTechada) {
 		this.capacidadTechada = capacidadTechada;
 	}
 	
 	@Column(name = "total_almacenamiento")
-	public String getTotalAlmacenamiento() {
+	public Double getTotalAlmacenamiento() {
 		return totalAlmacenamiento;
 	}
-	public void setTotalAlmacenamiento(String totalAlmacenamiento) {
+	public void setTotalAlmacenamiento(Double totalAlmacenamiento) {
 		this.totalAlmacenamiento = totalAlmacenamiento;
 	}
 	
@@ -439,10 +444,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_rampas")
-	public String getCapacidadRampas() {
+	public Double getCapacidadRampas() {
 		return capacidadRampas;
 	}
-	public void setCapacidadRampas(String capacidadRampas) {
+	public void setCapacidadRampas(Double capacidadRampas) {
 		this.capacidadRampas = capacidadRampas;
 	}
 	
@@ -455,10 +460,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_secado")
-	public String getCapacidadSecado() {
+	public Double getCapacidadSecado() {
 		return capacidadSecado;
 	}
-	public void setCapacidadSecado(String capacidadSecado) {
+	public void setCapacidadSecado(Double capacidadSecado) {
 		this.capacidadSecado = capacidadSecado;
 	}
 	
@@ -471,10 +476,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_cargas")
-	public String getCapacidadCargas() {
+	public Double getCapacidadCargas() {
 		return capacidadCargas;
 	}
-	public void setCapacidadCargas(String capacidadCargas) {
+	public void setCapacidadCargas(Double capacidadCargas) {
 		this.capacidadCargas = capacidadCargas;
 	}
 	
@@ -487,10 +492,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_piso")
-	public String getCapacidadPiso() {
+	public Double getCapacidadPiso() {
 		return capacidadPiso;
 	}
-	public void setCapacidadPiso(String capacidadPiso) {
+	public void setCapacidadPiso(Double capacidadPiso) {
 		this.capacidadPiso = capacidadPiso;
 	}
 	
@@ -503,10 +508,10 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_ffcc")
-	public String getCapacidadFfcc() {
+	public Double getCapacidadFfcc() {
 		return capacidadFfcc;
 	}
-	public void setCapacidadFfcc(String capacidadFfcc) {
+	public void setCapacidadFfcc(Double capacidadFfcc) {
 		this.capacidadFfcc = capacidadFfcc;
 	}
 	
@@ -519,29 +524,44 @@ public class BodegasV {
 	}
 	
 	@Column(name = "capacidad_espuela")
-	public String getCapacidadEspuela() {
+	public Double getCapacidadEspuela() {
 		return capacidadEspuela;
 	}
-	public void setCapacidadEspuela(String capacidadEspuela) {
+	public void setCapacidadEspuela(Double capacidadEspuela) {
 		this.capacidadEspuela = capacidadEspuela;
 	}
 	
 	@Column(name = "capacidad_recepcion")
-	public String getCapacidadRecepcion() {
+	public Double getCapacidadRecepcion() {
 		return capacidadRecepcion;
 	}
-	public void setCapacidadRecepcion(String capacidadRecepcion) {
+	public void setCapacidadRecepcion(Double capacidadRecepcion) {
 		this.capacidadRecepcion = capacidadRecepcion;
 	}
 	
 	@Column(name = "capacidad_embarque")
-	public String getCapacidadEmbarque() {
+	public Double getCapacidadEmbarque() {
 		return capacidadEmbarque;
 	}
-	public void setCapacidadEmbarque(String capacidadEmbarque) {
+	public void setCapacidadEmbarque(Double capacidadEmbarque) {
 		this.capacidadEmbarque = capacidadEmbarque;
 	}
+
+	@Column(name = "capacidad_camionera")
+	public Double getCapacidadCamionera() {
+		return capacidadCamionera;
+	}
+	public void setCapacidadCamionera(Double capacidadCamionera) {
+		this.capacidadCamionera = capacidadCamionera;
+	}
 	
+	@Column(name = "camionera")
+	public String getCamionera() {
+		return camionera;
+	}
+	public void setCamionera(String camionera) {
+		this.camionera = camionera;
+	}
 	@Column(name = "equipo_analisis")
 	public String getEquipoAnalisis() {
 		return equipoAnalisis;
@@ -566,83 +586,126 @@ public class BodegasV {
 		this.observaciones = observaciones;
 	}
 	
-	@Column(name = "nombre_prop")
-	public String getNombrePropietario() {
-		return nombrePropietario;
+	@Column(name = "domicilio_fiscal")
+	public String getDomicilioFiscal() {
+		return domicilioFiscal;
 	}
-	public void setNombrePropietario(String nombrePropietario) {
-		this.nombrePropietario = nombrePropietario;
-	}
-	
-	@Column(name = "paterno_prop")
-	public String getPaternoPropietario() {
-		return paternoPropietario;
-	}
-	public void setPaternoPropietario(String paternoPropietario) {
-		this.paternoPropietario = paternoPropietario;
+	public void setDomicilioFiscal(String domicilioFiscal) {
+		this.domicilioFiscal = domicilioFiscal;
 	}
 	
-	@Column(name = "materno_prop")
-	public String getMaternoPropietario() {
-		return maternoPropietario;
+	@Column(name = "calle_bodega")
+	public String getCalle() {
+		return calle;
 	}
-	public void setMaternoPropietario(String maternoPropietario) {
-		this.maternoPropietario = maternoPropietario;
-	}
-	
-	@Column(name = "curp_prop")
-	public String getCurpPropietario() {
-		return curpPropietario;
-	}
-	public void setCurpPropietario(String curpPropietario) {
-		this.curpPropietario = curpPropietario;
+	public void setCalle(String calle) {
+		this.calle = calle;
 	}
 	
-	@Column(name = "calle_prop")
-	public String getCallePropietario() {
-		return callePropietario;
+	@Column(name = "numero_bodega")
+	public String getNumeroBodega() {
+		return numeroBodega;
 	}
-	public void setCallePropietario(String callePropietario) {
-		this.callePropietario = callePropietario;
-	}
-	
-	@Column(name = "localidad_prop")
-	public String getLocalidadPropietario() {
-		return localidadPropietario;
-	}
-	public void setLocalidadPropietario(String localidadPropietario) {
-		this.localidadPropietario = localidadPropietario;
+	public void setNumeroBodega(String numeroBodega) {
+		this.numeroBodega = numeroBodega;
 	}
 	
-	@Column(name = "cp_prop")
-	public String getCpPropietario() {
-		return cpPropietario;
+	@Column(name = "persona_autorizada1")
+	public String getPersonaAutorizada1() {
+		return personaAutorizada1;
 	}
-	public void setCpPropietario(String cpPropietario) {
-		this.cpPropietario = cpPropietario;
-	}
-	
-	@Column(name = "telefono_prop")
-	public String getTelefonoPropietario() {
-		return telefonoPropietario;
-	}
-	public void setTelefonoPropietario(String telefonoPropietario) {
-		this.telefonoPropietario = telefonoPropietario;
+	public void setPersonaAutorizada1(String personaAutorizada1) {
+		this.personaAutorizada1 = personaAutorizada1;
 	}
 	
-	@Column(name = "fax_prop")
-	public String getFaxPropietario() {
-		return faxPropietario;
+	@Column(name = "puesto_persona_autorizada1")
+	public String getPuestoPersonaAutorizada1() {
+		return puestoPersonaAutorizada1;
 	}
-	public void setFaxPropietario(String faxPropietario) {
-		this.faxPropietario = faxPropietario;
+	public void setPuestoPersonaAutorizada1(String puestoPersonaAutorizada1) {
+		this.puestoPersonaAutorizada1 = puestoPersonaAutorizada1;
 	}
 	
-	@Column(name = "email_prop")
-	public String getCorreoPropietario() {
-		return correoPropietario;
+	@Column(name = "persona_autorizada2")
+	public String getPersonaAutorizada2() {
+		return personaAutorizada2;
 	}
-	public void setCorreoPropietario(String correoPropietario) {
-		this.correoPropietario = correoPropietario;
+	public void setPersonaAutorizada2(String personaAutorizada2) {
+		this.personaAutorizada2 = personaAutorizada2;
 	}
+	
+	@Column(name = "puesto_persona_autorizada2")
+	public String getPuestoPersonaAutorizada2() {
+		return puestoPersonaAutorizada2;
+	}
+	
+	public void setPuestoPersonaAutorizada2(String puestoPersonaAutorizada2) {
+		this.puestoPersonaAutorizada2 = puestoPersonaAutorizada2;
+	}
+	
+	@Column(name = "ruta_croquis_bodega")
+	public String getRutaCroquisBodega() {
+		return rutaCroquisBodega;
+	}
+	public void setRutaCroquisBodega(String rutaCroquisBodega) {
+		this.rutaCroquisBodega = rutaCroquisBodega;
+	}
+	
+	@Column(name = "nombre_archivo_croquis")
+	public String getNombreArchivoCroquis() {
+		return nombreArchivoCroquis;
+	}
+	public void setNombreArchivoCroquis(String nombreArchivoCroquis) {
+		this.nombreArchivoCroquis = nombreArchivoCroquis;
+	}
+
+	@Column(name = "id_representante")
+	public Integer getIdRepresentante() {
+		return idRepresentante;
+	}
+	public void setIdRepresentante(Integer idRepresentante) {
+		this.idRepresentante = idRepresentante;
+	}
+	@Column(name = "rfc_replegal")
+	public String getRfcReplegal() {
+		return rfcReplegal;
+	}
+	public void setRfcReplegal(String rfcReplegal) {
+		this.rfcReplegal = rfcReplegal;
+	}
+	
+	@Column(name = "id_localidad_bodega")
+	public Integer getIdLocalidadBodega() {
+		return idLocalidadBodega;
+	}
+	public void setIdLocalidadBodega(Integer idLocalidadBodega) {
+		this.idLocalidadBodega = idLocalidadBodega;
+	}
+	
+	
+	@Column(name = "id_estado_dom_fiscal")
+	public Integer getIdEstadoDomFiscal() {
+		return idEstadoDomFiscal;
+	}
+	public void setIdEstadoDomFiscal(Integer idEstadoDomFiscal) {
+		this.idEstadoDomFiscal = idEstadoDomFiscal;
+	}
+	
+	@Column(name = "clave_municipio_dom_fiscal")
+	public Integer getClaveMunicipioDomFiscal() {
+		return claveMunicipioDomFiscal;
+	}
+	public void setClaveMunicipioDomFiscal(Integer claveMunicipioDomFiscal) {
+		this.claveMunicipioDomFiscal = claveMunicipioDomFiscal;
+	}
+	
+	@Column(name = "fecha_calibracion")
+	public Date getFechaCalibracion() {
+		return fechaCalibracion;
+	}
+	public void setFechaCalibracion(Date fechaCalibracion) {
+		this.fechaCalibracion = fechaCalibracion;
+	}
+
+	
 }
