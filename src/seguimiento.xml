@@ -133,5 +133,11 @@
             <result name="input">/WEB-INF/paginas/seguimiento/variedad.jsp</result>
             <result name="success">/WEB-INF/paginas/seguimiento/variedad.jsp</result>
         </action>
+		<action name="eliminarSeguimiento" method="eliminarSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listSeguimiento</result>
+            <result name="input" type="tiles">listSeguimiento</result>
+        </action>          
     </package>
 </struts>

@@ -68,6 +68,9 @@
 					 	<display:column title="Editar"  headerClass="sortable">
 					 		<a href='<s:url value="/seguimiento/capSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}&registrar=2"/>' class="editar"></a>	 			 	
 					 	</display:column>
+					 	<display:column title="Eliminar"  headerClass="sortable">
+					 		<a href='<s:url value="/seguimiento/eliminarSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}"/>' class="borrar" title="" onclick="if (confirm('¿Esta seguro de eliminar registro?')){}else{return false;}"></a>	 			 	
+					 	</display:column>					 	
 				 	</s:if>
 				 </s:if>
 				 <s:if test="%{#session.idPerfil==12}"> <!-- DGPC -->

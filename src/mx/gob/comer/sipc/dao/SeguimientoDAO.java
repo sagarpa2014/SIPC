@@ -442,4 +442,9 @@ public class SeguimientoDAO {
 		}
 		return lst;
 	}
+
+	public void borrarObjeto(Object o)throws JDBCException{		    
+		session.delete(o);
+		session.flush();
+	}
 }// fin de clase

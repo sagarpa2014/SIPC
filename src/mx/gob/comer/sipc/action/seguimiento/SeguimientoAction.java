@@ -154,6 +154,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		cDAO = new CatalogosDAO();
 		sDAO = new SeguimientoDAO();
 	}
+	
 	public String listSeguimiento(){
 		try{
 			session = ActionContext.getContext().getSession();
@@ -251,6 +252,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
 					sca.setUsuarioActualiza((Integer) session.get("idUsuario"));
 					sca.setFechaActualiza(new Date());
+					sca.setPeriodoFinal(periodoFinal);
+					sca.setPeriodoInicial(periodoInicial);					
 					// Valida que lo registrado de almacenamiento total sea menor o igual capacidad de la Bodega para el Ciclo, Ejercicio y Cultivo
 					CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
 					capacidadCA = cDAO.consultaCapacidadBodega(claveBodegaAux).get(0);
@@ -1045,6 +1048,22 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		return SUCCESS;		
 	}
 
+	public String eliminarSeguimiento(){
+		SeguimientoCentroAcopio seguimientoAux;
+		try {
+			//recupera seguimiento de acopio 
+			seguimientoAux = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
+			//borra objeto seguimiento de acopio
+			sDAO.borrarObjeto(seguimientoAux);
+			listSeguimiento();
+		} catch (Exception e) {
+			e.printStackTrace();
+			AppLogger.error("errores", "Ocurrió un error al eliminar regoistro de seguimiento de acopio debido a:"+e.getCause());
+		}
+		return SUCCESS;
+	}
+
+	
 	public int getIdCiclo() {
 		return idCiclo;
 	}

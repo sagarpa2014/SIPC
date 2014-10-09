@@ -454,8 +454,8 @@
 		$(document).ready(function() {			
 			$("#idCiclo").attr('disabled','disabled');		
 			$("#ejercicio").attr('disabled','disabled');		
-			$("#periodoInicial").attr('disabled','disabled');		
-			$("#periodoFinal").attr('disabled','disabled');		
+//			$("#periodoInicial").attr('disabled','disabled');		
+//			$("#periodoFinal").attr('disabled','disabled');
 			$("#claveBodega").attr('disabled','disabled');	
 		});	 
 	</script>
