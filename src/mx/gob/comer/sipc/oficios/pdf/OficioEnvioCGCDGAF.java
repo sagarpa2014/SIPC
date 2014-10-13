@@ -170,7 +170,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		if(ata.getIdPrograma() == 31){
 			addEmptyLine(1);
 		}else{
-			addEmptyLine(3);
+			addEmptyLine(2);
 		}		
 		parrafo = new Paragraph((ata.getEmisor().getIniProfesion()!=null && !ata.getEmisor().getIniProfesion().isEmpty()?ata.getEmisor().getIniProfesion().toUpperCase()+" ":"")
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD12);
