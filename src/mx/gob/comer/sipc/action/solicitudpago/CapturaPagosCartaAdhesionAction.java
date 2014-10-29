@@ -325,7 +325,11 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											break;
 										}
 									}
-									if ((Double.parseDouble(item)+totalVolApoEdoCulVarCA)>volumenAutEdoCulVarCA){
+									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+									//System.out.println("suma antes "+suma);
+									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+									//System.out.println(suma);
+									if (suma >volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
 											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
@@ -821,7 +825,11 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											break;
 										}
 									}
-									if ((Double.parseDouble(item)+totalVolApoEdoCulVarCA)>volumenAutEdoCulVarCA){
+									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+									//System.out.println("suma antes "+suma);
+									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+									//System.out.println(suma);
+									if (suma >volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()){
 											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
