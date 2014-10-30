@@ -2,28 +2,40 @@
 <s:if test="%{tipoReporte==1}" >
 	<br>
 	<div class="izquierda">
-		<input id="tramitado" name="tramitado" value="1" type="checkbox"  class="columnas" />
+		<input id="registrado" name="registrado" value="1" type="checkbox"  class="columnas" />
 	</div>
 	<div class="izquierda">
-		<font class="fuente3">Tramitado</font>
+		<font class="fuente3">Registrado</font>
 	</div>
 	<div class="izquierda">
-		<input id="pagado" name="pagado" value="2" type="checkbox" class="columnas" />
+		<input id="autorizado" name="autorizado" value="2" type="checkbox"  class="columnas" />
+	</div>
+	<div class="izquierda">
+		<font class="fuente3">Autorizado</font>
+	</div>
+	<div class="izquierda">
+		<input id="solicitado" name="solicitado" value="3" type="checkbox"  class="columnas" />
+	</div>
+	<div class="izquierda">
+		<font class="fuente3">Solicitado</font>
+	</div>	
+	<div class="izquierda">
+		<input id="pagado" name="pagado" value="4" type="checkbox" class="columnas" />
 	</div>
 	<div class="izquierda">
 		<font class="fuente3">Pagado</font>
 	</div>
 	<div class="izquierda">
-		<input id="rechazado" name="rechazado" value="3" type="checkbox" class="columnas" />
+		<input id="rechazado" name="rechazado" value="5" type="checkbox" class="columnas" />
 	</div>
 	<div class="izquierda">
-		<font class="fuente3">Rechazado</font>
+		<font class="fuente3">No efectuado</font>
 	</div>
 	<div class="izquierda">
-		<input id="pendiente" name="pendiente" value="4" type="checkbox" class="columnas"/>
+		<input id="pendiente" name="pendiente" value="6" type="checkbox" class="columnas"/>
 	</div>
 	<div class="izquierda">
-		<font class="fuente3">Pendiente</font>
+		<font class="fuente3">Sin respuesta TESOFE</font>
 	</div>
 </s:if>
 <div class="clear"></div>

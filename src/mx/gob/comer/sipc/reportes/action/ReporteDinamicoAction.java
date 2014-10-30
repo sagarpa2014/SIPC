@@ -53,6 +53,9 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 	private Map<String, Object> session;
 	private int tipoReporte;
 	private int tramitado;
+	private int registrado;
+	private int autorizado;
+	private int solicitado;
 	private int rechazado;
 	private int pendiente;
 	private int pagado;
@@ -180,7 +183,7 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 	 * Retorna al jsp resultadoReporteDinamico.jsp
 	 * Tipo de Reporte: 0 - Por fecha de deposito 1 - Por oficio
 	 * Criterios para generación: Programa, Participante, Oficio y FechaPago(Solo para tipo reporte 0),
-	 * para el tipo de reporte tambien es posible seleccionar por; tramitado, pagado, rechazado y pendiente
+	 * para el tipo de reporte tambien es posible seleccionar por; registrado, autorizado, solicitado, pagado, no efectuado y sin respuesta TESOFE
 	 * 
 	 *  
 	 * @throws JDBCException Error al ejecutar la consulta en la base de datos con los criterios seleccionados por el usuario
@@ -271,11 +274,14 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 					paginar();					
 				}
 			}else if(tipoReporte==1){
-				lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, tramitado, pagado, rechazado, pendiente,0,0,0,fechaInicioS,fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
+				lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, registrado, autorizado, solicitado, pagado, rechazado, pendiente,0,0,0,fechaInicioS,fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 				if(lstReporte.size()>0){
 					pagina=1;
 					paginar();
-					session.put("tramitado", tramitado);
+					//session.put("tramitado", tramitado);
+					session.put("registrado", registrado);
+					session.put("autorizado", autorizado);
+					session.put("solicitado", solicitado);
 					session.put("pagado", pagado);
 					session.put("rechazado", rechazado);
 					session.put("pendiente", pendiente);
@@ -317,11 +323,14 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			generarRegistroDetalle();
 			
 		}else{
-			tramitado = (Integer)session.get("tramitado");
+			//tramitado = (Integer)session.get("tramitado");
+			registrado = (Integer)session.get("registrado");
+			autorizado = (Integer)session.get("autorizado");
+			solicitado = (Integer)session.get("solicitado");
 			pagado    = (Integer)session.get("pagado");
 			rechazado = (Integer)session.get("rechazado");
 			pendiente = (Integer)session.get("pendiente");
-			lstReporte=rDAO.consultaReporteDinamico(tipoReporte,(String []) session.get("idCriterios"), (String[]) session.get("agrupados"), tramitado, pagado, rechazado, pendiente,inicio,numRegistros,pagina, fechaInicioS,fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
+			lstReporte=rDAO.consultaReporteDinamico(tipoReporte,(String []) session.get("idCriterios"), (String[]) session.get("agrupados"), registrado, autorizado, solicitado, pagado, rechazado, pendiente,inicio,numRegistros,pagina, fechaInicioS,fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 			generarRegistroDetalle();
 			
 		}
@@ -360,11 +369,14 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			if(tipoReporte==0){
 				lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, 1, 0, 0, 0, fechaInicioS,fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 			}else if(tipoReporte==1){
-				tramitado = (Integer)session.get("tramitado");
+				//tramitado = (Integer)session.get("tramitado");
+				registrado = (Integer)session.get("registrado");
+				autorizado = (Integer)session.get("autorizado");
+				solicitado = (Integer)session.get("solicitado");				
 				pagado = (Integer)session.get("pagado");
 				rechazado = (Integer)session.get("rechazado");
 				pendiente = (Integer)session.get("pendiente");
-				lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, tramitado, pagado, rechazado, pendiente,0,0,0, fechaInicioS, fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
+				lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, registrado, autorizado, solicitado, pagado, rechazado, pendiente,0,0,0, fechaInicioS, fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 							
 			}
 			construyeArchivoExcel(rutaSalida, nombreArchivo);
@@ -405,10 +417,17 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			i=1;
 			int j = 0;
 			int temporal = posicionSiguiente;
-			int totalPagosTramitados = 0, totalPagosPagados = 0, totalPagosRechazados = 0, totalPagosPendientes = 0;
-			int posicionAplicados =0, posicionTramitados=0, posicionRechazados=0, posicionPendiente=0;
-			double totalVolumenTramitados=0, totalImporteTramitados=0, totalVolumenAplicados=0, totalImporteAplicados=0,
-				totalVolumenRechazados=0, totalImporteRechazados=0, totalVolumenPendiente=0, totalImportePendiente=0; 
+			//int totalPagosTramitados = 0, totalPagosPagados = 0, totalPagosRechazados = 0, totalPagosPendientes = 0;
+			int totalPagosRegistrados = 0, totalPagosAutorizados = 0, totalPagosSolicitados = 0, totalPagosPagados = 0, totalPagosRechazados = 0, totalPagosPendientes = 0;
+			//int posicionAplicados =0, posicionTramitados=0, posicionRechazados=0, posicionPendiente=0;
+			int posicionAplicados =0, posicionRegistrados=0, posicionAutorizados=0, posicionSolicitados=0, posicionRechazados=0, posicionPendiente=0;
+			//double totalVolumenTramitados=0, totalImporteTramitados=0, totalVolumenAplicados=0, totalImporteAplicados=0, totalVolumenRechazados=0, totalImporteRechazados=0, totalVolumenPendiente=0, totalImportePendiente=0; 
+			double totalVolumenRegistrados=0, totalImporteRegistrados=0,
+					totalVolumenAutorizados=0, totalImporteAutorizados=0,
+					totalVolumenSolicitados=0, totalImporteSolicitados=0,
+					totalVolumenAplicados=0, totalImporteAplicados=0, 
+					totalVolumenRechazados=0, totalImporteRechazados=0, 
+					totalVolumenPendiente=0, totalImportePendiente=0;
 			while (ite.hasNext()) {
 				temporal = posicionSiguiente;
 				Object[] registro = (Object[]) ite.next();
@@ -435,6 +454,7 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 					totalImporteAplicados += ((BigDecimal) registro[(temporal)]).doubleValue();
 					
 				}else if(tipoReporte==1){
+/*
 					if(tramitado!=0){
 						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoCantidadSinComas((BigInteger) registro[(temporal+=1)]), cf2));
 						posicionTramitados=j-1;
@@ -444,6 +464,35 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoImporteSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
 						totalImporteTramitados += ((BigDecimal) registro[(temporal)]).doubleValue();
 					}
+*/					
+					if(registrado!=0){
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoCantidadSinComas((BigInteger) registro[(temporal+=1)]), cf2));
+						posicionRegistrados=j-1;
+						totalPagosRegistrados += ((BigInteger) registro[(temporal)]).intValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoVolumenSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalVolumenRegistrados += ((BigDecimal) registro[(temporal)]).doubleValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoImporteSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalImporteRegistrados += ((BigDecimal) registro[(temporal)]).doubleValue();
+					}
+					if(autorizado!=0){
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoCantidadSinComas((BigInteger) registro[(temporal+=1)]), cf2));
+						posicionAutorizados=j-1;
+						totalPagosAutorizados += ((BigInteger) registro[(temporal)]).intValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoVolumenSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalVolumenAutorizados += ((BigDecimal) registro[(temporal)]).doubleValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoImporteSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalImporteAutorizados += ((BigDecimal) registro[(temporal)]).doubleValue();
+					}
+					if(solicitado!=0){
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoCantidadSinComas((BigInteger) registro[(temporal+=1)]), cf2));
+						posicionSolicitados=j-1;
+						totalPagosSolicitados += ((BigInteger) registro[(temporal)]).intValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoVolumenSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalVolumenSolicitados += ((BigDecimal) registro[(temporal)]).doubleValue();
+						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoImporteSinComas((BigDecimal) registro[(temporal+=1)]), cf2));
+						totalImporteSolicitados += ((BigDecimal) registro[(temporal)]).doubleValue();
+					}
+
 					if(pagado!=0){
 						sheet.addCell(new Label(j++, i, TextUtil.formateaNumeroComoCantidadSinComas((BigInteger) registro[(temporal+=1)]), cf2));
 						posicionAplicados=j-1;
@@ -482,11 +531,29 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 				sheet.addCell(new Label(posicionAplicados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenAplicados), cf2));
 				sheet.addCell(new Label(posicionAplicados++, i, TextUtil.formateaNumeroComoCantidad(totalImporteAplicados), cf2));
 			}else{
+/*
 				if(tramitado!=0){
 					sheet.addCell(new Label(posicionTramitados++, i, TextUtil.formateaNumeroComoCantidad(totalPagosTramitados), cf2));
 					sheet.addCell(new Label(posicionTramitados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenTramitados), cf2));
 					sheet.addCell(new Label(posicionTramitados++, i, TextUtil.formateaNumeroComoCantidad(totalImporteTramitados), cf2));
 				}
+*/				
+				if(registrado!=0){
+					sheet.addCell(new Label(posicionRegistrados++, i, TextUtil.formateaNumeroComoCantidad(totalPagosRegistrados), cf2));
+					sheet.addCell(new Label(posicionRegistrados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenRegistrados), cf2));
+					sheet.addCell(new Label(posicionRegistrados++, i, TextUtil.formateaNumeroComoCantidad(totalImporteRegistrados), cf2));
+				}
+				if(autorizado!=0){
+					sheet.addCell(new Label(posicionAutorizados++, i, TextUtil.formateaNumeroComoCantidad(totalPagosAutorizados), cf2));
+					sheet.addCell(new Label(posicionAutorizados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenAutorizados), cf2));
+					sheet.addCell(new Label(posicionAutorizados++, i, TextUtil.formateaNumeroComoCantidad(totalImporteAutorizados), cf2));
+				}
+				if(solicitado!=0){
+					sheet.addCell(new Label(posicionSolicitados++, i, TextUtil.formateaNumeroComoCantidad(totalPagosSolicitados), cf2));
+					sheet.addCell(new Label(posicionSolicitados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenSolicitados), cf2));
+					sheet.addCell(new Label(posicionSolicitados++, i, TextUtil.formateaNumeroComoCantidad(totalImporteSolicitados), cf2));
+				}
+
 				if(pagado!=0){
 					sheet.addCell(new Label(posicionAplicados++, i, TextUtil.formateaNumeroComoCantidad(totalPagosPagados), cf2));
 					sheet.addCell(new Label(posicionAplicados++, i, TextUtil.formateaNumeroComoVolumen(totalVolumenAplicados), cf2));
@@ -545,7 +612,7 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, 1, inicio, numRegistros, pagina, fechaInicioS, fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 			generarRegistroDetalle();
 		}else{
-			lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, tramitado, pagado, rechazado, pendiente,inicio,numRegistros,pagina, fechaInicioS, fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
+			lstReporte=rDAO.consultaReporteDinamico(tipoReporte,idCriterios, agrupados, registrado, autorizado, solicitado, pagado, rechazado, pendiente,inicio,numRegistros,pagina, fechaInicioS, fechaFinS, idPrograma, idCultivo, idVariedad, idBodega);
 			generarRegistroDetalle();
 		}
 		
@@ -574,11 +641,29 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 				registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
 				registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoImporte((BigDecimal) registro[(temporal+=1)])).append("</td>");
 			}else if(tipoReporte==1){
+/*
 				if(tramitado!=0){
 					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoCantidad((BigInteger) registro[(temporal+=1)])).append("</td>");
 					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
 					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoImporte((BigDecimal) registro[(temporal+=1)])).append("</td>");
 				}
+*/				
+				if(registrado!=0){
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoCantidad((BigInteger) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoImporte((BigDecimal) registro[(temporal+=1)])).append("</td>");
+				}
+				if(autorizado!=0){
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoCantidad((BigInteger) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoImporte((BigDecimal) registro[(temporal+=1)])).append("</td>");
+				}
+				if(solicitado!=0){
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoCantidad((BigInteger) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
+					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoImporte((BigDecimal) registro[(temporal+=1)])).append("</td>");
+				}
+
 				if(pagado!=0){
 					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoCantidad((BigInteger) registro[(temporal+=1)])).append("</td>");
 					registroDetalle.append("<td>").append(TextUtil.formateaNumeroComoVolumen((BigDecimal) registro[(temporal+=1)])).append("</td>");
@@ -845,10 +930,25 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			encabezado +="<th>Aplicados</th><th>Volumen Aplicado</th><th>Importe Aplicado</th>";
 			encabezadoReporte += "Aplicados,Volumen Aplicado,Importe Aplicado,";
 		}else if(tipoReporte==1){
+/*
 			if(tramitado!=0){
 				encabezado +="<th>Tramitado</th><th>Volumen Tramitado</th><th>Importe Tramitado</th>";
 				encabezadoReporte +="Tramitado,Volumen Tramitado,Importe Tramitado,";
 			}
+*/			
+			if(registrado!=0){
+				encabezado +="<th>Registrado</th><th>Volumen Registrado</th><th>Importe Registrado</th>";
+				encabezadoReporte +="Registrado,Volumen Registrado,Importe Registrado,";
+			}
+			if(autorizado!=0){
+				encabezado +="<th>Autorizado</th><th>Volumen Autorizado</th><th>Importe Autorizado</th>";
+				encabezadoReporte +="Autorizado,Volumen Autorizado,Importe Autorizado,";
+			}
+			if(solicitado!=0){
+				encabezado +="<th>Solicitado</th><th>Volumen Solicitado</th><th>Importe Solicitado</th>";
+				encabezadoReporte +="Solicitado,Volumen Solicitado,Importe Solicitado,";
+			}
+
 			if(pagado!=0){
 				encabezado +="<th>Aplicados</th><th>Volumen Aplicado</th><th>Importe Aplicado</th>";
 				encabezadoReporte += "Aplicados,Volumen Aplicado,Importe Aplicado,";
@@ -1149,4 +1249,33 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 		this.idBodega = idBodega;
 	}
 
+
+	public int getRegistrado() {
+		return registrado;
+	}
+
+
+	public void setRegistrado(int registrado) {
+		this.registrado = registrado;
+	}
+
+
+	public int getAutorizado() {
+		return autorizado;
+	}
+
+
+	public void setAutorizado(int autorizado) {
+		this.autorizado = autorizado;
+	}
+
+
+	public int getSolicitado() {
+		return solicitado;
+	}
+
+
+	public void setSolicitado(int solicitado) {
+		this.solicitado = solicitado;
+	}
 }

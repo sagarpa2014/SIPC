@@ -260,17 +260,18 @@ public class ReportesDAO {
 	@SuppressWarnings("rawtypes")
 	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, int pagado, 
 			int inicio, int numRegistros, int pagina, String fechaInicio, String fechaFin)throws  JDBCException{
-		return consultaReporteDinamico(tipoReporte, idCriterios, agrupados, 0, pagado, 0,0, inicio, numRegistros, pagina, fechaInicio, fechaFin, 0, 0, 0, 0);
+		return consultaReporteDinamico(tipoReporte, idCriterios, agrupados, 0, 0, 0, pagado, 0,0, inicio, numRegistros, pagina, fechaInicio, fechaFin, 0, 0, 0, 0);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, int pagado, 
 			int inicio, int numRegistros, int pagina, String fechaInicio, String fechaFin, int idPrograma, int idCultivo, int idVariedad, int idBodega)throws  JDBCException{
-		return consultaReporteDinamico(tipoReporte, idCriterios, agrupados, 0, pagado, 0,0, inicio, numRegistros, pagina, fechaInicio, fechaFin, idPrograma, idCultivo, idVariedad, idBodega);
+		return consultaReporteDinamico(tipoReporte, idCriterios, agrupados, 0, 0, 0, pagado, 0,0, inicio, numRegistros, pagina, fechaInicio, fechaFin, idPrograma, idCultivo, idVariedad, idBodega);
 	}
 
-	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, int tramitado, int pagado,
-			int rechazado, int pendiente, int inicio, int numRegistros, int pagina, String fechaInicio,String fechaFin, int idPrograma, 
+	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, 
+			int registrado, int autorizado, int solicitado, int pagado, int rechazado, int pendiente, 
+			int inicio, int numRegistros, int pagina, String fechaInicio,String fechaFin, int idPrograma, 
 			int idCultivo, int idVariedad, int idBodega)throws  JDBCException{
 		
 		List lista = new ArrayList<Object>();
@@ -284,9 +285,18 @@ public class ReportesDAO {
 		String condicionVariedad="";
 		String condicionBodega="";
 		
-		StringBuilder sqlTramitados = new StringBuilder();
-		StringBuilder sqlVolumenTramitados = new StringBuilder();
-		StringBuilder sqlImporteTramitados = new StringBuilder();
+		//StringBuilder sqlTramitados = new StringBuilder();
+		//StringBuilder sqlVolumenTramitados = new StringBuilder();
+		//StringBuilder sqlImporteTramitados = new StringBuilder();
+		StringBuilder sqlRegistrados = new StringBuilder();
+		StringBuilder sqlVolumenRegistrados = new StringBuilder();
+		StringBuilder sqlImporteRegistrados = new StringBuilder();
+		StringBuilder sqlAutorizados = new StringBuilder();
+		StringBuilder sqlVolumenAutorizados = new StringBuilder();
+		StringBuilder sqlImporteAutorizados = new StringBuilder();
+		StringBuilder sqlSolicitados = new StringBuilder();
+		StringBuilder sqlVolumenSolicitados = new StringBuilder();
+		StringBuilder sqlImporteSolicitados = new StringBuilder();
 		StringBuilder sqlAplicados = new StringBuilder();
 		StringBuilder sqlVolumenAplicados = new StringBuilder();
 		StringBuilder sqlImporteAplicados = new StringBuilder();
@@ -644,7 +654,7 @@ public class ReportesDAO {
 		groupBy.deleteCharAt(groupBy.length()-1);
 		orderBy.insert(0, " ORDER BY ");
 		orderBy.deleteCharAt(orderBy.length()-1);
-		
+/*		
 		if(tramitado!=0){
 			if(cultivo != 0){
 				sqlTramitados.append(selectCount+condicionCultivo);
@@ -755,13 +765,7 @@ public class ReportesDAO {
 					sqlImporteTramitados.append(condicionEstado);
 				}
 			}
-/*			
- 			if(cultivo != 0){
-				sqlTramitados.append(condicionCultivo);
-				sqlVolumenTramitados.append(condicionCultivo);
-				sqlImporteTramitados.append(condicionCultivo);
-			}
-*/			
+
 			if(tipoReporte == 1){
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
 					sqlTramitados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
@@ -801,7 +805,422 @@ public class ReportesDAO {
 			sqlImporteTramitados.append(") as importe_tramitado,");
 			select.append(sqlTramitados.toString()).append(sqlVolumenTramitados).append(sqlImporteTramitados);
 		}
+*/
+		if(registrado!=0){
+			if(cultivo != 0){
+				sqlRegistrados.append(selectCount+condicionCultivo);
+				sqlVolumenRegistrados.append(selectVolumen+condicionCultivo);
+				sqlImporteRegistrados.append(selectImporte+condicionCultivo);
+				
+				sqlRegistrados.append(" where ps.estatus in (7,9) ");
+				sqlVolumenRegistrados.append(" where ps.estatus in (7,9) ");
+				sqlImporteRegistrados.append(" where ps.estatus in (7,9) ");
+				if(programa !=0){
+					sqlRegistrados.append(condicionPrograma);
+					sqlVolumenRegistrados.append(condicionPrograma);
+					sqlImporteRegistrados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlRegistrados.append(condicionComprador);
+					sqlVolumenRegistrados.append(condicionComprador);
+					sqlImporteRegistrados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlRegistrados.append(condicionOficio);
+					sqlVolumenRegistrados.append(condicionOficio);
+					sqlImporteRegistrados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlRegistrados.append(condicionFechaPago);
+					sqlVolumenRegistrados.append(condicionFechaPago);
+					sqlImporteRegistrados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlRegistrados.append(condicionEstado);
+					sqlVolumenRegistrados.append(condicionEstado);
+					sqlImporteRegistrados.append(condicionEstado);
+				}								
+			} else if(bodega != 0){
+				sqlRegistrados.append(selectCount+condicionBodega);
+				sqlVolumenRegistrados.append(selectVolumen+condicionBodega);
+				sqlImporteRegistrados.append(selectImporte+condicionBodega);
+				
+				sqlRegistrados.append(" where ps.estatus in (7,9) ");
+				sqlVolumenRegistrados.append(" where ps.estatus in (7,9) ");
+				sqlImporteRegistrados.append(" where ps.estatus in (7,9) ");
+				if(programa !=0){
+					sqlRegistrados.append(condicionPrograma);
+					sqlVolumenRegistrados.append(condicionPrograma);
+					sqlImporteRegistrados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlRegistrados.append(condicionComprador);
+					sqlVolumenRegistrados.append(condicionComprador);
+					sqlImporteRegistrados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlRegistrados.append(condicionOficio);
+					sqlVolumenRegistrados.append(condicionOficio);
+					sqlImporteRegistrados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlRegistrados.append(condicionFechaPago);
+					sqlVolumenRegistrados.append(condicionFechaPago);
+					sqlImporteRegistrados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlRegistrados.append(condicionEstado);
+					sqlVolumenRegistrados.append(condicionEstado);
+					sqlImporteRegistrados.append(condicionEstado);
+				}								
+			} else {
+				sqlRegistrados.append(selectCount+" where ps.estatus in (7,9) ");
+				sqlVolumenRegistrados.append(selectVolumen+" where ps.estatus in (7,9) ");
+				sqlImporteRegistrados.append(selectImporte+" where ps.estatus in (7,9) ");
+				if(programa !=0){
+					sqlRegistrados.append(condicionPrograma);
+					sqlVolumenRegistrados.append(condicionPrograma);
+					sqlImporteRegistrados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlRegistrados.append(condicionComprador);
+					sqlVolumenRegistrados.append(condicionComprador);
+					sqlImporteRegistrados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlRegistrados.append(condicionOficio);
+					sqlVolumenRegistrados.append(condicionOficio);
+					sqlImporteRegistrados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlRegistrados.append(condicionFechaPago);
+					sqlVolumenRegistrados.append(condicionFechaPago);
+					sqlImporteRegistrados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlRegistrados.append(condicionEstado);
+					sqlVolumenRegistrados.append(condicionEstado);
+					sqlImporteRegistrados.append(condicionEstado);
+				}				
+			}
+/*
+			if(cultivo != 0){
+				sqlRegistrados.append(condicionCultivo);
+				sqlVolumenRegistrados.append(condicionCultivo);
+				sqlImporteRegistrados.append(condicionCultivo);
+			}
+*/					
+			if(tipoReporte == 1){
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");					
+					sqlVolumenRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+					sqlImporteRegistrados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+				}				
+			} else {
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlRegistrados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenRegistrados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteRegistrados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlRegistrados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlVolumenRegistrados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlImporteRegistrados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+				}				
+			}
+			
+			sqlRegistrados.append(") as registrados,\n");
+			sqlVolumenRegistrados.append(") as volumen_registrado,\n");
+			sqlImporteRegistrados.append(") as importe_registrado,");
+			select.append(sqlRegistrados.toString()).append(sqlVolumenRegistrados).append(sqlImporteRegistrados);
+		}
 		
+		if(autorizado!=0){
+			if(cultivo != 0){
+				sqlAutorizados.append(selectCount+condicionCultivo);
+				sqlVolumenAutorizados.append(selectVolumen+condicionCultivo);
+				sqlImporteAutorizados.append(selectImporte+condicionCultivo);
+				
+				sqlAutorizados.append(" where ps.estatus = 1 ");
+				sqlVolumenAutorizados.append(" where ps.estatus = 1 ");
+				sqlImporteAutorizados.append(" where ps.estatus = 1 ");
+				if(programa !=0){
+					sqlAutorizados.append(condicionPrograma);
+					sqlVolumenAutorizados.append(condicionPrograma);
+					sqlImporteAutorizados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlAutorizados.append(condicionComprador);
+					sqlVolumenAutorizados.append(condicionComprador);
+					sqlImporteAutorizados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlAutorizados.append(condicionOficio);
+					sqlVolumenAutorizados.append(condicionOficio);
+					sqlImporteAutorizados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlAutorizados.append(condicionFechaPago);
+					sqlVolumenAutorizados.append(condicionFechaPago);
+					sqlImporteAutorizados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlAutorizados.append(condicionEstado);
+					sqlVolumenAutorizados.append(condicionEstado);
+					sqlImporteAutorizados.append(condicionEstado);
+				}								
+			} else if(bodega != 0){
+				sqlAutorizados.append(selectCount+condicionBodega);
+				sqlVolumenAutorizados.append(selectVolumen+condicionBodega);
+				sqlImporteAutorizados.append(selectImporte+condicionBodega);
+				
+				sqlAutorizados.append(" where ps.estatus = 1 ");
+				sqlVolumenAutorizados.append(" where ps.estatus = 1 ");
+				sqlImporteAutorizados.append(" where ps.estatus = 1 ");
+				if(programa !=0){
+					sqlAutorizados.append(condicionPrograma);
+					sqlVolumenAutorizados.append(condicionPrograma);
+					sqlImporteAutorizados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlAutorizados.append(condicionComprador);
+					sqlVolumenAutorizados.append(condicionComprador);
+					sqlImporteAutorizados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlAutorizados.append(condicionOficio);
+					sqlVolumenAutorizados.append(condicionOficio);
+					sqlImporteAutorizados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlAutorizados.append(condicionFechaPago);
+					sqlVolumenAutorizados.append(condicionFechaPago);
+					sqlImporteAutorizados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlAutorizados.append(condicionEstado);
+					sqlVolumenAutorizados.append(condicionEstado);
+					sqlImporteAutorizados.append(condicionEstado);
+				}								
+			} else {
+				sqlAutorizados.append(selectCount+" where ps.estatus = 1 ");
+				sqlVolumenAutorizados.append(selectVolumen+" where ps.estatus = 1 ");
+				sqlImporteAutorizados.append(selectImporte+" where ps.estatus = 1 ");
+				if(programa !=0){
+					sqlAutorizados.append(condicionPrograma);
+					sqlVolumenAutorizados.append(condicionPrograma);
+					sqlImporteAutorizados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlAutorizados.append(condicionComprador);
+					sqlVolumenAutorizados.append(condicionComprador);
+					sqlImporteAutorizados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlAutorizados.append(condicionOficio);
+					sqlVolumenAutorizados.append(condicionOficio);
+					sqlImporteAutorizados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlAutorizados.append(condicionFechaPago);
+					sqlVolumenAutorizados.append(condicionFechaPago);
+					sqlImporteAutorizados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlAutorizados.append(condicionEstado);
+					sqlVolumenAutorizados.append(condicionEstado);
+					sqlImporteAutorizados.append(condicionEstado);
+				}				
+			}
+/*
+			if(cultivo != 0){
+				sqlAutorizados.append(condicionCultivo);
+				sqlVolumenAutorizados.append(condicionCultivo);
+				sqlImporteAutorizados.append(condicionCultivo);
+			}
+*/					
+			if(tipoReporte == 1){
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");					
+					sqlVolumenAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+					sqlImporteAutorizados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+				}				
+			} else {
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlAutorizados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenAutorizados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteAutorizados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlAutorizados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlVolumenAutorizados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlImporteAutorizados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+				}				
+			}
+			
+			sqlAutorizados.append(") as autorizados,\n");
+			sqlVolumenAutorizados.append(") as volumen_autorizado,\n");
+			sqlImporteAutorizados.append(") as importe_autorizado,");
+			select.append(sqlAutorizados.toString()).append(sqlVolumenAutorizados).append(sqlImporteAutorizados);
+		}
+
+
+		if(solicitado!=0){
+			if(cultivo != 0){
+				sqlSolicitados.append(selectCount+condicionCultivo);
+				sqlVolumenSolicitados.append(selectVolumen+condicionCultivo);
+				sqlImporteSolicitados.append(selectImporte+condicionCultivo);
+				
+				sqlSolicitados.append(" where ps.estatus = 2 ");
+				sqlVolumenSolicitados.append(" where ps.estatus = 2 ");
+				sqlImporteSolicitados.append(" where ps.estatus = 2 ");
+				if(programa !=0){
+					sqlSolicitados.append(condicionPrograma);
+					sqlVolumenSolicitados.append(condicionPrograma);
+					sqlImporteSolicitados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlSolicitados.append(condicionComprador);
+					sqlVolumenSolicitados.append(condicionComprador);
+					sqlImporteSolicitados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlSolicitados.append(condicionOficio);
+					sqlVolumenSolicitados.append(condicionOficio);
+					sqlImporteSolicitados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlSolicitados.append(condicionFechaPago);
+					sqlVolumenSolicitados.append(condicionFechaPago);
+					sqlImporteSolicitados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlSolicitados.append(condicionEstado);
+					sqlVolumenSolicitados.append(condicionEstado);
+					sqlImporteSolicitados.append(condicionEstado);
+				}								
+			} else if(bodega != 0){
+				sqlSolicitados.append(selectCount+condicionBodega);
+				sqlVolumenSolicitados.append(selectVolumen+condicionBodega);
+				sqlImporteSolicitados.append(selectImporte+condicionBodega);
+				
+				sqlSolicitados.append(" where ps.estatus = 2 ");
+				sqlVolumenSolicitados.append(" where ps.estatus = 2 ");
+				sqlImporteSolicitados.append(" where ps.estatus = 2 ");
+				if(programa !=0){
+					sqlSolicitados.append(condicionPrograma);
+					sqlVolumenSolicitados.append(condicionPrograma);
+					sqlImporteSolicitados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlSolicitados.append(condicionComprador);
+					sqlVolumenSolicitados.append(condicionComprador);
+					sqlImporteSolicitados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlSolicitados.append(condicionOficio);
+					sqlVolumenSolicitados.append(condicionOficio);
+					sqlImporteSolicitados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlSolicitados.append(condicionFechaPago);
+					sqlVolumenSolicitados.append(condicionFechaPago);
+					sqlImporteSolicitados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlSolicitados.append(condicionEstado);
+					sqlVolumenSolicitados.append(condicionEstado);
+					sqlImporteSolicitados.append(condicionEstado);
+				}								
+			} else {
+				sqlSolicitados.append(selectCount+" where ps.estatus = 2 ");
+				sqlVolumenSolicitados.append(selectVolumen+" where ps.estatus = 2 ");
+				sqlImporteSolicitados.append(selectImporte+" where ps.estatus = 2 ");
+				if(programa !=0){
+					sqlSolicitados.append(condicionPrograma);
+					sqlVolumenSolicitados.append(condicionPrograma);
+					sqlImporteSolicitados.append(condicionPrograma);
+				}
+				if(participante != 0){
+					sqlSolicitados.append(condicionComprador);
+					sqlVolumenSolicitados.append(condicionComprador);
+					sqlImporteSolicitados.append(condicionComprador);
+				}
+				if(oficio != 0){
+					sqlSolicitados.append(condicionOficio);
+					sqlVolumenSolicitados.append(condicionOficio);
+					sqlImporteSolicitados.append(condicionOficio);
+				}	
+				if(fechaPago != 0){
+					sqlSolicitados.append(condicionFechaPago);
+					sqlVolumenSolicitados.append(condicionFechaPago);
+					sqlImporteSolicitados.append(condicionFechaPago);
+				}
+				if(estado != 0){
+					sqlSolicitados.append(condicionEstado);
+					sqlVolumenSolicitados.append(condicionEstado);
+					sqlImporteSolicitados.append(condicionEstado);
+				}				
+			}
+/*
+			if(cultivo != 0){
+				sqlSolicitados.append(condicionCultivo);
+				sqlVolumenSolicitados.append(condicionCultivo);
+				sqlImporteSolicitados.append(condicionCultivo);
+			}
+*/					
+			if(tipoReporte == 1){
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and to_number(TO_CHAR(o.fecha, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");					
+					sqlVolumenSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+					sqlImporteSolicitados.append("  AND o.id_oficio_pagos = ps.id_oficio and o.fecha ='").append(fechaInicio).append("'");
+				}				
+			} else {
+				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
+					sqlSolicitados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlVolumenSolicitados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+					sqlImporteSolicitados.append("  and to_number(TO_char(ps.fecha_pago, 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
+					.append(" and to_number(TO_CHAR(to_date('").append(fechaFin).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')");
+				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
+					sqlSolicitados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlVolumenSolicitados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+					sqlImporteSolicitados.append("and TO_DATE(ps.fecha_pago, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
+				}				
+			}
+			
+			sqlSolicitados.append(") as solicitados,\n");
+			sqlVolumenSolicitados.append(") as volumen_solicitado,\n");
+			sqlImporteSolicitados.append(") as importe_solicitado,");
+			select.append(sqlSolicitados.toString()).append(sqlVolumenSolicitados).append(sqlImporteSolicitados);
+		}
+
 		
 		if(pagado!=0){
 			if(cultivo != 0){
@@ -1070,9 +1489,9 @@ public class ReportesDAO {
 				sqlVolumenPendiente.append(selectVolumen+condicionCultivo);
 				sqlImportePendiente.append(selectImporte+condicionCultivo);
 				
-				sqlPendientes.append(" where ps.estatus in (2,4) ");
-				sqlVolumenPendiente.append(" where ps.estatus in (2,4) ");
-				sqlImportePendiente.append(" where ps.estatus in (2,4) ");
+				sqlPendientes.append(" where ps.estatus = 4 ");
+				sqlVolumenPendiente.append(" where ps.estatus = 4 ");
+				sqlImportePendiente.append(" where ps.estatus = 4 ");
 				if(programa !=0){
 					sqlPendientes.append(condicionPrograma);
 					sqlVolumenPendiente.append(condicionPrograma);
@@ -1098,9 +1517,9 @@ public class ReportesDAO {
 				sqlVolumenPendiente.append(selectVolumen+condicionBodega);
 				sqlImportePendiente.append(selectImporte+condicionBodega);
 				
-				sqlPendientes.append(" where ps.estatus in (2,4) ");
-				sqlVolumenPendiente.append(" where ps.estatus in (2,4) ");
-				sqlImportePendiente.append(" where ps.estatus in (2,4) ");
+				sqlPendientes.append(" where ps.estatus = 4 ");
+				sqlVolumenPendiente.append(" where ps.estatus = 4 ");
+				sqlImportePendiente.append(" where ps.estatus = 4 ");
 				if(programa !=0){
 					sqlPendientes.append(condicionPrograma);
 					sqlVolumenPendiente.append(condicionPrograma);
@@ -1122,9 +1541,9 @@ public class ReportesDAO {
 					sqlImportePendiente.append(condicionEstado);
 				}				
 			} else {
-				sqlPendientes.append(selectCount+" where ps.estatus in (2,4) ");
-				sqlVolumenPendiente.append(selectVolumen+" where ps.estatus in (2,4) ");
-				sqlImportePendiente.append(selectImporte+" where ps.estatus in (2,4) ");
+				sqlPendientes.append(selectCount+" where ps.estatus = 4 ");
+				sqlVolumenPendiente.append(selectVolumen+" where ps.estatus = 4 ");
+				sqlImportePendiente.append(selectImporte+" where ps.estatus = 4 ");
 				if(programa !=0){
 					sqlPendientes.append(condicionPrograma);
 					sqlVolumenPendiente.append(condicionPrograma);

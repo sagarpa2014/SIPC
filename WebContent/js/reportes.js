@@ -136,7 +136,10 @@ function generarReporteDinamico() {
 	var tipoReporte = $('input:radio[name=tipoReporte]:checked').val();
 	//0 pagados 1 tramitado-pagado-rechazado-pendiente
 	var agrupado="";
-	var tramitado=0;
+	//var tramitado=0;
+	var registrado=0;
+	var autorizado=0;
+	var solicitado=0;
 	var pagado=0;
 	var rechazado=0;
 	var pendiente=0;
@@ -221,8 +224,17 @@ function generarReporteDinamico() {
 	
 	if(tipoReporte == 0){//pagado
 	}else if(tipoReporte==1){//tramitado-pagado-pendiente
-		if( $('#tramitado').is(':checked')){
-			tramitado = $('#tramitado').val();
+		//if( $('#tramitado').is(':checked')){
+		//	tramitado = $('#tramitado').val();
+		//}
+		if( $('#registrado').is(':checked')){
+			registrado = $('#registrado').val();
+		}
+		if( $('#autorizado').is(':checked')){
+			autorizado = $('#autorizado').val();
+		}
+		if( $('#solicitado').is(':checked')){
+			solicitado = $('#solicitado').val();
 		}
 		if( $('#pagado').is(':checked')){
 			pagado = $('#pagado').val();
@@ -254,7 +266,10 @@ function generarReporteDinamico() {
 						   data: "tipoReporte="+tipoReporte+
 						   		"&selectCriterios="+selectCriterios+
 						   		"&selectAgrupados="+selectAgrupados+
-						   		"&tramitado="+tramitado+
+						   		//"&tramitado="+tramitado+
+						   		"&registrado="+registrado+
+						   		"&autorizado="+autorizado+
+						   		"&solicitado="+solicitado+
 						   		"&pagado="+pagado+
 						   		"&rechazado="+rechazado+
 						   		"&pendiente="+pendiente+
