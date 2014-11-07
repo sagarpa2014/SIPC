@@ -440,17 +440,17 @@ public class ReportesDAO {
 			if(cultivo != 0){
 				if(tipoReporte == 1){
 					if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";						
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";						
 					}else if ((fechaInicio != null && !fechaInicio.equals(""))){
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";						
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";						
 					}else{
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";	
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";	
 					}
 				} else {
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -493,17 +493,17 @@ public class ReportesDAO {
 			} else {
 				if(tipoReporte == 1){
 					if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){					
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps, pagos_detalle pd ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps, pagos_detalle pd ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps, pagos_detalle pd ";
 					}else if ((fechaInicio != null && !fechaInicio.equals(""))){
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps, pagos_detalle pd ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps, pagos_detalle pd ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps, pagos_detalle pd ";
 					}else{
-						selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
-						selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps, pagos_detalle pd ";
+						selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps, pagos_detalle pd ";
+						selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps, pagos_detalle pd ";
+						selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps, pagos_detalle pd ";
 					}
 				} else {				
 					selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps, pagos_detalle pd ";
@@ -529,17 +529,17 @@ public class ReportesDAO {
 		} else if(cultivo != 0){
 			if(tipoReporte == 1){
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){					
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else{
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}
 			} else {							
 				selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -577,17 +577,17 @@ public class ReportesDAO {
 		} else if(bodega != 0){
 			if(tipoReporte == 1){
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){					
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else{
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}
 			} else {							
 				selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
@@ -616,17 +616,17 @@ public class ReportesDAO {
 		}else if(variedad != 0){
 			if(tipoReporte == 1){
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){					
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}else{
-					selectCount="(select coalesce(count(distinct pd.id_pago),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectVolumen="(select coalesce(sum(pd.volumen),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
-					selectImporte="(select coalesce(sum(pd.importe),0) from oficio_pagos o, pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectCount="(select coalesce(count(distinct pd.id_pago),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectVolumen="(select coalesce(sum(pd.volumen),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
+					selectImporte="(select coalesce(sum(pd.importe),0) from  pagos ps LEFT JOIN pagos_detalle pd ON ";
 				}
 			} else {							
 				selectCount="(select coalesce(count(distinct pd.id_pago),0) from pagos ps LEFT JOIN pagos_detalle pd ON ";
