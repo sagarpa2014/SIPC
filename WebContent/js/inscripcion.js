@@ -773,12 +773,12 @@ function recuperaCultivoByVariedadVXCV(idCultivo, count){
   					break;
   				}
   			}  			
-  			textSelect = '<select id="c'+i+'" onchange="recuperaCultivoByVariedad(this.value,'+i+');">'+cadenaOption+'</select>';
+  			textSelect = '<select id="c'+i+'" name = "selectedCult" onchange="recuperaCultivoByVariedad(this.value,'+i+');">'+cadenaOption+'</select>';
   			$('#contenedorCultivoEdo'+i).html(textSelect);
   			if(siPermaneceCultivo == 1){
   				$('#c'+i).val(cul);
   			}else{
-  				selecVariedad = '<select id="va'+i+'"><option value="-1">-- Seleccione una opción --</option></select>';
+  				selecVariedad = '<select id="va'+i+'" name = "selectedVariedad"><option value="-1">-- Seleccione una opción --</option></select>';
   				$('#variedad'+i).html(selecVariedad);
   			}
   			
