@@ -397,7 +397,7 @@ public class SeguimientoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ResumenAvanceAcopioV> consultaReporteResumen(int idCicloSeg) throws  JDBCException{
+	public List<ResumenAvanceAcopioV> consultaReporteResumen(int idCicloSeg, String idEstadoBodega) throws  JDBCException{
 		StringBuilder consulta= new StringBuilder();
 		List<ResumenAvanceAcopioV> lst = null;
 		
@@ -406,6 +406,14 @@ public class SeguimientoDAO {
 				consulta.append(" and idCicloSeg = ").append(idCicloSeg);
 			} else {
 				consulta.append(" where idCicloSeg = ").append(idCicloSeg);
+			}
+		}
+
+		if (idEstadoBodega != null && !idEstadoBodega.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and idEstadoBodega in (").append(idEstadoBodega).append(")");
+			} else {
+				consulta.append(" where idEstadoBodega in (").append(idEstadoBodega).append(")");
 			}
 		}
 

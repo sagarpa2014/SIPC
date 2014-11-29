@@ -184,6 +184,7 @@
 		<li><a  href="#">Seguimiento</a>
 			<ul>		
 				<li><a href="<s:url value="/seguimiento/listSeguimiento"/>">Registro</a></li> 
+				<li><a href="<s:url value="/seguimiento/consultaReporteResumenAvance"/>">Reporte Concentrado</a></li>
 			</ul>
 		</li>
 		<li><a  href="#">Cat&aacute;logos</a>

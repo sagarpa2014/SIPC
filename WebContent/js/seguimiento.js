@@ -29,6 +29,10 @@ function chkCamposSeguimientoAcopio(){
 	var validaImporte = "";
 	var validaPorcentaje = "";
 
+	$("#idCiclo").removeAttr("disabled");
+	$("#ejercicio").removeAttr("disabled");
+	$("#claveBodega").removeAttr("disabled");
+	
 	var registrar = $('#registrar').val();
 	if(registrar != 3){
 		if(registrar == 0){

@@ -4,6 +4,9 @@
 <s:if test="cuadroSatisfactorio!=null && cuadroSatisfactorio !=''">
 	<s:include value="/WEB-INF/paginas/template/abrirMensajeDialogoCorrecto.jsp" />
 </s:if>
+<s:if test="hasActionErrors()">
+  	 <s:include value="/WEB-INF/paginas/template/abrirMensajeDialogo.jsp" />
+</s:if>
 <div id="dialogo_1"></div>
 <div class="borderBottom"><h1>SEGUIMIENTO DE ACOPIO</h1></div><br>
 	<s:form action="consultaSeguimiento" id="" onsubmit="">

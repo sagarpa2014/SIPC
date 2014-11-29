@@ -1,5 +1,7 @@
 package mx.gob.comer.sipc.dao;
+import java.math.BigInteger;
 import java.util.List;
+
 
 
 
@@ -57,6 +59,7 @@ import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
 
 
 
@@ -1852,5 +1855,22 @@ public class CatalogosDAO {
 		
 		return lst;
 	}	
-	
+
+	public int validaPeriodoSeguimientoExistente(String bodega, int idCiclo, int ejercicio, int idCultivo, String periodo) throws Exception{ 
+		String query;
+		BigInteger resp=null;
+		try {
+			query = "SELECT count(*) from seguimiento_centro_acopio "+
+					"where "+periodo+" between to_number(to_char(periodo_inicial, 'YYYYMMDD'), '99999999') and to_number(to_char(periodo_final, 'YYYYMMDD'), '99999999')"+
+					"and id_ciclo = "+idCiclo+
+					"and ejercicio = "+ejercicio+
+					"and id_cultivo = "+idCultivo+
+					"and clave_bodega = '"+bodega+"'";
+			resp = (BigInteger) session.createSQLQuery(query).list().get(0);
+			
+		}catch(JDBCException e){
+			e.printStackTrace();
+		}
+		return resp.intValue();
+	}
 }
