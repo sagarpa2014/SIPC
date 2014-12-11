@@ -29,7 +29,12 @@
 	<div class="clear"></div>
 	<p align="center">
 		<font class="arial12bold">
-			CICLO AGRÍCOLA <s:property value="ciclo"/><br>
+			CICLO AGRÍCOLA: <s:property value="ciclo"/><br>
+		</font>
+	</p>
+	<p align="center">
+		<font class="arial12bold">
+			EXISTENCIA DE GRANO DE LA VISITA ANTERIOR: <s:property value="existenciaAMAnt"/><br>
 		</font>
 	</p>
 	<p align="center">
@@ -46,7 +51,7 @@
 					<td align="left"><s:property value="%{claveBodega}"/></td>
 				</tr>
 				<tr>
-					<td colspan="2"><font class="arial12bold">NOMBRE DEL CENTRO DE ACOPIO REGISTRADO EN ASERCA:</font></td>
+					<td colspan="2"><font class="arial12bold">NOMBRE O RAZÓN SOCIAL DEL CENTRO DE ACOPIO REGISTRADO EN ASERCA:</font></td>
 					<td align="left"><s:property value="%{nombreBodega}"/></td>
 				</tr>
 				<tr>
@@ -54,12 +59,8 @@
 					<td align="left"><s:property value="%{nombreLocalBodega}"/></td>
 				</tr>
 				<tr>
-					<td colspan="2"><font class="arial12bold">OPERADOR DEL CENTRO DE ACOPIO:</font></td>
+					<td colspan="2"><font class="arial12bold">NOMBRE O RAZÓN SOCIAL DEL OPERADOR DEL CENTRO DE ACOPIO:</font></td>
 					<td align="left"><s:property value="%{nombreOperador}"/></td>
-				</tr>
-				<tr>
-					<td colspan="2"><font class="arial12bold">COMERCIALIZADOR/COMPRADOR:</font></td>
-					<td align="left"><s:property value="%{nombreComprador}"/></td>
 				</tr>
 				<tr>
 					<td colspan="2"><font class="arial12bold">CULTIVO:</font></td>
@@ -78,12 +79,16 @@
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.volumenAXC})}"/> tons.</td>
 				</tr>
 				<tr>
-					<td colspan="2"><font class="arial12bold">ACOPIO TONELADAS:</font></td>
+					<td colspan="2"><font class="arial12bold">ACOPIO TOTAL TONELADAS:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.acopioTotalTon})}"/> tons.</td>
 				</tr>
 				<tr>
+					<td colspan="2"><font class="arial12bold">NOMBRE O RAZÓN SOCIAL DEL COMPRADOR:</font></td>
+					<td align="left"><s:property value="%{nombreComprador}"/></td>
+				</tr>				
+				<tr>
 					<td rowspan="2"><font class="arial12bold">PAGADO</font></td>
-					<td><font class="arial12bold">Tons.:</font></td>
+					<td><font class="arial12bold">T.M.:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.pagadoTon})}"/></td>
 				</tr>
 				<tr>
@@ -91,16 +96,20 @@
 					<td align="left"><s:property value="%{pagadoPorcentaje}"/></td>
 				</tr>
 				<tr>
+					<td colspan="2"><font class="arial12bold">PRECIO PROMEDIO PAGADO</font></td>
+					<td align="left">$ <s:property value="%{getText('importe',{#resultado.precioPromPagAXC})}"/></td>
+				</tr>				
+				<tr>
 					<td rowspan="4"><font class="arial12bold">MOVILIZADO</font></td>
-					<td><font class="arial12bold">FURGON:</font></td>
+					<td><font class="arial12bold">FURGÓN:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.mfurgon})}"/> tons.</td>
 				</tr>
 				<tr>
-					<td><font class="arial12bold">CAMION:</font></td>
+					<td><font class="arial12bold">CAMIÓN:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.mcamion})}"/> tons.</td>
 				</tr>
 				<tr>
-					<td><font class="arial12bold">MARITIMO:</font></td>
+					<td><font class="arial12bold">MARÍTIMO:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.mmaritimo})}"/> tons.</td>
 				</tr>
 				<tr>
@@ -118,10 +127,6 @@
 				<tr>
 					<td colspan="2"><font class="arial12bold">OBSERVACIONES:</font></td>
 					<td align="left"><s:property value="%{observaciones}"/></td>
-				</tr>
-				<tr>
-					<td colspan="2"><font class="arial12bold">PRECIO PROMEDIO PAGADO</font></td>
-					<td align="left">$ <s:property value="%{getText('importe',{#resultado.precioPromPagAXC})}"/></td>
 				</tr>
 				<tr>
 					<td colspan="2"><font class="arial12bold">AVANCE COSECHA:</font></td>

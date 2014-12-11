@@ -48,6 +48,8 @@
 			<display:table id="r"  name="listSeguimientoCentroAcopioV"  list="listSeguimientoCentroAcopioV"  pagesize="50" sort="list" requestURI="/seguimiento/listSeguimiento"  class="displaytag">
 				<display:column  property="claveBodega" title="Centro de Acopio"/>		
 				<display:column  property="ciclo" title="Ciclo Agr&iacute;cola"/>
+				<display:column  property="nombreCultivo" title="Cultivo"/>
+				<display:column  property="nombreVariedad" title="Variedad"/>
 				<display:column  title="Periodo Inicial">
 					<s:text name="fecha"> <s:param value="%{#attr.r.periodoInicial}"/></s:text>
 				</display:column>

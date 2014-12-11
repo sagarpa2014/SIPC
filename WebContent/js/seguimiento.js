@@ -287,19 +287,25 @@ function validaClaveBodega(){
 	}	
 	var idCiclo =   $('#idCiclo').val();
 	var ejercicio =   $('#ejercicio').val();
+	var idCultivo =   $('#idCultivo').val();
+	
 	$.ajax({
 		   async: false,
 		   type: "POST",
 		   url: "validaClaveBodega", 
 		   data: "claveBodega="+claveBodega+
 		   		 "&idCiclo="+idCiclo+
-		   		 "&ejercicio="+ejercicio,
+		   		 "&ejercicio="+ejercicio+
+		   		"&idCultivo="+idCultivo,
 		   success: function(data){
 			   var $response=$(data);
 			   var errorClaveBodega = $response.filter('#errorCB').text();
 			   var nombreCentroAcopio = $response.filter('#nombreCentroAcopioR').text();
 			   var nomRegionalCentroAcopio = $response.filter('#nomRegionalCentroAcopioR').text();
 			   var operadorCentroAcopio = $response.filter('#operadorCentroAcopioR').text();
+			   
+			   var existenciaAMAnt = $response.filter('#existenciaAMR').text();
+		   
 			   console.log("errorClaveBodega"+errorClaveBodega);
 			   if(errorClaveBodega == 1){
 				   $('#errorClaveBodega').val(1);
@@ -310,6 +316,8 @@ function validaClaveBodega(){
 			   $('#nombreCentroAcopio').val(nombreCentroAcopio);
 			   $('#nomRegionalCentroAcopio').val(nomRegionalCentroAcopio);
 			   $('#operadorCentroAcopio').val(operadorCentroAcopio);
+			   
+			   $('#existenciaAMAnt').val(existenciaAMAnt);
 			   
 			   $("#validaClaveBodega").html(data).ready(function () {	
 				
@@ -381,6 +389,7 @@ function getTotalMovilizado(volumen, id, msj){
 			}			
 		}
 	}	
+	
 	var totalVolumenMovilizado = 0;	
 	var mfurgon =  $('#mfurgon').val();
 	var mcamion =  $('#mcamion').val();
@@ -395,10 +404,12 @@ function getTotalMovilizado(volumen, id, msj){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mmaritimo));	
 	}
 	$('#mtotal').val(totalVolumenMovilizado.toFixed(3));
-	var totalExistencia = 0;	
 	var mtotal =  $('#mtotal').val();
+	var totalExistencia = 0.0;	
 	var acopioTotalTon =  $('#acopioTotalTon').val();
-	totalExistencia = acopioTotalTon-mtotal;
+	var existenciaAMAnt =  $('#existenciaAMAnt').val();
+	totalExistencia = parseFloat(existenciaAMAnt) + parseFloat(acopioTotalTon-mtotal);
+//alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
 	$('#existenciaAM').val(totalExistencia.toFixed(3));
 }
 
@@ -465,7 +476,8 @@ function getTotalAcopio(volumen, id, msj){
 				return false;
 			}			
 		}
-	}	
+	}
+
 	var totalVolumenAcopio = 0;	
 	var volumenMercadoLibre =  $('#volumenMercadoLibre').val();
 	var volumenAXC =  $('#volumenAXC').val();
@@ -476,10 +488,12 @@ function getTotalAcopio(volumen, id, msj){
 		totalVolumenAcopio = (totalVolumenAcopio+parseFloat(volumenAXC));	 
 	}		
 	$('#acopioTotalTon').val(totalVolumenAcopio.toFixed(3));
-	var totalExistencia = 0;	
+	var acopioTotalTon =  $('#acopioTotalTon').val();	
+	var totalExistencia = 0.0;	
 	var mtotal =  $('#mtotal').val();
-	var acopioTotalTon =  $('#acopioTotalTon').val();
-	totalExistencia = acopioTotalTon-mtotal;
+	var existenciaAMAnt =  $('#existenciaAMAnt').val();
+	totalExistencia = parseFloat(existenciaAMAnt) + parseFloat(acopioTotalTon-mtotal);
+//alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
 	$('#existenciaAM').val(totalExistencia.toFixed(3));
 }
 
@@ -518,14 +532,28 @@ function recuperaVariedadByCultivo(idCultivo){
 	if(idCultivo == -1){
 		return false;
 	}
+
+	var claveBodega = $('#claveBodega').val();
+	var idCiclo = $('#idCiclo').val();
+	var ejercicio = $('#ejercicio').val();
+	var idCultivo = $('#idCultivo').val();
+	
+//	alert('claveBodega: '+claveBodega+ ' idCiclo: '+idCiclo+ ' ejercicio: '+ejercicio+' cultivo: '+idCultivo);
+	
 	$.ajax({
 		   async: false,
 		   type: "POST",
 		   url: "recuperaVariedadByCultivo",
-		   data: "idCultivo="+idCultivo,	
+		   data: "claveBodega="+claveBodega+
+	   		 	 "&idCiclo="+idCiclo+
+	   		 	 "&ejercicio="+ejercicio+
+	   		 	 "&idCultivo="+idCultivo,
 		   success: function(data){
+			   	var $response=$(data);
+			   	var existenciaAMAnt = $response.filter('#existenciaAMR').text();
+			   	$('#existenciaAMAnt').val(existenciaAMAnt);
+			   	
 				$("#variedad").html(data).ready(function () {
-					
 				});
 		   }
 		});//fin ajax

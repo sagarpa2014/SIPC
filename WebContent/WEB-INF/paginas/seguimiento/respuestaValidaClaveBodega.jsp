@@ -6,3 +6,5 @@
 <div id="nombreCentroAcopioR" class="elementoOculto"><s:property value="%{nombreCentroAcopio}"/></div>
 <div id="nomRegionalCentroAcopioR" class="elementoOculto"><s:property value="%{nomRegionalCentroAcopio}"/></div>
 <div id="operadorCentroAcopioR" class="elementoOculto"><s:property value="%{operadorCentroAcopio}"/></div>
+
+<div id="existenciaAMR" class="elementoOculto"><s:property value="%{existenciaAMAnt}"/></div>

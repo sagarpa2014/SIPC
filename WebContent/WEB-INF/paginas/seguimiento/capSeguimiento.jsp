@@ -39,15 +39,28 @@
   			</td>
 		</tr>
 		<tr>
+			<td>
+				<label class="left1"><span class="requerido">*</span>Existencia de Grano de la Visita Anterior:</label>
+			</td>
+			<td colspan="4">
+				<s:if test="existenciaAMAnt==null">
+					<s:textfield id="existenciaAMAnt" name="existenciaAMAnt" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
+				</s:if>
+				<s:else>
+					<s:textfield id="existenciaAMAnt" name="existenciaAMAnt" value="%{getText('volumenSinComas',{existenciaAMAnt})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
+				</s:else>
+			</td>
+		</tr>	
+		<tr>
 			<td><label class="left1"><span class="requerido">*</span>Periodo de:</label></td>
 			<td>
 				<s:if test="%{sca.periodoInicial==null}">
-					<s:textfield id="periodoInicial" name="periodoInicial" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{}" onchange=""/>
+					<s:textfield id="periodoInicial" name="periodoInicial" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{fechaActual})}" onchange=""/>
 				</s:if>	
 				<s:else>
 					<s:textfield id="periodoInicial" name="periodoInicial" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{sca.periodoInicial})}" onchange=""/>
 				</s:else>
-				<s:if test="registrar!=1 && registrar!=3">
+				<s:if test="registrar!=1 && registrar!=3 && registrar!=2">
 					<img width="16px" src="../images/calendar.gif" id="trgPeriodoInicial" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha"/>
 					<script type="text/javascript">
 						Calendar.setup({
@@ -63,12 +76,12 @@
 			<td>Al:</td>
 			<td colspan="2">
 				<s:if test="%{sca.periodoFinal==null}">
-					<s:textfield id="periodoFinal" name="periodoFinal" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{}" onchange=""/>
+					<s:textfield id="periodoFinal" name="periodoFinal" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{fechaActual})}" onchange=""/>
 				</s:if>	
 				<s:else>
 					<s:textfield id="periodoFinal" name="periodoFinal" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{sca.periodoFinal})}" onchange=""/>
 				</s:else>
-				<s:if test="registrar!=1 && registrar!=3">
+				<s:if test="registrar!=1 && registrar!=3 && registrar!=2">
 					<img width="16px" src="../images/calendar.gif" id="trgPeriodoFinal" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha"/>
 					<script type="text/javascript">
 						Calendar.setup({
@@ -84,7 +97,7 @@
 		</tr>
 		<tr>
   			<td>
-  				<label class="left1"><span class="requerido">*</span>Clave Centro Acopio:</label>
+  				<label class="left1"><span class="requerido">*</span>Clave del Centro Acopio:</label>
   			</td>
   			<td colspan="4">
   				<s:if test="%{sca.claveBodega!=null && sca.claveBodega != ''}">
@@ -98,7 +111,7 @@
 		</tr>
 		<tr>
 			<td>
-				<label class="left1">Nombre del Centro de Acopio Registrado en Aserca:</label>	
+				<label class="left1">Nombre o Razón Social del Centro de Acopio Registrado en ASERCA:</label>	
 			</td>
 			<td colspan="4" id="">
 				<s:if test="%{nombreCentroAcopio!=null && nombreCentroAcopio != ''}">
@@ -125,7 +138,7 @@
 		</tr>
 		<tr>
 			<td>
-				<label class="left1">Operador del Centro de Acopio:</label>
+				<label class="left1">Nombre o Razón Social del Operador del Centro de Acopio:</label>
 			</td>
 			<td colspan="4">
 				<s:if test="%{operadorCentroAcopio!=null && operadorCentroAcopio != ''}">
@@ -137,14 +150,6 @@
 				
 			</td>
 		</tr>
-		<tr>
-			<td>
-				<label class="left1">Comercializador/Comprador:</label>
-			</td>
-			<td colspan="4">
-				<s:select id="idComprador" name="idComprador" list="lstComprador" listKey="idComprador" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" onchange="recuperaCartasByComprador()"  style="width:650px" value="%{sca.idComprador}"/>
-			</td>
-		</tr>		
 		<tr>
 			<td>
 				<label class="left1"><span class="requerido">*</span>Cultivo:</label>
@@ -167,10 +172,10 @@
 			</td>
 			<td colspan="4">
 				<s:if test="%{sca.volumenMercadoLibre != null && sca.volumenMercadoLibre != ''}">
-					<s:textfield id="volumenMercadoLibre" name="volumenMercadoLibre" value="%{getText('volumenSinComas',{sca.volumenMercadoLibre})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenMercadoLibre',1);"/> (tons.)
+					<s:textfield id="volumenMercadoLibre" name="volumenMercadoLibre" value="%{getText('volumenSinComas',{sca.volumenMercadoLibre})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenMercadoLibre',1);"/> (T.M.)
 				</s:if>
 				<s:else>	
-					<s:textfield id="volumenMercadoLibre" name="volumenMercadoLibre" value="" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenMercadoLibre',1);"/> (tons.)
+					<s:textfield id="volumenMercadoLibre" name="volumenMercadoLibre" value="" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenMercadoLibre',1);"/> (T.M.)
 				</s:else>
 			</td>
 		</tr>
@@ -180,27 +185,35 @@
 			</td>
 			<td colspan="4">
 				<s:if test="%{sca.volumenAXC != null && sca.volumenAXC != ''}">
-					<s:textfield id="volumenAXC" name="volumenAXC" value="%{getText('volumenSinComas',{sca.volumenAXC})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenAXC',1);"/> (tons.)
+					<s:textfield id="volumenAXC" name="volumenAXC" value="%{getText('volumenSinComas',{sca.volumenAXC})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenAXC',1);"/> (T.M.)
 				</s:if>
 				<s:else>
-					<s:textfield id="volumenAXC" name="volumenAXC" value="" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenAXC',1);"/> (tons.)
+					<s:textfield id="volumenAXC" name="volumenAXC" value="" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'volumenAXC',1);"/> (T.M.)
 				</s:else>
 				
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label class="left1"><span class="requerido">*</span>Acopio Toneladas:</label>
+				<label class="left1"><span class="requerido">*</span>Acopio Total Toneladas:</label>
 			</td>
 			<td colspan="4">
 				<s:if test="%{sca.acopioTotalTon != null && sca.acopioTotalTon != ''}">
-					<s:textfield id="acopioTotalTon" name="acopioTotalTon"  value="%{getText('volumenSinComas',{sca.acopioTotalTon})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (tons.)
+					<s:textfield id="acopioTotalTon" name="acopioTotalTon"  value="%{getText('volumenSinComas',{sca.acopioTotalTon})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:if>
 				<s:else>
-					<s:textfield id="acopioTotalTon" name="acopioTotalTon" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (tons.)
+					<s:textfield id="acopioTotalTon" name="acopioTotalTon" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:else>
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<label class="left1">Nombre o Razón Social del Comprador:</label>
+			</td>
+			<td colspan="4">
+				<s:select id="idComprador" name="idComprador" list="lstComprador" listKey="idComprador" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" onchange="recuperaCartasByComprador()"  style="width:650px" value="%{sca.idComprador}"/>
+			</td>
+		</tr>				
 		<tr>
 			<td>
 				<label class="left1">Pagado:</label>
@@ -226,12 +239,25 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<label class="left1"><span class="norequerido">*</span>Tons.</label>			
+				<label class="center1"><span class="norequerido">*</span>T.M.</label>			
 			</td>
 			<td colspan="3">
-				<label class="left1"><span class="norequerido">*</span>%</label>			
+				<label class="center1"><span class="norequerido">*</span>%</label>			
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<label class="left1">Precio Promedio Pagado:</label>
+			</td>
+			<td colspan="4">
+				<s:if test="%{sca.precioPromPagAXC != null && sca.precioPromPagAXC != ''}">
+					$ <s:textfield id="precioPromPagAXC" name="precioPromPagAXC" value="%{getText('importeSinComas',{sca.precioPromPagAXC })}" maxlength="14" size="20"  cssClass="cantidad" /> (AXC)
+				</s:if>
+				<s:else>
+					$ <s:textfield id="precioPromPagAXC" name="precioPromPagAXC" value="%{}" maxlength="14" size="20"  cssClass="cantidad" /> (AXC)
+				</s:else>
+			</td>
+		</tr>		
 		<tr>
 			<td>
 				<label class="left1">Movilizado:</label>
@@ -263,10 +289,10 @@
 			</td>
 			<td>
 				<s:if test="%{sca.mtotal != null && sca.mtotal != ''}">
-					<s:textfield id="mtotal" name="mtotal"  value="%{getText('volumenSinComas',{sca.mtotal})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (tons.)
+					<s:textfield id="mtotal" name="mtotal"  value="%{getText('volumenSinComas',{sca.mtotal})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:if>
 				<s:else>
-					<s:textfield id="mtotal" name="mtotal" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (tons.)
+					<s:textfield id="mtotal" name="mtotal" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:else>
 			</td>
 		</tr>
@@ -291,10 +317,10 @@
 			</td>
 			<td colspan="4">
 				<s:if test="%{sca.existenciaAM != null && sca.existenciaAM != ''}">	
-					<s:textfield id="existenciaAM" name="existenciaAM" value="%{getText('volumenSinComas',{sca.existenciaAM})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (tons.)
+					<s:textfield id="existenciaAM" name="existenciaAM" value="%{getText('volumenSinComas',{sca.existenciaAM})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
 				</s:if>
 				<s:else>
-					<s:textfield id="existenciaAM" name="existenciaAM" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (tons.)
+					<s:textfield id="existenciaAM" name="existenciaAM" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:else>				
 			</td>
 		</tr>
@@ -316,24 +342,11 @@
 				<label class="left1">Observaciones:</label>
 			</td>
 			<td colspan="4">
-				<s:if test="%{sca.observaciones==null ||sca.observaciones==''">
+				<s:if test="%{sca.observaciones==null ||sca.observaciones==''}">
 					<s:textarea id="observaciones" name="observaciones" value="" cols="80" rows="1" />	
 				</s:if>
 				<s:else>
 					<s:textarea id="observaciones" name="observaciones" value="%{sca.observaciones}" cols="140" rows="1" />
-				</s:else>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label class="left1">Precio Promedio Pagado:</label>
-			</td>
-			<td colspan="4">
-				<s:if test="%{sca.precioPromPagAXC != null && sca.precioPromPagAXC != ''}">
-					$ <s:textfield id="precioPromPagAXC" name="precioPromPagAXC" value="%{getText('importeSinComas',{sca.precioPromPagAXC })}" maxlength="14" size="20"  cssClass="cantidad" />
-				</s:if>
-				<s:else>
-					$ <s:textfield id="precioPromPagAXC" name="precioPromPagAXC" value="%{}" maxlength="14" size="20"  cssClass="cantidad" />
 				</s:else>
 			</td>
 		</tr>
@@ -454,9 +467,9 @@
 		$(document).ready(function() {			
 			$("#idCiclo").attr('disabled','disabled');		
 			$("#ejercicio").attr('disabled','disabled');		
+			$("#claveBodega").attr('disabled','disabled');
 //			$("#periodoInicial").attr('disabled','disabled');		
 //			$("#periodoFinal").attr('disabled','disabled');
-			$("#claveBodega").attr('disabled','disabled');	
 		});	 
 	</script>
 </s:if>

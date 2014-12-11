@@ -1,5 +1,7 @@
 package mx.gob.comer.sipc.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import mx.gob.comer.sipc.domain.transaccionales.SeguimientoCentroAcopio;
@@ -165,7 +167,7 @@ public class SeguimientoDAO {
 			}
 		}
 
-		consulta.append(" order by claveBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
+		consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
 		lst= session.createQuery(consulta.toString()).list();
 		return lst;
 	}
@@ -199,7 +201,7 @@ public class SeguimientoDAO {
 			}
 		}
 
-		consulta.insert(0, "From SeguimientoCentroAcopioV ").append(" order by nombreEstadoBodega, nombreCultivo, ciclo, claveBodega, nombreComprador");
+		consulta.insert(0, "From SeguimientoCentroAcopioV ").append(" order by nombreEstadoBodega, nombreCultivo, ciclo, nombreBodega, periodoInicial, periodoFinal");
 		lst= session.createQuery(consulta.toString()).list();
 		return lst;
 	}
@@ -455,4 +457,75 @@ public class SeguimientoDAO {
 		session.delete(o);
 		session.flush();
 	}
+	
+	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo){
+		//String query;
+		StringBuilder query= new StringBuilder();
+		Double resp=0.0;
+		try {
+			query.append("where clave_bodega = '").append(claveBodega).append("'")
+				 .append(" and id_ciclo=").append(idCiclo)
+				 .append(" and ejercicio=").append(ejercicio)
+				 .append(" and id_cultivo=").append(idCultivo)
+				 .append(" and periodo_inicial = (select max(periodo_inicial)")
+				 .append("						  from seguimiento_centro_acopio")
+				 .append("						  where clave_bodega = s.clave_bodega")
+				 .append("						  and id_ciclo = s.id_ciclo")
+				 .append("						  and ejercicio = s.ejercicio")
+				 .append("						  and id_cultivo = s.id_cultivo)");
+
+			resp = Double.parseDouble(session.createSQLQuery("SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+query.toString()).list().get(0).toString());
+			
+		}catch(JDBCException e){
+			e.printStackTrace();
+		}
+		return resp;
+	}
+
+	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo, Date periodoInicial, Date periodoFinal){
+		//String query;
+		StringBuilder query= new StringBuilder();
+		Double resp=0.0;
+		try {
+			query.append("where clave_bodega = '").append(claveBodega).append("'")
+			 .append(" and id_ciclo=").append(idCiclo)
+			 .append(" and ejercicio=").append(ejercicio)
+			 .append(" and id_cultivo=").append(idCultivo)
+			 .append(" and periodo_inicial = (select max(periodo_inicial)")
+			 .append("						  from seguimiento_centro_acopio")
+			 .append("						  where clave_bodega = s.clave_bodega")
+			 .append("						  and id_ciclo = s.id_ciclo")
+			 .append("						  and ejercicio = s.ejercicio")
+			 .append("						  and id_cultivo = s.id_cultivo")
+			 .append("						  and periodo_inicial < '").append(periodoInicial).append("')");
+			
+			resp = Double.parseDouble(session.createSQLQuery("SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+query.toString()).list().get(0).toString());
+			
+		}catch(JDBCException e){
+			e.printStackTrace();
+		}
+		return resp;
+	}
+
+	public Date consultaPeriodoFinalMax(String claveBodega, int idCiclo, int ejercicio, int idCultivo) throws ParseException{
+		//String query;
+		StringBuilder query= new StringBuilder();
+		String resp;
+		Date convertedDate=null;
+		try {
+			query.append("where clave_bodega = '").append(claveBodega).append("'")
+			 .append(" and id_ciclo=").append(idCiclo)
+			 .append(" and ejercicio=").append(ejercicio)
+			 .append(" and id_cultivo=").append(idCultivo);
+			
+			resp = session.createSQLQuery("SELECT  obten_fecha_mas_dias_naturales(to_date(to_char(max(periodo_final),'DD-MM-YYYY'),'DD-MM-YYYY'), 1) from seguimiento_centro_acopio "+query.toString()).list().get(0).toString();
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd"); 
+		    convertedDate = dateFormat.parse(resp); 
+		}catch(JDBCException e){
+			e.printStackTrace();
+		}
+		return convertedDate;
+	}
+
 }// fin de clase

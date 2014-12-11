@@ -90,6 +90,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private Double mmaritimo;
 	private Double mtotal;
 	private Double existenciaAM;
+	private Double existenciaAMAnt;
 	private int idEstado;
 	private String destino;
 	private String observaciones;
@@ -205,6 +206,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
 				idCiclo = sca.getIdCiclo(); 
 				ejercicio = sca.getEjercicio();
+				idCultivo = sca.getIdCultivo();
 				claveBodega = sca.getClaveBodega();
 				descEstatus = cDAO.consultaEstatusSeguimiento(sca.getIdEstatus()).get(0).getDescripcion();
 				justificacionAutoriza = sca.getJustificacionAutoriza(); 
@@ -212,7 +214,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				idVariedad = sca.getIdVariedad();
 				if (idVariedad==null)
 					idVariedad = 0;
-				validaClaveBodega();
+				validaClaveBodega();				
 			} else {
 				idVariedad = 0;
 				fechaActual = new Date();
@@ -232,9 +234,9 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			session = ActionContext.getContext().getSession();
 			
 			if(registrar != 3){
-				if(cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoInicial))==0 &&
-				   cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoFinal))==0){
-					if(registrar == 0){//Nuevo registro
+				if(registrar == 0){//Nuevo registro
+					if(cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoInicial))==0 &&
+							   cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoFinal))==0){
 						sca = new SeguimientoCentroAcopio();
 						sca.setClaveBodega(claveBodega);
 						sca.setEjercicio(ejercicio);
@@ -246,34 +248,73 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						// Valida que lo registrado de almacenamiento total sea menor o igual capacidad de la Bodega para el Ciclo, Ejercicio y Cultivo
 						CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
 						capacidadCA = cDAO.consultaCapacidadBodega(claveBodega).get(0);
-						//Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodega, idCiclo, ejercicio, idCultivo);
-						//if((almacenamientoCA+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
-						if((acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+						Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodega, idCiclo, ejercicio, idCultivo);
+						if((almacenamientoCA+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+						//if((acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
 							cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
 						} else {
 							cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
 												  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
-												  " tons. de acuerdo a lo acopiado: "+(acopioTotalTon)+" tons., verifiquelo!!!";
-						}					
-					}else if(registrar == 2){ //Edicion de segumiento 
-						sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
-						sca.setUsuarioActualiza((Integer) session.get("idUsuario"));
-						sca.setFechaActualiza(new Date());
-						sca.setPeriodoFinal(periodoFinal);
-						sca.setPeriodoInicial(periodoInicial);					
-						// Valida que lo registrado de almacenamiento total sea menor o igual capacidad de la Bodega para el Ciclo, Ejercicio y Cultivo
-						CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
-						capacidadCA = cDAO.consultaCapacidadBodega(claveBodegaAux).get(0);
-	//					Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodegaAux, idCicloAux, ejercicioAux, idCultivo);
-	//					if(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
-						if(acopioTotalTon<=capacidadCA.getTotalAlmacenamiento()){
-							cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
+												  " tons. de acuerdo a lo acopiado: "+(almacenamientoCA+acopioTotalTon)+" tons., verifiquelo!!!";
+						}
+						sca.setIdEstatus(1);
+						sca.setVolumenMercadoLibre(volumenMercadoLibre);
+						sca.setVolumenAXC(volumenAXC);
+						sca.setAcopioTotalTon(acopioTotalTon);
+						sca.setAvanceCosecha(avanceCosecha);
+						sca.setExistenciaAM(existenciaAM);
+						sca.setFechaEnvio(fechaEnvio);
+						if (idComprador==0 || idComprador==-1){
+							sca.setIdComprador(null);
 						} else {
-							cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
-												  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
-												  " tons. de acuerdo a lo acopiado: "+(acopioTotalTon)+" tons., verifiquelo!!!";
-						}					
+							sca.setIdComprador(idComprador);
+						}
+						sca.setIdCultivo(idCultivo);
+						if(idVariedad != -1){
+							sca.setIdVariedad(idVariedad);	
+						}
+						
+			//			if (idEstado==0 || idEstado==-1){
+			//				sca.setIdEstado(null);
+			//			} else {
+			//				sca.setIdEstado(idEstado);
+			//			}
+						sca.setDestino(destino);
+						sca.setMcamion(mcamion);
+						sca.setMfurgon(mfurgon);
+						sca.setMmaritimo(mmaritimo);
+						sca.setMtotal(mtotal);
+						//sca.setNombreReciboInfo(nombreReciboInfo);
+						sca.setObservaciones(observaciones);
+						sca.setPagadoPorcentaje(pagadoPorcentaje);
+						sca.setPagadoTon(pagadoTon);
+						sca.setPrecioPromPagAXC(precioPromPagAXC);
+			//			sca.setPrecioPromPagLibre(precioPromPagLibre);
+					} else {
+						addActionError("Ya existe información de seguimiento de acopio de la bodega: "+claveBodega+
+								" para el periodo inicio: "+new java.text.SimpleDateFormat("dd/MM/yyyy").format(periodoInicial)+
+								" y/o termino: "+new java.text.SimpleDateFormat("dd/MM/yyyy").format(periodoFinal)+" a capturar, por favor verifique");
+						return SUCCESS;					
 					}
+				}else if(registrar == 2){ //Edicion de segumiento 
+					sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
+					sca.setUsuarioActualiza((Integer) session.get("idUsuario"));
+					sca.setFechaActualiza(new Date());
+					//sca.setPeriodoFinal(periodoFinal);
+					//sca.setPeriodoInicial(periodoInicial);					
+					// Valida que lo registrado de almacenamiento total sea menor o igual capacidad de la Bodega para el Ciclo, Ejercicio y Cultivo
+					CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
+					capacidadCA = cDAO.consultaCapacidadBodega(claveBodegaAux).get(0);
+					Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodegaAux, idCicloAux, ejercicioAux, idCultivo);
+					if(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+					//if(acopioTotalTon<=capacidadCA.getTotalAlmacenamiento()){
+						cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
+					} else {
+						cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
+											  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
+											  " tons. de acuerdo a lo acopiado: "+(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon))+" tons., verifiquelo!!!";
+					}
+					
 					sca.setIdEstatus(1);
 					sca.setVolumenMercadoLibre(volumenMercadoLibre);
 					sca.setVolumenAXC(volumenAXC);
@@ -307,11 +348,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setPagadoTon(pagadoTon);
 					sca.setPrecioPromPagAXC(precioPromPagAXC);
 		//			sca.setPrecioPromPagLibre(precioPromPagLibre);
-				} else {
-					addActionError("Ya existe información de seguimiento de acopio de la bodega: "+claveBodega+
-							" para el periodo inicio: "+new java.text.SimpleDateFormat("dd/MM/yyyy").format(periodoInicial)+
-							" y/o termino: "+new java.text.SimpleDateFormat("dd/MM/yyyy").format(periodoFinal)+" a capturar, por favor verifique");
-					return SUCCESS;					
+
 				}
 			} else { //Autorizacion de cambios
 				if(doc!=null){
@@ -371,6 +408,14 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					 if(lstObv.size()>0){
 						 operadorCentroAcopio =  lstObv.get(0).getNombre();
 					 }			
+					 
+					 if(idCultivo > 0){
+						 if(registrar!=1&&registrar!=2){
+							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo);
+						 } else {
+							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, sca.getPeriodoInicial(), sca.getPeriodoFinal()); 
+						 }
+					 }
 				}
 				
 			}else{
@@ -400,10 +445,17 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	}
 
 	public String vistaPreviaOficio(){
-		lstSeguimientoAcopio = sDAO.consultaSeguimientoCAV(idSeguimiento);	
+		lstSeguimientoAcopio = sDAO.consultaSeguimientoCAV(idSeguimiento);
+		claveBodega = lstSeguimientoAcopio.get(0).getClaveBodega();
+		idCiclo = lstSeguimientoAcopio.get(0).getIdCiclo();
+		ejercicio = lstSeguimientoAcopio.get(0).getEjercicio();
+		idCultivo = lstSeguimientoAcopio.get(0).getIdCultivo();
 		ciclo = lstSeguimientoAcopio.get(0).getCiclo();
 		periodoInicial = lstSeguimientoAcopio.get(0).getPeriodoInicial();
 		periodoFinal = lstSeguimientoAcopio.get(0).getPeriodoFinal();
+
+		existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, periodoInicial, periodoFinal); 
+
 		Utilerias.getResponseISO();
 		return SUCCESS;
 	}
@@ -1063,6 +1115,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	public String recuperaVariedadByCultivo(){
 		//Recupera los datos de la variedad por cultivo
 		lstVariedad = cDAO.consultaVariedad(-1, idCultivo, null);
+
+		if((claveBodega!=null && !claveBodega.equals("")) && idCiclo != -1 && ejercicio !=-1 && idCultivo > 0){
+			existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo);
+		}
+
 		return SUCCESS;		
 	}
 
@@ -1609,5 +1666,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	}
 	public void setUsuario(Usuarios usuario) {
 		this.usuario = usuario;
+	}
+	public Double getExistenciaAMAnt() {
+		return existenciaAMAnt;
+	}
+	public void setExistenciaAMAnt(Double existenciaAMAnt) {
+		this.existenciaAMAnt = existenciaAMAnt;
 	}
 }
