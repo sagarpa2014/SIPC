@@ -163,6 +163,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	private Double volumenPago;
 	private Double importePago;
 	
+	private Double volumenCertificados;
+	private Double volumenConstancias;
+	
 	@SessionTarget
 	Session sessionTarget;
 	
@@ -308,20 +311,29 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
-												}												
+												}
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												if(volumenCertificados==0.0){
+													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												}
 											} else {
 												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstDetallePagosCAEspecialistaV.get(i).getBodega());
 												if (pca.size()>0){
 													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
-												}												
+												}
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												if(volumenCertificados==0.0){
+													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												}
 											}											
 											volumenAutEdoCulVarCA = lstDetallePagosCAEspecialistaV.get(i).getVolumen();
 											vEstadoAux = lstDetallePagosCAEspecialistaV.get(i).getEstado();
 											vCultivoAux = lstDetallePagosCAEspecialistaV.get(i).getCultivo();
 											vVariedadAux = lstDetallePagosCAEspecialistaV.get(i).getVariedad();
 											vBodegaAux = lstDetallePagosCAEspecialistaV.get(i).getBodega();
+											
 											break;
 										}
 									}
@@ -329,7 +341,36 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
 									//System.out.println(suma);
-									if (suma >volumenAutEdoCulVarCA){
+									if (volumenCertificados>0.0){
+										if (suma > volumenCertificados){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}
+									} else {
+										if (suma > volumenConstancias){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}											
+									}									
+									if (suma > volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
 											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
@@ -449,8 +490,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 						errorSistema = 1;
 						addActionError("La vigencia del documento Anexo 32D ("+fechaVigenciaLimitePago.toString()+") no es válida para el registro del pago ("+new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString()+") o el anexo 32D esta en estatus de observación, por favor verifique");
 						return SUCCESS;
-					}
-			
+					}			
 			} else {
 				errorSistema = 1;
 				addActionError("El comprador esta en estatus Inhabilitado por lo que no procede el registro del pago, por favor verifique");
@@ -2161,4 +2201,19 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		this.importePago = importePago;
 	}
 
+	public Double getVolumenCertificados() {
+		return volumenCertificados;
+	}
+
+	public void setVolumenCertificados(Double volumenCertificados) {
+		this.volumenCertificados = volumenCertificados;
+	}
+
+	public Double getVolumenConstancias() {
+		return volumenConstancias;
+	}
+
+	public void setVolumenConstancias(Double volumenConstancias) {
+		this.volumenConstancias = volumenConstancias;
+	}
 }

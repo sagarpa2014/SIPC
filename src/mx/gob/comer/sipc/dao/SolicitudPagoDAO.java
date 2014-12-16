@@ -569,7 +569,36 @@ public class SolicitudPagoDAO {
 		}
 		return sumaCD;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public Double getSumaCertificadoDepositoByFolioCABodegaCultVar(String folioCartaAdhesion, String claveBodega, int idCultivo, int idVariedad) throws Exception{
+		double sumaCD = 0;
+		StringBuilder hql;
+		try{
+			if(claveBodega==null){
+				hql = new StringBuilder().append("select new java.lang.Double(COALESCE (sum(volumen),0))")
+						.append(" from CertificadosDeposito ")
+						.append(" where folioCartaAdhesion ='").append(folioCartaAdhesion).append("'")
+						.append(" and idCultivo =").append(idCultivo)
+						.append(" and idVariedad =").append(idVariedad);
+			} else {
+				hql = new StringBuilder().append("select new java.lang.Double(COALESCE (sum(volumen),0))")
+						.append(" from CertificadosDeposito ")
+						.append(" where folioCartaAdhesion ='").append(folioCartaAdhesion).append("'")
+						.append(" and claveBodega ='").append(claveBodega).append("'")
+						.append(" and idCultivo =").append(idCultivo)
+						.append(" and idVariedad =").append(idVariedad);				
+			}
+			List<Double> lst = (List<Double>) session.createQuery(hql.toString()).list();
+			if (lst != null && lst.size() > 0){
+				sumaCD = lst.get(0);
+			}
+		}catch (Exception e){	
+			transaction.rollback();
+			throw e;
+		}
+		return sumaCD;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AuditorSolicitudPago> consultaAuditorSolPago(String folioCartaAdhesion, int tipoDocumentacion)throws JDBCException {
@@ -878,6 +907,35 @@ public class SolicitudPagoDAO {
 		return sumaCA;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Double getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(String folioCartaAdhesion, String claveBodega, int idCultivo, int idVariedad) throws Exception{
+		double sumaCA = 0;
+		StringBuilder hql;
+		try{
+			if(claveBodega==null){
+				hql = new StringBuilder().append("select new java.lang.Double(COALESCE (sum(volumen),0))")
+						.append(" from ConstanciasAlmacenamiento ")
+						.append(" where folioCartaAdhesion ='").append(folioCartaAdhesion).append("'")
+						.append(" and idCultivo =").append(idCultivo)
+						.append(" and idVariedad =").append(idVariedad);				
+			} else {
+				hql = new StringBuilder().append("select new java.lang.Double(COALESCE (sum(volumen),0))")
+						.append(" from ConstanciasAlmacenamiento ")
+						.append(" where folioCartaAdhesion ='").append(folioCartaAdhesion).append("'")
+						.append(" and claveBodega ='").append(claveBodega).append("'")
+						.append(" and idCultivo =").append(idCultivo)
+						.append(" and idVariedad =").append(idVariedad);				
+			}
+			List<Double> lst = (List<Double>) session.createQuery(hql.toString()).list();
+			if (lst != null && lst.size() > 0){
+				sumaCA = lst.get(0);
+			}
+		}catch (Exception e){	
+			transaction.rollback();
+			throw e;
+		}
+		return sumaCA;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<PagosV> consultaPagoAtentaNota()throws JDBCException {
