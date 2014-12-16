@@ -163,7 +163,7 @@
 				<label class="left1">Variedad:</label>
 			</td>
 			<td colspan="4" id="variedad">
-				<s:select id="idVariedad"  name="idVariedad" list="lstVariedad" listKey="idVariedad" listValue="%{variedad}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{sca.idVariedad}" onchange="" />
+				<s:select id="idVariedad"  name="idVariedad" list="lstVariedad" listKey="idVariedad" listValue="%{variedad}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{sca.idVariedad}" onchange="validaClaveBodega();" />
 			</td>
 		</tr>
 		<tr>

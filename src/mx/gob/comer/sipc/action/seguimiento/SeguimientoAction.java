@@ -207,6 +207,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				idCiclo = sca.getIdCiclo(); 
 				ejercicio = sca.getEjercicio();
 				idCultivo = sca.getIdCultivo();
+				idVariedad = sca.getIdVariedad();
 				claveBodega = sca.getClaveBodega();
 				descEstatus = cDAO.consultaEstatusSeguimiento(sca.getIdEstatus()).get(0).getDescripcion();
 				justificacionAutoriza = sca.getJustificacionAutoriza(); 
@@ -235,8 +236,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			
 			if(registrar != 3){
 				if(registrar == 0){//Nuevo registro
-					if(cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoInicial))==0 &&
-							   cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoFinal))==0){
+					if(cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoInicial))==0 &&
+							   cDAO.validaPeriodoSeguimientoExistente(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, new java.text.SimpleDateFormat("yyyyMMdd").format(periodoFinal))==0){
 						sca = new SeguimientoCentroAcopio();
 						sca.setClaveBodega(claveBodega);
 						sca.setEjercicio(ejercicio);
@@ -409,11 +410,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						 operadorCentroAcopio =  lstObv.get(0).getNombre();
 					 }			
 					 
-					 if(idCultivo > 0){
+					 if(idCultivo > 0 && idVariedad > 0){
 						 if(registrar!=1&&registrar!=2){
-							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo);
+							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad);
 						 } else {
-							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, sca.getPeriodoInicial(), sca.getPeriodoFinal()); 
+							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, sca.getPeriodoInicial(), sca.getPeriodoFinal()); 
 						 }
 					 }
 				}
@@ -450,11 +451,12 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		idCiclo = lstSeguimientoAcopio.get(0).getIdCiclo();
 		ejercicio = lstSeguimientoAcopio.get(0).getEjercicio();
 		idCultivo = lstSeguimientoAcopio.get(0).getIdCultivo();
+		idVariedad = lstSeguimientoAcopio.get(0).getIdVariedad();
 		ciclo = lstSeguimientoAcopio.get(0).getCiclo();
 		periodoInicial = lstSeguimientoAcopio.get(0).getPeriodoInicial();
 		periodoFinal = lstSeguimientoAcopio.get(0).getPeriodoFinal();
 
-		existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, periodoInicial, periodoFinal); 
+		existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, periodoInicial, periodoFinal); 
 
 		Utilerias.getResponseISO();
 		return SUCCESS;
@@ -1116,8 +1118,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		//Recupera los datos de la variedad por cultivo
 		lstVariedad = cDAO.consultaVariedad(-1, idCultivo, null);
 
-		if((claveBodega!=null && !claveBodega.equals("")) && idCiclo != -1 && ejercicio !=-1 && idCultivo > 0){
-			existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo);
+		if((claveBodega!=null && !claveBodega.equals("")) && idCiclo != -1 && ejercicio !=-1 && idCultivo > 0 && idVariedad > 0){
+			existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad);
 		}
 
 		return SUCCESS;		

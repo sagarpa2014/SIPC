@@ -458,21 +458,23 @@ public class SeguimientoDAO {
 		session.flush();
 	}
 	
-	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo){
+	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo, int idVariedad){
 		//String query;
 		StringBuilder query= new StringBuilder();
 		Double resp=0.0;
 		try {
 			query.append("where clave_bodega = '").append(claveBodega).append("'")
-				 .append(" and id_ciclo=").append(idCiclo)
-				 .append(" and ejercicio=").append(ejercicio)
-				 .append(" and id_cultivo=").append(idCultivo)
-				 .append(" and periodo_inicial = (select max(periodo_inicial)")
-				 .append("						  from seguimiento_centro_acopio")
-				 .append("						  where clave_bodega = s.clave_bodega")
-				 .append("						  and id_ciclo = s.id_ciclo")
-				 .append("						  and ejercicio = s.ejercicio")
-				 .append("						  and id_cultivo = s.id_cultivo)");
+			 .append(" and id_ciclo=").append(idCiclo)
+			 .append(" and ejercicio=").append(ejercicio)
+			 .append(" and id_cultivo=").append(idCultivo)
+			 .append(" and id_variedad=").append(idVariedad)
+			 .append(" and periodo_inicial = (select max(periodo_inicial)")
+			 .append("						  from seguimiento_centro_acopio")
+			 .append("						  where clave_bodega = s.clave_bodega")
+			 .append("						  and id_ciclo = s.id_ciclo")
+			 .append("						  and ejercicio = s.ejercicio")
+			 .append("						  and id_cultivo = s.id_cultivo")
+			 .append("						  and id_variedad = s.id_variedad)");
 
 			resp = Double.parseDouble(session.createSQLQuery("SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+query.toString()).list().get(0).toString());
 			
@@ -482,7 +484,7 @@ public class SeguimientoDAO {
 		return resp;
 	}
 
-	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo, Date periodoInicial, Date periodoFinal){
+	public Double consultaExistenciaBodega(String claveBodega, int idCiclo, int ejercicio, int idCultivo, int idVariedad, Date periodoInicial, Date periodoFinal){
 		//String query;
 		StringBuilder query= new StringBuilder();
 		Double resp=0.0;
@@ -491,12 +493,14 @@ public class SeguimientoDAO {
 			 .append(" and id_ciclo=").append(idCiclo)
 			 .append(" and ejercicio=").append(ejercicio)
 			 .append(" and id_cultivo=").append(idCultivo)
+			 .append(" and id_variedad=").append(idVariedad)
 			 .append(" and periodo_inicial = (select max(periodo_inicial)")
 			 .append("						  from seguimiento_centro_acopio")
 			 .append("						  where clave_bodega = s.clave_bodega")
 			 .append("						  and id_ciclo = s.id_ciclo")
 			 .append("						  and ejercicio = s.ejercicio")
 			 .append("						  and id_cultivo = s.id_cultivo")
+			 .append("						  and id_variedad = s.id_variedad")
 			 .append("						  and periodo_inicial < '").append(periodoInicial).append("')");
 			
 			resp = Double.parseDouble(session.createSQLQuery("SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+query.toString()).list().get(0).toString());

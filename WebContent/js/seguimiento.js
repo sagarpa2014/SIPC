@@ -88,7 +88,14 @@ function chkCamposSeguimientoAcopio(){
 		   	abrirDialogo();
 			return false;
 		}
-	
+
+		/***** VARIEDAD ****/
+		if( $('#idVariedad').val()==-1){
+			$('#dialogo_1').html('Seleccione la variedad');
+		   	abrirDialogo();
+			return false;
+		}
+
 		/***** VOLUMEN MERCADO LIBRE ****/
 		var volumenMercadoLibre = $('#volumenMercadoLibre').val();
 		if(volumenMercadoLibre != null && volumenMercadoLibre != ''){
@@ -288,6 +295,7 @@ function validaClaveBodega(){
 	var idCiclo =   $('#idCiclo').val();
 	var ejercicio =   $('#ejercicio').val();
 	var idCultivo =   $('#idCultivo').val();
+	var idVariedad =   $('#idVariedad').val();
 	
 	$.ajax({
 		   async: false,
@@ -296,7 +304,8 @@ function validaClaveBodega(){
 		   data: "claveBodega="+claveBodega+
 		   		 "&idCiclo="+idCiclo+
 		   		 "&ejercicio="+ejercicio+
-		   		"&idCultivo="+idCultivo,
+		   		"&idCultivo="+idCultivo+
+		   		"&idVariedad="+idVariedad,
 		   success: function(data){
 			   var $response=$(data);
 			   var errorClaveBodega = $response.filter('#errorCB').text();
@@ -537,6 +546,7 @@ function recuperaVariedadByCultivo(idCultivo){
 	var idCiclo = $('#idCiclo').val();
 	var ejercicio = $('#ejercicio').val();
 	var idCultivo = $('#idCultivo').val();
+	var idVariedad = $('#idVariedad').val();	
 	
 //	alert('claveBodega: '+claveBodega+ ' idCiclo: '+idCiclo+ ' ejercicio: '+ejercicio+' cultivo: '+idCultivo);
 	
@@ -547,7 +557,8 @@ function recuperaVariedadByCultivo(idCultivo){
 		   data: "claveBodega="+claveBodega+
 	   		 	 "&idCiclo="+idCiclo+
 	   		 	 "&ejercicio="+ejercicio+
-	   		 	 "&idCultivo="+idCultivo,
+	   		 	 "&idCultivo="+idCultivo+
+	   		 	 "&idVariedad="+idVariedad,
 		   success: function(data){
 			   	var $response=$(data);
 			   	var existenciaAMAnt = $response.filter('#existenciaAMR').text();
