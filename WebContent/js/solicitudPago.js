@@ -534,6 +534,41 @@ function chkCamposDocumentacion(){
 									return false;
 								}
 							}
+
+							// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO							
+														if(idExpediente == 7){
+															var fechaPeriodoInicialAuditorTmp = "";
+															var fechaPeriodoInicialAuditor = $('#fechaPeriodoInicialAuditor').val();
+															if(fechaPeriodoInicialAuditor == null || fechaPeriodoInicialAuditor == ""){
+																$('#dialogo_1').html('Seleccione el Periodo Inicio del Dictamen del Auditor');
+																abrirDialogo();
+																return false;
+															}
+															var fechaPeriodoFinalAuditorTmp = "";
+															var fechaPeriodoFinalAuditor = $('#fechaPeriodoFinalAuditor').val();
+															if(fechaPeriodoFinalAuditor == null || fechaPeriodoFinalAuditor == ""){
+																$('#dialogo_1').html('Seleccione el Periodo Termino del Dictamen del Auditor');
+																abrirDialogo();
+																return false;
+															}
+												   			/*Valida que el Periodo Inicio sea menor o igual al Periodo Termino del Dictamen del Auditor*/
+												   			dia = fechaPeriodoInicialAuditor.substring(0,2);
+												   			mes = fechaPeriodoInicialAuditor.substring(3,5);
+												   			anio = fechaPeriodoInicialAuditor.substring(6,10); 
+												   			fechaPeriodoInicialAuditorTmp = anio+""+""+mes+""+dia;
+
+												   			dia = fechaPeriodoFinalAuditor.substring(0,2);
+												   			mes = fechaPeriodoFinalAuditor.substring(3,5);
+												   			anio = fechaPeriodoFinalAuditor.substring(6,10); 
+												   			fechaPeriodoFinalAuditorTmp = anio+""+""+mes+""+dia;
+
+												   			if(parseInt(fechaPeriodoFinalAuditorTmp) < parseInt(fechaPeriodoInicialAuditorTmp)){
+												   				$('#dialogo_1').html('El Periodo Termino es menor al Periodo Inicio del Dictamen del Auditor, por favor verifique');
+												   				abrirDialogo();
+												   				return false;
+												   			} 								
+														}// end Expediente == 7	
+							// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN	
 						}//end else documento diferente de null
 				   }//end  if($('#doc'+idExpediente).length){
 				   
@@ -617,7 +652,41 @@ function chkCamposDocumentacion(){
 								}
 								
 							}// end expediente = 5	
-							
+							// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO
+							if(idExpediente == 7){
+								var fechaPeriodoInicialAuditorTmp = "";
+								var fechaPeriodoInicialAuditor = $('#fechaPeriodoInicialAuditor').val();
+								if(fechaPeriodoInicialAuditor == null || fechaPeriodoInicialAuditor == ""){
+									$('#dialogo_1').html('Seleccione el Periodo Inicio del Dictamen del Auditor');
+									abrirDialogo();
+									return false;
+								}
+								var fechaPeriodoFinalAuditorTmp = "";
+								var fechaPeriodoFinalAuditor = $('#fechaPeriodoFinalAuditor').val();
+								if(fechaPeriodoFinalAuditor == null || fechaPeriodoFinalAuditor == ""){
+									$('#dialogo_1').html('Seleccione el Periodo Termino del Dictamen del Auditor');
+									abrirDialogo();
+									return false;
+								}
+					   			/*Valida que el Periodo Inicio sea menor o igual al Periodo Termino del Dictamen del Auditor*/
+					   			dia = fechaPeriodoInicialAuditor.substring(0,2);
+					   			mes = fechaPeriodoInicialAuditor.substring(3,5);
+					   			anio = fechaPeriodoInicialAuditor.substring(6,10); 
+					   			fechaPeriodoInicialAuditorTmp = anio+""+""+mes+""+dia;
+
+					   			dia = fechaPeriodoFinalAuditor.substring(0,2);
+					   			mes = fechaPeriodoFinalAuditor.substring(3,5);
+					   			anio = fechaPeriodoFinalAuditor.substring(6,10); 
+					   			fechaPeriodoFinalAuditorTmp = anio+""+""+mes+""+dia;
+
+					   			if(parseInt(fechaPeriodoFinalAuditorTmp) < parseInt(fechaPeriodoInicialAuditorTmp)){
+					   				$('#dialogo_1').html('El Periodo Termino es menor al Periodo Inicio del Dictamen del Auditor, por favor verifique');
+					   				abrirDialogo();
+					   				return false;
+					   			} 								
+							}// end Expediente == 7
+// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN
+
 						}//end else documento diferente de null
 				   }//end  if($('#doc'+idExpediente).length){
 			   }
@@ -1758,6 +1827,13 @@ function recuperaDocRequeridos(){
 					   if(myArray[i] == 5){
 						   $('#spFE').css({"color":color});
 					   }
+					// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO
+					   if(myArray[i] == 7){
+						   $('#spFechaPeriodoInicialAuditor').css({"color":color});
+						   $('#spFechaPeriodoFinalAuditor').css({"color":color});
+					   }
+					   // 	CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN
+
 				   }
 			   }	
 			   $('#spTC').css({"color":color});//Set tipo constancia como requerido

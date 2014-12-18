@@ -30,6 +30,8 @@ public class DocumentacionSPCartaAdhesionV{
 	private Integer idPrograma;
 	private Integer tipoConstancia;
 	private String  rutaDocumentoHistorico;
+	private Date PeriodoInicialAuditor;
+	private Date PeriodoFinalAuditor;
 		
 	public DocumentacionSPCartaAdhesionV() {
 		super();
@@ -313,5 +315,23 @@ public class DocumentacionSPCartaAdhesionV{
 
 	public void setRutaDocumentoHistorico(String rutaDocumentoHistorico) {
 		this.rutaDocumentoHistorico = rutaDocumentoHistorico;
+	}
+	
+	@Column(name =  "periodo_inicial_auditor")
+	public Date getPeriodoInicialAuditor() {
+		return PeriodoInicialAuditor;
+	}
+
+	public void setPeriodoInicialAuditor(Date periodoInicialAuditor) {
+		PeriodoInicialAuditor = periodoInicialAuditor;
+	}
+
+	@Column(name =  "periodo_final_auditor")
+	public Date getPeriodoFinalAuditor() {
+		return PeriodoFinalAuditor;
+	}
+
+	public void setPeriodoFinalAuditor(Date periodoFinalAuditor) {
+		PeriodoFinalAuditor = periodoFinalAuditor;
 	}
 }

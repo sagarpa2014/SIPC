@@ -217,6 +217,8 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	private Double totalVolumenCertificados;
 	private Double totalVolumenConstancia; 
 
+	private Date fechaPeriodoInicialAuditor;
+	private Date fechaPeriodoFinalAuditor;
 	/***METODOS**/
 	public String listarPrograma(){
 		try{
@@ -1489,6 +1491,12 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 				docSPCA.setVolumen(volumen);
 			}
 		}
+		// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO		
+		if(idExpediente == 7){ // Dictamen del Auditor
+			docSPCA.setPeriodoInicialAuditor(fechaPeriodoInicialAuditor);
+			docSPCA.setPeriodoFinalAuditor(fechaPeriodoFinalAuditor);
+		}
+		// CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN		
 		if(band){
 			docSPCA.setObservacion(true); //con observacion							
 			if(idExpediente == 4){

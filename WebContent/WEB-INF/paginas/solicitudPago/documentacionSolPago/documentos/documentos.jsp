@@ -325,7 +325,57 @@
 						</s:elseif>										
 					</tr>
 					<!-- DATOS ADICIONALES EN DOCUMENTOS Solicitud de Apoyo (3), Dictamen Contable (7) -->	
-					<s:if test="%{idExpediente == 7}">
+					<s:if test="%{idExpediente == 7}">					
+<!-- CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO -->					
+						<tr>
+							<td>
+								<label class=""><span id="spFechaPeriodoInicialAuditor" class="norequerido">*</span>Periodo Inicio</label>
+							</td>
+							<td>							
+								<s:if test="%{PeriodoInicialAuditor==null}" >
+									<s:textfield name="fechaPeriodoInicialAuditor" maxlength="10" size="10" id="fechaPeriodoInicialAuditor" readonly="true" cssClass="dateBox"/>
+									<img src="../images/calendar.gif" id="trgfechaPeriodoInicialAuditor" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+									<script type="text/javascript">
+										<!--
+											Calendar.setup({
+												inputField     :    "fechaPeriodoInicialAuditor",     
+												ifFormat       :    "%d/%m/%Y",     
+												button         :    "trgfechaPeriodoInicialAuditor",  
+												align          :    "Br",           
+												singleClick    :    true
+											});	
+										//-->
+									</script>		
+								</s:if>
+								<s:else>
+									<font class="arial12bold"><s:text name="fecha"><s:param value="%{PeriodoInicialAuditor}"/></s:text></font>
+								</s:else>								
+							</td>
+						</tr>
+						<tr>
+							<td><label class=""><span id="spFechaPeriodoFinalAuditor" class="norequerido">*</span>Periodo Termino</label></td>
+							<td>								
+								<s:if test="%{PeriodoFinalAuditor==null}" >
+									<s:textfield name="fechaPeriodoFinalAuditor" maxlength="10" size="10" id="fechaPeriodoFinalAuditor" readonly="true" cssClass="dateBox" />
+									<img src="../images/calendar.gif" id="trgfechaPeriodoFinalAuditor" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+									<script type="text/javascript">
+										<!--
+										Calendar.setup({
+											inputField     :    "fechaPeriodoFinalAuditor",     
+											ifFormat       :    "%d/%m/%Y",     
+											button         :    "trgfechaPeriodoFinalAuditor",  
+											align          :    "Br",           
+											singleClick    :    true
+										});									   
+										//-->
+									</script>
+								</s:if>
+								<s:else>
+									<font class="arial12bold"><s:text name="fecha"><s:param value="%{PeriodoFinalAuditor}"/></s:text></font>
+								</s:else>						
+							</td>
+						</tr>
+<!-- CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN -->	
 						<s:if test="lstAuditorSolPagoV.size() > 0">	
 							<tr>	
 								<td colspan="6">

@@ -26,6 +26,8 @@ public class DocumentacionSPCartaAdhesion{
 	private String rutaCertificados;
 	private String rutaConstancias;
 	private Integer tipoConstancia;
+	private Date PeriodoInicialAuditor;
+	private Date PeriodoFinalAuditor;	
 	
 	
 	public DocumentacionSPCartaAdhesion() {
@@ -149,6 +151,23 @@ public class DocumentacionSPCartaAdhesion{
 
 	public void setTipoConstancia(Integer tipoConstancia) {
 		this.tipoConstancia = tipoConstancia;
+	}
+	@Column(name =  "periodo_inicial_auditor")
+	public Date getPeriodoInicialAuditor() {
+		return PeriodoInicialAuditor;
+	}
+
+	public void setPeriodoInicialAuditor(Date periodoInicialAuditor) {
+		PeriodoInicialAuditor = periodoInicialAuditor;
+	}
+
+	@Column(name =  "periodo_final_auditor")
+	public Date getPeriodoFinalAuditor() {
+		return PeriodoFinalAuditor;
+	}
+
+	public void setPeriodoFinalAuditor(Date periodoFinalAuditor) {
+		PeriodoFinalAuditor = periodoFinalAuditor;
 	}
 	
 }
