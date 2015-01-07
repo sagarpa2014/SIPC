@@ -391,6 +391,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	public String verificarDatosComprador(){
 		try {	
 			boolean actaConstitutiva = false, rfc = false, comprobanteDomicilio=false;
+			boolean identificacionOficial = false, curp = false;
 			//Verifica si los datos del comprador estan completos
 		    comprador = cDAO.consultaComprador(idComprador).get(0);
 		    if( (comprador.getClaveMunicipio()==null)
@@ -416,13 +417,28 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		    	return SUCCESS;
 		    }
 		    for(CompradorExpedientesV cev:  lstCompradorExpedientesV){
-		    	if(cev.getIdExpediente().intValue()==23){
-		    		actaConstitutiva = true;
-		    	}else if(cev.getIdExpediente().intValue()==24){
-		    		rfc= true;
-		    	}else if (cev.getIdExpediente().intValue()==25){
-		    		comprobanteDomicilio = true;
-		    	}
+			    if(comprador.getTipoPersona().equals("M")){
+			    	if(cev.getIdExpediente().intValue()==23){
+			    		actaConstitutiva = true;
+			    	}else if(cev.getIdExpediente().intValue()==24){
+			    		rfc= true;
+			    	}else if (cev.getIdExpediente().intValue()==25){
+			    		comprobanteDomicilio = true;
+			    	}
+			    }else{
+//			    	29;"Identificación oficial"
+//			    	30;"CURP"
+//			    	31;"Comprobante del domicilio del solicitante"
+			    	if(cev.getIdExpediente().intValue()==29){
+			    		identificacionOficial = true;
+			    	}else if(cev.getIdExpediente().intValue()==30){
+			    		curp= true;
+			    	}else if (cev.getIdExpediente().intValue()==31){
+			    		comprobanteDomicilio = true;
+			    	}
+			    	
+
+			    }
 		    }
 		    if(comprador.getTipoPersona().equals("M")){
 		    	if(!actaConstitutiva){
@@ -430,13 +446,26 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			    	datosCompradorCompleto = 0;
 			    	return SUCCESS;
 			    }
+			    if(!rfc){
+			    	msjError = "Debe cargar el rfc del comprador, por favor verifique";
+			    	datosCompradorCompleto = 0;
+			    	return SUCCESS;
+			    }
+		    }else{
+		    	if(!curp){
+			    	msjError = "Debe cargar el curp del comprador, por favor verifique";
+			    	datosCompradorCompleto = 0;
+			    	return SUCCESS;
+			    }
+			    if(!identificacionOficial){
+			    	msjError = "Debe cargar la identificación oficial del comprador, por favor verifique";
+			    	datosCompradorCompleto = 0;
+			    	return SUCCESS;
+			    }
+		    	
 		    }
 		    
-		    if(!rfc){
-		    	msjError = "Debe cargar el rfc del comprador, por favor verifique";
-		    	datosCompradorCompleto = 0;
-		    	return SUCCESS;
-		    }
+
 		    if(!comprobanteDomicilio){
 		    	msjError = "Debe cargar el comprobante de domicilio del comprador, por favor verifique";
 		    	datosCompradorCompleto = 0;
