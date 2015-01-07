@@ -424,12 +424,14 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		    		comprobanteDomicilio = true;
 		    	}
 		    }
-		    
-		    if(!actaConstitutiva){
-		    	msjError = "Debe cargar el acta constitutiva del comprador, por favor verifique";
-		    	datosCompradorCompleto = 0;
-		    	return SUCCESS;
+		    if(comprador.getTipoPersona().equals("M")){
+		    	if(!actaConstitutiva){
+			    	msjError = "Debe cargar el acta constitutiva del comprador, por favor verifique";
+			    	datosCompradorCompleto = 0;
+			    	return SUCCESS;
+			    }
 		    }
+		    
 		    if(!rfc){
 		    	msjError = "Debe cargar el rfc del comprador, por favor verifique";
 		    	datosCompradorCompleto = 0;
