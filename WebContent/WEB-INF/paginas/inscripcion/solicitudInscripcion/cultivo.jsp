@@ -5,6 +5,8 @@
 
 function recuperaVariedadByCultivoEdoAsigCA(idCultivo, count){
 	if(idCultivo == -1){
+		$('#importe'+count).val("");	
+		$('#vxcv'+count).val("");	
 		return false;
 	}
 	var idInicializacionEsquema = $('#idInicializacionEsquema').val();	
@@ -24,7 +26,8 @@ function recuperaVariedadByCultivoEdoAsigCA(idCultivo, count){
 				});
 		   }
 		});//fin ajax
-	
+		recuperarListaDeCuotas(count);
+		
 	//$.ajax({
 		   //async: false,
 		  // type: "POST",

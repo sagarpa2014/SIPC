@@ -24,7 +24,15 @@ public class AsignacionCartasAdhesion {
 	private Double cuota;
 	private String claveBodega;
 	private Date fechaCreacion;
+		
+	public AsignacionCartasAdhesion() {
+		super();
+	}
 	
+	public AsignacionCartasAdhesion(Double cuota) {
+		super();
+		this.cuota = cuota;
+	}
 	@Id
 	@GeneratedValue(generator = "asignacion_cartas_adhesion_id_asignacion_ca_seq")
 	@SequenceGenerator(name = "asignacion_cartas_adhesion_id_asignacion_ca_seq", sequenceName = "asignacion_cartas_adhesion_id_asignacion_ca_seq")

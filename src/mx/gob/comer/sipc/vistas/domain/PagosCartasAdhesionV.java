@@ -20,6 +20,7 @@ public class PagosCartasAdhesionV {
 	private String bodega;
 	private Double volumen;
 	private Double importe;
+	private Double cuota;
 	
 	@Id
 	@Column(name = "id")
@@ -105,5 +106,14 @@ public class PagosCartasAdhesionV {
 	public void setImporte(Double importe) {
 		this.importe = importe;
 	}
+	
+	@Column(name = "cuota")
+	public Double getCuota() {
+		return cuota;
+	}
+	
+	public void setCuota(Double cuota) {
+		this.cuota = cuota;
+	}	
   
 }

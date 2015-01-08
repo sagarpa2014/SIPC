@@ -170,6 +170,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	private int estatusSI;
 	private List<AsignacionCartasAdhesionV> lstAsigCA;
 	private List<Variedad> lstVariedad;
+	private List<AsignacionCartasAdhesion> lstCuota;
 	private String descripcionLarga;
 	private String rutaSolicitud;
 	private String nombreOficio;
@@ -218,6 +219,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	private double totalVolEnTramPago;
 	private double totalImpEnTramPago;
 	private List<CompradorExpedientesV> lstCompradorExpedientesV;
+	private Double cuota;
 	
 	
 	public String busquedaSolicitudIns(){
@@ -1073,7 +1075,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 				Utilerias.cargarArchivo(rutaSolicitud, nombreArchivo, docAmpliacionCA);
 				for(int i=0; i< capEstado.length; i++){
 					//Recupera el registro de la asignacion de la carta de adhesion
-					List<AsignacionCartasAdhesion> lstAca = iDAO.consultaAsignacionCartasAdhesion(capBodega[i], capEstado[i], capCultivo[i], capVariedad[i], folioCartaAdhesion);
+					List<AsignacionCartasAdhesion> lstAca = iDAO.consultaAsignacionCartasAdhesion(capBodega[i], capEstado[i], capCultivo[i], capVariedad[i], folioCartaAdhesion, capCuota[i]);
 					//Verifica si el incremento es un mismo EDO, CULTIVO y VARIEDAD
 					if(lstAca.size()>0){
 						AsignacionCartasAdhesion aca = lstAca.get(0);
@@ -1196,8 +1198,10 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			lstCultivo = iDAO.recuperaCultivoByInicilizacionEsquema(idInicializacionEsquema);
 			if(registrar == 0){
 				lstVariedad = new ArrayList<Variedad>();
+				lstCuota = new ArrayList<AsignacionCartasAdhesion>();
 			}else{
 				lstVariedad = iDAO.recuperaVariedadByInicilizacionEsquema(idInicializacionEsquema, idCultivo);
+				
 			}			
 			
 		}catch(Exception e){
@@ -1216,6 +1220,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			lstEstado = iDAO.recuperaEstadoByInicilizacionEsquema(idInicializacionEsquema);
 			lstCultivo = new ArrayList<Cultivo>();
 			lstVariedad = new ArrayList<Variedad>();
+			lstCuota = new ArrayList<AsignacionCartasAdhesion>();
 		}
 		//Recupera el complemento de la carta Adhesion		
 		lstDetAsigCAC = iDAO.consultaDetalleAsignacionCartasAdhesion(folioCartaAdhesion, 2);
@@ -1230,6 +1235,8 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		
 		return SUCCESS;
 	}
+	
+
 	public String recuperaCultivoByVariedadAsigCA(){
 		//Recupera los datos de la variedad por cultivo
 		lstVariedad = iDAO.recuperaVariedadByInicilizacionEsquema(idInicializacionEsquema, idCultivo);
@@ -1238,9 +1245,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	
 	//public String validarVolumenXCultivoVariedad(){
 	public String recuperarDatosCuotaImpCulXVariedad(){
-
-		double cuota = 0;
-		
+				
 		if(idCriterioPago != 2){
 			//Inicializacion esquema por etapa
 			 List<CultivoVariedadEsquema> listCve = iDAO.consultaCultivoVariedadEsquema(idPrograma, idCultivo, idVariedad);
@@ -1249,17 +1254,34 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			}
 			
 			//Recupera la cuota
-			ce = iDAO.consultaCuotasEsquema(idInicializacionEsquema, idEstado, idCultivo, idVariedad);
-			if(ce.size()>0){
-				cuota = ce.get(0).getCuota();
+			//ce = iDAO.consultaCuotasEsquema(idInicializacionEsquema, idEstado, idCultivo, idVariedad);
+			//if(ce.size()>0){
+			//	cuota = ce.get(0).getCuota();
+			System.out.println("cuota "+cuota);
+			System.out.println("volumenAutorizado "+volumenAutorizado);
 				importeAutorizado = (cuota * volumenAutorizado);
 				cuotaS = TextUtil.formateaNumeroComoCantidad(cuota);
 				importeS = TextUtil.formateaNumeroComoCantidad(importeAutorizado);
-			}
+			//}
 			
 		}			
 		
+		
+		return SUCCESS;
+	}
+	
+	public String recuperarListaDeCuotaByEdoCulVar(){
+		lstCuota = new ArrayList<AsignacionCartasAdhesion>();
+		if(idEstado!=-1 && idCultivo !=-1 && idVariedad!=-1){
+			ce = iDAO.consultaCuotasEsquema(idInicializacionEsquema, idEstado, idCultivo, idVariedad);
+			if(ce.size()>0){
+				for(CuotasEsquema c: ce){
+					lstCuota.add(new AsignacionCartasAdhesion(c.getCuota())); 
+				}
+			}
+		}
 			
+		
 		
 		return SUCCESS;
 	}
@@ -2468,5 +2490,22 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 
 	public void setTotalImpEnTramPago(double totalImpEnTramPago) {
 		this.totalImpEnTramPago = totalImpEnTramPago;
-	}		
+	}
+
+	public List<AsignacionCartasAdhesion> getLstCuota() {
+		return lstCuota;
+	}
+
+	public void setLstCuota(List<AsignacionCartasAdhesion> lstCuota) {
+
+		this.lstCuota = lstCuota;
+	}
+
+	public Double getCuota() {
+		return cuota;
+	}
+
+	public void setCuota(Double cuota) {
+		this.cuota = cuota;
+	}	
 }

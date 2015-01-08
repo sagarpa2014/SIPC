@@ -1027,11 +1027,15 @@ public class InscripcionDAO {
 	}
 	
 	 public List<AsignacionCartasAdhesion> consultaAsignacionCartasAdhesion(int idEstado, int idCultivo, int idVariedad, String folioCartaAdhesion) throws JDBCException {
-		 return consultaAsignacionCartasAdhesion(null, idEstado, idCultivo, idVariedad, folioCartaAdhesion); 
+		 return consultaAsignacionCartasAdhesion(null, idEstado, idCultivo, idVariedad, folioCartaAdhesion, 0); 
+	 }
+	 public List<AsignacionCartasAdhesion> consultaAsignacionCartasAdhesion(int idEstado, int idCultivo, int idVariedad, String folioCartaAdhesion, double cuota) throws JDBCException {
+		 return consultaAsignacionCartasAdhesion(null, idEstado, idCultivo, idVariedad, folioCartaAdhesion, cuota); 
 	 }
 	 
+	 
 	 @SuppressWarnings("unchecked")
-	public List<AsignacionCartasAdhesion> consultaAsignacionCartasAdhesion(String claveBodega, int idEstado, int idCultivo, int idVariedad, String folioCartaAdhesion) throws JDBCException {
+	public List<AsignacionCartasAdhesion> consultaAsignacionCartasAdhesion(String claveBodega, int idEstado, int idCultivo, int idVariedad, String folioCartaAdhesion, double cuota) throws JDBCException {
 			StringBuilder consulta= new StringBuilder();
 			List<AsignacionCartasAdhesion> lst=null;
 			if (idEstado != 0 && idEstado != -1){
@@ -1066,7 +1070,15 @@ public class InscripcionDAO {
 					consulta.append("where folioCartaAdhesion='").append(folioCartaAdhesion).append("'");
 				}
 			}
+			if(cuota!=0){
+				if(consulta.length()>0){
+					consulta.append(" and cuota=").append(cuota).append("");
+				}else{
+					consulta.append("where cuota=").append(cuota).append("");
+				}
+			}
 			consulta.insert(0, "From AsignacionCartasAdhesion ");
+			System.out.println("consulta  ------------->>"+consulta.toString());
 			lst = session.createQuery(consulta.toString()).list();	
 			return lst;
 		

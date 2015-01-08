@@ -565,8 +565,12 @@ public class PagosDAO {
 		return sumaVolumenes;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<PagosCartasAdhesionV> consultaPagosEdoCulVarCA(String folioCartaAdhesion, Integer idEstado, Integer idCultivo, Integer idVariedad, String bodega) throws JDBCException {
+		
+		return consultaPagosEdoCulVarCA( folioCartaAdhesion,  idEstado,  idCultivo,  idVariedad,  bodega, null);
+	}
+	@SuppressWarnings("unchecked")
+	public List<PagosCartasAdhesionV> consultaPagosEdoCulVarCA(String folioCartaAdhesion, Integer idEstado, Integer idCultivo, Integer idVariedad, String bodega, Double cuota) throws JDBCException {
 		
 		StringBuilder consulta= new StringBuilder();
 		List<PagosCartasAdhesionV> lstConsultaPagos=null;
@@ -603,6 +607,13 @@ public class PagosDAO {
 			}
 		}
 
+		if(cuota!=null){
+			if(consulta.length()>0){
+				consulta.append(" and bodega='").append(bodega).append("'");
+			}else{
+				consulta.append("where bodega='").append(bodega).append("'");
+			}
+		}
 		consulta.insert(0, "From PagosCartasAdhesionV ").append(" ORDER BY folioCartaAdhesion, idEstado, idCultivo, idVariedad, bodega ");
 		lstConsultaPagos= session.createQuery(consulta.toString()).list();
 		

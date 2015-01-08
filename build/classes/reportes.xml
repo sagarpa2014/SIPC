@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="reportes" namespace="/reportes" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<action name="capturaReportePagosTesofe" method="capturaReportePagosTesofe" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarPagosTesofe</result>
+            <result name="input" type="tiles">consultarPagosTesofe</result>
+        </action>
+		<action name="realizarConsultaPagosTesofe" method="realizarConsultaPagosTesofe" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">consultarPagosTesofe</result>
+            <result name="input" type="tiles">consultarPagosTesofe</result>
+        </action>
+        <action name="capturaRechazos" method="capturaRechazos" class="mx.gob.comer.sipc.pagos.action.AcusesPagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">rechazos</result>
+            <result name="input" type="tiles">rechazos</result>
+        </action>
+         <action name="capturaAplicados" method="capturaAplicados" class="mx.gob.comer.sipc.pagos.action.AcusesPagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">aplicados</result>
+            <result name="input" type="tiles">aplicados</result>
+        </action>
+        <action name="generarAcuseRechazos" method="generarAcuseRechazos" class="mx.gob.comer.sipc.pagos.action.AcusesPagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/reportes/resultadoGeneracionAcuses.jsp</result>
+            <result name="input" >/WEB-INF/paginas/reportes/resultadoGeneracionAcuses.jsp</result>
+        </action>
+          <action name="generarAcusesAplicados" method="generarAcusesAplicados" class="mx.gob.comer.sipc.pagos.action.AcusesPagosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/reportes/resultadoGeneracionAcuses.jsp</result>
+            <result name="input" >/WEB-INF/paginas/reportes/resultadoGeneracionAcuses.jsp</result>
+        </action>
+         <action name="exportaPagosTESOFE" method="exportaPagosTESOFE" class="mx.gob.comer.sipc.pagos.action.ReportesAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcel</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+		<action name="DescargarAchivo" method="execute" class="mx.gob.comer.sipc.pagos.action.DescargarArchivoAction">
+			<result name="success" type="stream">
+			 	<param name="contentType">${contentType}</param>
+			 	<param name="inputName">inputStream</param>
+			 	<param name="contentDisposition">attachment; filename="${archivo}"</param>
+			 	<param name="bufferSize">${bufferSize}</param>
+			</result>		
+		</action>
+		<action name="detalleOficioPagos" method="detalleOficioPagos" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+			<interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<result name="input">/WEB-INF/paginas/reportes/detallesOficioPagos.jsp</result>
+			<result name="success">/WEB-INF/paginas/reportes/detallesOficioPagos.jsp</result>
+		</action>
+        <action name="consigueArchivoExcel" method="consigueArchivoExcel" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>	
+        <action name="capturaReporteDinamico" method="capturaReporteDinamico" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success"  type="tiles">capturaReporteDinamico</result>
+            <result name="input"  type="tiles">capturaReporteDinamico</result>
+        </action>
+        <action name="seleccionCriterios" method="seleccionCriterios" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/reportes/reporteDinamico/seleccionCriterios.jsp</result>
+            <result name="input" >/WEB-INF/paginas/reportes/reporteDinamico/seleccionCriterios.jsp</result>
+        </action>
+        
+        <action name="generarReporteDinamico" method="generarReporteDinamico" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/reportes/reporteDinamico/resultadoReporteDinamico.jsp</result>
+            <result name="input">/WEB-INF/paginas/reportes/reporteDinamico/resultadoReporteDinamico.jsp</result>
+        </action>
+        <action name="irPaginando" method="irPaginando" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/reportes/reporteDinamico/resultadoReporteDinamico.jsp</result>
+            <result name="input">/WEB-INF/paginas/reportes/reporteDinamico/resultadoReporteDinamico.jsp</result>
+        </action>
+        <action name="exportarExcelReporteDinamico" method="exportarExcelReporteDinamico" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles" >index</result>
+            <result name="input" type="tiles" >index</result>
+        </action>      
+        <action name="reporteMonitorGlobal" method="reporteMonitorGlobal" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result type="tiles" name="success">reporteMonitorGlobal</result>
+            <result type="tiles" name="input">reporteMonitorGlobal</result>
+        </action>
+        <action name="reporteMonitorPrograma" method="reporteMonitorPrograma" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result type="tiles" name="success">reporteMonitorPrograma</result>
+            <result type="tiles" name="input">reporteMonitorPrograma</result>
+        </action>
+		<action name="exportaReporteGlobal" method="exportaReporteGlobal" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepG</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+		<action name="exportaReportePrograma" method="exportaReportePrograma" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepP</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcelRepG" method="consigueArchivoExcelRepG" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="consigueArchivoExcelRepP" method="consigueArchivoExcelRepP" class="mx.gob.comer.sipc.reportes.action.MonitorPagosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="reporteConcentradoPagos" method="reporteConcentradoPagos" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result type="tiles" name="success">reporteConcentradoPagos</result>
+            <result type="tiles" name="input">reporteConcentradoPagos</result>
+        </action>
+		<action name="exportaReporteConcentradoPagos" method="exportaReporteConcentradoPagos" class="mx.gob.comer.sipc.pagos.action.ReportesAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepG</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcelRepC" method="consigueArchivoExcelRepC" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+                <action name="reporteDetalleConcentrado" method="reporteDetalleConcentrado" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result type="tiles" name="success">reporteDetConcentradoPagos</result>
+            <result type="tiles" name="input">reporteDetConcentradoPagos</result>
+        </action>
+		<action name="exportaReporteDetConcentradoPagos" method="exportaReporteDetConcentradoPagos" class="mx.gob.comer.sipc.pagos.action.ReportesAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepDC</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcelRepDC" method="consigueArchivoExcelRepDC" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="reporteDetalleConcentradoEtapas" method="reporteDetalleConcentradoEtapas" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result type="tiles" name="success">reporteDetConcentradoPagosEtapas</result>
+            <result type="tiles" name="input">reporteDetConcentradoPagosEtapas</result>
+        </action>
+		<action name="exportaReporteDetConcentradoPagosEtapas" method="exportaReporteDetConcentradoPagosEtapas" class="mx.gob.comer.sipc.pagos.action.ReportesAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepDEC</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcelRepDEC" method="consigueArchivoExcelRepDEC" class="mx.gob.comer.sipc.pagos.action.ReportesAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>        
+        <action name="recuperaVariedadByCultivo" method="recuperaVariedadByCultivo" class="mx.gob.comer.sipc.reportes.action.ReporteDinamicoAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/reportes/reporteDinamico/variedad.jsp</result>
+            <result name="success">/WEB-INF/paginas/reportes/reporteDinamico/variedad.jsp</result>
+        </action>
+		<action name="rendicionCuentasCID" method="rendicionCuentasCID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">rendicionCuentasCID</result>
+            <result name="input" type="tiles">rendicionCuentasCID</result>
+        </action>
+        <action name="realizarConsultaRendicionCuentasCID" method="realizarConsultaRendicionCuentasCID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">rendicionCuentasCID</result>
+            <result name="input" type="tiles">rendicionCuentasCID</result>
+        </action>
+        <action name="exportaReporteRendicionCuentasCID" method="exportaReporteRendicionCuentasCID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepRenCueID</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+		<action name="rendicionCuentasSID" method="rendicionCuentasSID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">rendicionCuentasSID</result>
+            <result name="input" type="tiles">rendicionCuentasSID</result>
+        </action>
+        <action name="realizarConsultaRendicionCuentasSID" method="realizarConsultaRendicionCuentasSID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">rendicionCuentasSID</result>
+            <result name="input" type="tiles">rendicionCuentasSID</result>
+        </action>
+        <action name="exportaReporteRendicionCuentasSID" method="exportaReporteRendicionCuentasSID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelRepRenCueSID</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
+        <action name="consigueArchivoExcelRendCtaCID" method="consigueArchivoExcelRendCtaCID" class="mx.gob.comer.sipc.reportes.action.ReporteRendicionCuentasAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+    </package>
+</struts>

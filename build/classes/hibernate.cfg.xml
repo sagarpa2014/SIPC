@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+	    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/SIPC</property>   
+		<property name="hibernate.connection.username">postgres</property>
+		<property name="connection.password">postgre</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		<property name="show_sql">true</property>
+        <!-- c3p0 -->
+        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+        <property name="hibernate.c3p0.min_size">5</property>
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.timeout">300</property>
+        <property name="hibernate.c3p0.max_statements">50</property>
+        <property name="hibernate.c3p0.idle_test_period">300</property>
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.validate">false</property>
+		
+			
+		<!-- *********Catalogos******** -->
+		<mapping class="mx.gob.comer.sipc.domain.Usuarios"/>
+		<mapping class="mx.gob.comer.sipc.domain.Perfiles"/>
+		<mapping class="mx.gob.comer.sipc.domain.Estado"/>
+		<mapping class="mx.gob.comer.sipc.domain.CuentaBancaria"/>
+		<mapping class="mx.gob.comer.sipc.domain.Programa"/>
+		<mapping class="mx.gob.comer.sipc.domain.ProgramaComprador"/>
+		<mapping class="mx.gob.comer.sipc.domain.Comprador"/>
+		<mapping class="mx.gob.comer.sipc.domain.Bancos"/>
+		<mapping class="mx.gob.comer.sipc.domain.PlazasBancarias"/>
+		<mapping class="mx.gob.comer.sipc.domain.Parametros"/>
+		<mapping class="mx.gob.comer.sipc.domain.Personal"/>
+		<mapping class="mx.gob.comer.sipc.domain.OficioPagos"/>
+		<mapping class="mx.gob.comer.sipc.domain.Bitacora"/>
+		<mapping class="mx.gob.comer.sipc.domain.FileItem"/>
+		<mapping class="mx.gob.comer.sipc.domain.ArchivosPagos"/>		
+		<mapping class="mx.gob.comer.sipc.domain.EstatusPago"/>
+		<mapping class="mx.gob.comer.sipc.domain.Ejercicios"/>		
+		<mapping class="mx.gob.comer.sipc.domain.Aviso"/>			
+		<mapping class="mx.gob.comer.sipc.domain.Municipios"/>		
+		<mapping class="mx.gob.comer.sipc.domain.Localidades"/>		
+		<mapping class="mx.gob.comer.sipc.domain.AuditoresExternos"/>
+		<mapping class="mx.gob.comer.sipc.domain.ExpedienteAuditor"/>
+		<mapping class="mx.gob.comer.sipc.domain.ExpedienteComprador"/>
+		<mapping class="mx.gob.comer.sipc.domain.Cultivo"/>
+		<mapping class="mx.gob.comer.sipc.domain.AuditoresExternos"/>
+		<mapping class="mx.gob.comer.sipc.domain.Expediente"/>
+		<mapping class="mx.gob.comer.sipc.domain.InicializacionEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.CuotasEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Ciclo"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Componente"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.CriterioPago"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.UnidadMedida"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Variedad"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.ExpedientesCompradores"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.RepresentanteComprador"/>		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.RepresentanteLegal"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.AreasResponsables"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion"/>	
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.EstadosCivil"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposIdentificacion"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposVialidad"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposAsentamiento"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento"/>
+		 
+		<!-- Transaccionales -->
+		<mapping class="mx.gob.comer.sipc.domain.Pagos"/>
+		<mapping class="mx.gob.comer.sipc.domain.PagosDetalle"/> 
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CicloPrograma"/> 
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ProgramaEstado"/> 
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.SolicitudInscripcion"/> 
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.EtapaIniEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CultivoVariedadEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AlcanceSolicitudInscripcion"/>
+		
+		
+		<!-- *********Vistas******** -->
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaEstadoV"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleGroupV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleSBV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ArchivosPagosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaCompradorV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.OficioPagosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.RespuestaPagosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.OficioCompradorProgramaV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteGlobalV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteProgramaCompradorV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteConcentradoPagosV"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteDetConcentradoPagosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteDetConcentradoPagosEtapasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.NotificacionesV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CompradorExpedientesV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CuotasEsquemaV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PrgEspecialistaNumCartasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaNumCartasV"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.OficioRespuestaSolicitudPago"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AuditorSolicitudPagoV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CartasPrimerPagoV"/>
+
+		
+		
+		<!-- <mapping class="mx.gob.comer.sipc.vistas.domain.CartasAdhesionV"/> -->
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CiclosProgramasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaCultivo"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.SolicitudInscripcionV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AuditoresExternosV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CompradoresV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AuditorExpedientesV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.RepresentanteCompradorV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.HcoProgramasV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.EtapaIniEsquemaV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionEspecialistaV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CartaAdhesionEtapaVolImpV"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosCartasAdhesionV"/>
+		
+		
+		<!-- Historicos -->
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoCuotasEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoInicializacionEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoPrograma"/>
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoProgramaEstado"/>
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoCultivoVariedadEsquema"/>
+		<mapping class="mx.gob.comer.sipc.domain.historico.HcoEtapaIniEsquema"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.RepresentanteLegalV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.RepresentanteExpedientesV"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.ExpedienteRepresentante"/>
+		
+		
+		<!-- Solicitud de Pago 	-->
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Especialista"/> 			
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ExpedientePrograma"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AsignacionCartaEspecialista"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.OficioCartaAdhesionSolicitudPago"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AsignacionCAaEspecialistaV"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.DocumentacionSPCartaAdhesion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.OficioObsSolicitudPago"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ObservacionDocumentacionSP"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.DocumentacionSPCartaAdhesionV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CuentasBancariasV"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.AlmacenGeneralDeposito"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Bodegas"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CertificadosDeposito"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ConstanciasAlmacenamiento"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AuditorSolicitudPago"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.BodegasV"/>
+ 		
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaCartasV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosDetalleCAV"/>
+  		
+ 		<!-- Oficio Entrega Cartas Adhesion 	-->
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.CartasAdhesionV"/>
+ 			
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Temp"/>
+ 		<!-- Adendum de la carta de adhesion -->
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.DetalleAsignacionCartasAdhesion"/>
+ 		
+ 		<!--  Seguimiento de Acopio	-->
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.SeguimientoCentroAcopio"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.SeguimientoCentroAcopioV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.OperadoresBodegasV"/> 	
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.ReporteSeguimientoAcopioV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.EstadosSeguimientoV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.CultivosSeguimientoV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.CiclosSeguimientoV"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegas"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.ResumenAvanceAcopioV"/>
+ 		
+ 		<!-- Rendicion de Cuentas -->
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.RendicionCuentasV"/>
+ 		
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.BodegasCambios"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegasCambios"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.CadersV"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Ejido"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.BodegaUso"/>
+ 		
+ 		
+ 		
+ 		 		
+	</session-factory>
+</hibernate-configuration>

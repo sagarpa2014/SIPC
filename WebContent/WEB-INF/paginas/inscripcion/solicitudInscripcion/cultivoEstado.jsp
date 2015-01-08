@@ -35,16 +35,11 @@
 							<s:select id="e%{#itStatus.count}" name="capEstado" list="lstEstado" listKey="idEstado" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idEstado}" onchange="recuperaCultivoByEstadoAsigCA(this.value, %{#itStatus.count});"/>
 						</td>
 						<td id="cultivo<s:property value="%{#itStatus.count}"/>">
-							<s:select id="c%{#itStatus.count}" name="capCultivo" list="lstCultivo" listKey="idCultivo" listValue="%{cultivo}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idCultivo}" />
+							<s:select id="c%{#itStatus.count}" name="capCultivo" list="lstCultivo" listKey="idCultivo" listValue="%{cultivo}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idCultivo}" onchange="recuperarListaDeCuotas(%{#itStatus.count})"/>
 						</td>
 						<td id="variedad<s:property value="%{#itStatus.count}"/>">
-						  	<s:select id="va%{#itStatus.count}" name="capVariedad" list="lstVariedad" listKey="idVariedad" listValue="%{variedad}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idVariedad}"/>
-						</td>
-						<!-- <td>
-							<s:select id="va%{#itStatus.count}" name="capVariedad" list="lstVariedad" listKey="idVariedad" listValue="%{variedad}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idVariedad}"/>
-						</td>
-						 -->						
-						
+						  	<s:select id="va%{#itStatus.count}" name="capVariedad" list="lstVariedad" listKey="idVariedad" listValue="%{variedad}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{idVariedad}" onchange="recuperarListaDeCuotas(%{#itStatus.count})"/>
+						</td>			
 						<s:if test="idCriterioPago==1 || idCriterioPago==3">
 							<s:if test="registrar==0"><s:set var="volumen" value="%{}" /></s:if>
 							<s:elseif test="registrar==1"><s:set var="volumen" value="%{volumenAutorizado}" /></s:elseif>
@@ -54,11 +49,11 @@
 									<s:textfield id="v%{#itStatus.count}" name="capVolumen" value="%{getText('volumenSinComas',{#volumen})}" maxlength="14" size="20"  cssClass="cantidad" />
 								</s:if>
 								<s:else>
-									<s:textfield id="v%{#itStatus.count}" name="capVolumen" value="%{}" maxlength="14" size="20"  cssClass="cantidad" onchange="recuperaTotalVolumen(this.value, %{#itStatus.count});"/>
+									<s:textfield id="v%{#itStatus.count}" name="capVolumen" value="%{}" maxlength="14" size="20"  cssClass="cantidad" onchange="recuperaTotalVolumen(%{#itStatus.count});"/>
 								</s:else>
 							</td>
-							<td><!-- Cuota -->
-								<s:textfield id="cuota%{#itStatus.count}" name="capCuota" value="" maxlength="14" size="20"  cssClass="cantidad" disabled="true" />
+							<td id="lstCuota<s:property value="%{#itStatus.count}"/>"><!-- Cuota -->								
+								<s:select id="cuota%{#itStatus.count}" name="capCuota" list="lstCuota" listKey="cuota" listValue="%{cuota}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{cuota}"/>
 							</td>
 							<td><!-- Importe -->
 								<s:textfield id="importe%{#itStatus.count}" name="capImporte" value="" maxlength="14" size="20"  cssClass="cantidad"  disabled="true"/>

@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -165,6 +166,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	
 	private Double volumenCertificados;
 	private Double volumenConstancias;
+	private Map<String, Double> mBodCulVar;
 	
 	@SessionTarget
 	Session sessionTarget;
@@ -278,7 +280,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				CartaAdhesion ca = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 				ca.setEstatus(9);
 				cDAO.guardaObjeto(ca);
-				
 			}
 			
 			// Valida que la atenta nota no se duplique por año
@@ -293,83 +294,48 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				
 				if(cDAO.consultaComprador(lstDocumentacionSPCartaAdhesion.get(0).getIdComprador()).get(0).getEstatus()==1){
 					if((lstDocumentacionSPCartaAdhesion.get(0).getObservacion()==null || !lstDocumentacionSPCartaAdhesion.get(0).getObservacion()) && Long.parseLong(fechaPago) >= Long.parseLong(fechaMin) && Long.parseLong(fechaPago) <= Long.parseLong(fechaMax)){				
-						
-						lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
-						fianza = lstDetallePagosCAEspecialistaV.get(0).getDescFianza();
+						mBodCulVar =  new HashMap<String, Double>();
+						//lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
+						fianza = "";//lstDetallePagosCAEspecialistaV.get(0).getDescFianza();
 						if (criterioPago==1){
 							Set<Integer> idsCapVolumen = capVolumen.keySet();
 							Iterator<Integer> it = idsCapVolumen.iterator();
 							while(it.hasNext()){
 								Integer idCapVolumen = it.next();
 								String item = capVolumen.get(idCapVolumen);
-								if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
-									for (int i = 0; i < lstDetallePagosCAEspecialistaV.size(); i++) {
-										if (lstDetallePagosCAEspecialistaV.get(i).getIdAsiganacionCA() == idCapVolumen){
-											if(lstDetallePagosCAEspecialistaV.get(i).getBodega()==null||lstDetallePagosCAEspecialistaV.get(i).getBodega().isEmpty()){
-												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(),null);
-												if (pca.size()>0){
-													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
-												} else {
-													totalVolApoEdoCulVarCA = 0.0;
-												}
-												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												if(volumenCertificados==0.0){
-													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												}
-											} else {
-												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstDetallePagosCAEspecialistaV.get(i).getBodega());
-												if (pca.size()>0){
-													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
-												} else {
-													totalVolApoEdoCulVarCA = 0.0;
-												}
-												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												if(volumenCertificados==0.0){
-													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												}
-											}											
-											volumenAutEdoCulVarCA = lstDetallePagosCAEspecialistaV.get(i).getVolumen();
-											vEstadoAux = lstDetallePagosCAEspecialistaV.get(i).getEstado();
-											vCultivoAux = lstDetallePagosCAEspecialistaV.get(i).getCultivo();
-											vVariedadAux = lstDetallePagosCAEspecialistaV.get(i).getVariedad();
-											vBodegaAux = lstDetallePagosCAEspecialistaV.get(i).getBodega();
-											
-											break;
+								if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){									
+									//Recupera el pago correspondiente								
+									lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(null, -1, null, idCapVolumen.longValue());
+									volumenAutEdoCulVarCA = lstDetallePagosCAEspecialistaV.get(0).getVolumen();
+									vEstadoAux = lstDetallePagosCAEspecialistaV.get(0).getEstado();
+									vCultivoAux = lstDetallePagosCAEspecialistaV.get(0).getCultivo();
+									vVariedadAux = lstDetallePagosCAEspecialistaV.get(0).getVariedad();
+									vBodegaAux = lstDetallePagosCAEspecialistaV.get(0).getBodega();
+									if(lstDetallePagosCAEspecialistaV.get(0).getBodega()== null||lstDetallePagosCAEspecialistaV.get(0).getBodega().isEmpty()){
+										List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(0).getIdEstado(), lstDetallePagosCAEspecialistaV.get(0).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(0).getIdVariedad(),null);
+										if (pca.size()>0){
+											totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+										} else {
+											totalVolApoEdoCulVarCA = 0.0;
+										}										
+									} else {
+										List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(0).getIdEstado(), lstDetallePagosCAEspecialistaV.get(0).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(0).getIdVariedad(), lstDetallePagosCAEspecialistaV.get(0).getBodega(),lstDetallePagosCAEspecialistaV.get(0).getCuota() );
+										if (pca.size()>0){
+											totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+										} else {
+											totalVolApoEdoCulVarCA = 0.0;
+										}																						
+										if(mBodCulVar.containsKey(vBodegaAux)){				
+											Double sumaBodCulVar = mBodCulVar.get(vBodegaAux);
+											sumaBodCulVar += Double.parseDouble(item);
+											mBodCulVar.put(vBodegaAux, sumaBodCulVar);													
+										}else{
+											mBodCulVar.put(vBodegaAux, Double.parseDouble(item));
 										}
 									}
+									
 									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
-									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
-									//System.out.println(suma);
-									if (volumenCertificados>0.0){
-										if (suma > volumenCertificados){
-											errorSistema = 1;
-											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-											} else {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
-											}
-											return SUCCESS;												
-										}
-									} else {
-										if (suma > volumenConstancias){
-											errorSistema = 1;
-											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-											} else {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
-											}
-											return SUCCESS;												
-										}											
-									}									
 									if (suma > volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
@@ -381,12 +347,50 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
 													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
 													   " de la carta de adhesión para el estado: "+vEstadoAux+
-													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+
+													   " cuota: "+lstDetallePagosCAEspecialistaV.get(0).getCuota()+", por favor verifique");											
 										}
 										return SUCCESS;
 									}
 								}
+							}// end while capVolumen							
+							//Verifica que el volumen de certificados por bodega no exceda a lo capturado mas lo apoyado
+							Iterator it2 = mBodCulVar.keySet().iterator();
+							while(it2.hasNext()){
+							  String key = (String) it2.next();
+							  Double sumaBodega = mBodCulVar.get(key);
+							  Double sumaBodegaApoyado = 0.0;
+							  //Recupera los pagos apoyado por bodega							  
+							  //sumaBodega = Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(sumaBodega));	
+							  //Recupera el volumen de pagos  detalle apoyado por carta - bodega
+							  sumaBodegaApoyado = spDAO.getSumaPagoDetalleByFolioCABodega(folioCartaAdhesion, key);
+							  sumaBodega += sumaBodegaApoyado;
+							  sumaBodega = Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(sumaBodega));
+							  System.out.println("Clave: " + key + " -> Valor: " + sumaBodega);
+							  //Recupera el volumen de los certificados por bodega, cultivo y variedad y compara contra lo capturado
+							  volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodega(folioCartaAdhesion, key);
+							  if(volumenCertificados > 0.0){//Valida contra certificados
+								  if (sumaBodega > volumenCertificados){
+									  addActionError("El volumen total a apoyar: "+mBodCulVar.get(key)+" más el volumen apoyado: "+sumaBodegaApoyado+
+											   " no puede ser mayor al volumen en Certificados de Deposito: "+volumenCertificados+
+											   " de la carta de adhesión para la bodega: "+key+", por favor verifique");
+									  errorSistema = 1;
+										return SUCCESS;		
+								  }								  
+							  }else{//Valida contra constancias
+								  volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodega(folioCartaAdhesion, key);
+								  if(sumaBodega > volumenConstancias){
+									 addActionError("El volumen total a apoyar: "+mBodCulVar.get(key)+" más el volumen apoyado: "+sumaBodegaApoyado+
+											   " no puede ser mayor al volumen en Constancia de Almacenamiento "+volumenConstancias+
+											   " de la carta de adhesión para la bodega: "+key+", por favor verifique");
+									 errorSistema = 1;
+										return SUCCESS;		
+								  }								  
+							  }
+							  
 							}
+							
+							
 						} else if (criterioPago==2){	
 							Set<Integer> idsCapImporte = capImporte.keySet();
 							Iterator<Integer> it = idsCapImporte.iterator();

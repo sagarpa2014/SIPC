@@ -28,10 +28,10 @@
 					<s:if test="idCriterioPago == 1">
 						<td class="cCuota">
 							<s:if test ="cuota!=null">
-								<s:textfield id="v%{#itStatus.count}" name="cuota" maxlength="15" size="20"  cssClass="cantidad" value="%{getText('importeSinComas',{cuota})}" />
+								<s:textfield id="cuota%{#itStatus.count}" name="cuota" maxlength="15" size="20"  cssClass="cantidad" value="%{getText('importeSinComas',{cuota})}" />
 							</s:if>
 							<s:else>
-								<s:textfield id="v%{#itStatus.count}" name="cuota" maxlength="15" size="20"  cssClass="cantidad" value="%{}" />
+								<s:textfield id="cuota%{#itStatus.count}" name="cuota" maxlength="15" size="20"  cssClass="cantidad" value="%{}" />
 							</s:else>
 						</td>
 					</s:if>

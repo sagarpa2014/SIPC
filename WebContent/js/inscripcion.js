@@ -84,19 +84,19 @@ function chkCamposSolInscripcion(){
 		/*****FOLIO INSCRIPCION EN CASO DE QUE LA CARTA DE ADHESION NO SEA GENERADO POR EL SISTEMA****/
 		var cartaAdhesionSistema = $('#cartaAdhesionSistema').val();
 		if(cartaAdhesionSistema==0){
-			var acronimoCA = $('#acronimoCA').val();
-			//Validar nomenclatura del folio de inscripcion				
-			if(idPrograma == 34){
-				patron = /^([A-Z]{2,3})|([A-Z]{2}\d{1})\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
-			}else{
-				patron = /^[A-Z]{2,5}\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
-			}
-			if(!folioSI.match(patron)){
-				console.log("no match cadena "+folioSI);
-				$('#dialogo_1').html('El folio es incorrecto, se debe capturar conforme a la siguiente nomenclatura ejemplo: '+acronimoCA+'-PV12-MAIZ-001');
-		   		abrirDialogo();
-		 		return false;
-			}
+//			var acronimoCA = $('#acronimoCA').val();
+//			//Validar nomenclatura del folio de inscripcion				
+//			if(idPrograma == 34){
+//				patron = /^([A-Z]{2,3})|([A-Z]{2}\d{1})\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
+//			}else{
+//				patron = /^[A-Z]{2,5}\-[A-Z]{2}\d{2}\-[A-Z]{1,5}-\d{3}$/;
+//			}
+//			if(!folioSI.match(patron)){
+//				console.log("no match cadena "+folioSI);
+//				$('#dialogo_1').html('El folio es incorrecto, se debe capturar conforme a la siguiente nomenclatura ejemplo: '+acronimoCA+'-PV12-MAIZ-001');
+//		   		abrirDialogo();
+//		 		return false;
+//			}
 			
 		}		
 		/** Valida si hubo un error en validacion de folio de la solicitud **/
@@ -647,7 +647,6 @@ function agregaCultivoEstadoIniProg(){
 		   }
 		});//fin ajax
 }
-
 function recuperaCultivoByVariedad(idCultivo, count){
 		
 	var volxCulVar = $('input:radio[name=volxCulVar]:checked').val();
@@ -809,8 +808,8 @@ function chkCamposACA(){
 	var idCriterioPago = $('#idCriterioPago').val();
 	var volumenXCultivoVariedad = $('#volumenXCultivoVariedad').val();
 	var registrar = $('#registrar').val();
-	var cult = -1, edo = -1, variedad = -1, volumen ="", importe ="", claveBodega = "";
-	var tempCult ="", tempEdo ="", tempVariedad ="", i = 0, j = 0, tempClaveBodega="";
+	var cult = -1, edo = -1, variedad = -1, volumen ="", importe ="", claveBodega = "", cuota = "";
+	var tempCult ="", tempEdo ="", tempVariedad ="", i = 0, j = 0, tempClaveBodega="", tempCuota = "";
 	var totalVolumen=0, totalImporte=0, volumenMaximoCultivoVariedad=0;
 	var claveBodegaInvalida = $('#claveBodegaInvalida').val();
 	if(registrar==0){
@@ -914,16 +913,16 @@ function chkCamposACA(){
 	   		return false;
 		}  	
 		
-		for (i=1;i<parseInt(numCampos)+1;i++){
-			
+		for (i=1;i<parseInt(numCampos)+1;i++){			
 			cult = $('#c'+i).val();
 			edo = $('#e'+i).val();
 			variedad = $('#va'+i).val();
 			claveBodega = $('#claveBodega'+i).val();
+			cuota = $('#cuota'+i).val();
 			if(idCriterioPago == 1 || idCriterioPago == 3){
 				volumen = $('#v'+i).val();
 				if(volumenXCultivoVariedad == 1){
-					if(cult==-1 || edo==-1 ||  variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null)){
+					if(cult==-1 || edo==-1 ||  variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null) || cuota == -1){
 			   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los  estados a apoyar');
 				   		abrirDialogo();
 				 		return false;
@@ -931,7 +930,7 @@ function chkCamposACA(){
 					$("#respVXCV"+i).find('input').removeAttr('disabled');
 					volumenMaximoCultivoVariedad =  $('#respVXCV'+i).val();
 				}else{
-					if(cult==-1 || edo==-1 || variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null)){
+					if(cult==-1 || edo==-1 || variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null) || cuota == -1){
 			   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los  estados a apoyar');
 				   		abrirDialogo();
 				 		return false;
@@ -979,7 +978,8 @@ function chkCamposACA(){
 	   				tempEdo = $('#e'+j).val();
 	   				tempVariedad = $('#va'+j).val();
 	   				tempClaveBodega = $('#claveBodega'+j).val();
-	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && claveBodega == tempClaveBodega){
+	   				tempCuota = $('#cuota'+j).val();
+	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && claveBodega == tempClaveBodega && cuota == tempCuota){
 	   					$('#dialogo_1').html('El registro '+i+' se encuentra repetido, favor de verificar');
 	   			   		abrirDialogo();
 	   			 		return false;
@@ -1088,11 +1088,12 @@ function chkCamposACA(){
 			cult = $('#c'+i).val();
 			edo = $('#e'+i).val();
 			variedad = $('#va'+i).val();
-			claveBodega  = $('#claveBodega'+i).val();			
+			claveBodega  = $('#claveBodega'+i).val();	
+			cuota = $('#cuota'+i).val();
 			if(idCriterioPago == 1 || idCriterioPago == 3){
 				volumen = $('#v'+i).val();
 				if(volumenXCultivoVariedad == 1){
-					if(cult==-1 || edo==-1 ||  variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null)){
+					if(cult==-1 || edo==-1 ||  variedad==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null) || cuota == -1){
 			   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los  estados a apoyar');
 				   		abrirDialogo();
 				 		return false;
@@ -1100,7 +1101,7 @@ function chkCamposACA(){
 					$("#respVXCV"+i).find('input').removeAttr('disabled');
 					volumenMaximoCultivoVariedad =  $('#respVXCV'+i).val();
 				}else{
-					if(cult==-1 || edo==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null) || variedad==-1){
+					if(cult==-1 || edo==-1 || (volumen == "" || volumen == null) || (claveBodega == "" || claveBodega == null) || variedad==-1 || cuota == -1){
 			   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los  estados a apoyar');
 				   		abrirDialogo();
 				 		return false;
@@ -1148,7 +1149,8 @@ function chkCamposACA(){
 	   				tempEdo = $('#e'+j).val();
 	   				tempVariedad = $('#va'+j).val();
 	   				tempClaveBodega = $('#claveBodega'+j).val();
-	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && claveBodega == tempClaveBodega){
+	   				tempCuota = $('#cuota'+j).val();
+	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && claveBodega == tempClaveBodega && cuota == tempCuota ){
 	   					$('#dialogo_1').html('El registro d '+i+' se encuentra repetido, favor de verificar');
 	   			   		abrirDialogo();
 	   			 		return false;
@@ -1362,15 +1364,14 @@ function chkCamposInicializa(){
 					   		abrirDialogo();
 					 		return false;
 				   		 }else{		
-				   			console.log(i);
-				   			
+				   			console.log(i);				   			
 				   			 //Valida que el cultivo y variedad no se encuentren repetidos				   			
 				   			for (j=1;j<parseInt(numCamposVXCV)+1;j++){
 				   				if(i!=j){
 				   					cultivoVXCVTemp = $('#cultivoVXCV'+j).val();
 									variedadVXCVTemp = $('#variedadVXCV'+j).val();
-									if(cultivoVXCV == cultivoVXCVTemp && variedadVXCV == variedadVXCVTemp){
-										
+									cuotaTemp = $('#cuota'+j).val();
+									if(cultivoVXCV == cultivoVXCVTemp && variedadVXCV == variedadVXCVTemp ){										
 										$('#dialogo_1').html('El registro '+i+' en volumen por cultivo variedad se encuentra repetido, favor de verificar');
 					   			   		abrirDialogo1();
 					   			 		return false;
@@ -1452,15 +1453,16 @@ function chkCamposInicializa(){
 		var tempCult ="";
 		var tempEdo ="";
 		var tempVariedad ="";
+		var tempCuota ="";
 		
 		for (i=1;i<parseInt(numCampos)+1;i++){
 			cult = $('#c'+i).val();
 			edo = $('#e'+i).val();
 			variedad = $('#va'+i).val();
-			cuota = $('#v'+i).val();
+			cuota = $('#cuota'+i).val();
 			
 			if(idCriterioPago == 1){
-				if(cult==-1 || edo==-1 || (cuota == "" || cuota == null)){
+				if(cult==-1 || edo==-1 || variedad == -1 || (cuota == "" || cuota == null)){
 		   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los estados a apoyar');
 			   		abrirDialogo();
 			 		return false;
@@ -1471,21 +1473,20 @@ function chkCamposInicializa(){
 			   		abrirDialogo();
 			 		return false;
 				}
-			}
-			
+			}			
 	   		for (j=1;j<parseInt(numCampos)+1;j++){
 	   			if(i!=j){
 	   				tempCult = $('#c'+j).val();
 	   				tempEdo = $('#e'+j).val();
 	   				tempVariedad = $('#va'+j).val();
-	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad){
+	   				tempCuota = $('#cuota'+j).val();
+	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && cuota ==  tempCuota){
 	   					$('#dialogo_1').html('El registro '+i+' se encuentra repetido, favor de verificar');
 	   			   		abrirDialogo();
 	   			 		return false;
 	   				}
 	   			}	   				
-	   		}
-	   			
+	   		}	   			
 	   		if(idCriterioPago == 1){
 	   			patron =/^\d{1,13}((\.\d{1,2})|(\.))?$/;
 	   			if(!cuota.match(patron)){
@@ -1650,14 +1651,16 @@ function validarFolioInscripcion(){
 		});//fin ajax
 }
 
-function recuperaTotalVolumen(v, count){
-	console.log("recuperaTotalVolumen");
+function recuperaTotalVolumen(count){
 	var numCampos = $('#numCampos').val();
 	var totalVolumen = 0;
 	var volumen = null;
 	var i = 0;
 	var vl = 0; 
 	var idInicializacionEsquema = $('#idInicializacionEsquema').val();
+	var v =  $('#v'+count).val();
+	var cuota =  $('#cuota'+count).val();
+	
 	
 	if(($('#complementoPorampliacionChk')).is(":checked")) {			
 		vl = $('#volumenApoyarAux').val();	
@@ -1682,8 +1685,7 @@ function recuperaTotalVolumen(v, count){
 		var idPrograma= $('#idPrograma').val();
 		var idCriterioPago= $('#idCriterioPago').val();
 		
-		if((idCultivo != -1) && (idVariedad != -1) && (idEstado != -1) &&(v!="" && v !=null)){
-			console.log("consigue el volumen x cultivo variedad y recupera cuota e importe");			
+		if((idCultivo != -1) && (idVariedad != -1) && (idEstado != -1) && (v!="" && v !=null) && cuota!=-1){			
 			$.ajax({
 				   async: false,
 				   type: "POST",
@@ -1695,20 +1697,58 @@ function recuperaTotalVolumen(v, count){
 				   		"&idCriterioPago="+idCriterioPago+
 				   		"&count="+count+
 				   		"&idInicializacionEsquema="+idInicializacionEsquema+
-				   		"&volumenAutorizado="+v,
+				   		"&volumenAutorizado="+v+
+				   		"&cuota="+cuota,				   		
 				   success: function(data){
 					   var $response=$(data);
-					   var cuota = $response.filter('#cuota'+count).text();
+					   //var cuota = $response.filter('#cuota'+count).text();
 					   var importe = $response.filter('#importeAutorizado'+count).text();
 					   var volumenXCV = $response.filter('#respVXCV'+count).text();
-					   $('#cuota'+count).val(cuota);
+					   //$('#cuota'+count).val(cuota);
 					   $('#importe'+count).val(importe);	
 					   $('#vxcv'+count).val(volumenXCV);						   
 				   }
 				});//fin ajax
+		}else{
+			 $('#importe'+count).val("");	
+			 $('#vxcv'+count).val("");	
 		}
 		
 	//}
+	
+}
+
+function recuperarListaDeCuotas(count){
+	var idEstado =  $('#e'+count).val();
+	var idCultivo = $('#c'+count).val();
+	var idVariedad = $('#va'+count).val();
+	var idInicializacionEsquema = $('#idInicializacionEsquema').val();
+	if(idEstado==-1 || idCultivo == -1 || idVariedad == -1 ){
+		 $('#importe'+count).val("");	
+		 $('#vxcv'+count).val("");	
+	}
+	
+	recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count);
+	
+}
+
+function recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count){
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: "recuperarListaDeCuotaByEdoCulVar",
+		   data: "idCultivo="+idCultivo+
+		   		"&idVariedad="+idVariedad+
+		   		"&idEstado="+idEstado+
+		   		"&idInicializacionEsquema="+idInicializacionEsquema+
+		   		"&count="+count,		   		
+		   success: function(data){			   	
+			   $('#lstCuota'+count).html(data).ready(function () {
+					$('#lstCuota'+count).fadeIn('slow');
+					
+				});
+		   }
+		});//fin ajax
 	
 }
 
@@ -1885,7 +1925,10 @@ function selectAccionAlcanceEdicion (){
 }
 
 function recuperaCultivoByEstadoAsigCA(idEstado, count){
+	recuperarListaDeCuotas(count);
 	if(idEstado == -1){
+		$('#importe'+count).val("");	
+		  $('#vxcv'+count).val("");	
 		return false;
 	}
 	var idInicializacionEsquema = $('#idInicializacionEsquema').val();
@@ -1902,6 +1945,8 @@ function recuperaCultivoByEstadoAsigCA(idEstado, count){
 				});
 		   }
 		});//fin ajax
+	
+	
 }
 
 function complementoAmpliacion(){
@@ -2081,11 +2126,8 @@ function agregarNumCamposCultivoEstadoIniProg(){
 				console.log("variedadVXCV1"+  $('#variedadVXCV1').val());
 				for (i=1;i<parseInt(numCamposVXCV)+1;i++){
 					cultivoVXCV = $('#cultivoVXCV'+i).val();
-					console.log("cultivoVXCV"+ cultivoVXCV);
-					variedadVXCV = $('#variedadVXCV'+i).val();
-					
-					volumenVXCV = $('#volumenVXCV'+i).val();
-											
+					variedadVXCV = $('#variedadVXCV'+i).val();					
+					volumenVXCV = $('#volumenVXCV'+i).val();											
 					if(cultivoVXCV ==-1 || variedadVXCV ==-1 || (volumenVXCV == "" || volumenVXCV == null)){
 			   			$('#dialogo_2').html('Capture los valores del registro '+i+' volumen  por cultivo variedad');
 				   		abrirDialogo2();
@@ -2155,7 +2197,7 @@ function agregarNumCamposCultivoEstadoIniProg(){
 		tds += '<td id="variedad'+numCampos+'"><select name="selectedVariedad" id="va'+numCampos+'"><option value="-1">-- Seleccione una opción --</option></select></td>';
 		tds += '<td id="contenedorListEdo'+numCampos+'"></td>';
 		if(idCriterioPago == 1){
-			tds += '<td><input type="text" id="v'+numCampos+'" name="cuota" maxlength="15" class="cantidad" size="20" ></td>';
+			tds += '<td><input type="text" id="cuota'+numCampos+'" name="cuota" maxlength="15" class="cantidad" size="20" ></td>';
 		}
 		tds += '</tr>';
 		$("#tableCultivoEstadoIniProg").append(tds);
