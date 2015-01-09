@@ -397,8 +397,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			//Verifica si los datos del comprador estan completos
 		    comprador = cDAO.consultaComprador(idComprador).get(0);
 		    if( (comprador.getClaveMunicipio()==null)
-		    	|| (comprador.getCodigoPostal() == null || comprador.getCodigoPostal().isEmpty()) 
-		    	|| (comprador.getIdEstado()==null) ||(comprador.getNumExterior()==null || comprador.getNumExterior().isEmpty())
+		    	|| (comprador.getIdEstado()==null) 
 		    	|| (comprador.getRfc() == null || comprador.getRfc().isEmpty())){
 		    	datosCompradorCompleto = 0;
 		    	msjError = "Debe capturar todos los datos del comprador";
