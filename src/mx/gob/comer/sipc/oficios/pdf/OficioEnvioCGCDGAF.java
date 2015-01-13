@@ -59,7 +59,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		writer.setPageEvent(this);
 		document.open();
 		getEncabezado();
-		addEmptyLine(1);
+		addEmptyLine(0);
 		getNoOficio();
 		getLugarYFecha();
 		addEmptyLine(1);
@@ -88,12 +88,16 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
 			enunciado.add(new Chunk("Agencia de Servicios a la Comercialización y\n Desarrrollo de Mercados Agropecuarios\n\n", TIMESROMANBOLD12));
-			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMAN12));
+			enunciado.add(new Chunk("Coordinación General de Comercialización\n\n", TIMESROMAN12));
+			enunciado.add(new Chunk("DIRECCION GENERAL DE DESARROLLO DE MERCADOS E INFRAESTRUCTURA COMERCIAL\n", TIMESROMAN12));
+			enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
+/*
 			if(ata.getLeyendaOficio().length()<=40){
 				enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 			}else{
 				enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio().substring(0, 41)+"\n"+ata.getLeyendaOficio().substring(41, ata.getLeyendaOficio().length()), TIMESROMAN10NORMAL));
 			}
+*/			
 			cell =	createCell(null, 0, 2, 1, sagarpa);
 			table1.addCell(cell);
 			cell =	createCell(enunciado, 0, 3, 1, null);
@@ -203,6 +207,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				".- "+ata.getCcep1().getPuesto()+".- ", TIMESROMAN08));
 		//parrafo.add(new Chunk("Luz Maria Corona Martinez"+".- "+"Mi puesto"+".- ", TIMESROMAN08));
 		parrafo.add(new Chunk((ata.getCcep1().getCorreo()!=null && !ata.getCcep1().getCorreo().isEmpty())?ata.getCcep1().getCorreo()+"\n":"\n", TIMESROMAN07));
+/*
 		//ccpe2
 		parrafo.add(new Chunk(ata.getCcep2().getIniProfesion()+" "+ata.getCcep2().getNombre()+" "+ata.getCcep2().getPaterno()+" "+
 				(ata.getCcep2().getMaterno()!=null && !ata.getCcep2().getMaterno().isEmpty()?ata.getCcep2().getMaterno():"")+
@@ -213,7 +218,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				(ata.getCcep3().getMaterno()!=null && !ata.getCcep3().getMaterno().isEmpty()?ata.getCcep3().getMaterno():"")+
 				".- "+ata.getCcep3().getPuesto()+".- ", TIMESROMAN08));
 		parrafo.add(new Chunk((ata.getCcep3().getCorreo()!=null && !ata.getCcep3().getCorreo().isEmpty())?ata.getCcep3().getCorreo()+"\n":"\n", TIMESROMAN07));
-		
+*/		
 		celda =	createCell(parrafo, 0, 2, 1);
 		piePagina.addCell(celda);
 		

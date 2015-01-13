@@ -20,6 +20,13 @@
 			</font>
 		</span>		
 		<div class="clear"></div>
+		<span class="derecha">
+			<font class="arial12normal">
+				DIRECCION GENERAL DE DESARROLLO DE MERCADOS<br>
+				E INFRAESTRUCTURA COMERCIAL <br>
+			</font>
+		</span>		
+		<div class="clear"></div>
 		<br>
 		<p class="arial12normal">
 			<font class="arial12bold">Oficio No. <s:property value="claveOficio"/><s:property value="noOficio"/><s:property value="anioOficio"/></font><br>
@@ -73,11 +80,12 @@
 			<div id="personal">
 				<font class="arial12normal"><s:property value="%{ccep1.iniProfesion}"/>&nbsp;<s:property value="%{ccep1.nombre}"/>&nbsp;<s:property value="%{ccep1.paterno}"/>&nbsp;<s:property value="%{ccep1.materno}"/>
 				.-<s:property value="%{ccep1.puesto}"/>.-<s:property value="%{ccep1.correo}"/></font><br>
+<!-- 
 				<font class="arial12normal"><s:property value="%{ccep2.iniProfesion}"/>&nbsp;<s:property value="%{ccep2.nombre}"/>&nbsp;<s:property value="%{ccep2.paterno}"/>&nbsp;<s:property value="%{ccep2.materno}"/>
 				.-<s:property value="%{ccep2.puesto}"/>.-<s:property value="%{ccep2.correo}"/></font><br>
 				<font class="arial12normal"><s:property value="%{ccep3.iniProfesion}"/>&nbsp;<s:property value="%{ccep3.nombre}"/>&nbsp;<s:property value="%{ccep3.paterno}"/>&nbsp;<s:property value="%{ccep3.materno}"/>
 				.-<s:property value="%{ccep3.puesto}"/>.-<s:property value="%{ccep3.correo}"/></font><br>
-							
+ -->							
 			</div>
 		</div>
 		<div class="clear"></div>

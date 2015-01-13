@@ -148,7 +148,7 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			criterioPago = programa.getCriterioPago();
 			/*Recupera los pagos del programa seleccionado por el usuario con estatus = 1*/
 			lstPagosV = pDAO.consultaPagosV(-1, idPrograma, -1, "", "", "1");
-			claveOficio = "F00.4000/";
+			claveOficio = "F00.4200/";
 			anioOficio = "/"+new SimpleDateFormat("yyyy").format(new Date());
 						
 		}catch(JDBCException e){
@@ -287,7 +287,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			}
 			
 			//Recupera el emisor
-			lstPersonal = cDAO.consultaPersonal(0, "Coordinador General de Comercialización", true, false, false);
+			lstPersonal = cDAO.consultaPersonal(0, "Director General de Desarrollo de Mercados", true, false, false);
+			//lstPersonal = cDAO.consultaPersonal(0, "Coordinador General de Comercialización", true, false, false);
 			if(lstPersonal.size()>0){
 				emisor = lstPersonal.get(0);
 				emi.append(lstPersonal.get(0).getNombre()).append(" ")
@@ -295,7 +296,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 					  .append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
 				emisor.setNombre(emi.toString().toUpperCase());
 				//emisor.setPuesto(emisor.getPuesto().toUpperCase());
-				emisor.setPuesto("EL COORDINADOR GENERAL");
+				emisor.setPuesto("EL DIRECTOR GENERAL");
+				//emisor.setPuesto("EL COORDINADOR GENERAL");
 			}
 			//Recupera los cpp y vobo.
 			//if(idPrograma == 8){
@@ -303,7 +305,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			if(lstPersonal.size()>0){
 				ccep1 = lstPersonal.get(0);
 			}
-			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director General de Desarrollo de Mercados", false, false,false, idPrograma);
+			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Coordinador General de Comercialización", false, false,false, idPrograma);
+			//lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director General de Desarrollo de Mercados", false, false,false, idPrograma);
 			if(lstPersonal.size()>0){
 				ccep2 = lstPersonal.get(0);
 			}
