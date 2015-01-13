@@ -133,10 +133,11 @@ function chkCamposSeguimientoAcopio(){
 				$('#dialogo_1').html('El valor del Acopio Toneladas es inválido, se deben capturar decimales y aceptan hasta 10 digitos a la izquierda y 3 máximo a la derecha');
 				abrirDialogo();
 				return false;
-			} else if (acopioTotalTon==0){
+/*			} else if (acopioTotalTon==0){
 				$('#dialogo_1').html('El valor del Acopio Toneladas debe ser mayor a cero');
 				abrirDialogo();
-				return false;			
+				return false;
+*/
 			}
 		}
 		$("#acopioTotalTon").removeAttr("disabled");
