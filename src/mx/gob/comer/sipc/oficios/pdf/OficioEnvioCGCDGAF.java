@@ -87,9 +87,9 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			table1.setWidthPercentage(100);
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
-			enunciado.add(new Chunk("Agencia de Servicios a la Comercialización y\n Desarrrollo de Mercados Agropecuarios\n\n", TIMESROMANBOLD12));
-			enunciado.add(new Chunk("Coordinación General de Comercialización\n\n", TIMESROMAN12));
-			enunciado.add(new Chunk("DIRECCION GENERAL DE DESARROLLO DE MERCADOS E INFRAESTRUCTURA COMERCIAL\n", TIMESROMAN12));
+			enunciado.add(new Chunk("Agencia de Servicios a la Comercialización y\n Desarrrollo de Mercados Agropecuarios\n", TIMESROMANBOLD12));
+			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMANBOLD12));
+			enunciado.add(new Chunk("Dirección General de Desarrollo de Mercados e Infraestructura Comercial\n", TIMESROMANBOLD12));
 			enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 /*
 			if(ata.getLeyendaOficio().length()<=40){
@@ -111,7 +111,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	}
 	private void getLugarYFecha() throws DocumentException {
 		parrafo = new Paragraph("México, D.F. "+ata.getFechaActual(), TIMESROMAN12);
-		parrafo.setAlignment(Rectangle.ALIGN_RIGHT);
+		parrafo.setAlignment(Rectangle.ALIGN_LEFT);
 		document.add(parrafo);	
 	}
 	private void getDestinatario() throws DocumentException {
@@ -162,7 +162,14 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		parrafo.add(new Chunk(ata.getCuartoParrafo(), TIMESROMAN12));
 		parrafo.setLeading(1,1);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
-		document.add(parrafo);	
+		document.add(parrafo);
+		addEmptyLine(1);
+		
+		parrafo = new Paragraph();
+		parrafo.add(new Chunk(ata.getQuintoParrafo(), TIMESROMAN12));
+		parrafo.setLeading(1,1);
+		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
+		document.add(parrafo);		
 	}
     private void getEmisor() throws DocumentException {
 		parrafo = new Paragraph("A T E N T A M E N T E", TIMESROMANBOLD12);
@@ -171,11 +178,15 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMANBOLD12);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
+		
+		addEmptyLine(1);
+/*		
 		if(ata.getIdPrograma() == 31){
 			addEmptyLine(1);
 		}else{
 			addEmptyLine(2);
-		}		
+		}	
+*/
 		parrafo = new Paragraph((ata.getEmisor().getIniProfesion()!=null && !ata.getEmisor().getIniProfesion().isEmpty()?ata.getEmisor().getIniProfesion().toUpperCase()+" ":"")
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD12);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
@@ -207,12 +218,13 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				".- "+ata.getCcep1().getPuesto()+".- ", TIMESROMAN08));
 		//parrafo.add(new Chunk("Luz Maria Corona Martinez"+".- "+"Mi puesto"+".- ", TIMESROMAN08));
 		parrafo.add(new Chunk((ata.getCcep1().getCorreo()!=null && !ata.getCcep1().getCorreo().isEmpty())?ata.getCcep1().getCorreo()+"\n":"\n", TIMESROMAN07));
-/*
+
 		//ccpe2
 		parrafo.add(new Chunk(ata.getCcep2().getIniProfesion()+" "+ata.getCcep2().getNombre()+" "+ata.getCcep2().getPaterno()+" "+
 				(ata.getCcep2().getMaterno()!=null && !ata.getCcep2().getMaterno().isEmpty()?ata.getCcep2().getMaterno():"")+
 				".- "+ata.getCcep2().getPuesto()+".- ", TIMESROMAN08));
 		parrafo.add(new Chunk((ata.getCcep2().getCorreo()!=null && !ata.getCcep2().getCorreo().isEmpty())?ata.getCcep2().getCorreo()+"\n":"\n", TIMESROMAN07));
+/*		
 		//ccpe3
 		parrafo.add(new Chunk(ata.getCcep3().getIniProfesion()+" "+ata.getCcep3().getNombre()+" "+ata.getCcep3().getPaterno()+" "+
 				(ata.getCcep3().getMaterno()!=null && !ata.getCcep3().getMaterno().isEmpty()?ata.getCcep3().getMaterno():"")+

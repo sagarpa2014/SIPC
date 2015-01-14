@@ -116,7 +116,7 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 	private int version;
 	private String p14Texto;
 	
-	
+	private String quintoParrafo;
 	
 	public String archivoTesofeEnvio(){
 		try{
@@ -330,9 +330,9 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			//ciclo = cDAO.consultaEdoXPrograma(idPrograma, idEstado).get(0).getCiclo();
 			programa = cDAO.consultaPrograma(idPrograma).get(0);
 			
-			primerParrafo = "Hago referencia a la operación del esquema ";
+			primerParrafo = "Con referencia a la operación del esquema ";
 			p11Texto = ", sobre el particular, me permito informar que han sido autorizados los apoyos correspondientes " +
-							"para que en lo conducente dentro del proceso de dispersión de los recursos para el pago de los apoyos a ";
+							"para que en lo conducente sean considerados dentro del proceso de dispersión de los recursos para el pago de los apoyos a ";
 			p12Texto =" comprador";
 			
 			if(programa.getDesApoyoEnOficioClc()!= null && !programa.getDesApoyoEnOficioClc().isEmpty()){
@@ -347,18 +347,19 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			p14Texto = programa.getCiclo()+".";
 			
 			segundoParrafo = "Con base en lo anterior, solicito a esa Dirección General a su cargo se realicen las acciones necesarias para la elaboración de la Cuenta " +
-					"por Liquidar Certificada (CLC) correspondiente e informe a esta Coordinación General, para efectuar la vinculación de archivos de pago a TESOFE "+
+					"por Liquidar Certificada (CLC) correspondiente e informe a esta Dirección General, para efectuar la vinculación de archivos de pago a TESOFE "+
 					"por medio del sistema SIAFF; dicha autorización de emisión de apoyos se refiere a la dispersión de recursos correspondientes a ";					
 			
 			p21Texto = " depósitos ";
 			p22Texto =" en cuentas bancarias a través de la Tesorería de la Federación, lo que significa una erogación de ";
-			tercerParrafo = "Los pagos solicitados se encuentran identificados, verificados y validados a través de la debida integración de los expedientes y cuentan " +
-					"con la documentación soporte completa y formalizada. Los beneficiarios del apoyo, cuentan con la respectiva elegibilidad de la Coordinación General de " +
-					"Comercialización, por lo que los importes determinados se encuentran debidamente registrados y aprobados."; 
+			tercerParrafo = "Los pagos solicitados se encuentran identificados, dictaminados positivamente, verificados y validados a través de la debida integración de los expedientes y cuentan " +
+					"con la documentación soporte completa, formalizada y validada. Los beneficiarios del apoyo, cuentan con la respectiva validación de la Dirección Regional correspondiente, " +
+					" por lo que los importes determinados se encuentran debidamente registrados y aprobados."; 
 			
 			cuartoParrafo ="Este ejercicio, el control y la evaluación del gasto, se realizará conforme a lo establecido en la Ley Federal de Presupuesto y Responsabilidad " +
 					"Hacendaria, la Ley General de Contabilidad Gubernamental y en las disposiciones que, en el marco de dichas leyes, estén establecidas en otros ordenamientos " +
 					"legales y en el Presupuesto de Egresos de la Federación para el presente ejercicio fiscal "+Calendar.getInstance().get(Calendar.YEAR)+".";
+			quintoParrafo = "Sin más por el momento reciba un cordial saludo.";
 			//Recupera la leyenda del oficio
 			leyendaOficio = cDAO.consultaParametros("LEYENDA_OFICIO");
 			
@@ -834,5 +835,13 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 
 	public void setP14Texto(String p14Texto) {
 		this.p14Texto = p14Texto;
-	}		
+	}
+
+	public String getQuintoParrafo() {
+		return quintoParrafo;
+	}
+
+	public void setQuintoParrafo(String quintoParrafo) {
+		this.quintoParrafo = quintoParrafo;
+	}	
 }

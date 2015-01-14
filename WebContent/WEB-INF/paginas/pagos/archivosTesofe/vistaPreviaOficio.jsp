@@ -22,8 +22,8 @@
 		<div class="clear"></div>
 		<span class="derecha">
 			<font class="arial12normal">
-				DIRECCION GENERAL DE DESARROLLO DE MERCADOS<br>
-				E INFRAESTRUCTURA COMERCIAL <br>
+				Dirección General de Desarrollo de Mercados<br>
+				e Infraestrutura Comercial <br>
 			</font>
 		</span>		
 		<div class="clear"></div>
@@ -31,11 +31,12 @@
 		<p class="arial12normal">
 			<font class="arial12bold">Oficio No. <s:property value="claveOficio"/><s:property value="noOficio"/><s:property value="anioOficio"/></font><br>
 		</p>
-		<span class="derecha">
+		<span class="izquierda">
 			<font class="arial12normal">
 				México, D.F. <s:property value="fechaActual"/><br>
 			</font>
 		</span>
+		<br>
 		<br>
 		<p class="arial12normal">
 			<font class="arial12bold">
@@ -66,6 +67,9 @@
 		<p class="arial12normal">
 			<s:property value="%{cuartoParrafo}"/>
 		</p>
+		<p class="arial12normal">
+			<s:property value="%{quintoParrafo}"/>
+		</p>		
 		<br>
 		<center>
 			<font class="arial12bold">A&nbsp;T&nbsp;E&nbsp;N&nbsp;T&nbsp;A&nbsp;M&nbsp;E&nbsp;N&nbsp;T&nbsp;E </font><br>
@@ -79,10 +83,10 @@
 			<div id="frasecpp"><font class="arial12normal">C.c.e.p</font></div>
 			<div id="personal">
 				<font class="arial12normal"><s:property value="%{ccep1.iniProfesion}"/>&nbsp;<s:property value="%{ccep1.nombre}"/>&nbsp;<s:property value="%{ccep1.paterno}"/>&nbsp;<s:property value="%{ccep1.materno}"/>
-				.-<s:property value="%{ccep1.puesto}"/>.-<s:property value="%{ccep1.correo}"/></font><br>
-<!-- 
+				.-<s:property value="%{ccep1.puesto}"/>.-<s:property value="%{ccep1.correo}"/></font><br> 
 				<font class="arial12normal"><s:property value="%{ccep2.iniProfesion}"/>&nbsp;<s:property value="%{ccep2.nombre}"/>&nbsp;<s:property value="%{ccep2.paterno}"/>&nbsp;<s:property value="%{ccep2.materno}"/>
 				.-<s:property value="%{ccep2.puesto}"/>.-<s:property value="%{ccep2.correo}"/></font><br>
+<!--				
 				<font class="arial12normal"><s:property value="%{ccep3.iniProfesion}"/>&nbsp;<s:property value="%{ccep3.nombre}"/>&nbsp;<s:property value="%{ccep3.paterno}"/>&nbsp;<s:property value="%{ccep3.materno}"/>
 				.-<s:property value="%{ccep3.puesto}"/>.-<s:property value="%{ccep3.correo}"/></font><br>
  -->							
