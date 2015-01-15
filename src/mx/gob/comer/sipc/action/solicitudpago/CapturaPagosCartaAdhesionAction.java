@@ -239,6 +239,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			nombreComprador = lstDetallePagosCAEspecialistaV.get(0).getComprador();
 			nombrePrograma = lstDetallePagosCAEspecialistaV.get(0).getPrograma();
 			fianza = lstDetallePagosCAEspecialistaV.get(0).getDescFianza();
+			//tieneFianza = p.getFianza();
 			recuperaDatosPlaza();
 			fechaAtentaNota = new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString();
 			solicitudesAtendidas =  lstDetallePagosCAEspecialistaV.get(0).getSolicitudesAtendidas()!=null ? lstDetallePagosCAEspecialistaV.get(0).getSolicitudesAtendidas() : 0;
@@ -313,9 +314,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 													totalVolApoEdoCulVarCA = 0.0;
 												}
 												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												if(volumenCertificados==0.0){
-													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												}
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
 											} else {
 												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstDetallePagosCAEspecialistaV.get(i).getBodega());
 												if (pca.size()>0){
@@ -324,9 +323,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 													totalVolApoEdoCulVarCA = 0.0;
 												}
 												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												if(volumenCertificados==0.0){
-													volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												}
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
 											}											
 											volumenAutEdoCulVarCA = lstDetallePagosCAEspecialistaV.get(i).getVolumen();
 											vEstadoAux = lstDetallePagosCAEspecialistaV.get(i).getEstado();
@@ -341,35 +338,21 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
 									//System.out.println(suma);
-									if (volumenCertificados>0.0){
-										if (suma > volumenCertificados){
+									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
+										if (suma > (volumenCertificados+volumenConstancias)){
 											errorSistema = 1;
 											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
 												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
 															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
 											} else {
 												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito: "+volumenCertificados+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
 															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
 											}
 											return SUCCESS;												
-										}
-									} else {
-										if (suma > volumenConstancias){
-											errorSistema = 1;
-											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-											} else {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Constancias de Almacenamiento: "+volumenConstancias+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
-											}
-											return SUCCESS;												
-										}											
-									}									
+										}										
+									}
 									if (suma > volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
@@ -835,9 +818,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 								if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
 									for (int i = 0; i < lstEditDetallePagosCAEspecialistaV.size(); i++) {
 										if (lstEditDetallePagosCAEspecialistaV.get(i).getIdPagoDetalle() == idCapVolumen){
-											 
 											if(lstEditDetallePagosCAEspecialistaV.get(i).getBodega()==null||lstEditDetallePagosCAEspecialistaV.get(i).getBodega().isEmpty()){
-												
 												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad(), null);
 												System.out.println("carta"+pca.get(0).getFolioCartaAdhesion());
 												//lstEditDetallePagosCAEspecialistaV = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), 0);
@@ -845,7 +826,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 													totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstEditDetallePagosCAEspecialistaV.get(i).getVolumen();
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
-												}											
+												}	
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
 											} else {
 												
 												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstEditDetallePagosCAEspecialistaV.get(i).getBodega());
@@ -854,7 +837,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 													totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstEditDetallePagosCAEspecialistaV.get(i).getVolumen();
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
-												}											
+												}	
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getBodega(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getBodega(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());												
 											}
 											
 											volumenAutEdoCulVarCA = lstEditDetallePagosCAEspecialistaV.get(i).getVolumenAutorizado();
@@ -869,6 +854,22 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
 									//System.out.println(suma);
+									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
+										if (suma > (volumenCertificados+volumenConstancias)){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}
+									}
+
 									if (suma >volumenAutEdoCulVarCA){
 										errorSistema = 1;
 										if(vBodegaAux==null||vBodegaAux.isEmpty()){
