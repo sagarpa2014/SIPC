@@ -74,7 +74,13 @@
 		<center>
 			<font class="arial12bold">A&nbsp;T&nbsp;E&nbsp;N&nbsp;T&nbsp;A&nbsp;M&nbsp;E&nbsp;N&nbsp;T&nbsp;E </font><br>
 			<font class="arial12bold">
-				<s:property value="emisor.puesto"/><br><br><br>
+				<s:property value="emisor.puesto"/><br>
+			</font>
+			<font class="arial12normal">
+				De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior<br>
+				de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015<br><br><br>
+			</font>
+			<font class="arial12bold">								
 				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/>
 			</font>
 		</center>

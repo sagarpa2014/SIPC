@@ -30,7 +30,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	
 	// Configuracion de fuentes
 	//private final Font ARIALBOLD10 = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
-	private final Font TIMESROMAN10 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN10 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
 	@SuppressWarnings("unused")
 	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08 = FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL, Color.BLACK);
@@ -40,6 +40,8 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	private final Font TIMESROMAN07	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 7,Font.NORMAL, Color.BLACK);
 	private final Font TIMESROMAN12	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 11,Font.NORMAL, Color.BLACK);
 	private final Font TIMESROMANBOLD12	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 11,Font.BOLD, Color.BLACK);
+	private final Font TIMESROMANBOLD10	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 10,Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN06	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 6,Font.NORMAL, Color.BLACK);
 	//private final Font ARIALBOLD12 = FontFactory.getFont(FontFactory.HELVETICA, 1, Font.NORMAL, Color.BLACK);
 	
 
@@ -126,8 +128,6 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	
 	}
 	private void getCuerpo() throws DocumentException{
-		
-		
 		parrafo = new Paragraph();
 		parrafo.add(new Chunk(ata.getPrimerParrafo(), TIMESROMAN12));
 		parrafo.add(new Chunk(ata.getNombrePrograma(), (ata.getVersion() == 0? TIMESROMAN12:TIMESROMANBOLD12)));
@@ -140,7 +140,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
 		parrafo.setLeading(1,1);
 		document.add(parrafo);	
-		addEmptyLine(1);		
+		addEmptyLineCuerpo(1);		
 		parrafo = new Paragraph();
 		parrafo.add(new Chunk(ata.getSegundoParrafo(), TIMESROMAN12));
 		parrafo.add(new Chunk(ata.getNoDepositos()+"", TIMESROMANBOLD12));
@@ -150,20 +150,20 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		parrafo.setLeading(1,1);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
 		document.add(parrafo);	
-		addEmptyLine(1);		
+		addEmptyLineCuerpo(1);		
 		parrafo = new Paragraph();
 		parrafo.add(new Chunk(ata.getTercerParrafo(), TIMESROMAN12));
 		parrafo.setLeading(1,1);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
 		document.add(parrafo);	
-		addEmptyLine(1);
+		addEmptyLineCuerpo(1);
 		
 		parrafo = new Paragraph();
 		parrafo.add(new Chunk(ata.getCuartoParrafo(), TIMESROMAN12));
 		parrafo.setLeading(1,1);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
 		document.add(parrafo);
-		addEmptyLine(1);
+		addEmptyLineCuerpo(1);
 		
 		parrafo = new Paragraph();
 		parrafo.add(new Chunk(ata.getQuintoParrafo(), TIMESROMAN12));
@@ -172,14 +172,18 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		document.add(parrafo);		
 	}
     private void getEmisor() throws DocumentException {
-		parrafo = new Paragraph("A T E N T A M E N T E", TIMESROMANBOLD12);
+		parrafo = new Paragraph("A T E N T A M E N T E", TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);	
-		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMANBOLD12);
+		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMANBOLD10);
+		parrafo.setAlignment(Element.ALIGN_CENTER);
+		document.add(parrafo);
+		parrafo = new Paragraph("De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior\n" +
+								"de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015", TIMESROMAN06);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
 		
-		addEmptyLine(1);
+		addEmptyLine(2);
 /*		
 		if(ata.getIdPrograma() == 31){
 			addEmptyLine(1);
@@ -188,7 +192,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		}	
 */
 		parrafo = new Paragraph((ata.getEmisor().getIniProfesion()!=null && !ata.getEmisor().getIniProfesion().isEmpty()?ata.getEmisor().getIniProfesion().toUpperCase()+" ":"")
-				+ata.getEmisor().getNombre(), TIMESROMANBOLD12);
+				+ata.getEmisor().getNombre(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
 	}
@@ -199,7 +203,14 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			document.add(parrafo);
 		}
 	}
-	
+
+	private void addEmptyLineCuerpo(int number) throws DocumentException {
+		for (int i = 0; i < number; i++) {
+			parrafo = new Paragraph("\n",TIMESROMAN08);
+			document.add(parrafo);
+		}
+	}
+
 	public void piePagina() throws DocumentException { 	
 		piePagina = null;	
 		PdfPCell celda = null;
