@@ -3,6 +3,7 @@ package mx.gob.comer.sipc.action.solicitudpago;
 import java.io.File;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	private List<CartaAdhesionEtapaVolImpV> lstCartaAdhesionEtapaVolImpV;
 	private List<DocumentacionSPCartaAdhesionV> lstDocumentacionSPCartaAdhesion;
 	private List<PagosDetalleCAV> lstEditDetallePagosCAEspecialistaV;
+	private List<PagosDetalleCAV> lstPagosDetalleCAV;
 	private AsignacionCAaEspecialistaV lstEspecialistaCA;
 	private List<Personal> lstPersonal;
 	private List<Bancos> bancos;
@@ -221,31 +223,86 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 
 	public String detallePagosCartaAdhesion(){
 		try{
+			List<PagosDetalleCAV> lstPagosDetalleCAVTmp = new ArrayList<PagosDetalleCAV>();
 			session = ActionContext.getContext().getSession();
 			int idPerfil = (Integer) session.get("idPerfil");
 			if(idPerfil == 6){
 				idEspecialista = (Integer) session.get("idEspecialista");
 			}
 			lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
-			numCampos = lstDetallePagosCAEspecialistaV.size();
-			criterioPago = lstDetallePagosCAEspecialistaV.get(0).getIdCriterioPago();
-			descCriterioPago = lstDetallePagosCAEspecialistaV.get(0).getCriterioPago();
-			clabe = lstDetallePagosCAEspecialistaV.get(0).getClabe();
-			idComprador = lstDetallePagosCAEspecialistaV.get(0).getIdComprador();
-			idPrograma = lstDetallePagosCAEspecialistaV.get(0).getIdPrograma();
-			folioCartaAdhesion = lstDetallePagosCAEspecialistaV.get(0).getFolioCartaAdhesion();
-			idEspecialista = lstDetallePagosCAEspecialistaV.get(0).getIdEspecialista();
-			estatusCA = lstDetallePagosCAEspecialistaV.get(0).getDescEstatus();
-			nombreComprador = lstDetallePagosCAEspecialistaV.get(0).getComprador();
-			nombrePrograma = lstDetallePagosCAEspecialistaV.get(0).getPrograma();
-			fianza = lstDetallePagosCAEspecialistaV.get(0).getDescFianza();
-			//tieneFianza = p.getFianza();
+			if(registrar == 0){//NUEVO REGISTRO EDITAR = 0
+				lstPagosDetalleCAV = new ArrayList<PagosDetalleCAV>();
+				for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+					lstPagosDetalleCAV.add(
+							new PagosDetalleCAV(l.getIdEstado(), l.getEstado(), l.getIdCultivo(), l.getCultivo(),l.getIdVariedad(),l.getVariedad(),
+									l.getBodega(),l.getCuota(),l.getFolioCartaAdhesion(), l.getVolumen(), l.getImporte(),
+									l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
+									l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
+									l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
+									l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0));	
+				}
+				
+			}else{//Edicion REGISTRAR = 1
+				lstPagosDetalleCAVTmp = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, 0, 0, 0, 0);
+				lstPagosDetalleCAV = new ArrayList<PagosDetalleCAV>();
+				boolean encontro = false;
+				for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+					encontro = false;
+					for(PagosDetalleCAV l1:lstPagosDetalleCAVTmp){
+						if(l.getIdAsiganacionCA() == l1.getIdAsiganacionCA().longValue()){
+							lstPagosDetalleCAV.add(
+									new PagosDetalleCAV(l1.getIdEstado(), l1.getEstado(), l1.getIdCultivo(), l1.getCultivo(),l1.getIdVariedad(),l1.getVariedad(),
+											l1.getBodega(),l1.getCuota(),l1.getFolioCartaAdhesion(), l1.getVolumenAutorizado(), l1.getImporteAutorizado(),
+											l1.getVolumenApoyado(), l1.getImporteApoyado(), l1.getIdPrograma(), l1.getPrograma(),
+											l1.getClabe(), l1.getIdEspecialista(),l1.getIdCriterioPago(), l1.getCriterioPago(), 
+											l1.getSolicitudesAtendidas(), l1.getProductoresBeneficiados(), l1.getIdComprador(), l1.getNombreComprador(),
+											l1.getDescEstatus(), l1.getDescFianza(), l1.getIdAsiganacionCA(), l1.getVolumen()));							
+							encontro = true;
+							break;
+						}
+					}			
+					if(!encontro){
+						lstPagosDetalleCAV.add(
+								new PagosDetalleCAV(l.getIdEstado(), l.getEstado(), l.getIdCultivo(), l.getCultivo(),l.getIdVariedad(),l.getVariedad(),
+										l.getBodega(),l.getCuota(),l.getFolioCartaAdhesion(), l.getVolumen(), l.getImporte(),
+										l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
+										l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
+										l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
+										l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0));
+					}					
+					
+				}
+				
+				
+				
+				criterioPago = lstPagosDetalleCAV.get(0).getIdCriterioPago();
+				Pagos p = pDAO.consultaPagos(idPago).get(0);
+				tieneFianza = p.getFianza();
+				porcentajeFianza = p.getPorcentajeFianza();
+				//Recupera volumen e importe para ajustar el primer pago de la carta de adhesion  
+				if(criterioPago == 1){
+					volumenPago = p.getVolumen();	
+				}
+				importePago = p.getImporte();
+			}	
+			
+			numCampos = lstPagosDetalleCAV.size();
+			criterioPago = lstPagosDetalleCAV.get(0).getIdCriterioPago();
+			descCriterioPago = lstPagosDetalleCAV.get(0).getCriterioPago();
+			clabe = lstPagosDetalleCAV.get(0).getClabe();
+			idComprador = lstPagosDetalleCAV.get(0).getIdComprador();
+			idPrograma = lstPagosDetalleCAV.get(0).getIdPrograma();
+			folioCartaAdhesion = lstPagosDetalleCAV.get(0).getFolioCartaAdhesion();
+			idEspecialista = lstPagosDetalleCAV.get(0).getIdEspecialista();
+			estatusCA = lstPagosDetalleCAV.get(0).getDescEstatus();
+			nombreComprador = lstPagosDetalleCAV.get(0).getNombreComprador();
+			nombrePrograma = lstPagosDetalleCAV.get(0).getPrograma();
+			fianza = lstPagosDetalleCAV.get(0).getDescFianza();
+			idEstatusCA = lstPagosDetalleCAV.get(0).getIdEstatusCA();
 			recuperaDatosPlaza();
 			fechaAtentaNota = new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString();
-			solicitudesAtendidas =  lstDetallePagosCAEspecialistaV.get(0).getSolicitudesAtendidas()!=null ? lstDetallePagosCAEspecialistaV.get(0).getSolicitudesAtendidas() : 0;
-			productoresBeneficiados = lstDetallePagosCAEspecialistaV.get(0).getProductoresBeneficiados()!=null ? lstDetallePagosCAEspecialistaV.get(0).getProductoresBeneficiados() : 0;
-			/*Recupera las cuentas bancarias asociadas al comprador*/
-			//lstCuentaBancarias = cDAO.consultaCtaBancaria(idComprador,1);
+			solicitudesAtendidas =  lstPagosDetalleCAV.get(0).getSolicitudesAtendidas()!=null ? lstPagosDetalleCAV.get(0).getSolicitudesAtendidas() : 0;
+			productoresBeneficiados = lstPagosDetalleCAV.get(0).getProductoresBeneficiados()!=null ? lstPagosDetalleCAV.get(0).getProductoresBeneficiados() : 0;
 		}catch (JDBCException e) {
 	    	e.printStackTrace();
 	    	AppLogger.error("errores","Ocurrio un error en detallePagosCartaAdhesion  debido a: "+e.getCause());
@@ -255,85 +312,93 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		}
 		return SUCCESS;		
 	}	
-
 	
 	public String capturaPagoCartaAdhesion() throws Exception{
+		session = ActionContext.getContext().getSession();
+		int idPerfil = (Integer) session.get("idPerfil");
 		Double importeEtapaI=0.0, importeEtapaII=0.0, importeEtapaIII=0.0, importeEtapaIV=0.0;
-		Double totalVolApoEdoCulVarCA = 0.0, volumenAutEdoCulVarCA=0.0;
+		Double totalVolApoEdoCulVarCA = 0.0, volumenAutEdoCulVarCA = 0.0, importeTotalPagado=0.0;
 		int diasVigencia = 90;
 		Date fechaVigenciaLimitePago; 
 		StringBuilder dest = new StringBuilder();
 		String vEstadoAux = "", vCultivoAux = "", vVariedadAux = "", vBodegaAux = "";
-		
+		lstPagosDetalleCAV = new ArrayList<PagosDetalleCAV>();
 		try{
 			errorSistema = 0;
-			/* Guarda los datos del pago*/
-			session = ActionContext.getContext().getSession();
-			int idPerfil = (Integer) session.get("idPerfil");
+			/* Guarda los datos del pago*/			
 			if(idPerfil == 6){
 				idEspecialista = (Integer) session.get("idEspecialista");
-			}			
-			
-			if(cerrarExpediente){
-				//Cambiar el estatus de la carta de adhesion a 9 "EXPEDIENTE CERRADO"
-				CartaAdhesion ca = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
-				ca.setEstatus(9);
-				cDAO.guardaObjeto(ca);
-				
-			}
-			
-			// Valida que la atenta nota no se duplique por año
-			//if (pDAO.consultaPagos(0, null, null, 0, atentaNotaNum+"-"+new java.text.SimpleDateFormat("yyyy").format(new Date() )).size()==0){
-				// Valida vigencia del Anexo 32D y que no tenga observaciones 			
-				lstDocumentacionSPCartaAdhesion = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, 5, null, "folioCartaAdhesion");
-				fechaVigenciaLimitePago = uDAO.getFechaDiaNaturalSumaDias(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo(), diasVigencia);
+			}	
 	
-				String fechaMin = new SimpleDateFormat("yyyyMMdd").format(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo()).toString();
-				String fechaMax = new SimpleDateFormat("yyyyMMdd").format(fechaVigenciaLimitePago).toString();	
-				String fechaPago = new SimpleDateFormat("yyyyMMdd").format(new Date()).toString();
-				
-				if(cDAO.consultaComprador(lstDocumentacionSPCartaAdhesion.get(0).getIdComprador()).get(0).getEstatus()==1){
-					if((lstDocumentacionSPCartaAdhesion.get(0).getObservacion()==null || !lstDocumentacionSPCartaAdhesion.get(0).getObservacion()) && Long.parseLong(fechaPago) >= Long.parseLong(fechaMin) && Long.parseLong(fechaPago) <= Long.parseLong(fechaMax)){				
-						
+			// Valida vigencia del Anexo 32D y que no tenga observaciones 			
+			lstDocumentacionSPCartaAdhesion = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, 5, null, "folioCartaAdhesion");
+			fechaVigenciaLimitePago = uDAO.getFechaDiaNaturalSumaDias(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo(), diasVigencia);
+			String fechaMin = new SimpleDateFormat("yyyyMMdd").format(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo()).toString();
+			String fechaMax = new SimpleDateFormat("yyyyMMdd").format(fechaVigenciaLimitePago).toString();	
+			String fechaPago = new SimpleDateFormat("yyyyMMdd").format(new Date()).toString();	
+			if(cDAO.consultaComprador(lstDocumentacionSPCartaAdhesion.get(0).getIdComprador()).get(0).getEstatus()==1){
+				if((lstDocumentacionSPCartaAdhesion.get(0).getObservacion()==null || !lstDocumentacionSPCartaAdhesion.get(0).getObservacion()) && Long.parseLong(fechaPago) >= Long.parseLong(fechaMin) && Long.parseLong(fechaPago) <= Long.parseLong(fechaMax)){
+					if(registrar==0){
 						lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
-						fianza = lstDetallePagosCAEspecialistaV.get(0).getDescFianza();
-						if (criterioPago==1){
-							Set<Integer> idsCapVolumen = capVolumen.keySet();
-							Iterator<Integer> it = idsCapVolumen.iterator();
-							while(it.hasNext()){
-								Integer idCapVolumen = it.next();
-								String item = capVolumen.get(idCapVolumen);
-								if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
-									for (int i = 0; i < lstDetallePagosCAEspecialistaV.size(); i++) {
-										if (lstDetallePagosCAEspecialistaV.get(i).getIdAsiganacionCA() == idCapVolumen){
-											if(lstDetallePagosCAEspecialistaV.get(i).getBodega()==null||lstDetallePagosCAEspecialistaV.get(i).getBodega().isEmpty()){
-												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(),null);
+						for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+							lstPagosDetalleCAV.add(
+									new PagosDetalleCAV(l.getIdEstado(), l.getEstado(), l.getIdCultivo(), l.getCultivo(),l.getIdVariedad(),l.getVariedad(),
+											l.getBodega(),l.getCuota(),l.getFolioCartaAdhesion(), l.getVolumen(), l.getImporte(),
+											l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
+											l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
+											l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
+											l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0));	
+						}
+					}else{
+						lstPagosDetalleCAV = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, 0, 0, 0, 0);
+					}
+					
+					fianza = lstPagosDetalleCAV.get(0).getDescFianza();
+					if (criterioPago==1){
+						Set<Integer> idsCapVolumen = capVolumen.keySet();
+						Iterator<Integer> it = idsCapVolumen.iterator();
+						while(it.hasNext()){
+							Integer idCapVolumen = it.next();
+							String item = capVolumen.get(idCapVolumen);
+							if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
+								for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+									//if(registrar == 0){
+										if (lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+											if(lstPagosDetalleCAV.get(i).getBodega()==null||lstPagosDetalleCAV.get(i).getBodega().isEmpty()){
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getIdEstado(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad(),null);
 												if (pca.size()>0){
-													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													if(registrar == 0){
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													}else{
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstPagosDetalleCAV.get(i).getVolumen();
+													}												
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
 												}
-												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
 											} else {
-												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstDetallePagosCAEspecialistaV.get(i).getBodega());
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getIdEstado(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad(), lstPagosDetalleCAV.get(i).getBodega());
 												if (pca.size()>0){
-													totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													if(registrar == 0){
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													}else{
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstPagosDetalleCAV.get(i).getVolumen();	
+													}												
 												} else {
 													totalVolApoEdoCulVarCA = 0.0;
 												}
-												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstDetallePagosCAEspecialistaV.get(i).getBodega(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getBodega(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getBodega(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
 											}											
-											volumenAutEdoCulVarCA = lstDetallePagosCAEspecialistaV.get(i).getVolumen();
-											vEstadoAux = lstDetallePagosCAEspecialistaV.get(i).getEstado();
-											vCultivoAux = lstDetallePagosCAEspecialistaV.get(i).getCultivo();
-											vVariedadAux = lstDetallePagosCAEspecialistaV.get(i).getVariedad();
-											vBodegaAux = lstDetallePagosCAEspecialistaV.get(i).getBodega();
-											
+											volumenAutEdoCulVarCA = lstPagosDetalleCAV.get(i).getVolumenAutorizado();
+											vEstadoAux = lstPagosDetalleCAV.get(i).getEstado();
+											vCultivoAux = lstPagosDetalleCAV.get(i).getCultivo();
+											vVariedadAux = lstPagosDetalleCAV.get(i).getVariedad();
+											vBodegaAux = lstPagosDetalleCAV.get(i).getBodega();
 											break;
-										}
-									}
+											}									
+								}//end lstPagosDetalleCAV
 									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
 									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
@@ -369,7 +434,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 										return SUCCESS;
 									}
 								}
-							}
+							}//	 end	while(it.hasNext()	
 						} else if (criterioPago==2){	
 							Set<Integer> idsCapImporte = capImporte.keySet();
 							Iterator<Integer> it = idsCapImporte.iterator();
@@ -479,12 +544,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				addActionError("El comprador esta en estatus Inhabilitado por lo que no procede el registro del pago, por favor verifique");
 				return SUCCESS;
 			}
-					
-//			} else {
-//				errorSistema = 1;
-//				addActionError("El número de la Atenta Nota: "+atentaNotaNum+" ya esta registrada, por favor verifique");
-//				return SUCCESS;
-//			}
 		}catch (JDBCException e) {
 	    	errorSistema = 1;
 			addActionError("Ocurrio un error al guardar en base de datos, favor de reportar al administrador");
@@ -498,20 +557,33 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		}
 		return SUCCESS;
 	}
-
 	
 	private void guardarPagos() throws JDBCException, Exception{
 		double totalImporte =0;
 		double totalVolumen =0;
 		String etapaPago="", vBodegaAux = "";
 		Integer vEstadoAux = 0, vCultivoAux = 0, vVariedadAux = 0;
-		Double vCuotaAux = 0.0;
-		p = new Pagos();
-		p.setClabe(lstDetallePagosCAEspecialistaV.get(0).getClabe());
+		Double vCuotaAux = 0.0,  vVolAutorizadoCarta = 0.0, importeAux=0.0;
+		PagosDetalle pd = null;
+		List<PagosDetalle> lstPagos = null;
+		NumberFormat nf = NumberFormat.getInstance();
+	    nf.setMaximumFractionDigits(2); 
+	    nf.setGroupingUsed(false);
+	    NumberFormat nf1 = NumberFormat.getInstance();
+	    nf1.setMaximumFractionDigits(3); 
+	   // nf1.setRoundingMode(RoundingMode.DOWN);
+	    nf1.setGroupingUsed(false);
+		if(registrar == 0){
+			p = new Pagos();
+			p.setFechaCreacion(new Date());
+		}else{
+			p = pDAO.getPagos(idPago);
+			p.setFechaModificacion(new Date());
+		}		
+		p.setClabe(lstPagosDetalleCAV.get(0).getClabe());
 		p.setEstatus(7);
-		p.setFechaCreacion(new Date());
-		p.setIdComprador(lstDetallePagosCAEspecialistaV.get(0).getIdComprador());
-		p.setIdPrograma(lstDetallePagosCAEspecialistaV.get(0).getIdPrograma());
+		p.setIdComprador(lstPagosDetalleCAV.get(0).getIdComprador());
+		p.setIdPrograma(lstPagosDetalleCAV.get(0).getIdPrograma());
 		p.setNoCarta(folioCartaAdhesion);
 		p.setAtentaNota(new java.text.SimpleDateFormat("yyyyMMddHHmmssSS").format(new Date()));
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -521,13 +593,11 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		if(tieneFianza){
 			p.setPorcentajeFianza(porcentajeFianza);
 		}
-		p.setPagosDetalle(new HashSet<PagosDetalle>());
+		if(registrar == 0){
+			p.setPagosDetalle(new HashSet<PagosDetalle>());
+		}		
 		p.setSolicitudesAtendidas(solicitudesAtendidas);
 		p.setProductoresBeneficiados(productoresBeneficiados);
-		NumberFormat nf = NumberFormat.getInstance();
-	    nf.setMaximumFractionDigits(2); 
-	    nf.setGroupingUsed(false);
-	    Double importeAux = 0.0;
 		if (criterioPago==1){
 			Set<Integer> idsCapVolumen = capVolumen.keySet();
 			Iterator<Integer> it = idsCapVolumen.iterator();
@@ -535,35 +605,90 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				Integer idCapVolumen = it.next();
 				String item = capVolumen.get(idCapVolumen);
 				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
-					for (int i = 0; i < lstDetallePagosCAEspecialistaV.size(); i++) {
-						if (lstDetallePagosCAEspecialistaV.get(i).getIdAsiganacionCA() == idCapVolumen){
-							vEstadoAux = lstDetallePagosCAEspecialistaV.get(i).getIdEstado();
-							vCultivoAux = lstDetallePagosCAEspecialistaV.get(i).getIdCultivo();
-							vVariedadAux = lstDetallePagosCAEspecialistaV.get(i).getIdVariedad();
-							vBodegaAux = lstDetallePagosCAEspecialistaV.get(i).getBodega();
-							vCuotaAux = lstDetallePagosCAEspecialistaV.get(i).getCuota();
-							break;
-						}
+					for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+							if (lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+								vVolAutorizadoCarta = lstPagosDetalleCAV.get(i).getVolumenAutorizado(); 
+								vEstadoAux = lstPagosDetalleCAV.get(i).getIdEstado();
+								vCultivoAux = lstPagosDetalleCAV.get(i).getIdCultivo();
+								vVariedadAux = lstPagosDetalleCAV.get(i).getIdVariedad();
+								vBodegaAux = lstPagosDetalleCAV.get(i).getBodega();
+								vCuotaAux = lstPagosDetalleCAV.get(i).getCuota();
+								break;
+							}						
 					}
-					PagosDetalle pd = new PagosDetalle();
+					if(registrar == 0){
+						 pd = new PagosDetalle();
+					}else{
+						lstPagos = pDAO.consultaPagosDetalle(0, idPago,idCapVolumen);
+						if(lstPagos.size()>0){
+							pd = pDAO.consultaPagosDetalle(0, idPago,idCapVolumen).get(0);
+						}else{
+							//Recupera los datos de la asignacion
+							AsignacionCartasAdhesionEspecialistaV asignacion = spDAO.verCartaAdhesionAsignadasPagos(null, -1, null, idCapVolumen.longValue()).get(0);
+							vVolAutorizadoCarta = asignacion.getVolumen(); 
+							vEstadoAux = asignacion.getIdEstado();
+							vCultivoAux = asignacion.getIdCultivo();
+							vVariedadAux = asignacion.getIdVariedad();
+							vBodegaAux = asignacion.getBodega();
+							vCuotaAux = asignacion.getCuota();
+							p.setPagosDetalle(new HashSet<PagosDetalle>());
+							pd = new PagosDetalle();
+							pd.setIdPago(idPago.intValue());
+							
+						}					
+					}
+					
 					pd.setIdEstado(vEstadoAux);
 					pd.setIdCultivo(vCultivoAux);
 					pd.setIdVariedad(vVariedadAux);
-					pd.setBodega(vBodegaAux);			
-					pd.setVolumen(Double.parseDouble(item));
-					importeAux = (Double.parseDouble(item)*vCuotaAux);
-					importeAux = (Double.parseDouble(nf.format(importeAux)));
-					System.out.println("Importe Actualizado "+ importeAux);
-					pd.setImporte(importeAux);
+					pd.setBodega(vBodegaAux);	
+					pd.setIdAsiganacionCA(idCapVolumen.longValue());
+					if(tieneFianza){						
+						double volumenPorcentaje = Double.parseDouble(nf1.format((vVolAutorizadoCarta * porcentajeFianza/100)));
+						pd.setVolumen(volumenPorcentaje);
+						importeAux = Double.parseDouble(nf.format((volumenPorcentaje)*vCuotaAux));
+						pd.setImporte(importeAux);
+						totalImporte += importeAux;
+						totalVolumen += volumenPorcentaje;
+					}else{
+						pd.setVolumen(Double.parseDouble(item));
+						importeAux = (Double.parseDouble(item)*vCuotaAux);
+						importeAux = (Double.parseDouble(nf.format(importeAux)));
+						pd.setImporte(importeAux);
+						totalImporte +=importeAux;
+						totalVolumen += Double.parseDouble(item);
+					}					
 					pd.setCuota(vCuotaAux);
-					p.getPagosDetalle().add(pd);
-					totalImporte +=importeAux;
-					totalVolumen += Double.parseDouble(item);
-				}			
+					if(registrar== 0){
+						p.getPagosDetalle().add(pd);
+					}else{
+						if(lstPagos.size()>0){
+							cDAO.guardaObjeto(pd);
+						}else{
+							p.getPagosDetalle().add(pd);
+						}
+						
+					}				
+				}else{//Item es igual a nulo
+					if(registrar !=0){
+						for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+							if(lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+								//Borrar el registro del detalle 
+								pd = pDAO.consultaPagosDetalle(0, idPago, idCapVolumen).get(0);
+								cDAO.borrarObjeto(pd);							
+							}
+						}
+					}		
+				}
 			}			
 			p.setVolumen(totalVolumen);
 			p.setImporte(totalImporte);
-			p.setUsuarioCreacion((Integer) session.get("idUsuario"));
+			if(registrar == 0){
+				p.setUsuarioCreacion((Integer) session.get("idUsuario"));
+			}else{
+				p.setUsuarioModificacion((Integer) session.get("idUsuario"));
+			}
+			
 		} else if (criterioPago==2){
 			Set<Integer> idsCapImporte = capImporte.keySet();
 			Iterator<Integer> it = idsCapImporte.iterator();
@@ -581,7 +706,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 							break;
 						}
 					}
-					PagosDetalle pd = new PagosDetalle();
+					pd = new PagosDetalle();
 					pd.setIdEstado(vEstadoAux);
 					pd.setIdCultivo(vCultivoAux);
 					pd.setIdVariedad(vVariedadAux);
@@ -642,10 +767,10 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	@SuppressWarnings("unused")
 	public String generarAtentaNotaPago() throws Exception{
 		session = ActionContext.getContext().getSession();
-		if(lstDetallePagosCAEspecialistaV != null){
-			programa = cDAO.consultaPrograma(lstDetallePagosCAEspecialistaV.get(0).getIdPrograma()).get(0);
+		if(lstPagosDetalleCAV != null){
+			programa = cDAO.consultaPrograma(lstPagosDetalleCAV.get(0).getIdPrograma()).get(0);
 		} else {
-			programa = cDAO.consultaPrograma(lstEditDetallePagosCAEspecialistaV.get(0).getIdPrograma()).get(0);
+			programa = cDAO.consultaPrograma(lstPagosDetalleCAV.get(0).getIdPrograma()).get(0);
 		}
 		
 		//criterioPago = programa.getCriterioPago();
@@ -733,8 +858,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			int idPerfil = (Integer) session.get("idPerfil");
 			if(idPerfil == 6){
 				idEspecialista = (Integer) session.get("idEspecialista");
-			}
-			
+			}			
 			//Consigue pago
 			Pagos p = pDAO.consultaPagos(idPago).get(0);
 			tieneFianza = p.getFianza();
@@ -774,11 +898,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		return SUCCESS;		
 	}	
 
-	public String editarPagoCartaAdhesion() throws Exception{
-		
+	public String editarPagoCartaAdhesion() throws Exception{		
 		session = ActionContext.getContext().getSession();
-		int idPerfil = (Integer) session.get("idPerfil");
-		
+		int idPerfil = (Integer) session.get("idPerfil");		
 		Double importeEtapaI=0.0, importeEtapaII=0.0, importeEtapaIII=0.0, importeEtapaIV=0.0;
 		Double totalVolApoEdoCulVarCA = 0.0, volumenAutEdoCulVarCA=0.0, importeTotalPagado=0.0;
 		int diasVigencia = 90;
@@ -786,8 +908,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		StringBuilder dest = new StringBuilder();
 		String vEstadoAux = "", vCultivoAux = "", vVariedadAux = "", vBodegaAux = "";
 		List<PagosDetalleCAV> lstEditDetallePagosCAEspecialistaAuxV;
-		
-		
 		try{			
 			errorSistema = 0;
 			/* Guarda los datos del pago*/
@@ -799,7 +919,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				// Valida vigencia del Anexo 32D y que no tenga observaciones 
 				lstDocumentacionSPCartaAdhesion = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, 5, null, "folioCartaAdhesion");
 				fechaVigenciaLimitePago = uDAO.getFechaDiaNaturalSumaDias(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo(), diasVigencia);
-	
 				String fechaMin = new SimpleDateFormat("yyyyMMdd").format(lstDocumentacionSPCartaAdhesion.get(0).getFechaExpedicionAnexo()).toString();
 				String fechaMax = new SimpleDateFormat("yyyyMMdd").format(fechaVigenciaLimitePago).toString();	
 				String fechaPago = new SimpleDateFormat("yyyyMMdd").format(new Date()).toString();
@@ -829,8 +948,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 												}	
 												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
 												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
-											} else {
-												
+											} else {												
 												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstEditDetallePagosCAEspecialistaV.get(i).getBodega());
 												//lstEditDetallePagosCAEspecialistaV = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), 0);
 												if (pca.size()>0){
@@ -1071,7 +1189,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		}
 		return SUCCESS;
 	}
-
 	
 	private void actualizaPrimerPago()throws JDBCException, Exception{
 		NumberFormat nf = NumberFormat.getInstance();
@@ -1084,7 +1201,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			while(it.hasNext()){
 				Integer idCapVolumen = it.next();
 				String item = capVolumen.get(idCapVolumen);
-				PagosDetalle pd = pDAO.consultaPagosDetalle(idCapVolumen, idPago).get(0);
+				PagosDetalle pd = pDAO.consultaPagosDetalle(idCapVolumen, idPago,-1).get(0);
 				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
 					pd.setVolumen(Double.parseDouble(item));					
 					importeAux = (Double.parseDouble(nf.format(Double.parseDouble(item)*pd.getCuota())));
@@ -1102,7 +1219,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			while(it.hasNext()){
 				Integer idCapImporte = it.next();
 				String item = capImporte.get(idCapImporte);
-				PagosDetalle pd = pDAO.consultaPagosDetalle(idCapImporte, idPago).get(0);
+				PagosDetalle pd = pDAO.consultaPagosDetalle(idCapImporte, idPago, -1).get(0);
 				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
 					pd.setImporte(Double.parseDouble(item));
 				}else{
@@ -1161,7 +1278,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 							break;
 						}
 					}
-					PagosDetalle pd = pDAO.consultaPagosDetalle(idCapVolumen, idPago).get(0);
+					PagosDetalle pd = pDAO.consultaPagosDetalle(idCapVolumen, idPago, -1).get(0);
 					pd.setIdEstado(vEstadoAux);
 					pd.setIdCultivo(vCultivoAux);
 					pd.setIdVariedad(vVariedadAux);
@@ -1198,7 +1315,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 							break;
 						}
 					}
-					PagosDetalle pd = pDAO.consultaPagosDetalle(idCapImporte, idPago).get(0);
+					PagosDetalle pd = pDAO.consultaPagosDetalle(idCapImporte, idPago, -1).get(0);
 					pd.setIdEstado(vEstadoAux);
 					pd.setIdCultivo(vCultivoAux);
 					pd.setIdVariedad(vVariedadAux);
@@ -1431,6 +1548,30 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		return SUCCESS;
 	}
 	
+	public String colocarVolumenEnPorcentaje() throws Exception {
+		 NumberFormat nf1 = NumberFormat.getInstance();
+		 nf1.setMaximumFractionDigits(3); 
+		 //nf1.setRoundingMode(RoundingMode.DOWN);
+		 nf1.setGroupingUsed(false);
+		lstPagosDetalleCAV=  new ArrayList<PagosDetalleCAV>();
+		lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(0, folioCartaAdhesion);
+		for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+			
+			double volumenPorcentaje = Double.parseDouble(nf1.format((l.getVolumen() * porcentajeFianza/100)));
+			
+			lstPagosDetalleCAV.add(
+					new PagosDetalleCAV(l.getIdEstado(), l.getEstado(), l.getIdCultivo(), l.getCultivo(),l.getIdVariedad(),l.getVariedad(),
+							l.getBodega(),l.getCuota(),l.getFolioCartaAdhesion(), l.getVolumen(), l.getImporte(),
+							l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
+							l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
+							l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
+							l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),volumenPorcentaje));	
+		}
+		criterioPago = lstPagosDetalleCAV.get(0).getIdCriterioPago();
+		//detallePagosCartaAdhesion();
+		return SUCCESS;
+	}
+	
 	public String  incioGenAN() throws Exception {
 		
 		return SUCCESS;
@@ -1620,19 +1761,21 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	public List<ExpedientesProgramasV> getLstExpedientesProgramasV() {
 		return lstExpedientesProgramasV;
 	}
+	
 	public void setLstExpedientesProgramasV(
 			List<ExpedientesProgramasV> lstExpedientesProgramasV) {
 		this.lstExpedientesProgramasV = lstExpedientesProgramasV;
 	}
 	
-
 	public List<OficioObsSolicitudPago> getLstOficioObsSolicitudPago() {
 		return lstOficioObsSolicitudPago;
 	}
+	
 	public void setLstOficioObsSolicitudPago(
 			List<OficioObsSolicitudPago> lstOficioObsSolicitudPago) {
 		this.lstOficioObsSolicitudPago = lstOficioObsSolicitudPago;
 	}
+	
 	public void setSession(Map<String, Object> session) {
 	    this.session = session;
 	}
@@ -1813,6 +1956,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	public Double[] getVolumenesAut() {
 		return volumenesAut;
 	}
+	
 	public void setVolumenesAut(Double[] volumenesAut) {
 		this.volumenesAut = volumenesAut;
 	}
@@ -2215,6 +2359,15 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	}
 
 	public void setVolumenConstancias(Double volumenConstancias) {
+
 		this.volumenConstancias = volumenConstancias;
 	}
+
+	public List<PagosDetalleCAV> getLstPagosDetalleCAV() {
+		return lstPagosDetalleCAV;
+	}
+
+	public void setLstPagosDetalleCAV(List<PagosDetalleCAV> lstPagosDetalleCAV) {
+		this.lstPagosDetalleCAV = lstPagosDetalleCAV;
+	}	
 }

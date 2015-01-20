@@ -366,6 +366,13 @@
             <result name="input" type="tiles">detallePagosCA</result>
             <result name="success" type="tiles">detallePagosCA</result>
         </action>
+         <action name="colocarVolumenEnPorcentaje" method="colocarVolumenEnPorcentaje" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/respuestaContenedorDetallePagos.jsp</result>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/respuestaContenedorDetallePagos.jsp</result>
+        </action>
+        
         <action name="capturaPagoCartaAdhesion" method="capturaPagoCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
         	<interceptor-ref name="chksession"/>
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
@@ -413,7 +420,7 @@
         <action name="vistaPreviaAtentaNota" method="vistaPreviaAtentaNota" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
          	<interceptor-ref name="chksession"/>
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
-            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/vistaPreviaAtentaNota.jsp</result>
+            <result name="success" >/WEB-INF/paginas/solicitudPago/capturaPago/vistaPreviaAtentaNota.jsp</result>
             <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/vistaPreviaAtentaNota.jsp</result>
         </action>
         

@@ -12,7 +12,7 @@
 			<display:column  property="fianza" title="Incluye Fianza"/>
 	 		<display:column title="Pagos">
 	 			<s:if test="%{#attr.r.estatusCA==4 || #attr.r.estatusCA==5 || #attr.r.fianza=='SI'}">
-					<a href='<s:url value="/solicitudPago/detallePagosCartaAdhesion?folioCartaAdhesion=%{#attr.r.folioCartaAdhesion}&idPrograma=%{#attr.r.idPrograma}&clabe=%{#attr.r.clabe}"/>' title="">Registrar</a>
+					<a href='<s:url value="/solicitudPago/detallePagosCartaAdhesion?folioCartaAdhesion=%{#attr.r.folioCartaAdhesion}&idPrograma=%{#attr.r.idPrograma}&clabe=%{#attr.r.clabe}&registrar=0"/>' title="">Registrar</a>
 				</s:if>
 			</display:column>			
 	 		<display:column title="">

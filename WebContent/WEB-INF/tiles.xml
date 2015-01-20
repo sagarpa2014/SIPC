@@ -241,7 +241,7 @@
 	<definition name="detallePagosCartaAdhesion" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCartaAdhesion.jsp"/>
 	</definition>	
-	<definition name="detallePagosCA" extends="masterTemplate">
+	<definition name="detallePagosCA" extends="morewidthtemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/capturaPago/detallePagosCA.jsp"/>
 	</definition>
 	<definition name="consultaPagosCA" extends="masterTemplate">

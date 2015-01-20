@@ -144,12 +144,12 @@
 						</td>
 						<s:if test="%{#resultado.estatus==7 }">
 							<td>
-								<a href='<s:url value="/solicitudPago/detalleEditarPagosCartaAdhesion?idPago=%{#resultado.idPago}&folioCartaAdhesion=%{#resultado.noCarta}"/>' class="" title="">Editar</a>
+								<a href='<s:url value="/solicitudPago/detallePagosCartaAdhesion?idPago=%{idPago}&folioCartaAdhesion=%{noCarta}&registrar=1"/>' class="" title="">Editar</a>
 							</td>
 						</s:if>
 						<s:elseif test="%{#resultado.estatus==5 &&  #session.idPerfil==10}">
 							<td>
-								<a href='<s:url value="/solicitudPago/detalleEditarPagosCartaAdhesion?idPago=%{#resultado.idPago}&folioCartaAdhesion=%{#resultado.noCarta}"/>' class="" title="">Editar</a>
+								<a href='<s:url value="/solicitudPago/detallePagosCartaAdhesion?idPago=%{idPago}&folioCartaAdhesion=%{noCarta}"/>' class="" title="">Editar</a>
 							</td>
 						</s:elseif>
 					</tr>	

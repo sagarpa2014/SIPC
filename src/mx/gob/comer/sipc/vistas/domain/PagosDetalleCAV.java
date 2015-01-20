@@ -53,8 +53,51 @@ public class PagosDetalleCAV {
 	private Integer solicitudesAtendidas;
 	private Integer productoresBeneficiados;
 	private Integer idEstatusCA;
+	private Long idAsiganacionCA;
 	
 	public PagosDetalleCAV(){}
+	
+	public PagosDetalleCAV(int idEstado,
+			String estado, int idCultivo, String cultivo, int idVariedad,
+			String variedad, String bodega, Double cuota,
+			String folioCartaAdhesion, Double volumenAutorizado,
+			Double importeAutorizado, Double volumenApoyado,
+			Double importeApoyado, int idPrograma, String programa,
+			String clabe, Integer idEspecialista, Integer idCriterioPago,
+			String criterioPago, Integer solicitudesAtendidas,
+			Integer productoresBeneficiados, Integer idComprador,String nombreComprador, String descEstatus,
+			String descFianza, Long idAsiganacionCA, Double volumen) {
+		super();
+		this.idEstado = idEstado;
+		this.estado = estado;
+		this.idCultivo = idCultivo;
+		this.cultivo = cultivo;
+		this.idVariedad = idVariedad;
+		this.variedad = variedad;
+		this.bodega = bodega;
+		this.cuota = cuota;
+		this.folioCartaAdhesion = folioCartaAdhesion;
+		this.volumenAutorizado = volumenAutorizado;
+		this.importeAutorizado = importeAutorizado;
+		this.volumenApoyado = volumenApoyado;
+		this.importeApoyado = importeApoyado;
+		this.idPrograma = idPrograma;
+		this.programa = programa;
+		this.clabe = clabe;
+		this.idEspecialista = idEspecialista;
+		this.idCriterioPago = idCriterioPago;
+		this.criterioPago = criterioPago;
+		this.solicitudesAtendidas = solicitudesAtendidas;
+		this.productoresBeneficiados = productoresBeneficiados;
+		this.idComprador = idComprador;
+		this.descEstatus = descEstatus; 
+		this.nombreComprador = nombreComprador;
+		this.descFianza = descFianza;
+		this.idAsiganacionCA = idAsiganacionCA;
+		this.volumen = volumen;
+	}
+
+
 
 	@Id
 	@Column(name = "id_pago_detalle")
@@ -363,4 +406,15 @@ public class PagosDetalleCAV {
 	public void setIdEstatusCA(Integer idEstatusCA) {
 		this.idEstatusCA = idEstatusCA;
 	}
+
+	@Column(name = "id_asignacion_ca")
+	public Long getIdAsiganacionCA() {
+		return idAsiganacionCA;
+	}
+
+	public void setIdAsiganacionCA(Long idAsiganacionCA) {
+		this.idAsiganacionCA = idAsiganacionCA;
+	}
+	
+	
 }

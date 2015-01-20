@@ -31,6 +31,7 @@ public class PagosDetalle {
 	private Double importe;
 	private String etapa;
 	private Double cuota;
+	private Long idAsiganacionCA;
 	
 	public PagosDetalle(){}
 
@@ -124,5 +125,14 @@ public class PagosDetalle {
 
 	public void setCuota(Double cuota) {
 		this.cuota = cuota;
-	}	
+	}
+	@Column(name = "id_asignacion_ca")
+	public Long getIdAsiganacionCA() {
+		return idAsiganacionCA;
+	}
+
+	public void setIdAsiganacionCA(Long idAsiganacionCA) {
+		this.idAsiganacionCA = idAsiganacionCA;
+	}
+	
 }

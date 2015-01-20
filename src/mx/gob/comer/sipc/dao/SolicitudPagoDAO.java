@@ -703,7 +703,7 @@ public class SolicitudPagoDAO {
 			}
 		}
 
-		consulta.insert(0, "From AsignacionCartasAdhesionEspecialistaV ").append(" ORDER BY folioCartaAdhesion, idEstado, idCultivo, idVariedad ");
+		consulta.insert(0, "From AsignacionCartasAdhesionEspecialistaV ").append(" ORDER BY folioCartaAdhesion,bodega, estado, cultivo, variedad ");
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}

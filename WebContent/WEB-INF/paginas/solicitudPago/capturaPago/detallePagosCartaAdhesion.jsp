@@ -1,12 +1,15 @@
 <%@taglib uri="/struts-tags" prefix="s"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net" %>
 <script type="text/javascript" src="<s:url value="/js/solicitudPago.js" />"></script>
-<div id="pagos">
+<div id="ok">
 	<s:form action="capturaPagoCartaAdhesion" method="post" enctype="multipart/form-data" accept-charset="utf-8" onsubmit="return chkCamposPagoCartaAdhesion();">
 		<s:hidden id="numCampos" name="numCampos" value="%{numCampos}"/>
 		<s:hidden id="criterioPago" name="criterioPago" value="%{criterioPago}"/>
 		<s:hidden id="folioCartaAdhesion" name="folioCartaAdhesion" value="%{folioCartaAdhesion}"/>
+		<s:hidden id="idPrograma" name="idPrograma" value="%{idPrograma}"/>
 		<s:hidden id="idPerfil" name="idPerfil" value="%{#session.idPerfil}"/>
+		<s:hidden id="registrar" name="registrar" value="%{registrar}"/>
+		<s:hidden id="idPago" name="idPago" value="%{idPago}"/>
 	
 		<s:if test="%{idPago!=null}">
 			<div class="clear"></div>
@@ -91,12 +94,7 @@
 	            </s:else>
 	            <img src="../images/calendar.gif" id="trg1" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
 			</div>
-<!-- 
-			<div class="derecha">
-	    		<label class="left1"><span class="norequerido">*</span>Cerrar Expediente</label>
-	        	<s:checkbox id="cerrarExpediente"  name="cerrarExpediente" fieldValue="true" value="%{cerrarExpediente}"/>
-			</div>
- -->			
+			
 			<div class="clear"></div>
 			<s:if test="%{fianza!=null}">
 				<div class="izquierda">
@@ -118,81 +116,11 @@
 			<div>
         		<label class="left1"><span class="requerido">*</span>Productores Beneficiados:</label>
            		<s:textfield id="productoresBeneficiados"  name = "productoresBeneficiados" maxlength="5" size="10"  value="%{productoresBeneficiados}"/>
-        	</div>			                           
-			<table class="clean">
-				<tr>
-					<th class="clean">Estado</th>
-					<th class="clean">Cultivo</th>
-					<th class="clean">Variedad</th>
-					<th class="clean">Bodega</th>
-					<s:if test="criterioPago==1 || criterioPago==3">
-						<th class="clean">Volumen Autorizado</th>
-						<th class="clean">Volumen Apoyado</th>
-						<th class="clean">Cuota Apoyo</th>
-						<th class="clean">Volumen a Apoyar</th>
-						<s:if test="criterioPago==3">
-							<th class="clean">Etapa</th>
-						</s:if>
-					</s:if>
-					<s:else>
-						<th class="clean">Importe Autorizado</th>
-						<th class="clean">Importe Apoyado</th>
-						<th class="clean">Importe a Apoyar</th>
-						<th class="clean">Etapa</th>
-					</s:else>
-				</tr>	
-				<s:hidden id="numRegistroDetallePago" value="%{lstDetallePagosCAEspecialistaV.size()}"/>
-				<s:iterator value="lstDetallePagosCAEspecialistaV" var="resultado" status="itStatus">
-					<tr>
-						<td>
-							<s:textfield disabled="true" maxlength="50" size="20" value="%{#resultado.estado}"/>
-						</td>
-						<td>
-							<s:textfield disabled="true" maxlength="50" size="20" value="%{#resultado.cultivo}"/>
-						</td>
-						<td>
-							<s:textfield disabled="true" maxlength="50" size="30" value="%{#resultado.variedad}"/>
-						</td>
-						<td>
-							<s:textfield disabled="true" maxlength="50" size="30" value="%{#resultado.bodega}"/>
-						</td>						
-						<s:if test="idCriterioPago==1 || idCriterioPago==3">
-							<td align="CENTER">
-								<s:textfield disabled="true" id="volumenAut%{#itStatus.count}" name="volumenesAut" maxlength="20" size="15" cssClass="cantidad" value="%{getText('volumen',{#resultado.volumen})}"/>
-								<s:hidden id="volumenesAutTemp%{#itStatus.count}" value="%{#resultado.volumen}"/>								
-							</td>
-							<td align="CENTER">
-								<s:textfield disabled="true" id="volumenApo%{#itStatus.count}" name="volumenesApo" maxlength="20" size="15" cssClass="cantidad" value="%{getText('volumen',{#resultado.volumenApoyado})}"/>
-							</td>
-							<td align="CENTER">
-								$<s:textfield disabled="true" id="cuotaApoyo%{#itStatus.count}" name="cuotasApoyo" maxlength="15" size="10" cssClass="cantidad" value="%{getText('importe',{#resultado.cuota})}"/>
-							</td>
-							<td><s:textfield id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{}" /></td>
-							<s:if test="idCriterioPago==3">
-								<td class="cEtapa">
-									<s:select id="etapa%{#itStatus.count}" name="capEtapa[%{idAsiganacionCA}]"  headerKey="-1" onchange=""
-										headerValue="Seleccione una opción"								
-										list="#{'I':'I', 'II':'II', 'III':'III','IV':'IV'}" />
-								</td>						
-							</s:if>
-						</s:if>
-						<s:else>
-							<td align="CENTER">
-								$<s:textfield disabled="true" id="importeAut%{#itStatus.count}" name="ImportesAut" maxlength="20" size="15" cssClass="cantidad" value="%{getText('importe',{#resultado.importe})}"/>
-							</td>
-							<td align="CENTER">
-								$<s:textfield disabled="true" id="importeApo%{#itStatus.count}" name="ImportesApo" maxlength="20" size="15" cssClass="cantidad" value="%{getText('importe',{#resultado.importeApoyado})}"/>
-							</td>
-							<td>$<s:textfield id="importeApoyar%{#itStatus.count}" name="capImporte[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{}" /></td>
-							<td class="cEtapa">
-								<s:select id="etapa%{#itStatus.count}" name="capEtapa[%{idAsiganacionCA}]"  headerKey="-1" onchange=""
-									headerValue="Seleccione una opción"								
-									list="#{'I':'I', 'II':'II', 'III':'III','IV':'IV'}" />
-							</td>
-						</s:else>						
-					</tr>	
-				</s:iterator>
-			</table>
+        	</div>
+        	<div class="clear" ></div>
+        	<div id="contenedorDetallePagos" align="center">
+        		<s:include value="respuestaContenedorDetallePagos.jsp"/>
+        	</div>		                           
 		</fieldset>
 		<div class="accion">
 			<s:submit  value="Vista Previa" cssClass="boton2" action="vistaPreviaAtentaNota" onclick="return chkCamposPagoCartaAdhesion();"/>
@@ -212,4 +140,4 @@
 		 //-->
 	</script>
 </div>	
-<div id="vistaPrevia" class="vistaPrevia"></div>	
+<div id="vistaPrevia" ></div>	

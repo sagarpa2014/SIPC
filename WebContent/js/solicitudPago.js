@@ -2118,23 +2118,20 @@ function habilitaPorcentaje(){
 
 
 function setVolumenByProcentaje(){
-	var i = 0;
-	var numRegistroDetallePago = $('#numRegistroDetallePago').val();
-	var porcentajeFianza = $('#porcentajeFianza').val();
-	var operacion = 0;
-	
-	if(porcentajeFianza != null && porcentajeFianza !=""){
-		porcentajeFianza = parseFloat(porcentajeFianza);
-		var volumenesAutTemp = 0;
-		for(i=1; i<=numRegistroDetallePago; i++){
-			volumenesAutTemp = parseFloat($('#volumenesAutTemp'+i).val());
-			operacion = parseFloat((porcentajeFianza*volumenesAutTemp)/100); 
-			operacion = operacion.toFixed(3);
-			$('#volumenApoyar'+i).val(operacion);
-		}
-	}else{
-		for(i=1; i<=numRegistroDetallePago; i++){
-			$('#volumenApoyar'+i).val(null);
-		}
-	}
+	var idPrograma = $('#idPrograma').val(); 
+	var porcentajeFianza = $('#porcentajeFianza').val(); 
+	var folioCartaAdhesion = $('#folioCartaAdhesion').val(); 
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: "colocarVolumenEnPorcentaje",
+		   data: "idPrograma="+idPrograma+
+		   		"&porcentajeFianza="+porcentajeFianza+
+		   		"&folioCartaAdhesion="+folioCartaAdhesion,
+		   success: function(data){
+				$('#contenedorDetallePagos').html(data).ready(function () {
+					$("#contenedorDetallePagos").fadeIn('slow');
+				});
+		   }
+		});//fin ajax
 }
