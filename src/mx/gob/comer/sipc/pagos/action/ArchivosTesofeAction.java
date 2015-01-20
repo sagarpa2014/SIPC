@@ -158,12 +158,13 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 	}
 	
 	public String archivoEnvio(){
-		
-		
-		
 		return SUCCESS;
 	}
-	
+
+	public String regresoArchivo(){
+		return SUCCESS;
+	}
+
 	public String vistaPreviaOficio(){
 		programa = cDAO.consultaPrograma(idPrograma).get(0);
 		criterioPago = programa.getCriterioPago();
@@ -377,7 +378,7 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			return SUCCESS;
 		}
 		try {
-			/**Genera el oficio de envio de CGC a DGAF en formato PDF*/
+			/**Genera el oficio de envio de DGMD a DGAF en formato PDF*/
 			Document document;
 			
 			rutaSalida = cDAO.consultaParametros("RUTA_OFICIO_ENVIO_CGC_DGAF");

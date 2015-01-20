@@ -142,7 +142,7 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/archivoEnvio.jsp</result>
             <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/archivoEnvio.jsp</result>
-        </action>
+        </action>        
         <action name="recuperaPagos" method="recuperaPagos" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
         	<interceptor-ref name="chksession"/>
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
@@ -384,6 +384,19 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success" type="tiles">consultaDevolucionesPagosCA</result>
             <result name="input" type="tiles">consultaDevolucionesPagosCA</result>
-        </action>            
+        </action>
+        <!-- REGRESO DE ARCHIVOS DE ENVIO DE PAGOS -->
+        <action name="regresoArchivo" method="regresoArchivo" class="mx.gob.comer.sipc.pagos.action.ArchivosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/pagos/archivosTesofe/regresoArchivo.jsp</result>
+            <result name="input">/WEB-INF/paginas/pagos/archivosTesofe/regresoArchivo.jsp</result>
+        </action>
+        <action name="regresaArchivoPagosTesofe" method="regresaArchivoPagosTesofe" class="mx.gob.comer.sipc.pagos.action.GeneraArchivoPagosTesofeAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">regresoArchivo</result>
+            <result name="input" type="tiles">regresoArchivo</result>
+        </action>        
     </package>
 </struts>

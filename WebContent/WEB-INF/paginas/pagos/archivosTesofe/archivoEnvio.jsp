@@ -12,7 +12,7 @@
 	<fieldset class="clear">
 		<legend>Dep&oacute;sitos v&iacute;a TESOFE</legend>
 		<div>
-			<label class="left1"><span class="requerido">*</span>No. Oficio CGC a DGAF:</label>
+			<label class="left1"><span class="requerido">*</span>No. Oficio DGMD a DGAF:</label>
 			<s:textfield id="oficioCGC1" name="oficioCGC" maxlength="30" size="31"/>
 		</div>
 		<div>
@@ -22,6 +22,10 @@
 		<div>
 			<label class="left1"><span class="requerido">*</span>N&uacute;mero de Archivo:</label>
 			<s:textfield id="consecutivoArchivo" name="consecutivoArchivo" maxlength="2" size="6" />
+		</div>
+		<div>
+			<label class="left1"><span class="requerido">*</span>Secuencia Inicial:</label>
+			<s:textfield id="secuenciaInicialArchivoUsuario" name="secuenciaInicialArchivoUsuario" maxlength="4" size="6" />
 		</div>
 		<div id="validaNumeroSecuenciaArchivo"></div>
 		<s:if test='nombreArchivo!=null'>
@@ -70,28 +74,35 @@
 function validaFolioCLC(){ 
 	var oficioCGC = $('#oficioCGC1').val();
 	var folioCLC = $('#folioCLC1').val();	
-	var consecutivoArchivo = $('#consecutivoArchivo').val();	
+	var consecutivoArchivo = $('#consecutivoArchivo').val();
+	var secuenciaInicialArchivoUsuario = $('#secuenciaInicialArchivoUsuario').val();
+	
 	var patronOficio =/^F00.\d{4}\/\d{1,8}\/\d{4}$/;
 	var patronFolioCLC =/^\d{1,5}$/;
 	var patronConsecutivoArchivo =/^\d{2}$/;
+	var patronSecuenciaInicialArchivoUsuario =/^\d{1,4}$/;
 
 	if(!oficioCGC.match(patronOficio)){
-		$('#dialogo_1').html('El oficio es incorrecto, se debe capturar conforme a la siguiente nomenclatura ejemplo: F00.4000/99999/2013');
+		$('#dialogo_1').html('El oficio es incorrecto, se debe capturar conforme a la siguiente nomenclatura ejemplo: F00.4200/99999/2015');
 		abrirDialogo();
 		return false;
 	} 
 	
 	if(!folioCLC.match(patronFolioCLC)){
-		$('#dialogo_1').html('El folio CLC es incorrecto, se deben capturar hasta 5 digitos ');
+		$('#dialogo_1').html('El folio CLC es incorrecto, se deben capturar hasta 5 digitos');
 		abrirDialogo();
 		return false;
 	}	
 	if(!consecutivoArchivo.match(patronConsecutivoArchivo)){
-		$('#dialogo_1').html('El consecutivo del archivo es incorrecto, se debe capturar 1 digito ');
+		$('#dialogo_1').html('El consecutivo del archivo es incorrecto, se deben capturar 2 digitos');
 		abrirDialogo();
 		return false;
 	}	
-	
+	if(!secuenciaInicialArchivoUsuario.match(patronSecuenciaInicialArchivoUsuario)){
+		$('#dialogo_1').html('La secuencia inicial proporcinada por el usuario es incorrecta, se deben capturar hasta 4 digitos');
+		abrirDialogo();
+		return false;
+	}	
 }
 
 function validaNumeroSecuenciaArchivo(){

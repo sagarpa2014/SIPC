@@ -761,4 +761,15 @@ public class PagosDAO {
 		return lst;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Pagos> consultaPagosbyOficio(int idOficio) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Pagos> lst=null;
+		if (idOficio != 0 && idOficio != -1){
+			consulta.append("where idOficio = ").append(idOficio);
+		}
+		consulta.insert(0, "From Pagos ");
+		lst= session.createQuery(consulta.toString()).list();	
+		return lst;
+	}
 }// fin de clase

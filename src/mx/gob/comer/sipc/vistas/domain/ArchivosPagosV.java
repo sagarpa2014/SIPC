@@ -21,7 +21,9 @@ public class ArchivosPagosV {
 	private String folio;
 	private Integer medioPago;
 	private String medioPagoNombre;
-	
+	private Long idOficio;
+	private String oficio;
+	private String folioCLC;
 	
 	@Id
 	@Column(name = "archivo_id")	
@@ -102,5 +104,28 @@ public class ArchivosPagosV {
 	public void setMedioPagoNombre(String medioPagoNombre) {
 		this.medioPagoNombre = medioPagoNombre;
 	}
-
+	
+	@Column(name = "id_oficio")
+	public Long getIdOficio() {
+		return idOficio;
+	}
+	public void setIdOficio(Long idOficio) {
+		this.idOficio = idOficio;
+	}
+	
+	@Column(name = "no_oficio")
+	public String getOficio() {
+		return oficio;
+	}
+	public void setOficio(String oficio) {
+		this.oficio = oficio;
+	}
+	
+	@Column(name = "folio_clc")
+	public String getFolioCLC() {
+		return folioCLC;
+	}
+	public void setFolioCLC(String folioCLC) {
+		this.folioCLC = folioCLC;
+	}
 }

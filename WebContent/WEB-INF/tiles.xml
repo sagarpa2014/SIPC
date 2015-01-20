@@ -328,5 +328,9 @@
 	</definition>
 	<definition name="resultadoGeneracionExcelResultadoSQL" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelResultadoSQL.jsp" />
-	</definition>				
+	</definition>
+<!-- REGRESO DE ARCHIVOS DE ENVIO DE PAGOS -->
+	<definition name="regresoArchivo" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/regresoArchivo.jsp" />
+	</definition>
 </tiles-definitions>

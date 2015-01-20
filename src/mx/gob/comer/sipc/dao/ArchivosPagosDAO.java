@@ -5,6 +5,7 @@ import java.util.List;
 
 import mx.gob.comer.sipc.domain.ArchivosPagos;
 import mx.gob.comer.sipc.log.AppLogger;
+import mx.gob.comer.sipc.vistas.domain.ArchivosPagosV;
 
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -274,31 +275,72 @@ public class ArchivosPagosDAO extends SqlDAO{
 		return Long.valueOf(0);
   } // end getSecuenciaFinalMaximoArchivo()
 
-  public List<ArchivosPagos> consultaArchivoPagos(int consecutivo, String fecha){
-	  return consultaArchivoPagos( consecutivo,  fecha, "", -1);
-  }
-  public List<ArchivosPagos> consultaArchivoPagos( String anio, int folioCLC){
-	  return consultaArchivoPagos( -1,"", anio, folioCLC);
-  }
-  /**
- * @param consecutivo
- * @param fecha
- * @return
- */
-@SuppressWarnings("unchecked")
-public List<ArchivosPagos> consultaArchivoPagos(int consecutivo, String fecha,  String anio, int folioCLC){
+	public List<ArchivosPagos> consultaArchivoPagos(int consecutivo, String fecha){
+		return consultaArchivoPagos( consecutivo,  fecha, "", -1);
+	}
+	public List<ArchivosPagos> consultaArchivoPagos( String anio, int folioCLC){
+		return consultaArchivoPagos( -1,"", anio, folioCLC);
+	}
+	  /**
+	 * @param consecutivo
+	 * @param fecha
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ArchivosPagos> consultaArchivoPagos(int consecutivo, String fecha, String anio, int folioCLC){
+		  StringBuilder consulta= new StringBuilder();
+		  List<ArchivosPagos> lst=null;
+		  if (consecutivo != -1){
+				consulta.append("where consecutivoArchivo = ").append(consecutivo);
+		  }
+		  if(fecha != null && !fecha.equals("")){
+			  if(consulta.length()>0){
+				  consulta.append(" and TO_CHAR(fechaArchivo,'YYYY-MM-DD')='").append(fecha).append("'");
+			  }else{
+				  consulta.append(" where TO_CHAR(fechaArchivo,'YYYY-MM-DD')='").append(fecha).append("'");
+			  }
+		  }
+		  if(anio != null && !anio.equals("")){
+			  if(consulta.length()>0){
+				  consulta.append(" and TO_CHAR(fechaArchivo,'YYYY')='").append(anio).append("'");
+			  }else{
+				  consulta.append(" where TO_CHAR(fechaArchivo,'YYYY')='").append(anio).append("'");
+			  }
+		  }
+		
+		  if(folioCLC !=0 && folioCLC!=-1){
+			  if(consulta.length()>0){
+					consulta.append(" and folio ='").append(folioCLC).append("'");
+				}else{
+					consulta.append("where folio='").append(folioCLC).append("'");
+				}
+		  }
+		  consulta.insert(0, "From ArchivosPagos ");
+		  lst= session.createQuery(consulta.toString()).list();	
+		  return lst;
+	}
+  
+  
+	@SuppressWarnings("unchecked")
+	public List<ArchivosPagosV> consultaArchivoPagosV(String oficio, int folioCLC, String anio){
 	  StringBuilder consulta= new StringBuilder();
-	  List<ArchivosPagos> lst=null;
-	  if (consecutivo != -1){
-			consulta.append("where consecutivoArchivo = ").append(consecutivo);
-	  }
-	  if(fecha != null && !fecha.equals("")){
+	  List<ArchivosPagosV> lst=null;
+	  if(oficio != null && !oficio.equals("")){
 		  if(consulta.length()>0){
-			  consulta.append(" and TO_CHAR(fechaArchivo,'YYYY-MM-DD')='").append(fecha).append("'");
+			  consulta.append(" and oficio='").append(oficio).append("'");
 		  }else{
-			  consulta.append(" where TO_CHAR(fechaArchivo,'YYYY-MM-DD')='").append(fecha).append("'");
+			  consulta.append(" where oficio='").append(oficio).append("'");
 		  }
 	  }
+
+	  if(folioCLC !=0 && folioCLC!=-1){
+		  if(consulta.length()>0){
+				consulta.append(" and folioCLC ='").append(folioCLC).append("'");
+			}else{
+				consulta.append("where folioCLC='").append(folioCLC).append("'");
+			}
+	  }
+
 	  if(anio != null && !anio.equals("")){
 		  if(consulta.length()>0){
 			  consulta.append(" and TO_CHAR(fechaArchivo,'YYYY')='").append(anio).append("'");
@@ -306,19 +348,9 @@ public List<ArchivosPagos> consultaArchivoPagos(int consecutivo, String fecha,  
 			  consulta.append(" where TO_CHAR(fechaArchivo,'YYYY')='").append(anio).append("'");
 		  }
 	  }
-	
-	  if(folioCLC !=0 && folioCLC!=-1){
-		  if(consulta.length()>0){
-				consulta.append(" and folio ='").append(folioCLC).append("'");
-			}else{
-				consulta.append("where folio='").append(folioCLC).append("'");
-			}
-	  }
-	  consulta.insert(0, "From ArchivosPagos ");
+	  
+	  consulta.insert(0, "From ArchivosPagosV ");
 	  lst= session.createQuery(consulta.toString()).list();	
 	  return lst;
-  }
-  
-  
-  
+  }  
 }//end Class ArchivosPagosDAO

@@ -34,6 +34,7 @@ import mx.gob.comer.sipc.domain.Usuarios;
 import mx.gob.comer.sipc.log.AppLogger;
 import mx.gob.comer.sipc.utilerias.EnvioMensajes;
 import mx.gob.comer.sipc.utilerias.Generales;
+import mx.gob.comer.sipc.vistas.domain.ArchivosPagosV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 
 import org.apache.struts2.ServletActionContext;
@@ -56,6 +57,7 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 	private UtileriasDAO utileriasDAO = new UtileriasDAO();
 	private List<PagosV> pagosV;
 	private Pagos pagos;
+	private List<Pagos> lstPagos;
 	private OficioPagos oficio;
 	private PagosDAO pDAO = new PagosDAO();
 	private CatalogosDAO cDAO = new CatalogosDAO();
@@ -80,6 +82,12 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 
 	private Map<String,Object> session;
 	private Integer consecutivoArchivo;
+	private Long secuenciaInicialArchivoUsuario;
+	
+	private List<ArchivosPagosV> archivosPagosV;
+	private Long archivoId;
+	private String msjOk;
+	
 	@SessionTarget
 	Session sessionTarget;
 	
@@ -103,7 +111,7 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 			/*Valida que el numero del consecutivo no se encuentre en la base de datos*/
 			if(archivosPagosDAO.consultaArchivoPagos(consecutivoArchivo.intValue(), new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString()).size()>0){
 				error=true;
-				addActionError("Error en el número de archivo, ya encuentra registrado para la fecha actual");
+				addActionError("Error en el número de archivo, ya se encuentra registrado para la fecha actual");
 				return SUCCESS;
 			}
 			if(error){
@@ -158,14 +166,14 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 			// Obtiene la ruta del directorio donde se generan los archivos de pago
 			String rutaEnvioArchivos =  utileriasDAO.getParametros("RUTA_ENVIO_ARCHIVOS");
 			
-		    // Obtiene información de los Pagos relacionados con el Oficio CGC a DGAF para generar en archivo
+		    // Obtiene información de los Pagos relacionados con el Oficio DGMD a DGAF para generar en archivo
 			if (pDAO.consultaOficiosPago(0, oficioCGC,0).size()>0){
 				idOficio = pDAO.consultaOficiosPago(0, oficioCGC,0).get(0).getIdOficioPagos();
 			    pagosV=pDAO.consultaPagosV(idOficio, "2");
 		
 				// Agrega mensajes a LOG
-				AppLogger.info( "pagos", "*** Generacion Archivo de Pagos (INICIO) - Oficio CGC a DGAF: "+oficioCGC+"***" );
-				addLogLista("*** Generacion Archivo de Pagos (INICIO) - Oficio CGC a DGAF: "+oficioCGC+"***", true);
+				AppLogger.info( "pagos", "*** Generacion Archivo de Pagos (INICIO) - Oficio DGMD a DGAF: "+oficioCGC+"***" );
+				addLogLista("*** Generacion Archivo de Pagos (INICIO) - Oficio DGMD a DGAF: "+oficioCGC+"***", true);
 				AppLogger.info( "pagos", " Fecha Presentacion: "+formatoDeFecha.format(fechaPresentacion)+
 										 " Fecha Pago: "+formatoDeFecha.format(fechaAplicacionPago));
 				addLogLista(" Fecha Presentacion: "+formatoDeFecha.format(fechaPresentacion)+
@@ -206,16 +214,31 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		    		// Verifica que el consecutivo de archivo por día, banco TESOFE 
 		    		//consecutivoArchivo = archivosPagosDAO.getMaximoConsecutivoArchivoPagos(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fecha));
 		
-		    		// Obtiene secuencia inicial y final del ultimo archivo de pagos generado en el dia 
-		    		secuenciaFinalMaximoArchivo = archivosPagosDAO.getSecuenciaFinalMaximoArchivo(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fechaPresentacion));
-		    		secuenciaInicialArchivo = secuenciaFinalMaximoArchivo + 1;
+					if(secuenciaInicialArchivoUsuario>0){
+			    		// Obtiene secuencia inicial y final del ultimo archivo de pagos generado en el dia 
+			    		secuenciaFinalMaximoArchivo = archivosPagosDAO.getSecuenciaFinalMaximoArchivo(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fechaPresentacion));
+			    		if(secuenciaInicialArchivoUsuario<=secuenciaFinalMaximoArchivo){
+							errorBand = true;
+							AppLogger.error("pagos", "Generacion Archivo de Pagos: La Secuencia Inicial proporcionada por el Usuaurio: "+secuenciaInicialArchivoUsuario+" es invalida ya que debe ser mayor a la Secuencia Maxima generada en el dia: "+secuenciaFinalMaximoArchivo+", verifiquelo!!!");
+							addLogLista("La Secuencia Inicial proporcionada por el Usuaurio: "+secuenciaInicialArchivoUsuario+" es invalida ya que debe ser mayor a la Secuencia Maxima generada en el dia: "+secuenciaFinalMaximoArchivo+", verifiquelo!!!", false);
+							addActionError("La Secuencia Inicial proporcionada por el Usuaurio: "+secuenciaInicialArchivoUsuario+" es invalida ya que debe ser mayor a la Secuencia Maxima generada en el dia: "+secuenciaFinalMaximoArchivo+", verifiquelo!!!");							
+
+							return SUCCESS;
+			    		} else {
+			    			secuenciaInicialArchivo = secuenciaInicialArchivoUsuario - 1;
+			    		}
+					} else {
+			    		// Obtiene secuencia inicial y final del ultimo archivo de pagos generado en el dia 
+			    		secuenciaFinalMaximoArchivo = archivosPagosDAO.getSecuenciaFinalMaximoArchivo(bancoIdTesofe, new SimpleDateFormat("yyyy-MM-dd").format(fechaPresentacion));
+			    		secuenciaInicialArchivo = secuenciaFinalMaximoArchivo + 1;						
+					}
+					
 		    		j = secuenciaInicialArchivo;
 		    		System.out.println("Secuencia archivo despues de consultar "+j);
 		    		//secuencia = new Long(1);
-		    		
+
 		    		numSecuencia = 1;
-		    		
-		    		
+
 					// Concatenacion de campos que conforman el registro
 		    		registroEncabezado = tipoRegEncabezadoD+ // TIPO REGISTRO
 		    							 formatter4.format(numSecuencia)+ // NUMERO DE SECUENCIA
@@ -376,8 +399,8 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 				    archivo.setFolio(folioCLC);
 				    archivo.setNombreArchivo(nombreArchivo);
 				    archivo.setMedioPago(medioPagoId);
-				    archivo.setSecuenciaInicial(secuenciaInicialArchivo);
-				    archivo.setSecuenciaFinal(j);
+				    archivo.setSecuenciaInicial(secuenciaInicialArchivo+1);
+				    archivo.setSecuenciaFinal((j-1));
 				    archivo.setIdOficio(idOficio);
 				    archivo.setEstatus(1);
 				    archivosPagosDAO.saveArchivosPagos(archivo);
@@ -393,7 +416,7 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 			    AppLogger.info( "pagos", "Actualizando archivo de envio y folio CLC al oficio de pagos" );
 			    addLogLista("Actualizando archivo de envio y folio CLC al oficio de pagos", true);	
 			    log = "Se le informa que se generó archivo de pagos:"+nombreArchivo+" - Programa: "+pagosV.get(0).getNombrePgrCorto()
-			    	 + " - CLC: "+folioCLC +" - Oficio CGC a DGAF: "+oficioCGC+" - Fecha presentación:"+new SimpleDateFormat("dd-MM-yyyy").format(fechaPresentacion)
+			    	 + " - CLC: "+folioCLC +" - Oficio DGMD a DGAF: "+oficioCGC+" - Fecha presentación:"+new SimpleDateFormat("dd-MM-yyyy").format(fechaPresentacion)
 			    	 + " - Fecha de Pago: "+new SimpleDateFormat("dd-MM-yyyy").format(fechaAplicacionPago);
 			    EnvioMensajes mensajes = new EnvioMensajes(sessionTarget);
 				mensajes.enviarMensaje((Integer) session.get("idUsuario"), 6, log, "Aviso");
@@ -506,6 +529,76 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		}
 	} // end returnFile()
 
+	public String regresaArchivoPagosTesofe() throws Exception {
+		try{
+			session = ActionContext.getContext().getSession();
+			boolean error = false;
+			if(oficioCGC != null && !oficioCGC.equals("")){
+				/*Valida que el numero de oficio se encuentre en la base de datos*/
+				archivosPagosV = archivosPagosDAO.consultaArchivoPagosV(oficioCGC, 0, null);
+				if(archivosPagosV.size()==0){
+					error=true;
+					addActionError("El No. de Oficio CLC no se encuentra registrado, favor de verificar");
+				} else {
+					idOficio = archivosPagosV.get(0).getIdOficio();
+					archivoId = archivosPagosV.get(0).getArchivoId();
+				}
+			} else {
+				if(folioCLC != null && !folioCLC.equals("")){
+					/*Valida que exista el folio de la CLC*/
+					archivosPagosV = archivosPagosDAO.consultaArchivoPagosV(null, Integer.parseInt(folioCLC), new SimpleDateFormat("yyyy").format(new Date()).toString());
+					if(archivosPagosV.size()==0){
+						error = true;
+						addActionError("El folio de la CLC no se encuentra registrado para el año actual, favor de verificar");
+					} else {
+						idOficio = archivosPagosV.get(0).getIdOficio();	
+						archivoId = archivosPagosV.get(0).getArchivoId();
+					}				
+				} else {
+					error = true;
+					addActionError("Se debe especificar alguno de los valores No. de Oficio CLC o Folio de la CLC");
+				}
+			}			
+			if(error){
+				return SUCCESS;	
+			}
+				
+			// Obtiene la fecha actual para el archivo
+			Calendar calendario = GregorianCalendar.getInstance();
+			Date fecha = calendario.getTime();
+	
+			// Actualiza el Pago de estatus "ENVIADO" a "SOLICITADO"
+			lstPagos = pDAO.consultaPagosbyOficio(idOficio.intValue());
+			for (int i = 0; i < lstPagos.size(); i++) {
+				Pagos p = new Pagos();
+				p = lstPagos.get(i);
+				p.setEstatus(2);
+				p.setUsuarioModificacion((Integer)session.get("idUsuario"));
+				p.setFechaModificacion(fecha);
+				p.setClaveRastreo(null);
+				p.setFechaPresentacion(null);
+				p.setFechaPago(null);
+				cDAO.guardaObjeto(p);	
+			}			
+		    // Elimina en BD el archivo de salida generado
+			archivo = archivosPagosDAO.getArchivoPagos(archivoId);
+			cDAO.borrarObjeto(archivo);
+		
+		    // Actualiza el folio CLC y nombre de archivo envio al oficio pagos que se regreso
+		    oficio = pDAO.consultaOficiosPago(idOficio, "",0).get(0);
+		    oficio.setArchivoEnvio(null);
+		    oficio.setFolioCLC(null);
+		    cDAO.guardaObjeto(oficio);
+		    
+		    msjOk = "Se regreso archivo de envio de pagos correctamente";
+		}catch (Exception e){
+			e.printStackTrace();
+			AppLogger.error("errores","Ocurrió un error inesperado al regresar el archivo, debido a: "+e.getCause());
+			addActionError("Ocurrió un error inesperado al regresar el archivo, favor de informar al administrador del sistema");
+		}
+		return SUCCESS;
+	} // end regresaArchivoPagosTesofe()
+
 	public Long getFolio() {
 		return folio;
 	}
@@ -529,8 +622,6 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 	public ArchivosPagos getArchivo() {
 		return archivo;
 	}
-
-	
 	
 	public boolean isErrorBand() {
 		return errorBand;
@@ -623,5 +714,46 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 	/* Implementar Session aware*/
 	public void setSession(Map<String, Object> session) {
 	    this.session = session;
+	}
+
+	public Long getSecuenciaInicialArchivoUsuario() {
+		return secuenciaInicialArchivoUsuario;
+	}
+
+	public void setSecuenciaInicialArchivoUsuario(
+			Long secuenciaInicialArchivoUsuario) {
+		this.secuenciaInicialArchivoUsuario = secuenciaInicialArchivoUsuario;
+	}
+
+	public List<Pagos> getLstPagos() {
+		return lstPagos;
+	}
+
+	public void setLstPagos(List<Pagos> lstPagos) {
+		this.lstPagos = lstPagos;
+	}
+
+	public List<ArchivosPagosV> getArchivosPagosV() {
+		return archivosPagosV;
+	}
+
+	public void setArchivosPagosV(List<ArchivosPagosV> archivosPagosV) {
+		this.archivosPagosV = archivosPagosV;
+	}
+
+	public Long getArchivoId() {
+		return archivoId;
+	}
+
+	public void setArchivoId(Long archivoId) {
+		this.archivoId = archivoId;
+	}
+
+	public String getMsjOk() {
+		return msjOk;
+	}
+
+	public void setMsjOk(String msjOk) {
+		this.msjOk = msjOk;
 	}
 }

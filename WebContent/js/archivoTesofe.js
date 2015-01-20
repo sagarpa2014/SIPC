@@ -12,6 +12,9 @@ function selectTipoOficio(){
 	var urlenvio = "oficioEnvio";
 	if(tipoOficio==1){
 		urlenvio = "archivoEnvio";
+	} 
+	if(tipoOficio==2){
+		urlenvio = "regresoArchivo";
 	}
 	$("#contenidoTipoOficio").fadeOut('slow', function() {
 		  	$.ajax({
