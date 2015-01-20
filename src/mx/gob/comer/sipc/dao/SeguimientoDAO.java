@@ -173,6 +173,71 @@ public class SeguimientoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<SeguimientoCentroAcopioV> consultaSeguimientoCAV(long idSeguimientoCA, int idCiclo, int ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, String estados) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<SeguimientoCentroAcopioV> lst=null;
+		if (idSeguimientoCA != 0 && idSeguimientoCA != -1){
+			consulta.append("where idSeguimientoCA = ").append(idSeguimientoCA);
+		}
+			
+		if (idCiclo != 0 && idCiclo!=-1){
+			if(consulta.length()>0){
+				consulta.append(" and idCiclo=").append(idCiclo);
+			}else{
+				consulta.append("where idCiclo=").append(idCiclo);
+			}
+		}
+		
+		if (ejercicio != 0 && ejercicio!=-1){
+			if(consulta.length()>0){
+				consulta.append(" and ejercicio=").append(ejercicio);
+			}else{
+				consulta.append("where ejercicio=").append(ejercicio);
+			}
+		}
+		
+		if (periodoInicial != null  && !periodoInicial.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and  (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+						.append(" and '").append(periodoInicial).append("'");
+			}else{
+				consulta.append(" where (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+						.append(" and '").append(periodoInicial).append("'");
+			}
+		}
+		
+		if (periodoFinal != null &&  !periodoFinal.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and  (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+						.append(" and '").append(periodoFinal).append("'");
+			}else{
+				consulta.append(" where (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+						.append(" and '").append(periodoFinal).append("'");
+			}
+		}
+		
+		if (claveBodega != null && !claveBodega.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and claveBodega like '%").append(claveBodega).append("%'");
+			}else{
+				consulta.append("where claveBodega like '%").append(claveBodega).append("%'");
+			}
+		}
+
+		if (estados != null && !estados.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and idEstadoBodega in (").append(estados).append(")");
+			} else {
+				consulta.append(" where idEstadoBodega in (").append(estados).append(")");
+			}
+		}
+
+		consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<SeguimientoCentroAcopioV> consultaSeguimientoCAV(int idEstadoSeg, int idCultivoSeg, int idCicloSeg) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<SeguimientoCentroAcopioV> lst=null;
@@ -206,6 +271,24 @@ public class SeguimientoDAO {
 		return lst;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<SeguimientoCentroAcopioV> consultaSeguimientoCAV(String estados) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<SeguimientoCentroAcopioV> lst=null;
+
+		if (estados != null && !estados.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and idEstadoBodega in (").append(estados).append(")");
+			} else {
+				consulta.append(" where idEstadoBodega in (").append(estados).append(")");
+			}
+		}
+
+		consulta.insert(0, "From SeguimientoCentroAcopioV ").append(" order by nombreEstadoBodega, nombreCultivo, ciclo, nombreBodega, periodoInicial, periodoFinal");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<SeguimientoCentroAcopioV> isolatedConsultaReporteDetalle(int idEstadoSeg, int idCultivoSeg, int idCicloSeg)throws  JDBCException{
 		Session s = null;

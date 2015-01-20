@@ -60,7 +60,7 @@
 				<s:else>
 					<s:textfield id="periodoInicial" name="periodoInicial" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{sca.periodoInicial})}" onchange=""/>
 				</s:else>
-				<s:if test="registrar!=1 && registrar!=3 && registrar!=2">
+				<s:if test="registrar!=1 && registrar!=3"> <!-- && registrar!=2 -->
 					<img width="16px" src="../images/calendar.gif" id="trgPeriodoInicial" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha"/>
 					<script type="text/javascript">
 						Calendar.setup({
@@ -81,7 +81,7 @@
 				<s:else>
 					<s:textfield id="periodoFinal" name="periodoFinal" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{sca.periodoFinal})}" onchange=""/>
 				</s:else>
-				<s:if test="registrar!=1 && registrar!=3 && registrar!=2">
+				<s:if test="registrar!=1 && registrar!=3"> <!-- && registrar!=2 -->
 					<img width="16px" src="../images/calendar.gif" id="trgPeriodoFinal" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha"/>
 					<script type="text/javascript">
 						Calendar.setup({

@@ -165,12 +165,19 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			session = ActionContext.getContext().getSession();
 			int idPerfil = (Integer) session.get("idPerfil");
 			idUsuario = (Integer)session.get("idUsuario");
+			usuario = cDAO.consultaUsuarios(idUsuario, null, null).get(0);
+			
 			lstEjercicios = cDAO.consultaEjercicio(0);
 			lstCiclos = cDAO.consultaCiclo(0);
 			if(idPerfil == 12){			
 				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, -1);
 			} else { 
-				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idUsuario);
+				// Caso particular: Regional Occidente
+				if(idPerfil == 11 && usuario.getArea().equals("1,6,14,18")){
+					listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(usuario.getArea());
+				} else {
+					listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idUsuario);	
+				}
 			}
 		}catch (JDBCException e) {
 	    	e.printStackTrace();	    
@@ -185,10 +192,17 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			session = ActionContext.getContext().getSession();
 			int idPerfil = (Integer) session.get("idPerfil");
 			idUsuario = (Integer)session.get("idUsuario");
+			usuario = cDAO.consultaUsuarios(idUsuario, null, null).get(0);
+			
 			if(idPerfil == 12){
 				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1);
 			} else {
-				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, idUsuario);
+				// Caso particular: Regional Occidente
+				if(idPerfil == 11 && usuario.getArea().equals("1,6,14,18")){
+					listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, usuario.getArea());
+				} else {
+					listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, idUsuario);
+				}
 			}
 			lstEjercicios = cDAO.consultaEjercicio(0);
 			lstCiclos = cDAO.consultaCiclo(0);	
@@ -301,8 +315,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
 					sca.setUsuarioActualiza((Integer) session.get("idUsuario"));
 					sca.setFechaActualiza(new Date());
-					//sca.setPeriodoFinal(periodoFinal);
-					//sca.setPeriodoInicial(periodoInicial);					
+					sca.setPeriodoFinal(periodoFinal);
+					sca.setPeriodoInicial(periodoInicial);					
 					// Valida que lo registrado de almacenamiento total sea menor o igual capacidad de la Bodega para el Ciclo, Ejercicio y Cultivo
 					CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
 					capacidadCA = cDAO.consultaCapacidadBodega(claveBodegaAux).get(0);
