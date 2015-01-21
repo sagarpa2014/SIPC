@@ -16,6 +16,7 @@ import mx.gob.comer.sipc.domain.CuentaBancaria;
 import mx.gob.comer.sipc.domain.Cultivo;
 import mx.gob.comer.sipc.domain.Ejercicios;
 import mx.gob.comer.sipc.domain.Estado;
+import mx.gob.comer.sipc.domain.EstatusOficio;
 import mx.gob.comer.sipc.domain.EstatusPago;
 import mx.gob.comer.sipc.domain.Expediente;
 import mx.gob.comer.sipc.domain.ExpedienteAuditor;
@@ -1873,5 +1874,16 @@ public class CatalogosDAO {
 			e.printStackTrace();
 		}
 		return resp.intValue();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<EstatusOficio> consultaEstatusOficio() throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<EstatusOficio> lst=null;
+		
+		consulta.append("From EstatusOficio ").append(" ORDER BY descripcionStatus");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
 	}
 }

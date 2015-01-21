@@ -184,8 +184,9 @@
  		<mapping class="mx.gob.comer.sipc.domain.catalogos.Ejido"/>
  		<mapping class="mx.gob.comer.sipc.domain.catalogos.BodegaUso"/>
  		
- 		
- 		
+ 		<!-- REPORTE DE CONTROL DE OFICIOS CLC -->
+		<mapping class="mx.gob.comer.sipc.domain.EstatusOficio"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.OficiosCLCV"/> 		
  		 		
 	</session-factory>
 </hibernate-configuration>

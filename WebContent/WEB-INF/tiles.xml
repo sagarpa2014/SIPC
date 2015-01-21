@@ -332,5 +332,11 @@
 <!-- REGRESO DE ARCHIVOS DE ENVIO DE PAGOS -->
 	<definition name="regresoArchivo" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/pagos/archivosTesofe/regresoArchivo.jsp" />
+	</definition>	
+	
+<!-- REPORTE DE CONTROL DE OFICIOS CLC -->
+	<definition name="busquedaOficiosCLC" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/reportes/oficiosCLC/busquedaOficiosCLC.jsp" />
 	</definition>
+		
 </tiles-definitions>

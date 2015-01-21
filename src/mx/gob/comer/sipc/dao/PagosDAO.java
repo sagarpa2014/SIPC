@@ -12,6 +12,7 @@ import mx.gob.comer.sipc.domain.catalogos.Especialista;
 import mx.gob.comer.sipc.log.AppLogger;
 import mx.gob.comer.sipc.vistas.domain.CartaAdhesionEtapaVolImpV;
 import mx.gob.comer.sipc.vistas.domain.OficioPagosV;
+import mx.gob.comer.sipc.vistas.domain.OficiosCLCV;
 import mx.gob.comer.sipc.vistas.domain.PagosCartasAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleCAV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleSBV;
@@ -782,6 +783,52 @@ public class PagosDAO {
 			consulta.append("where idOficio = ").append(idOficio);
 		}
 		consulta.insert(0, "From Pagos ");
+		lst= session.createQuery(consulta.toString()).list();	
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<OficiosCLCV> consultaOficioCLCV(int idPrograma, int idComprador, String carta, String oficioCLC, String estatus) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<OficiosCLCV> lst=null;
+		
+		if (oficioCLC != null && !oficioCLC.isEmpty()){
+			consulta.append("where noOficio = '").append(oficioCLC).append("'");
+		}
+				
+		if (idPrograma != 0 && idPrograma != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idPrograma=").append(idPrograma);
+			}else{
+				consulta.append("where idPrograma=").append(idPrograma);
+			}
+		}
+
+		if (idComprador != 0 && idComprador != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idComprador = ").append(idComprador);	
+			} else {
+				consulta.append("where idComprador = ").append(idComprador);	
+			}
+		}
+				
+		if(carta != null && !carta.equals("") && !carta.equals("-1")){
+			if(consulta.length()>0){
+				consulta.append(" and noCarta='").append(carta).append("'");
+			}else{
+				consulta.append("where noCarta='").append(carta).append("'");
+			}			
+		}
+		
+		if (estatus != null && !estatus.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and estatus in (").append(estatus).append(")");
+			}else{
+				consulta.append("where estatus in (").append(estatus).append(")");
+			}
+		}
+		
+		consulta.insert(0, "From OficiosCLCV ").append(" ORDER BY nombrePgrCorto,noOficio,noCarta,nombreComprador ");
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}

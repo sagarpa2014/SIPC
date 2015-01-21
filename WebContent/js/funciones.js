@@ -70,19 +70,16 @@ function cierraAviso(idAviso){
 function chkCamposBusquedaPagos(){
 	var idPrograma = $('#idPrograma').val();
 	var idComprador = $('#idComprador').val();
-	var fechaInicio = $('#fechaInicio').val();
-	var fechaFin = $('#fechaFin').val();
-	var estatusId = $('#estatusId').val();
 	var noCarta = $('#noCarta').val();
-	if((fechaInicio == null || fechaInicio =="") && 
-	   (fechaFin == null || fechaFin =="") && 
+	var oficioCLC = $('#oficioCLC').val();
+	var estatusId = $('#estatusId').val();
+	if((oficioCLC == null || oficioCLC =="") &&  
 	   (idPrograma == -1) && (idComprador == -1)&&
 	   (estatusId == -1)&& (noCarta == null)){
-		$('#dialogo_1').html('Debe capturar al menos un dato');
+		$('#dialogo_1').html('Debe capturar al menos un dato o seleccionar al menos una opcion');
 		abrirDialogo();
 	 	return false;
 	}
-	
 }
 
 

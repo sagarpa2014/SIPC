@@ -35,6 +35,7 @@
 		<li><a href="#">Reportes</a>
 			<ul>
 				<li><a href="<s:url value="/reportes/capturaReportePagosTesofe"/>">Pagos a Tesofe</a></li> 
+				<li><a href="<s:url value="/reportes/busquedaOficiosCLC"/>">Control Oficios CLC</a></li>
 			</ul>
 		</li>
 		<li><a href="#">Archivos TESOFE</a>

@@ -252,5 +252,37 @@
             <result name="success">index</result>
             <result name="input">index</result>
         </action>
+
+        <!-- REPORTE DE CONTROL DE OFICIOS CLC -->
+        <action name="busquedaOficiosCLC" method="busquedaOficiosCLC" class="mx.gob.comer.sipc.reportes.action.ReporteControlOficiosCLCAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaOficiosCLC</result>
+            <result name="input" type="tiles">busquedaOficiosCLC</result>
+        </action>
+        <action name="realizarBusqueda" method="realizarBusqueda" class="mx.gob.comer.sipc.reportes.action.ReporteControlOficiosCLCAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">busquedaOficiosCLC</result>
+            <result name="input" type="tiles">busquedaOficiosCLC</result>
+        </action>
+        <action name="exportaConsultaOficiosCLC" method="exportaConsultaOficiosCLC" class="mx.gob.comer.sipc.reportes.action.ReporteControlOficiosCLCAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
+        <action name="recuperaCompradoresByPrograma" method="recuperaCompradoresByPrograma" class="mx.gob.comer.sipc.reportes.action.ReporteControlOficiosCLCAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/reportes/oficiosCLC/lstCompradores.jsp</result>
+            <result name="input">/WEB-INF/paginas/reportes/oficiosCLC/lstCompradores.jsp</result>
+        </action>
+		<action name="recuperaCartasByComprador" method="recuperaCartasByComprador" class="mx.gob.comer.sipc.reportes.action.ReporteControlOficiosCLCAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/reportes/oficiosCLC/lstCartasAdhesion.jsp</result>
+            <result name="input">/WEB-INF/paginas/reportes/oficiosCLC/lstCartasAdhesion.jsp</result>
+        </action>        
     </package>
 </struts>
