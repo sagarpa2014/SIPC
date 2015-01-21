@@ -161,9 +161,12 @@ public class PagosDAO {
 		return lst;
 	}
 	
+	public List<PagosDetalle> consultaPagosDetalle(long idPagoDetalle, long idPago) throws JDBCException {
+		return consultaPagosDetalle( idPagoDetalle,  idPago,  -1);
+	}
 	
 	@SuppressWarnings("unchecked")
-	public List<PagosDetalle> consultaPagosDetalle(long idPagoDetalle, long idPago) throws JDBCException {
+	public List<PagosDetalle> consultaPagosDetalle(long idPagoDetalle, long idPago, long idAsiganacionCA) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<PagosDetalle> lst=null;
 		if (idPagoDetalle != 0 && idPagoDetalle != -1){
@@ -176,10 +179,20 @@ public class PagosDAO {
 				consulta.append("where idPago=").append(idPago);
 			}
 		}
+		
+		if (idAsiganacionCA != 0 && idAsiganacionCA != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idAsiganacionCA=").append(idAsiganacionCA);
+			}else{
+				consulta.append("where idAsiganacionCA=").append(idAsiganacionCA);
+			}
+		}
 		consulta.insert(0, "From PagosDetalle ").append(" ORDER BY idPago, idEstado, idCultivo, idVariedad, etapa ");
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<OficioPagos> consultaOficiosPago(long idOficioPagos, String noOficio, int folioCLC) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
