@@ -178,8 +178,11 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		parrafo = new Paragraph(ata.getEmisor().getPuesto().toUpperCase(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
-		parrafo = new Paragraph("De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior\n" +
-								"de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015", TIMESROMAN06);
+//		parrafo = new Paragraph("De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior\n" +
+//								"de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015", TIMESROMAN06);
+		parrafo = new Paragraph("De conformidad con los artículos 5, 7 segundo párrafo, 8 fracción VIII, 12 fracción V, 27 y "
+				+ "Transitorios Primero, Tercero, Quinto, Sexto y Noveno\ndel Reglamento Interior de ASERCA, "
+				+ "publicado en el DOF el 28 de diciembre del 2014 y el oficio No.F00.1000/004/2015", TIMESROMAN06);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
 		

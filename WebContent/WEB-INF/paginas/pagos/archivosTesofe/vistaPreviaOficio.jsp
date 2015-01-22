@@ -77,8 +77,9 @@
 				<s:property value="emisor.puesto"/><br>
 			</font>
 			<font class="arial12normal">
-				De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior<br>
-				de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015<br><br><br>
+				De conformidad con los artículos 5, 7 segundo párrafo, 8 fracción VIII, 12 fracción V, 27 y 
+				Transitorios Primero, Tercero, Quinto, Sexto y Noveno<br>del Reglamento Interior de ASERCA,
+				publicado en el DOF el 28 de diciembre del 2014 y el oficio No.F00.1000/004/2015<br><br><br>
 			</font>
 			<font class="arial12bold">								
 				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/>

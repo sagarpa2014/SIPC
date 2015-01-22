@@ -288,7 +288,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			}
 			
 			//Recupera el emisor
-			lstPersonal = cDAO.consultaPersonal(0, "Director General de Desarrollo de Mercados", true, false, false);
+			lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", true, false, false);
+//			lstPersonal = cDAO.consultaPersonal(0, "Director General de Desarrollo de Mercados", true, false, false);
 			//lstPersonal = cDAO.consultaPersonal(0, "Coordinador General de Comercialización", true, false, false);
 			if(lstPersonal.size()>0){
 				emisor = lstPersonal.get(0);
@@ -311,10 +312,10 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			if(lstPersonal.size()>0){
 				ccep2 = lstPersonal.get(0);
 			}
-			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director de Pagos de Apoyos a la Comercialización", false, false,false, idPrograma);
-			if(lstPersonal.size()>0){
-				ccep3 = lstPersonal.get(0);
-			}
+//			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director General de Desarrollo de Mercados", false, false,false, idPrograma);
+//			if(lstPersonal.size()>0){
+//				ccep3 = lstPersonal.get(0);
+//			}
 				//lstPersonalVoBo = cDAO.consultaPersonalSQLQuery(0, "", false, false, true, idPrograma);
 			/*}else{
 				lstPersonal = cDAO.consultaPersonal(0, "Director General de Desarrollo de Mercados", false, true,false);
