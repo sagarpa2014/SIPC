@@ -32,6 +32,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	//private final Font ARIALBOLD10 = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
 	private final Font TIMESROMAN10 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
 	@SuppressWarnings("unused")
+	private final Font TIMESROMAN12NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL, Color.BLACK);
 	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08 = FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
@@ -41,6 +42,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	private final Font TIMESROMAN12	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 11,Font.NORMAL, Color.BLACK);
 	private final Font TIMESROMANBOLD12	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 11,Font.BOLD, Color.BLACK);
 	private final Font TIMESROMANBOLD10	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 10,Font.BOLD, Color.BLACK);
+	private final Font TIMESROMANBOLD9	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 9,Font.BOLD, Color.BLACK);
 	private final Font TIMESROMAN06	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 6,Font.NORMAL, Color.BLACK);
 	//private final Font ARIALBOLD12 = FontFactory.getFont(FontFactory.HELVETICA, 1, Font.NORMAL, Color.BLACK);
 	
@@ -90,8 +92,9 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
 			enunciado.add(new Chunk("Agencia de Servicios a la Comercialización y\n Desarrrollo de Mercados Agropecuarios\n", TIMESROMANBOLD12));
-			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMANBOLD12));
-			enunciado.add(new Chunk("Dirección General de Desarrollo de Mercados e Infraestructura Comercial\n", TIMESROMANBOLD12));
+			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMANBOLD10));
+			enunciado.add(new Chunk("Dirección General de Desarrollo de\nMercados e Infraestructura Comercial\n", TIMESROMANBOLD9));
+			enunciado.add(new Chunk("Dirección de Pago de Apoyos a la Comercialización\n", TIMESROMANBOLD9));
 			enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 /*
 			if(ata.getLeyendaOficio().length()<=40){
@@ -180,11 +183,11 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		document.add(parrafo);
 //		parrafo = new Paragraph("De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior\n" +
 //								"de la Agencia de Servicios a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No.F00.1000/001/2015", TIMESROMAN06);
-		parrafo = new Paragraph("De conformidad con los artículos 5, 7 segundo párrafo, 8 fracción VIII, 12 fracción V, 27 y "
-				+ "Transitorios Primero, Tercero, Quinto, Sexto y Noveno\ndel Reglamento Interior de ASERCA, "
-				+ "publicado en el DOF el 28 de diciembre del 2014 y el oficio No.F00.1000/004/2015", TIMESROMAN06);
-		parrafo.setAlignment(Element.ALIGN_CENTER);
-		document.add(parrafo);
+//		parrafo = new Paragraph("De conformidad con los artículos 5, 7 segundo párrafo, 8 fracción VIII, 12 fracción V, 27 y "
+//				+ "Transitorios Primero, Tercero, Quinto, Sexto y Noveno\ndel Reglamento Interior de ASERCA, "
+//				+ "publicado en el DOF el 28 de diciembre del 2014 y el oficio No.F00.1000/004/2015", TIMESROMAN06);
+//		parrafo.setAlignment(Element.ALIGN_CENTER);
+//		document.add(parrafo);
 		
 		addEmptyLine(2);
 /*		
@@ -198,6 +201,10 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
+		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los programas Agroalimentarios y de los proyectos\n"
+				+ "de infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables\", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.", TIMESROMAN06);
+		parrafo.setAlignment(Element.ALIGN_CENTER);
+		document.add(parrafo);		
 	}
 
 	private void addEmptyLine(int number) throws DocumentException {

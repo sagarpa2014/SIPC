@@ -206,6 +206,8 @@ ul.log li, ol.log li		{ list-style: none; padding-left:15px; background-image: u
 .arial14bold {color: #000;;  font-family:Helvetica; font-size: 14px; font-weight: bold;}
 .arial16bold {color: #000;;  font-family:Helvetica; font-size: 16px; font-weight: bold;}
 .arial12normal {color: #000;;  font-family:Helvetica; font-size: 12px; font-weight: normal;}
+.arial10normal {color: #000;;  font-family:Helvetica; font-size: 10px; font-weight: normal;}
+.arial8normal {color: #000;;  font-family:Helvetica; font-size: 8px; font-weight: normal;}
 .arial14boldVerde {color: #088A08;;  font-family:Helvetica; font-size: 14px; font-weight: bold;}
 .arial12boldVerde {color: #088A08;;  font-family:Helvetica; font-size: 12px; font-weight: bold;}
 #pie { clear: both;	font-size: .84em;border-top: 1px solid #DDD;margin-top: 10px;padding-top: 20px; }

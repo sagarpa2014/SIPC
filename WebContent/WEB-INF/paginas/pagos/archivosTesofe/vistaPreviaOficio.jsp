@@ -22,8 +22,14 @@
 		<div class="clear"></div>
 		<span class="derecha">
 			<font class="arial12normal">
-				Dirección General de Desarrollo de Mercados<br>
-				e Infraestrutura Comercial <br>
+				Dirección General de Desarrollo de Mercados	e Infraestrutura Comercial <br><br>
+			</font>
+		</span>		
+		<div class="clear"></div>
+		<div class="clear"></div>
+		<span class="derecha">
+			<font class="arial12normal">
+				Dirección de Pago de Apoyos a la Comercialización<br>
 			</font>
 		</span>		
 		<div class="clear"></div>
@@ -74,16 +80,15 @@
 		<center>
 			<font class="arial12bold">A&nbsp;T&nbsp;E&nbsp;N&nbsp;T&nbsp;A&nbsp;M&nbsp;E&nbsp;N&nbsp;T&nbsp;E </font><br>
 			<font class="arial12bold">
-				<s:property value="emisor.puesto"/><br>
-			</font>
-			<font class="arial12normal">
-				De conformidad con los artículos 5, 7 segundo párrafo, 8 fracción VIII, 12 fracción V, 27 y 
-				Transitorios Primero, Tercero, Quinto, Sexto y Noveno<br>del Reglamento Interior de ASERCA,
-				publicado en el DOF el 28 de diciembre del 2014 y el oficio No.F00.1000/004/2015<br><br><br>
+				<s:property value="emisor.puesto"/><br><br><br>
 			</font>
 			<font class="arial12bold">								
-				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/>
+				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/><br>
 			</font>
+			<font class="arial8normal">
+				Facultado para "Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los programas Agroalimentarios y de los proyectos de<br> 
+				infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.<br>
+			</font>			
 		</center>
 		<br>
 		<div id="cpp">

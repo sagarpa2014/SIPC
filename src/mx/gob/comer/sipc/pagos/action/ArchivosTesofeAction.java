@@ -148,7 +148,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			criterioPago = programa.getCriterioPago();
 			/*Recupera los pagos del programa seleccionado por el usuario con estatus = 1*/
 			lstPagosV = pDAO.consultaPagosV(-1, idPrograma, -1, "", "", "1");
-			claveOficio = "F00.4200/";
+			claveOficio = "F00.4203/";
+			//claveOficio = "F00.4200/";
 			anioOficio = "/"+new SimpleDateFormat("yyyy").format(new Date());
 						
 		}catch(JDBCException e){
@@ -298,7 +299,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 					  .append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
 				emisor.setNombre(emi.toString().toUpperCase());
 				//emisor.setPuesto(emisor.getPuesto().toUpperCase());
-				emisor.setPuesto("EL DIRECTOR GENERAL");
+				emisor.setPuesto("EL DIRECTOR");
+				//emisor.setPuesto("EL DIRECTOR GENERAL");
 				//emisor.setPuesto("EL COORDINADOR GENERAL");
 			}
 			//Recupera los cpp y vobo.
@@ -364,7 +366,6 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			quintoParrafo = "Sin más por el momento reciba un cordial saludo.";
 			//Recupera la leyenda del oficio
 			leyendaOficio = cDAO.consultaParametros("LEYENDA_OFICIO");
-			
 		}	
 		
 		
