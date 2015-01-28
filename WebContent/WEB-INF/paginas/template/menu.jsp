@@ -82,6 +82,7 @@
 				<li><a href="<s:url value="/reportes/reporteConcentradoPagos"/>">Concentrado Pagos</a></li>
 				<li><a href="<s:url value="/reportes/rendicionCuentasCID"/>">Rendici&oacute;n de Cuentas (ID)</a></li> 
 				<li><a href="<s:url value="/reportes/rendicionCuentasSID"/>">Rendici&oacute;n de Cuentas</a></li>
+				<li><a href="<s:url value="/reportes/busquedaOficiosCLC"/>">Control Oficios CLC</a></li>
 			</ul>
 		</li>
 		<li><a href="#">Archivos TESOFE</a>

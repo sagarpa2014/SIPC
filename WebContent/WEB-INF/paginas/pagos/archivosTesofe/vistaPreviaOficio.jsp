@@ -86,7 +86,7 @@
 				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/><br>
 			</font>
 			<font class="arial8normal">
-				Facultado para "Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los programas Agroalimentarios y de los proyectos de<br> 
+				Facultado para "Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos de<br> 
 				infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.<br>
 			</font>			
 		</center>

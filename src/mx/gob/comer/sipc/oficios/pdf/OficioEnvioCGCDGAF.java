@@ -201,7 +201,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
-		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los programas Agroalimentarios y de los proyectos\n"
+		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos\n"
 				+ "de infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables\", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.", TIMESROMAN06);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);		

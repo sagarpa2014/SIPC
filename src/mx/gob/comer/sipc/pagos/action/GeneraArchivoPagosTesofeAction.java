@@ -293,6 +293,7 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		    			String concepto = pagosV.get(i).getNombrePgrCorto();
 		    			concepto=concepto.replace("/", " ").replace("-", " ");
 		    			concepto = utileriasDAO.eliminaCaracteresEspeciales(concepto);
+		    			concepto = concepto.substring(0, 40);
 		    			for(;concepto.length()<40;){
 		    				concepto+=" ";
 		    			}    		
