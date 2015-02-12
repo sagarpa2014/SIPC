@@ -186,7 +186,92 @@
  		
  		<!-- REPORTE DE CONTROL DE OFICIOS CLC -->
 		<mapping class="mx.gob.comer.sipc.domain.EstatusOficio"/>
-		<mapping class="mx.gob.comer.sipc.vistas.domain.OficiosCLCV"/> 		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.OficiosCLCV"/> 	
+		
+		<!--  Relaciones -->
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Relaciones"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Modalidad"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionDefaultV"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.PersonalizacionRelaciones"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.GruposRelacion"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CamposRelacion"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CamposRelacionTerrestre"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CamposRelacionMaritima"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CamposRelacionCertificados"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CamposRelacionVentas"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionTerrestreV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionMaritimaV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionCertificadosV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionVentasV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.PersonalizacionRelacionesV"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.catalogos.TipoDocumentoPago"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaRelacionCiclosV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramaRelacionCultivosV"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.RelacionPorFolioCABodega"/>
+ 		<mapping class="mx.gob.comer.sipc.vistas.domain.GrupoPorRelacion"/>
+ 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasDatosParticipante"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasDatosProductor"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasEntradaBodega"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasFacVenta"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasFacVentaGlobal"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasPagoProdAxc"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasPagoProdSinAxc"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasPredio"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ComprasContrato"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.IniEsquemaRelacion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ProgramaRelacionCultivos"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.ProgramaRelacionCiclos"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.IniEsquemaRelacionV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ComprasMaxCamposV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ComprasBodegaTicketV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ComprasDatosParticipanteV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ComprasPredioV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ComprasDatosProductorV"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Productores"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Predios"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CriteriosValidacionRelacionDFV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.CriteriosValidacionTransaccionalV"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CriteriosValidacionTransaccional"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.ProgramasRelacionV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.PersonalizacionRelacionesProgramaV"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.CatCriteriosValidacion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BoletasIncosistentes"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.FacturasIncosistentes"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.PagosIncosistentes"/>
+		
+		<!-- Bitacora de la relacion de compras -->
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasDetalle"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasHCO"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasDetalleHCO"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.BoletasDuplicadas"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.BoletasFueraDePeriodo"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.BoletasFueraDePeriodoPago"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.BoletasVsFacturas"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ChequeFueraPeriodoAuditor"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ChequeFueraPeriodoContrato"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ChequesDuplicadoBancoPartipante"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoAuditor"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPago"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPagoAdendum"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturasVsPago"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoPagados"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoValidadosDRDE"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductorExisteBD"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductorFactura"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductorPredioPagado"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductorPredioValidado"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductoresIncosistentes"/>		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.RfcProductorVsRfcFactura"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.VolumenFacturaGlobalVsVolumenFacturas"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoProductor"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoMenor"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ContratosRelacionCompras"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosProdsContNoExisteBD"/>
+			
  		 		
 	</session-factory>
 </hibernate-configuration>

@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="relaciones" namespace="/relaciones" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		<action name="listPersonalizacionRelaciones" method="listPersonalizacionRelaciones" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listPersonalizacionRelaciones</result>
+            <result name="input" type="tiles">listPersonalizacionRelaciones</result> 
+        </action>
+        <action name="ejecutaBusquedaPersonalizacionRelaciones" method="ejecutaBusquedaPersonalizacionRelaciones" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listPersonalizacionRelaciones</result>
+            <result name="input" type="tiles">listPersonalizacionRelaciones</result> 
+        </action>
+        <action name="getDetallePersonalizacionRel" method="getDetallePersonalizacionRel" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">personalizaRelaciones</result>
+            <result name="input" type="tiles">personalizaRelaciones</result> 
+        </action>        
+        <action name="consigueNumCiclos" method="consigueNumCiclos" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/inicializacionPrograma/ciclos.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/inicializacionPrograma/ciclos.jsp</result> 
+        </action>
+        <action name="consigueNumCultivos" method="consigueNumCultivos" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/inicializacionPrograma/cultivos.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/inicializacionPrograma/cultivos.jsp</result> 
+        </action>    
+		<action name="personalizaRelaciones" method="personalizaRelaciones" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">personalizaRelaciones</result>
+            <result name="input" type="tiles">personalizaRelaciones</result> 
+        </action>
+        <action name="recuperaConfRelacionD" method="recuperaConfRelacionD" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/personalizacion/configuracionRelacionD.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/personalizacion/configuracionRelacionD.jsp</result> 
+        </action>
+        <action name="registraPersonalizacionRelacion" method="registraPersonalizacionRelacion" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">personalizaRelaciones</result>
+            <result name="input" type="tiles">personalizaRelaciones</result> 
+        </action>
+     
+         <action name="recuperaCriteriosValidacion" method="recuperaCriteriosValidacion" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/personalizacion/respuestaCriterioValidacion.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/personalizacion/respuestaCriterioValidacion.jsp</result> 
+        </action>
+        
+        <!-- Exportacion de Relacion -->
+		<action name="capExportarRelacion" method="capExportarRelacion" class="mx.gob.comer.sipc.action.relaciones.ExportarRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capExportarRelacion</result>
+            <result name="input" type="tiles">capExportarRelacion</result> 
+        </action>        
+        <action name="exportarRelacion" method="exportarRelacion" class="mx.gob.comer.sipc.action.relaciones.ExportarRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/exportacion/respExportarRelacion.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/exportacion/respExportarRelacion.jsp</result> 
+        </action>
+       
+        
+                
+        <!-- Captura de relaciones --> 
+        <action name="listProgramaCap" method="listProgramaCap" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">listProgramaCap</result>
+            <result name="input" type="tiles">listProgramaCap</result>
+        </action>
+        <action name="prueba" method="prueba" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">index</result>
+            <result name="input" type="tiles">index</result>
+        </action>
+        
+        <action name="ejecutaBusquedaPrograma" method="ejecutaBusquedaPrograma" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">listProgramaCap</result>
+            <result name="input" type="tiles">listProgramaCap</result>
+        </action>
+        <action name="listRelacionesCapturadas" method="listRelacionesCapturadas" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listRelacionesCapturadas</result>
+            <result name="input" type="tiles">listRelacionesCapturadas</result> 
+        </action>
+        
+        <action name="ejecutaBusquedaRelaciones" method="ejecutaBusquedaRelaciones" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listRelacionesCapturadas</result>
+            <result name="input" type="tiles">listRelacionesCapturadas</result> 
+        </action>
+                
+    	<action name="capturarRelaciones" method="capturarRelaciones" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaRelaciones</result>
+            <result name="input" type="tiles">listRelacionesCapturadas</result> 
+        </action>
+        
+         <action name="registraCapturaRelacion" method="registraCapturaRelacion" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaRelaciones</result>
+            <result name="input" type="tiles">capturaRelaciones</result> 
+        </action>
+		     
+        <action name="validaClaveBodega" method="validaClaveBodega" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaClaveBodega.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaClaveBodega.jsp</result>
+        </action>
+		     
+        <action name="validaBodegaTicket" method="validaBodegaTicket" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaBodegaTicket.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaBodegaTicket.jsp</result>
+        </action>
+        
+        <action name="borrarRegistro" method="borrarRegistro" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listRelacionesCapturadas</result>
+            <result name="input" type="tiles">listRelacionesCapturadas</result>
+        </action>
+        
+       
+        
+        <action name="foliosPredios" method="foliosPredios" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/foliosPredios.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/foliosPredios.jsp</result>
+        </action>
+        <action name="bolTicket" method="bolTicket" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/bolTicket.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/bolTicket.jsp</result>
+        </action>
+        
+        <action name="facturaGlobal" method="facturaGlobal" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/facturaGlobal.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/facturaGlobal.jsp</result>
+        </action>
+        
+        <action name="facturaVenta" method="facturaVenta" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/facturaVenta.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/facturaVenta.jsp</result>
+        </action>
+        
+        <action name="validaFoliosFactura" method="validaFoliosFactura" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaFacturaByProductor.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaFacturaByProductor.jsp</result>
+        </action>
+        
+        <action name="contratoCompras" method="contratoCompras" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/contratoCompras.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/contratoCompras.jsp</result>
+        </action>
+        
+        <action name="pagosAXC" method="pagosAXC" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/pagosAXC.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/pagosAXC.jsp</result>
+        </action>
+        
+        <action name="pagosSinAXC" method="pagosSinAXC" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/pagosSinAXC.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/pagosSinAXC.jsp</result>
+        </action>
+        <action name="recuperaDatosProductor" method="recuperaDatosProductor" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/captura/respuestaRecuperaDatosProductor.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaRecuperaDatosProductor.jsp</result>
+        </action>            
+        <action name="cambiaRfcFacturas" method="cambiaRfcFacturas" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/facturaVenta.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/facturaVenta.jsp</result>
+        </action>
+             
+        <action name="validaTipoDocPago" method="validaTipoDocPago" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/pagosSinAXC.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/pagosSinAXC.jsp</result>
+        </action>
+        
+        <action name="busquedaParticipanteBodegas" method="busquedaParticipanteBodegas" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/busquedaParticipanteBodegas.jsp</result>
+            <result name="input" >/WEB-INF/paginas/relaciones/captura/busquedaParticipanteBodegas.jsp</result>
+        </action>
+        
+        <action name="lstProductorRelCompras" method="lstProductorRelCompras" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">lstProductorRelCompras</result>
+            <result name="input" type="tiles">lstProductorRelCompras</result>
+        </action>
+        <action name="validarPredio" method="validarPredio" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidacionPredios.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidacionPredios.jsp</result>
+        </action>
+        <action name="setSuperficieTotalByPredio" method="setSuperficieTotalByPredio" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaSuperficieTotal.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaSuperficieTotal.jsp</result>
+        </action>
+        <action name="validarBoletaByBodega" method="validarBoletaByBodega" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaBoletaByBodega.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaBoletaByBodega.jsp</result>
+        </action>        
+        <action name="lstCertificadoPorBodega" method="lstCertificadoPorBodega" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">lstCertificadoPorBodega</result>
+            <result name="input" type="tiles">lstCertificadoPorBodega</result>
+        </action>
+        
+        <action name="capRegistroCartaAdhesion" method="capRegistroCartaAdhesion" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">capRegistroCartaAdhesion</result>
+            <result name="input" type="tiles">capRegistroCartaAdhesion</result>
+        </action>   
+        
+         <action name="registraCartaAdhesion" method="registraCartaAdhesion" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">listRelacionesCapturadas</result>
+            <result name="input" type="tiles">listRelacionesCapturadas</result>
+        </action>   
+        
+        <action name="validaFolioCertificadoDeposito" method="validaFolioCertificadoDeposito" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioCertificado.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioCertificado.jsp</result>
+        </action>   
+        
+        
+        <!-- RELACION DE VENTAS -->
+        <action name="mostrarVentasByCicloCultivo" method="mostrarVentasByCicloCultivo" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">mostrarVentasByCicloCultivo</result>
+            <result name="input" type="tiles">lmostrarVentasByCicloCultivo</result>
+        </action>
+        
+        <action name="validarFolioFacVenta" method="validarFolioFacVenta" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioFacVenta.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioFacVenta.jsp</result>
+        </action>
+        <!-- RELACION TERRESTRE -->      
+        <action name="mostrarTerrestreByBodegaOPlantaProcesadora" method="mostrarTerrestreByBodegaOPlantaProcesadora" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">mostrarTerrestreByBodegaOPlantaProcesadora</result>
+            <result name="input" type="tiles">mostrarTerrestreByBodegaOPlantaProcesadora</result>
+        </action>
+        
+        <action name="validarFolioTalonTerrestre" method="validarFolioTalonTerrestre" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioTalonTerrestre.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioTalonTerrestre.jsp</result>
+        </action>
+        
+        <!-- RELACION MARITIMA -->      
+        <action name="mostrarMaritimaByBodegaOPlantaProcesadora" method="mostrarMaritimaByBodegaOPlantaProcesadora" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">mostrarMaritimaByBodegaOPlantaProcesadora</result>
+            <result name="input" type="tiles">mostrarMaritimaByBodegaOPlantaProcesadora</result>
+        </action>
+        
+        <action name="validarFolioTalonMaritima" method="validarFolioTalonMaritima" class="mx.gob.comer.sipc.action.relaciones.CapturaRelacionesAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioTalonMaritimo.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/captura/respuestaValidaFolioTalonMaritimo.jsp</result>
+        </action>
+        
+        
+                 
+        <!-- END Captura de Relaciones -->
+          
+        <!-- Inicializacion del programa --> 
+        <action name="listProgramaRelacion" method="listProgramaRelacion" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">listProgramaRelacion</result>
+            <result name="input" type="tiles">listProgramaRelacion</result>
+        </action>
+        <action name="ejecutaBusquedaProgramaRelaciones" method="ejecutaBusquedaProgramaRelaciones" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">listProgramaRelacion</result>
+            <result name="input" type="tiles">listProgramaRelacion</result>
+        </action>
+        <action name="getDetalleProgramaRelacion" method="getDetalleProgramaRelacion" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">capProgramaRelacion</result>
+            <result name="input" type="tiles">capProgramaRelacion</result>
+        </action>
+        <action name="capProgramaRelacion" method="capProgramaRelacion" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">capProgramaRelacion</result>
+            <result name="input" type="tiles">capProgramaRelacion</result>
+        </action>
+        
+        <action name="registroInicializaEsquemaRel" method="registroInicializaEsquemaRel" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">capProgramaRelacion</result>
+            <result name="input" type="tiles">capProgramaRelacion</result>
+        </action> 
+        
+         <!-- CARGA DE RELACION DE COMPRAS -->               
+         <action name="capturaCargaArchivoRelCompras" method="capturaCargaArchivoRelCompras" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">contenidoCargaArchivoRelCompras</result>
+            <result name="input" type="tiles">contenidoCargaArchivoRelCompras</result>
+        </action>
+        <action name="cargarArchivoRelCompras" method="cargarArchivoRelCompras" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="fileUpload">
+				<param name="maximumSize">12582912</param>
+			</interceptor-ref>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+        </action>
+        <action name="eliminarArchivoComprasXls" method="eliminarArchivoComprasXls" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>  
+			<interceptor-ref name="defaultStackHibernateStrutsValidation"/>      	     
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+        </action>
+        <action name="prevalidarRelacionCompras" method="prevalidarRelacionCompras" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+        </action>
+        <action name="generarBitacoraRelCompras" method="generarBitacoraRelCompras" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+        </action>
+        <action name="cargarInformacion" method="cargarInformacion" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCargaArchivoRelCompras.jsp</result>
+        </action>
+        <action name="verificarQueCriterioPeriodoAplicar" method="verificarQueCriterioPeriodoAplicar" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaQuePeriodoAplicar.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaQuePeriodoAplicar.jsp</result>
+        </action>
+        <action name="recuperaPeriodoAuditor" method="recuperaPeriodoAuditor" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoAuditor.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoAuditor.jsp</result>
+        </action>
+
+        <action name="verificaSiRecuperaPeriodo" method="verificaSiRecuperaPeriodo" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
+        </action> 
+        <action name="verificaSiRecuperaPeriodoPorGrupo" method="verificaSiRecuperaPeriodoPorGrupo" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
+        </action> 
+        
+        
+        <action name="respuestaPeriodoContratoAdendum" method="respuestaPeriodoContratoAdendum" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoAdendum.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoAdendum.jsp</result>
+        </action>
+        <action name="recuperaCamposFactura" method="recuperaCamposFactura" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCamposFactura.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCamposFactura.jsp</result>
+        </action>
+           
+           
+    </package>
+</struts>

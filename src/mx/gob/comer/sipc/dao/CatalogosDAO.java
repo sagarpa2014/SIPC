@@ -9,6 +9,10 @@ import java.util.List;
 
 
 
+
+
+
+
 import mx.gob.comer.sipc.domain.AuditoresExternos;
 import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Comprador;
@@ -36,6 +40,7 @@ import mx.gob.comer.sipc.domain.catalogos.AreasResponsables;
 import mx.gob.comer.sipc.domain.catalogos.BodegaUso;
 import mx.gob.comer.sipc.domain.catalogos.Bodegas;
 import mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegas;
+import mx.gob.comer.sipc.domain.catalogos.CatCriteriosValidacion;
 import mx.gob.comer.sipc.domain.catalogos.Ciclo;
 import mx.gob.comer.sipc.domain.catalogos.Componente;
 import mx.gob.comer.sipc.domain.catalogos.CriterioPago;
@@ -45,8 +50,10 @@ import mx.gob.comer.sipc.domain.catalogos.EstadosCivil;
 import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
 import mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento;
 import mx.gob.comer.sipc.domain.catalogos.ExpedienteRepresentante;
+import mx.gob.comer.sipc.domain.catalogos.Modalidad;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteComprador;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteLegal;
+import mx.gob.comer.sipc.domain.catalogos.TipoDocumentoPago;
 import mx.gob.comer.sipc.domain.catalogos.TiposAsentamiento;
 import mx.gob.comer.sipc.domain.catalogos.TiposIdentificacion;
 import mx.gob.comer.sipc.domain.catalogos.TiposVialidad;
@@ -60,6 +67,10 @@ import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
+
+
+
 
 
 
@@ -123,12 +134,24 @@ public class CatalogosDAO {
 		return lst;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<Estado> consultaEstado(int idEstado) throws JDBCException {
+		 return consultaEstado( idEstado,  null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Estado> consultaEstado(int idEstado, String clave) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<Estado> lst=null;
 		if (idEstado != 0 && idEstado != -1){
 			consulta.append("where idEstado = ").append(idEstado);
+		}
+		if (!(clave==null || clave.equals(""))){
+			if(consulta.length()>0){
+				consulta.append(" and clave = '").append(clave).append("'");
+			}else{
+				consulta.append("where clave = '").append(clave).append("'");
+			}
 		}
 		consulta.insert(0, "From Estado ").append(" ORDER BY nombre");
 		lst= session.createQuery(consulta.toString()).list();
@@ -1885,5 +1908,54 @@ public class CatalogosDAO {
 		lst= session.createQuery(consulta.toString()).list();
 		
 		return lst;
+	}
+	
+	/**Funciones de Relaciones**/
+	public List<TipoDocumentoPago> cosultaTipoDocumentoPagos(long idTipoDocumentoPago) throws JDBCException {
+		return cosultaTipoDocumentoPagos(idTipoDocumentoPago, null);
+	}
+	@SuppressWarnings("unchecked")
+	public List<TipoDocumentoPago> cosultaTipoDocumentoPagos(long idTipoDocumentoPago, String tipoPago) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<TipoDocumentoPago> lst=null;
+		if (idTipoDocumentoPago != 0 && idTipoDocumentoPago != -1){
+			consulta.append("where idTipoDocumentoPago = ").append(idTipoDocumentoPago);
+		}
+		if (tipoPago != null && !tipoPago.isEmpty()) {
+			if (consulta.length() > 0) {
+				consulta.append(" and tipoPago = '").append(tipoPago).append("' ");
+			} else {
+				consulta.append(" where tipoPago ='").append(tipoPago).append("' ");
+			}
+		}
+		consulta.insert(0, "From TipoDocumentoPago ");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Modalidad> consultaModalidad(long idModalidad) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Modalidad> lst=null;
+		if (idModalidad != 0 && idModalidad != -1){
+			consulta.append("where idModalidad = ").append(idModalidad);
+		}
+		consulta.insert(0, "From Modalidad ");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CatCriteriosValidacion> consultaCatCriteriosValidacion(int idCriterio) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<CatCriteriosValidacion> lst=null;
+		if (idCriterio != 0 && idCriterio != -1){
+			consulta.append("where idCriterio = ").append(idCriterio);
+		}
+		consulta.insert(0, "From CatCriteriosValidacion ");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+		
 	}
 }

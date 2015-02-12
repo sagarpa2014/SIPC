@@ -101,7 +101,9 @@
 		</li>
 		<li><a href="#">Solicitud de Pago</a>
 			<ul>
-				<li><a href="<s:url value="/solicitudPago/programasConfigExpediente"/>">Inicializaci&oacute;n</a></li>
+				<li><a href="<s:url value="/solicitudPago/programasConfigExpediente"/>">Inicializaci&oacute;n de Documentos</a></li>
+				<li><a href="<s:url value="/relaciones/listProgramaRelacion?tipoCaptura=1"/>">Inicializaci&oacute;n de Relaciones</a></li> <!--Captura despues de publicacion oficial de aviso  -->
+				<%-- 				<li><a href="<s:url value="/relaciones/listProgramaRelacion?tipoCaptura=0"/>">Por Esquemas</a></li> Captura antes de publicacion oficial aviso--%>
 				<li><a href="<s:url value="/solicitudPago/listarAsignacionCAEspecialista"/>">Asignaci&oacute;n a Especialista</a></li>
 				<li><a href="<s:url value="/solicitudPago/listarPrograma"/>">Relaci&oacute;n de Documentos</a></li>		 
 				<li><a href="<s:url value="/solicitudPago/listarProgramasPagosCartaAdhesion"/>">Ajuste Pago de Fianza</a></li><!-- Trámite de Pago -->

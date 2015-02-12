@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -242,4 +243,33 @@ public class Utilerias implements ServletResponseAware {
 		
 		return error;
 	}
+	
+	public static Date convertirStringToDate(String strFecha) throws ParseException{
+		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/MM/yyyy");
+		Date fecha = null;	 
+		fecha = formatoDelTexto.parse(strFecha);
+		return fecha;
+		
+	}
+	
+	public static Date convertirStringToDateMMDDYYY(String strFecha) throws ParseException{
+		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("MMM-dd-yyyy");
+		Date fecha = null;	 
+		fecha = formatoDelTexto.parse(strFecha);
+		return fecha;
+		
+	}
+	
+
+	public static Date convertirStringToDateyyyyMMdd(String strFecha) throws ParseException{
+		SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd");
+		Date fecha = null;	 
+		fecha = formatoDelTexto.parse(strFecha);
+		return fecha;
+		
+	}
+	
+
+	
+	
 }

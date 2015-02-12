@@ -1,4 +1,6 @@
 package mx.gob.comer.sipc.domain;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,6 +26,9 @@ public class Programa{
 	private Integer idComponente;
 	private Integer idUnidadMedida;
 	private String desApoyoEnOficioClc;
+	private Date inicioPeriodoAcopio;
+	private Date finPeriodoAcopio;
+	
 	
 
 	
@@ -157,6 +162,21 @@ public class Programa{
 	
 	public void setDesApoyoEnOficioClc(String desApoyoEnOficioClc) {
 		this.desApoyoEnOficioClc = desApoyoEnOficioClc;
+	}
+	@Column(name =  "inicio_periodo_acopio")
+	public Date getInicioPeriodoAcopio() {
+		return inicioPeriodoAcopio;
+	}
+	public void setInicioPeriodoAcopio(Date inicioPeriodoAcopio) {
+		this.inicioPeriodoAcopio = inicioPeriodoAcopio;
+	}
+	
+	@Column(name =  "fin_periodo_acopio")
+	public Date getFinPeriodoAcopio() {
+		return finPeriodoAcopio;
+	}
+	public void setFinPeriodoAcopio(Date finPeriodoAcopio) {
+		this.finPeriodoAcopio = finPeriodoAcopio;
 	}
 	
 }

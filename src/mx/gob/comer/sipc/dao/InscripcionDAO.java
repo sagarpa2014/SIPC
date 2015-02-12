@@ -9,7 +9,6 @@ import mx.gob.comer.sipc.domain.Estado;
 import mx.gob.comer.sipc.domain.ExpedienteAuditor;
 import mx.gob.comer.sipc.domain.ExpedienteComprador;
 import mx.gob.comer.sipc.domain.InicializacionEsquema;
-
 import mx.gob.comer.sipc.domain.catalogos.Variedad;
 import mx.gob.comer.sipc.domain.transaccionales.AlcanceSolicitudInscripcion;
 import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion;
@@ -25,7 +24,6 @@ import mx.gob.comer.sipc.vistas.domain.CiclosProgramasV;
 import mx.gob.comer.sipc.vistas.domain.CompradorExpedientesV;
 import mx.gob.comer.sipc.vistas.domain.CuotasEsquemaV;
 import mx.gob.comer.sipc.vistas.domain.EtapaIniEsquemaV;
-
 import mx.gob.comer.sipc.vistas.domain.HcoProgramasV;
 import mx.gob.comer.sipc.vistas.domain.ProgramaCultivo;
 import mx.gob.comer.sipc.vistas.domain.SolicitudInscripcionV;
@@ -200,20 +198,23 @@ public class InscripcionDAO {
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}
+	public List<SolicitudInscripcion> consultaSolicitudInscripcion(String folioCartaAdhesion, Integer idComprador) throws JDBCException {
+		return consultaSolicitudInscripcion(-1, null, 0, folioCartaAdhesion, idComprador);
+	}
 	public List<SolicitudInscripcion> consultaSolicitudInscripcion(String folioCartaAdhesion) throws JDBCException {
-		return consultaSolicitudInscripcion(-1, null, 0, folioCartaAdhesion);
+		return consultaSolicitudInscripcion(-1, null, 0, folioCartaAdhesion, -1);
 	}
 	public List<SolicitudInscripcion> consultaSolicitudInscripcion(int idPrograma) throws JDBCException {
-		return consultaSolicitudInscripcion(idPrograma, null, 0, "");
+		return consultaSolicitudInscripcion(idPrograma, null, 0, "", -1);
 	}
 	public List<SolicitudInscripcion> consultaSolicitudInscripcion(int idPrograma, String folioSI) throws JDBCException {
-		return consultaSolicitudInscripcion(idPrograma, folioSI, 0, "");
+		return consultaSolicitudInscripcion(idPrograma, folioSI, 0, "", -1);
 	}
 	public List<SolicitudInscripcion> consultaSolicitudInscripcion(int idPrograma, String folioSI, long idSI) throws JDBCException {
-		return consultaSolicitudInscripcion(idPrograma, folioSI, idSI, "");
+		return consultaSolicitudInscripcion(idPrograma, folioSI, idSI, "", -1);
 	}
 	@SuppressWarnings("unchecked")
-	public List<SolicitudInscripcion> consultaSolicitudInscripcion(int idPrograma, String folioSI, long idSI, String folioCartaAdhesion) throws JDBCException {
+	public List<SolicitudInscripcion> consultaSolicitudInscripcion(int idPrograma, String folioSI, long idSI, String folioCartaAdhesion,  Integer idComprador) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<SolicitudInscripcion> lst=null;
 		if (idPrograma != 0 && idPrograma != -1){
@@ -241,6 +242,13 @@ public class InscripcionDAO {
 				consulta.append("where folioCartaAdhesion='").append(folioCartaAdhesion).append("'");
 			}
 		}
+		if (idComprador != -1 && idComprador!= 0){
+			if(consulta.length()>0){
+				consulta.append(" and idComprador=").append(idComprador);
+			}else{
+				consulta.append("where idComprador=").append(idComprador);
+			}
+		}
 		consulta.insert(0, "From SolicitudInscripcion ");
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
@@ -257,6 +265,14 @@ public class InscripcionDAO {
 		return lst;
 	}
 	
+	
+	public List<SolicitudInscripcionV> consultaSolicitudInscripcionV(String folioCartaAdhesion, Integer idComprador) throws JDBCException {
+		return consultaSolicitudInscripcionV(0, 0,null, folioCartaAdhesion,0, idComprador);
+	}
+	
+	public List<SolicitudInscripcionV> consultaSolicitudInscripcionV(long idSI, int idPrograma, String folioSI, String folioCartaAdhesion, int idArea) throws JDBCException {
+		return consultaSolicitudInscripcionV(idSI, idPrograma, folioSI, folioCartaAdhesion, idArea, -1);
+	}
 	public List<SolicitudInscripcionV> consultaSolicitudInscripcionV(long idSI) throws JDBCException {
 		return consultaSolicitudInscripcionV(idSI, 0,null, null,0);
 	}
@@ -264,7 +280,7 @@ public class InscripcionDAO {
 		return consultaSolicitudInscripcionV(0, 0,null, folioCartaAdhesion,0);
 	}
 	@SuppressWarnings("unchecked")
-	public List<SolicitudInscripcionV> consultaSolicitudInscripcionV(long idSI, int idPrograma, String folioSI, String folioCartaAdhesion, int idArea) throws JDBCException {
+	public List<SolicitudInscripcionV> consultaSolicitudInscripcionV(long idSI, int idPrograma, String folioSI, String folioCartaAdhesion, int idArea, Integer idComprador) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<SolicitudInscripcionV> lst=null;
 		if (idSI != 0 && idSI != -1){
@@ -297,6 +313,14 @@ public class InscripcionDAO {
 				consulta.append(" and idArea=").append(idArea);
 			}else{
 				consulta.append("where idArea=").append(idArea);
+			}
+		}
+		
+		if (idComprador != 0 && idComprador != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idComprador=").append(idComprador);
+			}else{
+				consulta.append("where idComprador=").append(idComprador);
 			}
 		}
 		consulta.insert(0, "From SolicitudInscripcionV ").append(" order by  folioSI");

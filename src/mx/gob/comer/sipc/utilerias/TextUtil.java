@@ -124,6 +124,10 @@ public class TextUtil {
 		Locale.setDefault(Locale.ENGLISH);
 		return new DecimalFormat("###").format(cantidad);
 	}
+	public static String formateaNumeroComoCantidadSincomas(double cantidad){
+		Locale.setDefault(Locale.ENGLISH);
+		return new DecimalFormat("###").format(cantidad);
+	}
 
 	public static String number2Text(double number)
 	{

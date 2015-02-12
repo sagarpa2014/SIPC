@@ -338,5 +338,63 @@
 	<definition name="busquedaOficiosCLC" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/reportes/oficiosCLC/busquedaOficiosCLC.jsp" />
 	</definition>
+	
+	<!-- RELACIONES -->
+	<definition name="personalizaRelaciones" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/personalizacion/personalizaRelaciones.jsp"/>
+	</definition>
+	<definition name="listPersonalizacionRelaciones" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/personalizacion/listPersonalizacionRelaciones.jsp"/>
+	</definition>
+	
+	<!-- RELACIONES  CAPTURA -->
+	<definition name="listProgramaCap" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/listProgramaCap.jsp"/>
+	</definition>
+		<definition name="capturaRelaciones" extends="morewidthtemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/capturaRelaciones.jsp"/>
+	</definition>
+	<definition name="lstCertificadoPorBodega" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/lstCertificadoPorBodega.jsp"/>
+     </definition>
+     <definition name="listRelacionesCapturadas" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/listRelacionesCapturadas.jsp"/>
+     </definition>
+     <definition name="busquedaParticipanteBodegas" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/busquedaParticipanteBodegas.jsp"/>
+     </definition>
+     <definition name="lstProductorRelCompras" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/lstProductorRelCompras.jsp"/>
+     </definition>  
+     <definition name="capRegistroCartaAdhesion" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/capRegistroCartaAdhesion.jsp"/>
+     </definition>
+     <definition name="mostrarVentasByCicloCultivo" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/mostrarVentasByCicloCultivo.jsp"/>
+     </definition>
+     <definition name="mostrarTerrestreByBodegaOPlantaProcesadora" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/mostrarTerrestreByBodegaOPlantaProcesadora.jsp"/>
+     </definition>
+     <definition name="mostrarMaritimaByBodegaOPlantaProcesadora" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/mostrarMaritimaByBodegaOPlantaProcesadora.jsp"/>
+     </definition> 
+         
+	<!-- EXPORTACION DE RELACIONES -->
+	<definition name="capExportarRelacion" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/exportacion/capExportarRelacion.jsp"/>
+	</definition>
+
+     <!-- INICIALIZACION DE PROGRAMA DE RELACIONES -->
+     <definition name="listProgramaRelacion" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/inicializacionPrograma/listProgramaRelacion.jsp"/>
+     </definition>
+     
+     <definition name="capProgramaRelacion" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/inicializacionPrograma/capInicializacionPrograma.jsp"/>
+     </definition>     
+     <!-- RELACION DE COMPRAS -->
+     <definition name="contenidoCargaArchivoRelCompras" extends="masterTemplate">
+           <put-attribute name="body" value="/WEB-INF/paginas/relaciones/relacionCompras/contenidoCargaArchivoRelCompras.jsp"/>
+     </definition>
 		
 </tiles-definitions>

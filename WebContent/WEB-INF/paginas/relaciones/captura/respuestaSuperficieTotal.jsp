@@ -1,0 +1,2 @@
+<%@taglib uri="/struts-tags" prefix="s"%>
+<s:textfield id="superficieTotalPredio%{count}" name="" maxlength="14" size="20"  value="%{getText('importeSinComas',{superficieTotal})}" disabled="true" cssClass="cantidad"/>

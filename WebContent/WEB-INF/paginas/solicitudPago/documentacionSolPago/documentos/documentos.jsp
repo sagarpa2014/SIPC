@@ -173,6 +173,9 @@
 									<s:elseif test="%{idExpediente == 7 && #session.idPerfil!=4}">
 										<a href="<s:url value="/solicitudPago/capAuditorSolPago?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=1"/>" title="Dictamen Contable del Auditor"><s:property value="%{expediente}"/></a>
 									</s:elseif>
+									<s:elseif test="%{idExpediente == 8}">
+										<a href="<s:url value="/relaciones/capturaCargaArchivoRelCompras?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=1&tipoAccion=-1"/>" title="Relación de Compras"><s:property value="%{expediente}"/></a>
+									</s:elseif>
 									<s:elseif test="%{idExpediente == 10}">
 										<s:if test="%{#session.idPerfil==4}">
 											<a href="<s:url value="/solicitudPago/lstCertificadoDeposito?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Relación de Certificados"><s:property value="%{expediente}"/></a>
