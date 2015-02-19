@@ -406,9 +406,12 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 		    
 		    lstRepresentanteV = cDAO.consultaRepresentanteCompradorV(0, idComprador);
 		    if(lstRepresentanteV.size()==0){
-		    	msjError = "Debe capturar todos los datos del comprador en el apartado de representante legal";
-		    	datosCompradorCompleto = 0;
-		    	return SUCCESS;
+		    	 if(comprador.getTipoPersona().equals("M")){
+		    		 msjError = "Debe capturar todos los datos del comprador en el apartado de representante legal";
+				    	datosCompradorCompleto = 0;
+				    	return SUCCESS; 
+		    	 }
+		    	
 		    }
 		    
 		    lstCompradorExpedientesV = cDAO.consultaCompradoresExpedientesV(0,idComprador,0);
