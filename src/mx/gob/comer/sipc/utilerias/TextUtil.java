@@ -78,35 +78,41 @@ public class TextUtil {
 
 	public static String formateaNumeroComoCantidad(double cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###,###,###,###.00").format(cantidad);
+		return new DecimalFormat("###,###,###,##0.00").format(cantidad);
 	}
 	public static String formateaNumeroComoImporte(BigDecimal cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###,###,###,###.00").format(cantidad);
+		return new DecimalFormat("###,###,###,##0.00").format(cantidad);
 	}
 	public static String formateaNumeroComoImporteSinComas(double cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###.00").format(cantidad);
+		return new DecimalFormat("##0.00").format(cantidad);
 	}
 	public static String formateaNumeroComoImporteSinComas(BigDecimal cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###.00").format(cantidad);
+		return new DecimalFormat("##0.00").format(cantidad);
 	}
 	public static String formateaNumeroComoVolumen(double cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###,###,###,###.000").format(cantidad);
+		return new DecimalFormat("###,###,###,##0.000").format(cantidad);
 	}
+// AHS [LINEA] - 17022015	
+	public static String formateaNumeroComoVolumenSeisDec(double cantidad){
+		Locale.setDefault(Locale.ENGLISH);
+		return new DecimalFormat("###,###,###,##0.000000").format(cantidad);
+	}
+// AHS [LINEA] - 17022015	
 	public static String formateaNumeroComoVolumen(BigDecimal cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###,###,###,###.000").format(cantidad);
+		return new DecimalFormat("###,###,###,##0.000").format(cantidad);
 	}
 	public static String formateaNumeroComoVolumenSinComas(double cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###.000").format(cantidad);
+		return new DecimalFormat("##0.000").format(cantidad);
 	}
 	public static String formateaNumeroComoVolumenSinComas(BigDecimal cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###.000").format(cantidad);
+		return new DecimalFormat("##0.000").format(cantidad);
 	}
 	public static String formateaNumeroComoCantidad(int cantidad){
 		Locale.setDefault(Locale.ENGLISH);

@@ -9,6 +9,7 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 	private Double volumenNoProcedente;
 	private Double diferenciaEntreVolumen;
 	private Double diferenciaEntreImportes;
+	private Double diferenciaEntreRFC;
 	private Double volumenObservado;
 	
 	public Double getVolTotalFacturado() {
@@ -65,6 +66,14 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 
 	public void setDiferenciaEntreImportes(Double diferenciaEntreImportes) {
 		this.diferenciaEntreImportes = diferenciaEntreImportes;
+	}
+	
+	public Double getDiferenciaEntreRFC() {
+		return diferenciaEntreRFC;
+	}
+
+	public void setDiferenciaEntreRFC(Double diferenciaEntreRFC) {
+		this.diferenciaEntreRFC = diferenciaEntreRFC;
 	}
 
 	public Double getVolumenObservado() {

@@ -9,8 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasCamposRequeridos;
-
+@SuppressWarnings("rawtypes")
 @Entity
 @Table(name = "relacion_compras_tmp")
 public class RelacionComprasTMP  implements Comparable{
@@ -135,9 +134,11 @@ public class RelacionComprasTMP  implements Comparable{
 	private Boolean predio_inconsistente;
 	@Column(name =  "volumen_no_procedente")
 	private Double volumenNoProcedente;
-	
-	
-
+	@Column(name =  "rfc_inconsistente")
+	private Boolean rfcInconsistente;	
+	@Column(name =  "dif_volumen_fac_mayor")
+	private Double difVolumenFacMayor;
+		
 	public RelacionComprasTMP() {
 		super();
 	}
@@ -536,8 +537,24 @@ public class RelacionComprasTMP  implements Comparable{
 
 	public void setVolumenNoProcedente(Double volumenNoProcedente) {
 		this.volumenNoProcedente = volumenNoProcedente;
-	}	
-	
+	}		
+		
+	public Boolean getRfcInconsistente() {
+		return rfcInconsistente;
+	}
+
+	public void setRfcInconsistente(Boolean rfcInconsistente) {
+		this.rfcInconsistente = rfcInconsistente;
+	}
+
+	public Double getDifVolumenFacMayor() {
+		return difVolumenFacMayor;
+	}
+
+	public void setDifVolumenFacMayor(Double difVolumenFacMayor) {
+		this.difVolumenFacMayor = difVolumenFacMayor;
+	}
+
 	@Override
 	public int compareTo(Object o) {
 		RelacionComprasTMP obj= (RelacionComprasTMP) o;     

@@ -5,7 +5,7 @@ public class RendimientosProcedente extends ReporteRelacionCompras {
 	
 	private Double volTotalFacturado;
 	private Double rendimientoMaximoAceptable;
-	private Double volNoProcedente;
+	private String volNoProcedente;	// AHS [LINEA] - 17022015
 	
 	public Double getVolTotalFacturado() {
 		return volTotalFacturado;
@@ -23,11 +23,11 @@ public class RendimientosProcedente extends ReporteRelacionCompras {
 		this.rendimientoMaximoAceptable = rendimientoMaximoAceptable;
 	}
 
-	public Double getVolNoProcedente() {
+	public String getVolNoProcedente() {	// AHS [LINEA] - 17022015
 		return volNoProcedente;
 	}
 
-	public void setVolNoProcedente(Double volNoProcedente) {
+	public void setVolNoProcedente(String volNoProcedente) {	// AHS [LINEA] - 17022015
 		this.volNoProcedente = volNoProcedente;
 	}
 	

@@ -100,31 +100,28 @@ public class BoletasDuplicadas implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		BoletasDuplicadas obj= (BoletasDuplicadas) o;     
-	    if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) { 
-	    	if(this.nombreEstado.compareToIgnoreCase(obj.nombreEstado) == 0){
-		    	//if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
-		    		if(this.boletaTicketBascula.compareToIgnoreCase(obj.boletaTicketBascula) == 0){
-			    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
-			            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
-			            		  return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
-			            	}else{
-			            		return this.maternoProductor.compareTo(obj.maternoProductor);
-			            	}	                 
-			            } else { 
-			                return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor); 
-			            }
-		    		}else{
-				    	return this.boletaTicketBascula.compareToIgnoreCase(obj.boletaTicketBascula);
-				    }	
-		    	//}else{
-		    		//return this.folioContrato.compareToIgnoreCase(obj.folioContrato);
-		    	//} 
+    	//if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
+	    if(this.boletaTicketBascula.compareToIgnoreCase(obj.boletaTicketBascula) == 0) { 
+	    	if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0){
+		    	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0){
+		    		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
+		            	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0) {
+		            		  return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
+		            	}else{
+		            		return this.folioContrato.compareTo(obj.folioContrato);
+		            	}	                 
+		            } else { 
+		                return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
+		            }
+		    	}else{
+		    		return this.maternoProductor.compareToIgnoreCase(obj.maternoProductor);
+		    	} 
 	    	}else{
-	    		return this.nombreEstado.compareToIgnoreCase(obj.nombreEstado);
+	    		return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor);
 	    	}
 	    } else {
-	            return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
-	    }    		
+	        return this.boletaTicketBascula.compareToIgnoreCase(obj.boletaTicketBascula); 
+	    } 
 	}
 
 }

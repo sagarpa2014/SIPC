@@ -24,7 +24,7 @@
 		<span class="requerido">LOS PRODUCTORES NO SE ENCUENTRAN ASOCIADOS A UN PREDIO PAGADO</span><br>
 	</s:if>
 	<s:if test="%{lstProductoresIncosistentes.size() > 0}"> <!--Productores incosistentes  -->
-		<span class="requerido">LOS PRODUCTORES SE ENCUENTRAN INCOSISTENTES</span><br>
+		<span class="requerido">FALTA DE INFORMACIÓN DE AL MENOS UN REGISTRO EN BOLETA, FACTURA, PREDIO Y PAGO</span><br>
 	</s:if>
 	<s:if test="%{lstBoletasCamposRequeridos.size() > 0}"> <!-- Boletas con campos requeridos  -->
 		<span class="requerido">EXISTEN VALORES NULOS EN LOS CAMPOS REQUERIDOS DE LAS BOLETAS</span><br>
@@ -87,7 +87,7 @@
 		<span class="requerido">TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS</span><br>
 	</s:if>
 	<s:if test="%{lstBoletasFacturasPagosIncosistentes.size() > 0}"> <!--BOLETAS, FACTURAS Y PAGOS INCONSISTENTES POR PRODUCTOR"-->
-		<span class="requerido">BOLETAS, FACTURAS Y PAGOS INCONSISTENTES POR PRODUCTOR</span><br>
+		<span class="requerido">RESUMEN DE OBSERVACIONES</span><br>
 	</s:if>
 	<s:if test="%{lstRendimientosProcedente.size() > 0}"> <!--VOLUMEN NO PROCEDENTE POR RENDIMIENTO"-->
 		<span class="requerido">VOLUMEN NO PROCEDENTE POR RENDIMIENTO MAXIMO</span><br>

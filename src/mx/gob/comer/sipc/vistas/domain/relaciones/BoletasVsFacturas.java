@@ -27,6 +27,9 @@ public class BoletasVsFacturas implements Comparable  {
 	private Double volBolTicket;
 	@Column(name =  "vol_total_fac_venta")
 	private Double volTotalFacVenta;
+	@Column(name =  "diferencia_volumen")
+	private Double difVolumen;
+	
 		
 	public Long getId() {
 		return id;
@@ -87,6 +90,12 @@ public class BoletasVsFacturas implements Comparable  {
 		this.volTotalFacVenta = volTotalFacVenta;
 	}
 	
+	public Double getDifVolumen() {
+		return difVolumen;
+	}
+	public void setDifVolumen(Double difVolumen) {
+		this.difVolumen = difVolumen;
+	}
 	@Override
 	public int compareTo(Object o) {
 		BoletasVsFacturas obj= (BoletasVsFacturas) o;     

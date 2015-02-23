@@ -101,26 +101,26 @@ public class ProductorFactura implements Comparable  {
 	@Override
 	public int compareTo(Object o) {
 		ProductorFactura obj= (ProductorFactura) o;     
-	    if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) { 
-	    	if(this.nombreEstado.compareToIgnoreCase(obj.nombreEstado) == 0){
-		    	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
-		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
-		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
-		            		  return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
+	    if(this.folioFacturaVenta.compareToIgnoreCase(obj.folioFacturaVenta) == 0) { 
+	    	if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0){
+		    	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0){
+		    		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
+		            	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0) {
+		            		  return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
 		            	}else{
-		            		return this.maternoProductor.compareTo(obj.maternoProductor);
+		            		return this.folioContrato.compareTo(obj.folioContrato);
 		            	}	                 
 		            } else { 
-		                return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor); 
+		                return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
 		            }
 		    	}else{
-		    		return this.folioContrato.compareToIgnoreCase(obj.folioContrato);
+		    		return this.maternoProductor.compareToIgnoreCase(obj.maternoProductor);
 		    	} 
 	    	}else{
-	    		return this.nombreEstado.compareToIgnoreCase(obj.nombreEstado);
+	    		return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor);
 	    	}
 	    } else {
-	            return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
+	        return this.folioFacturaVenta.compareToIgnoreCase(obj.folioFacturaVenta); 
 	    }    		
 	}
 

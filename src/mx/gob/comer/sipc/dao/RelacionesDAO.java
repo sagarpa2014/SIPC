@@ -283,7 +283,7 @@ public class RelacionesDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<GruposRelacion> consultaGruposRelacion(long idPerRel)throws  JDBCException{
+	public List<GruposRelacion> consultaGruposRelacion(long idPerRel)throws  JDBCException{ 
 		StringBuilder consulta= new StringBuilder();
 		List<GruposRelacion> lst = null;
 		
@@ -2475,17 +2475,17 @@ public class RelacionesDAO {
 	}
 	
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion)throws  JDBCException{
-		return consultaRelacionComprasTMP(folioCartaAdhesion, null, null, null, null, null, null, null, null, null);
+		return consultaRelacionComprasTMP(folioCartaAdhesion, null, null, null, null, null, null, null, null, null, null);
 	}
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion, String claveBodega, String estado, String folioContrato,
 			String paterno, String materno, String nombre, String boleta)throws  JDBCException{
 		return consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, estado, folioContrato,
-				 paterno,  materno,  nombre,  boleta,  null, null);
+				 paterno,  materno,  nombre,  boleta,  null, null, null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-			String paternoProductor, String maternoProductor, String nombreProductor, String boleta, String factura, String pago)throws  JDBCException{
+			String paternoProductor, String maternoProductor, String nombreProductor, String boleta, String factura, String pago, String banco)throws  JDBCException{
 		List<RelacionComprasTMP> lst = null;
 		StringBuilder consulta= new StringBuilder();
 		if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
@@ -2556,6 +2556,15 @@ public class RelacionesDAO {
 				consulta.append(" and folioDocPago='").append(pago).append("'");
 			}else{
 				consulta.append("where folioDocPago='").append(pago).append("'");
+			}
+		}	
+		
+		
+		if (banco != null && !banco.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and bancoSinaxc='").append(banco).append("'");
+			}else{
+				consulta.append("where bancoSinaxc='").append(banco).append("'");
 			}
 		}	
 		
@@ -2649,6 +2658,48 @@ public class RelacionesDAO {
 				consulta.append("where idCriterio in (").append(idCriterio).append(")");
 			}
 		}
+		if (status != null &&  !status.isEmpty() ){
+			if(consulta.length()>0){
+				consulta.append(" and status in (").append(status).append(")");
+			}else{
+				consulta.append("where status in (").append(status).append(")");
+			}
+		}
+		
+		if(contieneArchivo!= null){
+			if(contieneArchivo){
+				if(consulta.length()>0){
+					consulta.append(" and nombreArchivo is not null");
+				}else{
+					consulta.append("where nombreArchivo is not null");
+				}
+			}else{
+				if(consulta.length()>0){
+					consulta.append(" and nombreArchivo is null");
+				}else{
+					consulta.append("where nombreArchivo is null");
+				}
+			}
+		}
+		consulta.insert(0, "From BitacoraRelcompras ");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BitacoraRelcompras> consultaBitacoraRelcomprasDif99(String folioCartaAdhesion, String status, Boolean contieneArchivo)throws  JDBCException{		
+		List<BitacoraRelcompras> lst = null;
+		StringBuilder consulta= new StringBuilder();
+		if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+			consulta.append("where folioCartaAdhesion = '").append(folioCartaAdhesion).append("'");
+		}		
+		
+		if(consulta.length()>0){
+			consulta.append(" and idCriterio <> 99 ");
+		}else{
+			consulta.append("where idCriterio <> 99 ");
+		}			
+		
 		if (status != null &&  !status.isEmpty() ){
 			if(consulta.length()>0){
 				consulta.append(" and status in (").append(status).append(")");
@@ -2828,7 +2879,7 @@ public class RelacionesDAO {
 	public List<BoletasVsFacturas> verificaBoletaVsFacturas(String folioCartaAdhesion)throws  JDBCException{
 		List<BoletasVsFacturas> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado,folio_contrato, paterno_productor, materno_productor, nombre_productor, sum(vol_bol_ticket) as vol_bol_ticket, sum( vol_total_fac_venta) as vol_total_fac_venta  ")
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado,folio_contrato, paterno_productor, materno_productor, nombre_productor, sum(vol_bol_ticket) as vol_bol_ticket, sum( vol_total_fac_venta) as vol_total_fac_venta, 0 as diferencia_volumen  ")
 				.append("FROM relacion_compras_tmp ")
 				.append("WHERE folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ")
@@ -2868,15 +2919,21 @@ public class RelacionesDAO {
 	public List<RfcProductorVsRfcFactura> verificaRFCProductorVsRFCFactura(String folioCartaAdhesion, int idPrograma)throws  JDBCException{ // AHS 29012015
 		List<RfcProductorVsRfcFactura> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc rfc_productor, r.rfc_fac_venta  ") // AHS 29012015
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc rfc_productor, r.rfc_fac_venta , ") // AHS 29012015
+				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado " )
+				.append(" and  r.folio_contrato = r1.folio_contrato and COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X' )")
+				.append(" and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  ) as vol_total_fac_venta ")
 				.append("FROM relacion_compras_tmp r, productores p ") // AHS 29012015
 				//.append("WHERE rfc_productor <> rfc_fac_venta ").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") // AHS 29012015
 				.append("WHERE r.rfc_fac_venta is not null ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") // AHS 29012015
 				.append("and p.productor = r.productor ").append("and p.rfc <> r.rfc_fac_venta ") // AHS 29012015
 				.append(" AND EXISTS (select distinct 1 from predios_relaciones pr where pr.productor = p.productor and pr.id_programa = ").append(idPrograma).append( ")") // AHS 29012015
-				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc, r.rfc_fac_venta ");	
+				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc, r.rfc_fac_venta ");		
+		
+		System.out.println("Consulta RFC "+consulta.toString());
 		
 		lst= session.createSQLQuery(consulta.toString()).addEntity(RfcProductorVsRfcFactura.class).list();
+		
 			
 		return lst; 
 	}
@@ -2886,11 +2943,12 @@ public class RelacionesDAO {
 	public List<FacturasVsPago> verificaFacturasVsPago(String folioCartaAdhesion)throws JDBCException{
 		List<FacturasVsPago> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor,  sum(imp_sol_fac_venta) as imp_sol_fac_venta, sum(imp_total_pago_sinaxc) as imp_total_pago_sinaxc  ")
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, ")
+				.append("COALESCE(sum(imp_sol_fac_venta),0) as imp_sol_fac_venta, COALESCE(sum(imp_total_pago_sinaxc),0) as imp_total_pago_sinaxc, COALESCE(sum(vol_total_fac_venta),0) as  vol_total_fac_venta ")
 				.append("FROM relacion_compras_tmp ")
 				.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ")
-				.append("HAVING (sum(imp_total_pago_sinaxc) < sum(imp_sol_fac_venta)) ")
+				.append("HAVING coalesce(sum(imp_total_pago_sinaxc),0) < coalesce(sum(imp_sol_fac_venta),0) ")
 				.append("ORDER BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor");				
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturasVsPago.class).list();
 		return lst;
@@ -3197,7 +3255,7 @@ public class RelacionesDAO {
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, ")
 			.append("c.folio_doc_pago, c.banco_sinaxc, ")
-			.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp r1 where r1.clave_bodega = c.clave_bodega ")
+			.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp r1 where r1.folio_carta_adhesion = c.folio_carta_adhesion and r1.clave_bodega = c.clave_bodega ")
 			.append("and r1.nombre_estado = c.nombre_estado and coalesce(c.folio_contrato,'X') = coalesce(r1.folio_contrato,'X') ")
 			.append("and coalesce(r1.paterno_productor,'X') = coalesce(c.paterno_productor,'X') and  coalesce(r1.materno_productor,'X') = coalesce(c.materno_productor,'X') ")
 			.append("and coalesce(r1.nombre_productor,'X') = coalesce(c.nombre_productor,'X')) as vol_total_fac_venta ")
@@ -3208,7 +3266,7 @@ public class RelacionesDAO {
 			.append("group by r.id_comprador, r.folio_doc_pago,  r.banco_sinaxc ")
 			.append("HAVING ( COUNT(folio_doc_pago) > 1) ) v ")
 			.append("WHERE c.folio_doc_pago is not null ").append(" and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and c.id_comprador= v.id_comprador  and c.folio_doc_pago = v.folio_doc_pago and c.banco_sinaxc = v.banco_sinaxc  ");	
+			.append("and c.id_comprador= v.id_comprador  and c.folio_doc_pago = v.folio_doc_pago and c.banco_sinaxc = v.banco_sinaxc  order by c.folio_doc_pago, c.banco_sinaxc");	
 //			.append("UNION ")
 //			.append("select row_number() OVER ()  as id, r.id_comprador, r.id_tipo_doc_pago, r.folio_doc_pago, r.banco_id, r.banco_sinaxc ")
 //			.append("from relacion_compras_tmp r ")
@@ -3738,6 +3796,7 @@ public class RelacionesDAO {
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 			.append("GROUP BY clave_bodega,  nombre_estado, folio_contrato,  paterno_productor, materno_productor, nombre_productor ")
 			.append("HAVING (COUNT(boleta_ticket_bascula) = 0 or COUNT(folio_factura_venta) = 0 or COUNT(folio_doc_pago)= 0 or (count(folio_predio) = 0 and count(folio_predio_alterno) = 0))");
+				
 			
 			lst= session.createSQLQuery(consulta.toString()).addEntity(ProductoresIncosistentes.class).list();
 			
@@ -4252,7 +4311,7 @@ public class RelacionesDAO {
 			.append("and  r41.pago_inconsistente= true ")
 			.append(") ")
 			.append(") as  vol_en_pagos,  ")
-			.append("(select COALESCE(sum(r5.vol_total_fac_venta),0)  ")
+			.append("(select distinct COALESCE(r5.dif_volumen_fac_mayor,0)  ")
 			.append("from relacion_compras_tmp r5  ")
 			.append("where r.clave_bodega = r5.clave_bodega ") 
 			.append("and  r.nombre_estado = r5.nombre_estado ")
@@ -4296,6 +4355,28 @@ public class RelacionesDAO {
 			.append("and  r61.pagos_menores_facturas = true ")
 			.append(") ")
 			.append(") as  pagos_menores_facturas, ")
+			.append("(select COALESCE(sum(r6.vol_total_fac_venta),0) ")
+			.append("from relacion_compras_tmp r6 ")
+			.append("where r.clave_bodega = r6.clave_bodega ") 
+			.append("and  r.nombre_estado = r6.nombre_estado ")
+			.append("and  r.estado_acopio = r6.estado_acopio  ")
+			.append("and  r.folio_contrato = r6.folio_contrato  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')   ")
+			.append("and  EXISTS ( ")
+			.append("select 1 ")
+			.append("from relacion_compras_tmp r61 ")
+			.append("where r.clave_bodega = r61.clave_bodega ") 
+			.append("and  r.nombre_estado = r61.nombre_estado ")
+			.append("and  r.estado_acopio = r61.estado_acopio  ")
+			.append("and  r.folio_contrato = r61.folio_contrato  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
+			.append("and  r61.rfc_inconsistente = true ")
+			.append(") ")
+			.append(") as  diferencia_entre_rfc, ")			
 			.append("(select distinct COALESCE(r7.volumen_no_procedente,0) ")
 			.append("from relacion_compras_tmp r7 ")
 			.append("where r.clave_bodega = r7.clave_bodega ") 
@@ -4308,7 +4389,7 @@ public class RelacionesDAO {
 			.append(") as  volumen_no_procedente ")
 			.append("from relacion_compras_tmp  r  ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and (boleta_incosistente = true or factura_inconsistente = true or pago_inconsistente = true or facturas_mayores_boletas = true or pagos_menores_facturas = true or COALESCE(r.volumen_no_procedente,0) > 0 )")
+			.append("and (boleta_incosistente = true or factura_inconsistente = true or pago_inconsistente = true or facturas_mayores_boletas = true or pagos_menores_facturas = true or rfc_inconsistente = true or COALESCE(r.volumen_no_procedente,0) > 0 )")
 			.append("group by clave_bodega,  nombre_estado, r.estado_acopio, folio_contrato, r.rfc_productor, paterno_productor, materno_productor, nombre_productor");
 			
 			System.out.println("Query Resumen observaciones "+consulta.toString());
@@ -4339,6 +4420,8 @@ public class RelacionesDAO {
 		        b.setDiferenciaEntreVolumen(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("pagos_menores_facturas");
 		        b.setDiferenciaEntreImportes(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("diferencia_entre_rfc");
+		        b.setDiferenciaEntreRFC(valor!=null ? valor.doubleValue():0.0);
 		        lst.add(b);	
 			}
 			
@@ -4375,16 +4458,20 @@ public class RelacionesDAO {
 		}
 		
 		public int actualizaCamposIconsistentes(String folioCartaAdhesion, boolean facMayBol, boolean pagMenFac, boolean predioInconsistente, boolean volumenNoprocedente)throws JDBCException {
+			return actualizaCamposIconsistentes( folioCartaAdhesion,  facMayBol,  pagMenFac,  predioInconsistente, volumenNoprocedente, false);
+		}
+		public int actualizaCamposIconsistentes(String folioCartaAdhesion, boolean facMayBol, boolean pagMenFac, boolean predioInconsistente, boolean volumenNoprocedente, boolean rfcInconsistente)throws JDBCException {
 			int elementosActuializados = 0;
 			try{
 				StringBuilder set  = new StringBuilder();
 				set.append("set " );
 				if(facMayBol){
-					set.append(" facturas_mayores_boletas = null,");
+					set.append(" facturas_mayores_boletas = null, dif_volumen_fac_mayor = null,");
+					
 				}
 				
 				if(pagMenFac){
-					set.append(" factura_inconsistente = null,");
+					set.append(" pagos_menores_facturas = null,");
 				}
 				
 				if(predioInconsistente){
@@ -4394,6 +4481,10 @@ public class RelacionesDAO {
 				
 				if(volumenNoprocedente){
 					set.append(" volumen_no_procedente = null,");
+				}
+				
+				if(rfcInconsistente){
+					set.append(" rfc_inconsistente = null,");
 				}
 								
 				set.deleteCharAt(set.length()-1);		
@@ -4409,8 +4500,14 @@ public class RelacionesDAO {
 			return elementosActuializados;
 		}
 		
+		
 		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
 				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac)throws JDBCException {
+			return  actualizaFacMayBolOPagMenFac(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
+					paternoProductor, maternoProductor, nombreProductor, facMayBol, pagMenFac,  false);
+		}
+		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente)throws JDBCException {
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
@@ -4419,6 +4516,21 @@ public class RelacionesDAO {
 					where.append(" where folio_carta_adhesion ='").append(folioCartaAdhesion).append("' ");
 				}
 				
+				if (claveBodega != null && !claveBodega.isEmpty()){
+					if(where.length()>0){
+						where.append(" and clave_bodega ='").append(claveBodega).append("' ");
+					}else{
+						where.append(" where clave_bodega ='").append(claveBodega).append("' ");
+					}
+				}
+				
+				if (nombreEstado != null && !nombreEstado.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_estado ='").append(nombreEstado).append("' ");
+					}else{
+						where.append(" where nombre_estado ='").append(nombreEstado).append("' ");
+					}
+				}	
 				if (folioContrato != null && !folioContrato.isEmpty()){
 					if(where.length()>0){
 						where.append(" and folio_contrato ='").append(folioContrato).append("' ");
@@ -4454,6 +4566,9 @@ public class RelacionesDAO {
 				if(pagMenFac){
 					set.append(" pagos_menores_facturas = true,");
 				}
+				if(rfcInconsistente){
+					set.append(" rfc_inconsistente = true,");
+				}
 								
 				set.deleteCharAt(set.length()-1);
 				StringBuilder hql = new StringBuilder()			
@@ -4487,8 +4602,145 @@ public class RelacionesDAO {
 			return elementosActuializados;
 		}
 		
+		
+		
+		public int actualizaPredioIncosistentePorValorNulo(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor)throws JDBCException {
+			int elementosActuializados = 0;
+			StringBuilder where = new StringBuilder();
+			try{
+				
+				if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+					where.append(" where folio_carta_adhesion ='").append(folioCartaAdhesion).append("' ");
+				}
+				
+				if (claveBodega != null && !claveBodega.isEmpty()){
+					if(where.length()>0){
+						where.append(" and clave_bodega ='").append(claveBodega).append("' ");
+					}else{
+						where.append(" where clave_bodega ='").append(claveBodega).append("' ");
+					}
+				}
+				
+				if (nombreEstado != null && !nombreEstado.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_estado ='").append(nombreEstado).append("' ");
+					}else{
+						where.append(" where nombre_estado ='").append(nombreEstado).append("' ");
+					}
+				}
+				
+				if (folioContrato != null && !folioContrato.isEmpty()){
+					if(where.length()>0){
+						where.append(" and folio_contrato ='").append(folioContrato).append("' ");
+					}else{
+						where.append(" where folio_contrato ='").append(folioContrato).append("' ");
+					}
+				}	
+				if (paternoProductor != null && !paternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and paterno_productor ='").append(paternoProductor).append("' ");
+					}else{
+						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
+					}
+				}
+				if (maternoProductor != null && !maternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
+					}else{
+						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}
+				if (nombreProductor != null && !nombreProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_productor ='").append(nombreProductor).append("' ");
+					}else{
+						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
+					}
+				}			
+			
+				StringBuilder hql = new StringBuilder()			
+				.append("UPDATE  relacion_compras_tmp  ").append(" set predio_inconsistente = true ").append(where.toString());
+				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
+				
+			}catch (JDBCException e){
+				transaction.rollback();
+				throw e;
+			}	
+			return elementosActuializados;
+		}
+		
+		
 		public int actualizaVolumenNoProcedente(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, double volumenNoProcedente)throws JDBCException {
+				String paternoProductor, String maternoProductor, String nombreProductor, String volumenNoProcedente)throws JDBCException {	// AHS [LINEA] - 17022015
+			int elementosActuializados = 0;
+			StringBuilder where = new StringBuilder();
+			try{
+				if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+					where.append(" where folio_carta_adhesion ='").append(folioCartaAdhesion).append("' ");
+				}
+				
+
+				if (claveBodega != null && !claveBodega.isEmpty()){
+					if(where.length()>0){
+						where.append(" and clave_bodega ='").append(claveBodega).append("' ");
+					}else{
+						where.append(" where clave_bodega ='").append(claveBodega).append("' ");
+					}
+				}
+				
+				if (nombreEstado != null && !nombreEstado.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_estado ='").append(nombreEstado).append("' ");
+					}else{
+						where.append(" where nombre_estado ='").append(nombreEstado).append("' ");
+					}
+				}
+				
+				if (folioContrato != null && !folioContrato.isEmpty()){
+					if(where.length()>0){
+						where.append(" and folio_contrato ='").append(folioContrato).append("' ");
+					}else{
+						where.append(" where folio_contrato ='").append(folioContrato).append("' ");
+					}
+				}	
+				if (paternoProductor != null && !paternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and paterno_productor ='").append(paternoProductor).append("' ");
+					}else{
+						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
+					}
+				}
+				if (maternoProductor != null && !maternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
+					}else{
+						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}
+				if (nombreProductor != null && !nombreProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_productor ='").append(nombreProductor).append("' ");
+					}else{
+						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
+					}
+				}
+				
+				
+				StringBuilder hql = new StringBuilder()			
+				.append("UPDATE  relacion_compras_tmp  ").append(" set volumen_no_procedente = "+volumenNoProcedente).append(where.toString()); // AHS [LINEA] - 17022015
+				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
+				
+			}catch (JDBCException e){
+				transaction.rollback();
+				throw e;
+			}	
+			return elementosActuializados;
+		}
+		
+		
+		public int actualizaDiferenciaVolumenXFacturaMayor(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor, double difVolumenFacMayor)throws JDBCException {	// AHS [LINEA] - 17022015
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
@@ -4527,7 +4779,7 @@ public class RelacionesDAO {
 				
 				
 				StringBuilder hql = new StringBuilder()			
-				.append("UPDATE  relacion_compras_tmp  ").append(" set volumen_no_procedente = "+volumenNoProcedente).append(where.toString());
+				.append("UPDATE  relacion_compras_tmp  ").append(" set dif_volumen_fac_mayor = "+difVolumenFacMayor).append(where.toString()); // AHS [LINEA] - 17022015
 				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
 				
 			}catch (JDBCException e){
@@ -4536,7 +4788,6 @@ public class RelacionesDAO {
 			}	
 			return elementosActuializados;
 		}
-		
 		public List<RelacionComprasTMP> consultaRFCFacturaVentaByProductor(String folioCartaAdhesion) throws JDBCException {			
 			List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
 			StringBuilder consulta= new StringBuilder();	
@@ -4606,10 +4857,13 @@ public class RelacionesDAO {
 					where.append("where nombre_productor ='").append(nombreProductor).append("' ");
 				}
 			}
-			StringBuilder hql = new StringBuilder()			
-			.append("UPDATE  relacion_compras_tmp  set rfc_productor  = '").append(rfcFacturaVenta!=null?rfcFacturaVenta.trim():null).append("'").append(where.toString());
 			
-			elementosActualizados = session.createSQLQuery(hql.toString()).executeUpdate();
+			StringBuilder hql = new StringBuilder();
+			if(rfcFacturaVenta!=null){
+				hql.append("UPDATE  relacion_compras_tmp  set rfc_productor  = '").append(rfcFacturaVenta.trim()).append("'").append(where.toString());				
+				elementosActualizados = session.createSQLQuery(hql.toString()).executeUpdate();
+			}
+			
 			return elementosActualizados;
 			
 		}
@@ -4643,8 +4897,7 @@ public class RelacionesDAO {
 		        valor = (BigDecimal) row.get("rendimiento_maximo"); 
 		        b.setRendimientoMaximoAceptable(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("volumen_no_procedente"); 
-		        System.out.println("Valor no procedente "+valor);
-		        b.setVolNoProcedente(valor!=null ? valor.doubleValue():0.0);
+		        b.setVolNoProcedente(valor!=null ? valor.toString():"0.0");	// AHS [LINEA] - 17022015
 		        
 		        lst.add(b);	
 			}		
@@ -4685,25 +4938,27 @@ public class RelacionesDAO {
 			return lst;
 		}
 		
-		public List<RelacionComprasTMP> consultaVolumenCumplido(String folioCartaAdhesion)throws  JDBCException{
-			List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
+		public List<VolumenFiniquito> consultaVolumenCumplido(String folioCartaAdhesion)throws  JDBCException{
+			List<VolumenFiniquito> lst = new ArrayList<VolumenFiniquito>();
 			StringBuilder consulta= new StringBuilder();	
-			consulta.append("select r.clave_bodega, r.folio_contrato, sum(b.volumen) as volumen ")
+			consulta.append("select r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, b.volumen ")
 			.append("from relacion_compras_tmp r, bodegas_contratos b ")
-			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and r.clave_bodega = b.clave_bodega ")
-			.append("group by r.clave_bodega, r.folio_contrato ");
-
+			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and r.clave_bodega = b.clave_bodega  and b.folio_contrato = r.folio_contrato ")
+			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, b.volumen ");			
+			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 			List<?> data = query.list();
 			
 			for(Object object : data){
 				Map<?, ?> row = (Map<?, ?>)object;
-				RelacionComprasTMP b = new RelacionComprasTMP();
+				VolumenFiniquito b = new VolumenFiniquito();
 				b.setClaveBodega((String) row.get("clave_bodega"));
-		        b.setFolioContrato((String) row.get("folio_contrato"));		        
+		        b.setFolioContrato((String) row.get("folio_contrato"));
+		        b.setNombreComprador((String) row.get("nombre_comprador"));
+		        b.setNombreVendedor((String) row.get("nombre_vendedor"));
 		        BigDecimal valor = (BigDecimal) row.get("volumen");
-		        b.setVolBolTicket(valor!=null ? valor.doubleValue():0.0);		        
+		        b.setVolumen(valor!=null ? valor.doubleValue():0.0);		        
 		        lst.add(b);	
 			}		
 			return lst;

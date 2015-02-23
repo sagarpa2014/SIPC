@@ -9,6 +9,7 @@ import java.util.Map;
 import mx.gob.comer.sipc.dao.CatalogosDAO;
 import mx.gob.comer.sipc.dao.InscripcionDAO;
 import mx.gob.comer.sipc.dao.PagosDAO;
+import mx.gob.comer.sipc.dao.RelacionesDAO;
 import mx.gob.comer.sipc.dao.SolicitudPagoDAO;
 import mx.gob.comer.sipc.dao.UtileriasDAO;
 import mx.gob.comer.sipc.domain.AuditoresExternos;
@@ -18,6 +19,7 @@ import mx.gob.comer.sipc.domain.InicializacionEsquema;
 import mx.gob.comer.sipc.domain.Programa;
 import mx.gob.comer.sipc.domain.catalogos.Especialista;
 import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
+import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras;
 import mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.DocumentacionSPCartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.ObservacionDocumentacionSP;
@@ -53,6 +55,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	private InscripcionDAO iDAO = new InscripcionDAO();
 	private UtileriasDAO utileriasDAO = new UtileriasDAO();
 	private PagosDAO pDAO = new PagosDAO();
+	private RelacionesDAO rDAO = new RelacionesDAO();
 	/***LISTAS**/
 	private List<Programa> lstProgramas;
 	private List<Especialista> lstEspecialista;
@@ -219,6 +222,9 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 
 	private Date fechaPeriodoInicialAuditor;
 	private Date fechaPeriodoFinalAuditor;
+	private String archivoRelacionCompras;
+	private boolean reporteCruce;
+	private List<BitacoraRelcompras> lstBitacoraRelcompras;
 	/***METODOS**/
 	public String listarPrograma(){
 		try{
@@ -402,15 +408,15 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 					setCertDepositoOAlmacenamiento(1);
 				}else if(band34){
 					setCertDepositoOAlmacenamiento(2);
-				}
-				System.out.println("Certificado deposito "+certDepositoOAlmacenamiento);
-					 
+				}					 
 			}	
 			if(alcanceDocumentacion){
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 			}else if(estatusCA == 3){
 				llenarListaExpedientesProgramas();
 			}else if(estatusCA == 4 || estatusCA ==5 || estatusCA == 9){
+				verificarArchivoRelComprasYReporteCruce();
+								
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 				//recupera el oficio de observaciones
 				lstOficioObsSolicitudPago = spDAO.consultaOficioObsSolicitudPago(folioCartaAdhesion);
@@ -436,6 +442,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 				}
 				
 			}else if(estatusCA == 6 || estatusCA == 8){
+				verificarArchivoRelComprasYReporteCruce();
 				llenarListaExpedientesProgramas();
 			}/*else if(estatusCA == 5 || estatusCA == 9){
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "idExpediente");
@@ -462,6 +469,21 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		return SUCCESS;		
 	}
 	
+	private void verificarArchivoRelComprasYReporteCruce() {
+		//Recupera el archivo de la relacion de compras e indica si hay relacion de cruces
+		lstBitacoraRelcompras  = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, "99", null);
+		if(lstBitacoraRelcompras.size()>0){
+			archivoRelacionCompras = lstBitacoraRelcompras.get(0).getRutaArchivo()+lstBitacoraRelcompras.get(0).getNombreArchivo();
+		}		
+		//Indica si hay reporte de cruces
+		lstBitacoraRelcompras  = rDAO.consultaBitacoraRelcomprasDif99(folioCartaAdhesion, null, true);
+		if(lstBitacoraRelcompras.size()>0){
+			reporteCruce = true;
+		}
+
+		
+	}
+
 	public String recuperaDatosCartaAdhesion(String tipo){
 		try{
 			//Recupera los datos de la carta adhesion
@@ -732,7 +754,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	public String registraCapDocumentacion(){
 		try{
 			if(habilitaAccionSP==1){
-				doctosSinObservacion=true;
+				doctosSinObservacion = true;
 				habilitarOficioObs = false;
 			}else if(habilitaAccionSP==2){
 				habilitarOficioObs = true;
@@ -763,8 +785,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 				DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 1).get(0);
 				fechaDocEntDoctos = documento.getFechaDocumento();
 				fechaAcuseEntDoctos = documento.getFechaAcuse();
-			}
-			
+			}			
 					
 			if(estatusCA==3 || estatusCA==4){
 				//Recupera la fecha de carta de adhesion
@@ -1072,6 +1093,10 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 							}
 							documento = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(documento);
 						}
+						
+						
+						
+						
 					}else if(estatusCA == 3 && capObsExpediente == null && !habilitarOficioObs && !doctosSinObservacion){//sin ninguna observacion sin subir oficio de observaciones
 						//ca.setEstatus(6); //DOCUMENTACIÓN PARCIAL
 						if(siCargoDocto){	
@@ -3367,6 +3392,26 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	}
 
 	public void setTotalVolumenConstancia(Double totalVolumenConstancia) {
+
 		this.totalVolumenConstancia = totalVolumenConstancia;
 	}
+
+	public String getArchivoRelacionCompras() {
+		return archivoRelacionCompras;
+	}
+
+	public void setArchivoRelacionCompras(String archivoRelacionCompras) {
+		this.archivoRelacionCompras = archivoRelacionCompras;
+	}
+
+	public boolean isReporteCruce() {
+		return reporteCruce;
+	}
+
+	public void setReporteCruce(boolean reporteCruce) {
+		this.reporteCruce = reporteCruce;
+	}
+	
+	
+	
 }

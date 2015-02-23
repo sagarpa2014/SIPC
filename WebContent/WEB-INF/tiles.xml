@@ -396,5 +396,8 @@
      <definition name="contenidoCargaArchivoRelCompras" extends="masterTemplate">
            <put-attribute name="body" value="/WEB-INF/paginas/relaciones/relacionCompras/contenidoCargaArchivoRelCompras.jsp"/>
      </definition>
+     <definition name="verReportesCruce" extends="masterTemplateSimple">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/relacionCompras/respuestaGeneracionBitacora.jsp" />
+	</definition>
 		
 </tiles-definitions>

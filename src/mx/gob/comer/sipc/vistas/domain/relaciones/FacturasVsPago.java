@@ -26,6 +26,10 @@ public class FacturasVsPago implements Comparable{
 	private Double impSolFacVenta;
 	@Column(name =  "imp_total_pago_sinaxc")
 	private Double impTotalPagoSinaxc;
+	@Column(name =  "vol_total_fac_venta")
+	private Double volTotalFacVenta;
+	
+	
 	
 	public long getId() {
 		return id;
@@ -86,6 +90,12 @@ public class FacturasVsPago implements Comparable{
 		this.impTotalPagoSinaxc = impTotalPagoSinaxc;
 	}
 	
+	public Double getVolTotalFacVenta() {
+		return volTotalFacVenta;
+	}
+	public void setVolTotalFacVenta(Double volTotalFacVenta) {
+		this.volTotalFacVenta = volTotalFacVenta;
+	}
 	@Override
 	public int compareTo(Object o) {
 		FacturasVsPago obj= (FacturasVsPago) o;     

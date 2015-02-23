@@ -8,6 +8,8 @@ import javax.persistence.Id;
 public class RfcProductorVsRfcFactura implements Comparable  {	
 	
 	@Id
+	@Column(name =  "id")
+	private Long id;
 	@Column(name =  "clave_bodega")
 	private String claveBodega;
 	@Column(name =  "nombre_estado")
@@ -24,7 +26,16 @@ public class RfcProductorVsRfcFactura implements Comparable  {
 	private String rfcProductor;
 	@Column(name =  "rfc_fac_venta")
 	private String rfcFacVenta;	
+	@Column(name =  "vol_total_fac_venta")
+	private Double volTotalFacVenta;
 	
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getClaveBodega() {
 		return claveBodega;
 	}
@@ -79,25 +90,37 @@ public class RfcProductorVsRfcFactura implements Comparable  {
 		this.rfcFacVenta = rfcFacVenta;
 	}	
 	
+	public Double getVolTotalFacVenta() {
+		return volTotalFacVenta;
+	}
+	
+	public void setVolTotalFacVenta(Double volTotalFacVenta) {
+		this.volTotalFacVenta = volTotalFacVenta;
+	}
 	@Override
 	public int compareTo(Object o) {
-		RfcProductorVsRfcFactura p = (RfcProductorVsRfcFactura) o;     
-	    if(this.claveBodega.compareToIgnoreCase(p.claveBodega) == 0) { 
-	    	if(this.nombreEstado.compareToIgnoreCase(p.nombreEstado) == 0){
-	    		if(this.paternoProductor.compareToIgnoreCase(p.paternoProductor) == 0) {
-	            	if(this.maternoProductor.compareToIgnoreCase(p.maternoProductor) == 0) {
-	            		  return this.nombreProductor.compareToIgnoreCase(p.nombreProductor); 
-	            	}else{
-	            		return this.maternoProductor.compareTo(p.maternoProductor);
-	            	}	                 
-	            } else { 
-	                return this.paternoProductor.compareToIgnoreCase(p.paternoProductor); 
-	            }	
+		RfcProductorVsRfcFactura obj= (RfcProductorVsRfcFactura) o;     
+	    if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) { 
+	    	if(this.nombreEstado.compareToIgnoreCase(obj.nombreEstado) == 0){
+		    	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
+		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
+		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
+		            		  return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
+		            	}else{
+		            		return this.maternoProductor.compareTo(obj.maternoProductor);
+		            	}	                 
+		            } else { 
+		                return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor); 
+		            }
+		    	}else{
+		    		return this.folioContrato.compareToIgnoreCase(obj.folioContrato);
+		    	} 
 	    	}else{
-		    	return this.nombreEstado.compareToIgnoreCase(p.nombreEstado);	
+	    		return this.nombreEstado.compareToIgnoreCase(obj.nombreEstado);
 	    	}
 	    } else {
-	    	return this.claveBodega.compareToIgnoreCase(p.claveBodega); 
+	            return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
 	    }    		
 	}
+
 }
