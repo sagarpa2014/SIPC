@@ -5,9 +5,7 @@
 <s:hidden id="idExpedientesTotal" name="idExpedientesTotal" value="%{idExpedientesTotal}"/>
 <s:hidden id="idExpedientesObservados" name="idExpedientesObservados" value="%{idExpedientesObservados}"/>
 <s:hidden id="certDepositoOAlmacenamiento" name="certDepositoOAlmacenamiento" value="%{certDepositoOAlmacenamiento}"/>
-<s:set  name="archivoRelacionCompras1"><s:property value="%{archivoRelacionCompras}" /></s:set>
-<s:hidden id="archivoRelacionCom" name="" value="%{archivoRelacionCompras}"/>
-<s:set name="reporteCruce1"><s:property value="%{reporteCruce}" /></s:set>
+<s:hidden id="idPrograma" name="idPrograma" value="%{idPrograma}"/>
 <div class="clear"></div>
 <div class="borderBottom" style="text-align:center"><h1>Entrega de Documentos</h1></div><br>	
 	<table  class="clean" width="100%">	
@@ -143,7 +141,7 @@
 								 </s:else>
 								<s:if test="estatusCA == 3">													
 									<s:if test="%{idExpediente == 5}">
-										<s:if test="%{anexo32DyaCapturado == true && #session.idPerfil!=4 }">
+										<s:if test="%{anexo32DyaCapturado == true}">
 											<a href="<s:url value="/solicitudPago/capAnexo32D?folioCartaAdhesion=%{folioCartaAdhesion}&idExpSPCartaAdhesion=%{idExpSPCartaAdhesion}"/>" title="Anexo 32-D"><s:property value="%{expediente}"/></a>
 										</s:if>
 										<s:else>
@@ -151,7 +149,7 @@
 										</s:else>										
 									</s:if>
 									<s:elseif test="%{idExpediente == 4}">
-										<s:if test="%{edoCuentaYaCapturado == true && #session.idPerfil!=4}">
+										<s:if test="%{edoCuentaYaCapturado == true}">
 											<a href="<s:url value="/solicitudPago/capEstadoCuenta?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Estado de Cuenta"><s:property value="%{expediente}"/></a>
 										</s:if>
 										<s:else>
@@ -162,39 +160,27 @@
 										<s:property value="%{expediente}"/>
 									</s:else>
 								</s:if>
-								<s:else>							
-									<s:if test="%{idExpediente == 3 && #session.idPerfil!=4}">									
+								<s:else>
+									<s:if test="%{idExpediente == 3}">
 										<a href="<s:url value="/solicitudPago/capSolicitudPago?folioCartaAdhesion=%{folioCartaAdhesion}&idExpSPCartaAdhesion=%{idExpSPCartaAdhesion}"/>" title="Solicitud Pago"><s:property value="%{expediente}"/></a>	
 									</s:if>
-									<s:elseif test="%{idExpediente == 4 && #session.idPerfil!=4}">
+									<s:elseif test="%{idExpediente == 4}">
 										<a href="<s:url value="/solicitudPago/capEstadoCuenta?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Estado de Cuenta"><s:property value="%{expediente}"/></a>
 									</s:elseif>
-									<s:elseif test="%{idExpediente == 5 && #session.idPerfil!=4}">
+									<s:elseif test="%{idExpediente == 5}">
 										<a href="<s:url value="/solicitudPago/capAnexo32D?folioCartaAdhesion=%{folioCartaAdhesion}&idExpSPCartaAdhesion=%{idExpSPCartaAdhesion}"/>" title="Anexo 32-D"><s:property value="%{expediente}"/></a>
 									</s:elseif>
-									<s:elseif test="%{idExpediente == 7 && #session.idPerfil!=4}">
+									<s:elseif test="%{idExpediente == 7}">
 										<a href="<s:url value="/solicitudPago/capAuditorSolPago?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=1"/>" title="Dictamen Contable del Auditor"><s:property value="%{expediente}"/></a>
 									</s:elseif>
 									<s:elseif test="%{idExpediente == 8}">
 										<a href="<s:url value="/relaciones/capturaCargaArchivoRelCompras?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=1&tipoAccion=-1"/>" title="Relación de Compras"><s:property value="%{expediente}"/></a>
 									</s:elseif>
 									<s:elseif test="%{idExpediente == 10}">
-										<s:if test="%{#session.idPerfil==4}">
-											<a href="<s:url value="/solicitudPago/lstCertificadoDeposito?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Relación de Certificados"><s:property value="%{expediente}"/></a>
-										</s:if>
-										<s:else>
-											<a href="<s:url value="/solicitudPago/capCertificadoDeposito?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Relación de Certificados"><s:property value="%{expediente}"/></a>
-										</s:else>
-										
+										<a href="<s:url value="/solicitudPago/capCertificadoDeposito?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Relación de Certificados"><s:property value="%{expediente}"/></a>
 									</s:elseif>
 									<s:elseif test="%{idExpediente == 34}">
-										<s:if test="%{#session.idPerfil==4}">
-											<a href="<s:url value="/solicitudPago/lstConstanciasAlmacenamiento?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Constancia de Almacenamiento"><s:property value="%{expediente}"/></a>
-										</s:if>
-										<s:else>
-											<a href="<s:url value="/solicitudPago/capConstanciasAlmacenamiento?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Constancia de Almacenamiento"><s:property value="%{expediente}"/></a>
-										</s:else>
-										
+										<a href="<s:url value="/solicitudPago/capConstanciasAlmacenamiento?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Constancia de Almacenamiento"><s:property value="%{expediente}"/></a>
 									</s:elseif>
 									<s:else>
 										<s:property value="%{expediente}"/>
@@ -212,11 +198,7 @@
 							<td>									
 								<label class=""><span class="norequerido">*</span>Cargar Documento</label>
 							</td>
-							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
-								</s:if>
-							</td>
+							<td><s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/></td>
 							<td>&nbsp;</td> 													
 						</s:if>	
 						<s:elseif  test="alcanceDocumentacion==true">
@@ -230,10 +212,10 @@
  							</td>
  							<td>
  								<s:if test="observacion==true">
- 									<input id="capObsExpediente<s:property value="%{idExpediente}"/>" name="capObsExpediente" value="<s:property value="%{idExpediente}"/>" type="checkbox"  class="ck"  checked="checked" disabled="disabled"/>
+ 									<input id="capObsExpediente<s:property value="%{idExpediente}"/>" name="capObsExpediente" value="<s:property value="%{idExpediente}"/>" type="checkbox"  class="ck"  checked="checked"/>
  								</s:if>
  								<s:else>
- 									<input id="capObsExpediente<s:property value="%{idExpediente}"/>" name="capObsExpediente" value="<s:property value="%{idExpediente}"/>" type="checkbox"  class="ck" onchange="verificaObservacion(this.value);" />
+ 									<input id="capObsExpediente<s:property value="%{idExpediente}"/>" name="capObsExpediente" value="<s:property value="%{idExpediente}"/>" type="checkbox"  class="ck"  />
  								</s:else>
  							</td>
 						</s:elseif>
@@ -248,9 +230,7 @@
 								<s:else>&nbsp;</s:else>
 							</td>
 							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>									
-								</s:if>
+								<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 								<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
 							</td>
 							<td>
@@ -262,49 +242,18 @@
 						</s:elseif>
 						<s:elseif  test="estatusCA==4">
 							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<s:if test="observacion==true">
-										<label class="">Documento Corregido</label>
-									</s:if>
-									<s:else><a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a></s:else>
+								<s:if test="observacion==true">
+									<label class="">Documento Corregido</label>
 								</s:if>
-								<s:else><!-- Expediente relacion de compras y reporte de cruce -->
-									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS -->
-										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
-											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
-										</s:if>
-									</s:if>
-									<s:else><!-- REPORTE DE CRUCE -->
-										<s:if test="%{#reporteCruce1 == 'true'}">
-											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
-										</s:if>
-									</s:else>
-								</s:else>
+								<s:else><a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a></s:else>
 							</td>
 							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<s:if test="observacion==true">
-										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
-									</s:if>
-									<s:else>&nbsp;</s:else>
+								<s:if test="observacion==true">
+									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 								</s:if>
-<%-- 								<s:else><!-- Expediente relacion de compras y reporte de cruce --> --%>
-<%-- 									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS --> --%>
-<%-- 										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}"> --%>
-<%-- 											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a> --%>
-<%-- 										</s:if> --%>
-<%-- 									</s:if> --%>
-<%-- 									<s:else><!-- REPORTE DE CRUCE --> --%>
-<%-- 										<s:if test="%{#reporteCruce1 == 'true'}"> --%>
-<%-- 											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a> --%>
-<%-- 										</s:if> --%>
-<%-- 									</s:else> --%>
-<%-- 								</s:else> --%>
+								<s:else>&nbsp;</s:else>
 							</td>
-							<td>							
-								<s:if test="rutaDocumentoHistorico!=null">
-									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumentoHistorico}"/>" title="Descargar Archivo Histórico" class="DescargaArchHist">Descargar Hist&oacute;rico</a>
-								</s:if>
+							<td>
 								<s:if test="observacion==true">
 									<label class=""><span class="norequerido">*</span>Observaci&oacute;n</label>
 								</s:if>
@@ -317,81 +266,32 @@
 								<s:else>&nbsp;</s:else>									
 							</td>
 						</s:elseif>
-						<s:elseif  test="estatusCA==5 || estatusCA == 9 || estatusCA == 10">
+						<s:elseif  test="estatusCA==5">
 							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
-								</s:if>
-								<s:else><!-- Expediente relacion de compras y reporte de cruce -->
-									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS -->
-										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
-											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
-										</s:if>
-									</s:if>
-									<s:else><!-- REPORTE DE CRUCE -->
-										<s:if test="%{#reporteCruce1 == 'true'}">
-											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
-										</s:if>
-									</s:else>
-								</s:else>
+								<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 							</td>
-							<td>
-								<s:if test="rutaDocumentoHistorico!=null">
-									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumentoHistorico}"/>" title="Descargar Archivo Histórico" class="DescargaArchHist">Descargar Hist&oacute;rico</a>
-								</s:if>
-							</td>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>	
 						</s:elseif>
 						<s:elseif test="estatusCA==6 || estatusCA==8">
 							<td>
-								<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-									<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
-										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
-									</s:if>
-									<s:else>&nbsp;</s:else>
+								<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
+									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 								</s:if>
-								<s:else>
-									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS -->
-										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
-											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
-										</s:if>
-									</s:if>
-									<s:else><!-- REPORTE DE CRUCE -->
-										<s:if test="%{#reporteCruce1 == 'true'}">
-											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
-										</s:if>
-									</s:else>
-								</s:else>
+								<s:else>&nbsp;</s:else>
 							</td>
 							<td>								
 								<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
 									&nbsp;
 								</s:if>
 								<s:else>
-									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
-										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
-									</s:if>
-									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS -->
-										<s:if test="%{#archivoRelacionCompras!=null && #archivoRelacionCompras !=''}">
-											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras}"/>" title="Descargar Archivo">Descargar Archivo</a>
-										</s:if>
-									</s:if>
-									<s:else>
-										<!-- REPORTE DE CRUCE -->
-										<s:if test="%{#reporteCruce == true}">
-												<a href="<s:url value="/solicitudPago/capAnexo32D?folioCartaAdhesion=%{folioCartaAdhesion}&idExpSPCartaAdhesion=%{idExpSPCartaAdhesion}"/>" title="Anexo 32-D"><s:property value="%{expediente}"/></a>
-										</s:if>
-									</s:else>
-								</s:else>															
-							</td>							
-							<td>
-								<s:if test="rutaDocumentoHistorico!=null">
-									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumentoHistorico}"/>" title="Descargar Archivo Histórico" class="DescargaArchHist">Descargar Hist&oacute;rico</a>
-								</s:if>
-								<label class=""><span class="norequerido">*</span>Observaci&oacute;n</label>
+									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
+								</s:else>
+															
 							</td>
+							<td><label class=""><span class="norequerido">*</span>Observaci&oacute;n</label></td>
 							<td>
 								<s:if test="observacion==true">
 									<input id="capObsExpediente<s:property value="%{idExpediente}"/>" name="capObsExpediente" value="<s:property value="%{idExpediente}"/>" type="checkbox"  class="ck"  checked="checked" onclick="verificaObservacion(this.value);"/>
@@ -404,57 +304,7 @@
 						</s:elseif>										
 					</tr>
 					<!-- DATOS ADICIONALES EN DOCUMENTOS Solicitud de Apoyo (3), Dictamen Contable (7) -->	
-					<s:if test="%{idExpediente == 7}">					
-<!-- CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - INICIO -->					
-						<tr>
-							<td>
-								<label class=""><span id="spFechaPeriodoInicialAuditor" class="norequerido">*</span>Periodo Inicio</label>
-							</td>
-							<td>							
-								<s:if test="%{PeriodoInicialAuditor==null}" >
-									<s:textfield name="fechaPeriodoInicialAuditor" maxlength="10" size="10" id="fechaPeriodoInicialAuditor" readonly="true" cssClass="dateBox"/>
-									<img src="../images/calendar.gif" id="trgfechaPeriodoInicialAuditor" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
-									<script type="text/javascript">
-										<!--
-											Calendar.setup({
-												inputField     :    "fechaPeriodoInicialAuditor",     
-												ifFormat       :    "%d/%m/%Y",     
-												button         :    "trgfechaPeriodoInicialAuditor",  
-												align          :    "Br",           
-												singleClick    :    true
-											});	
-										//-->
-									</script>		
-								</s:if>
-								<s:else>
-									<font class="arial12bold"><s:text name="fecha"><s:param value="%{PeriodoInicialAuditor}"/></s:text></font>
-								</s:else>								
-							</td>
-						</tr>
-						<tr>
-							<td><label class=""><span id="spFechaPeriodoFinalAuditor" class="norequerido">*</span>Periodo Termino</label></td>
-							<td>								
-								<s:if test="%{PeriodoFinalAuditor==null}" >
-									<s:textfield name="fechaPeriodoFinalAuditor" maxlength="10" size="10" id="fechaPeriodoFinalAuditor" readonly="true" cssClass="dateBox" />
-									<img src="../images/calendar.gif" id="trgfechaPeriodoFinalAuditor" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
-									<script type="text/javascript">
-										<!--
-										Calendar.setup({
-											inputField     :    "fechaPeriodoFinalAuditor",     
-											ifFormat       :    "%d/%m/%Y",     
-											button         :    "trgfechaPeriodoFinalAuditor",  
-											align          :    "Br",           
-											singleClick    :    true
-										});									   
-										//-->
-									</script>
-								</s:if>
-								<s:else>
-									<font class="arial12bold"><s:text name="fecha"><s:param value="%{PeriodoFinalAuditor}"/></s:text></font>
-								</s:else>						
-							</td>
-						</tr>
-<!-- CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN -->	
+					<s:if test="%{idExpediente == 7}">
 						<s:if test="lstAuditorSolPagoV.size() > 0">	
 							<tr>	
 								<td colspan="6">
@@ -471,7 +321,7 @@
 									<label class=""><span class="norequerido" id="spv">*</span>Volumen Solicitado a Apoyar</label>
 								</td>
 								<td class="cVolumen">
-									<s:if test="%{estatusCA==5  || estatusCA== 9 || alcanceDocumentacion== true || (estatusCA == 4 && observacion==false)}">
+									<s:if test="%{estatusCA==5 || alcanceDocumentacion== true || (estatusCA == 4 && observacion==false)}">
 										<s:textfield id="v3" name="volumen" value="%{getText('volumenSinComas',{volumen})}" maxlength="14" size="20" disabled="true"/>
 									</s:if>
 									<s:else>
@@ -530,33 +380,12 @@
 							</td>							
 						</tr>						
 					</s:if>
-					<s:if test="%{idExpediente == 10 && totalVolumenCertificados!=0}">
-						<tr>						
-							<td>
-								<label class=""><span class="norequerido" id="">*</span>Volumen Total Certificado</label>
-							</td>
-							<td>
-								<s:textfield id="" name="" value="%{getText('volumenSinComas',{totalVolumenCertificados})}" maxlength="14" size="20" disabled="true"/>
-							</td>
-						</tr>
-					</s:if>
-					<s:if test="%{idExpediente == 34 && totalVolumenConstancia!=0}">
-						<tr>						
-							<td>
-								<label class=""><span class="norequerido" id="">*</span>Volumen Total Constancia</label>
-							</td>
-							<td>
-								<s:textfield id="" name="" value="%{getText('volumenSinComas',{totalVolumenConstancia})}" maxlength="14" size="20" disabled="true"/>
-							</td>
-						</tr>
-					</s:if>
-					
 				</s:if>	<!-- end idExpediente!=1, idExpediente!=2 -->
 				<div class="clear"></div>			
 			</s:iterator>	
 		</table>
 		<div class="clear"></div>	
-		<s:if test="estatusCA!=5  && estatusCA!=4 &&  estatusCA!=9">
+		<s:if test="estatusCA!=5 && estatusCA!=4">
 			<div class="borderBottom"style="text-align:center"><h1>Acciones</h1></div><br>		
 			<div class="inline">
 				<label class="left1"><span class="norequerido">*</span>Seleccione una opci&oacute;n:</label>
@@ -565,34 +394,29 @@
 		</s:if>		
 		<div class="clear"></div>	
 		<div id="recuperaDocRequeridosYhabilitaOficioObs"></div>
-		<s:if test="estatusCA==4 && alcanceDocumentacion==false || estatusCA==5 || estatusCA== 9">
+		<s:if test="estatusCA==4 && alcanceDocumentacion==false">
 			<s:include value="datosOficioObservacion.jsp"/>
 		</s:if>
 		<s:if test="alcanceDocumentacion==true">
 			<s:include value="datosOficioObservacion.jsp"/>
 		</s:if>
 		<div id="respuestaOficio">
-			<s:if test="(estatusCA==4 && alcanceDocumentacion==false || estatusCA==5 || estatusCA == 9 || estatusCA == 10)  ">
+			<s:if test="(estatusCA==4 && alcanceDocumentacion==false) || estatusCA==5 ">
 				<s:include value="recuperaOficioObservacion.jsp"/>
+				<s:if test="estatusCA==5"></s:if>
 	 			<s:include value="recuperaOficioRespuestaObservacion.jsp"/>
 	 		</s:if>	
  		</div>
-		<s:if test="estatusCA==4 || estatusCA==5 || estatusCA == 9 || estatusCA == 10">
-			<s:include value="pagos.jsp"/>			
-		</s:if>
-		<s:if test="%{rutaFiniquito!=null && rutaFiniquito!=''}">
-			<s:include value="finiquito.jsp"/>
-		</s:if>
+
 		<s:if test="deshabilitaAccion != true">
-			<s:if test="%{#session.idPerfil!=4 }">
-				<s:if test="%{ estatusCA==4 || sustituirArchivo ==true || estatusCA==3  || estatusCA == 6  ||  estatusCA == 8 }">
-					<div class="accion">
-						<s:submit  value="Guardar" cssClass="boton2"/>
-						<a href="<s:url value="/solicitudPago/listarPrograma"/>" class="boton" title="">Cancelar</a>
-					</div>
-				</s:if>
+			<s:if test="estatusCA!=5 || sustituirArchivo ==true ">
+				<div class="accion">
+					<s:submit  value="Guardar" cssClass="boton2"/>
+					<a href="<s:url value="/solicitudPago/listarPrograma"/>" class="boton" title="">Cancelar</a>
+				</div>
 			</s:if>
 		</s:if>
+		
 	</fieldset>
 	<script>
 		$(document).ready(function(){

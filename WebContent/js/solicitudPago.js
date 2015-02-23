@@ -591,7 +591,8 @@ function chkCamposDocumentacion(){
 		}
 			
 		for(i=0; i< idERArray.length; i++){
-			   if(idERArray[i] != 1 && idERArray[i] != 8 && idERArray[i]!= 9){
+			   //if(idERArray[i] != 1 && idERArray[i] != 8 && idERArray[i]!= 9){
+				if(idERArray[i] != 1 ){
 				   idExpediente = idERArray[i];
 				   if($('#doc'+idExpediente).length){
 					   console.log("expediente " + idERArray[i]);
@@ -814,13 +815,12 @@ function chkCamposDocumentacion(){
 			}else{
 				var doc = $('#doc'+idExpObArray[i]).val();
 				if(doc == null || doc == ""){
-					expediente = recuperaNombreDocumento(idExpObArray[i]);
-					
-					if(idExpObArray[i]!=8 && idExpObArray[i] !=9 ){
+					expediente = recuperaNombreDocumento(idExpObArray[i]);					
+					//if(idExpObArray[i]!=8 && idExpObArray[i] !=9 ){
 						$('#dialogo_1').html('Seleccione el archivo dee '+expediente);
 						abrirDialogo();
 						return false;
-					}					
+					//}					
 				}else{//end doc ==null
 					expediente = recuperaNombreDocumento(idExpObArray[i]);
 					ext = doc.toLowerCase().substring(doc.lastIndexOf(".")+1);
