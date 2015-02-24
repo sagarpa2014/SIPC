@@ -5,6 +5,10 @@
 <s:hidden id="idExpedientesTotal" name="idExpedientesTotal" value="%{idExpedientesTotal}"/>
 <s:hidden id="idExpedientesObservados" name="idExpedientesObservados" value="%{idExpedientesObservados}"/>
 <s:hidden id="certDepositoOAlmacenamiento" name="certDepositoOAlmacenamiento" value="%{certDepositoOAlmacenamiento}"/>
+<s:hidden id="idPrograma" name="idPrograma" value="%{idPrograma}"/>
+<s:set  name="archivoRelacionCompras1"><s:property value="%{archivoRelacionCompras}" /></s:set>
+<s:hidden id="archivoRelacionCom" name="" value="%{archivoRelacionCompras}"/>
+<s:set name="reporteCruce1"><s:property value="%{reporteCruce}" /></s:set>
 <div class="clear"></div>
 <div class="borderBottom" style="text-align:center"><h1>Entrega de Documentos</h1></div><br>	
 	<table  class="clean" width="100%">	
@@ -210,7 +214,16 @@
 							<td>									
 								<label class=""><span class="norequerido">*</span>Cargar Documento</label>
 							</td>
-							<td><s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/></td>
+							<td>
+								<s:if test="%{idPrograma < 41}">
+									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+								</s:if>
+								<s:else>
+									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									</s:if>
+								</s:else>
+							</td>
 							<td>&nbsp;</td> 													
 						</s:if>	
 						<s:elseif  test="alcanceDocumentacion==true">
@@ -242,8 +255,16 @@
 								<s:else>&nbsp;</s:else>
 							</td>
 							<td>
-								<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
-								<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
+								<s:if test="%{idPrograma < 41}">								
+									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>									
+								</s:if>
+								<s:else>
+									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
+									</s:if>
+								</s:else>
 							</td>
 							<td>
 								<label class=""><span class="norequerido">*</span>Observaci&oacute;n</label>
@@ -254,14 +275,30 @@
 						</s:elseif>
 						<s:elseif  test="estatusCA==4">
 							<td>
-								<s:if test="observacion==true">
-									<label class="">Documento Corregido</label>
+								<s:if test="%{idPrograma < 41}">							
+									<s:if test="observacion==true">
+										<label class="">Documento Corregido</label>
+									</s:if>
+									<s:else><a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a></s:else>
 								</s:if>
-								<s:else><a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a></s:else>
+								<s:else>
+									<s:if test="%{idExpediente==8}"><!-- RELACION DE COMPRAS -->
+										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>
+									</s:if>
+									<s:elseif test="%{idExpediente==9}" ><!-- REPORTE DE CRUCE -->
+										<s:if test="%{#reporteCruce1 == 'true'}">
+											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
+										</s:if>
+									</s:elseif>
+								</s:else>
 							</td>
 							<td>
 								<s:if test="observacion==true">
-									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									<s:if test="%{idPrograma < 41}">	
+										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									</s:if>
 								</s:if>
 								<s:else>&nbsp;</s:else>
 							</td>
@@ -283,7 +320,24 @@
 						</s:elseif>
 						<s:elseif  test="estatusCA==5 || estatusCA == 9 || estatusCA == 10">
 							<td>
-								<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+								<s:if test="%{idPrograma < 41}">
+									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+								</s:if>
+								<s:else><!-- PROGRAMAS QUE YA CONTEMPLAN RELACION DE COMPRAS COMO UN MODULO  -->
+									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+									</s:if>
+									<s:elseif test="idExpediente==8"><!-- RELACION DE COMPRAS -->
+										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>
+									</s:elseif>
+									<s:elseif test="idExpediente==9"><!-- RELACION DE CRUCE-->
+										<s:if test="%{#reporteCruce1 == 'true'}">
+											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
+										</s:if>		
+									</s:elseif>
+								</s:else>						
 							</td>
 							<td>
 								<s:if test="rutaDocumentoHistorico!=null">
@@ -295,20 +349,46 @@
 						</s:elseif>
 						<s:elseif test="estatusCA==6 || estatusCA==8">
 							<td>
-								<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
-									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+								<s:if test="%{idPrograma < 41}">
+									<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
+										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+									</s:if>
+									<s:else>&nbsp;</s:else>
 								</s:if>
-								<s:else>&nbsp;</s:else>
+								<s:else>
+									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+										<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>
+									</s:if>
+									<s:elseif test="idExpediente==8"><!-- RELACION DE COMPRAS -->
+										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>
+									</s:elseif>
+									<s:elseif test="idExpediente==9"><!-- RELACION DE CRUCE-->
+										<s:if test="%{#reporteCruce1 == 'true'}">
+											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
+										</s:if>		
+									</s:elseif>
+								</s:else>
 							</td>
 							<td>								
 								<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
 									&nbsp;
 								</s:if>
 								<s:else>
-									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
-									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
-								</s:else>
-															
+									<s:if test="%{idPrograma < 41}">
+										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>										
+									</s:if>
+									<s:else>
+										<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+											<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+											<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
+										</s:if>
+									</s:else>									
+								</s:else>							
 							</td>							
 							<td>
 								<s:if test="rutaDocumentoHistorico!=null">

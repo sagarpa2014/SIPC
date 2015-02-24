@@ -304,6 +304,7 @@ function selectDocumentacionSP(){
 function chkCamposDocumentacion(){	
 	var patron = /^(xlsx|xls|doc|docx|jpg|png|pdf|txt)$/;
 	var estatusCA = $('#estatusCA').val();
+	var idPrograma = $('#idPrograma').val();
 	//var alcanceDocumentacion = $('input:checkbox[name=alcanceDocumentacion]:checked').val();
 	var alcanceDocumentacion = "";
 	if(($('#alcanceDocumentacion')).is(":checked")) {
@@ -810,17 +811,23 @@ function chkCamposDocumentacion(){
 		var idExpedientesObservados = $('#idExpedientesObservados').val(); 
 		var idExpObArray = idExpedientesObservados.split(',');
 		for(i=0; i< idExpObArray.length; i++){
-			console.log("idExpObArray"+idExpObArray[i]);
+			console.log("observado a no observado"+idExpObArray[i]);
 			if($('#capObsExpediente'+idExpObArray[i]).is(":checked")){
 			}else{
 				var doc = $('#doc'+idExpObArray[i]).val();
 				if(doc == null || doc == ""){
 					expediente = recuperaNombreDocumento(idExpObArray[i]);					
-					//if(idExpObArray[i]!=8 && idExpObArray[i] !=9 ){
-						$('#dialogo_1').html('Seleccione el archivo dee '+expediente);
+					if(idPrograma < 41){
+						$('#dialogo_1').html('Seleccione el archivo de '+expediente);
 						abrirDialogo();
 						return false;
-					//}					
+					}else{
+						if(idExpObArray[i]!=8 && idExpObArray[i] !=9 ){
+							$('#dialogo_1').html('Seleccione el archivo de '+expediente);
+							abrirDialogo();
+							return false;
+						}
+					}								
 				}else{//end doc ==null
 					expediente = recuperaNombreDocumento(idExpObArray[i]);
 					ext = doc.toLowerCase().substring(doc.lastIndexOf(".")+1);

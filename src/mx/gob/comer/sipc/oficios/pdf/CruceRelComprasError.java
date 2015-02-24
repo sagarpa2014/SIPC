@@ -1372,7 +1372,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			
 				crearColumna("S-2-"+ l.getPaternoProductor()+" "+l.getMaternoProductor()+" "+l.getNombreProductor(),"DET");
 				System.out.println("Volumen observado en facturas "+l.getVolTotalFacVenta());
-				crearColumna("V-3-"+l.getVolTotalFacturado()+";"+"V-3-"+l.getVolBolTicket()+";"+"V-3-"+l.getVolTotalFacVenta()+";"+"I-3-"+l.getVolEnpagos()+";"
+				crearColumna("V-3-"+l.getVolTotalFacturado()+";"+"V-3-"+l.getVolBolTicket()+";"+"V-3-"+l.getVolTotalFacVenta()+";"+"V-3-"+l.getVolEnpagos()+";"
 							+"V-3-"+l.getVolumenNoProcedente()+";"+"V-3-"+l.getDiferenciaEntreVolumen()+";"+"V-3-"+l.getDiferenciaEntreImportes()+";V-3-"+l.getDiferenciaEntreRFC()+";V-3-"+l.getVolumenObservado(), "DET");
 				claveBodegaTmp = l.getClaveBodega();
 				nomEstadoTmp = l.getNombreEstado();

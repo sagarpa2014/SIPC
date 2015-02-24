@@ -2005,7 +2005,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							for(BoletasFacturasPagosIncosistentes bod: lstBoletasFacturasPagosIncosistentes){
 								countColumn = 0;
 								Double array [] =  {bod.getVolBolTicket(), bod.getVolTotalFacVenta(), 
-										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes() };
+										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(), bod.getDiferenciaEntreRFC() };
 								valorMaximo = calcularMaximo(array);
 								
 								bd = new BitacoraRelcomprasDetalle();
