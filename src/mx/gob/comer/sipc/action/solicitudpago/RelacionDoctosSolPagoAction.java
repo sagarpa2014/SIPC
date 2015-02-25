@@ -415,8 +415,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 			}else if(estatusCA == 3){
 				llenarListaExpedientesProgramas();
 			}else if(estatusCA == 4 || estatusCA ==5 || estatusCA == 9){
-				verificarArchivoRelComprasYReporteCruce();
-								
+				verificarArchivoRelComprasYReporteCruce();								
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 				//recupera el oficio de observaciones
 				lstOficioObsSolicitudPago = spDAO.consultaOficioObsSolicitudPago(folioCartaAdhesion);
@@ -581,6 +580,8 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(), documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion(), rutaDocHis.get(0).getRutaDocumento()));
 					}else if(e.getIdExpediente() == 5){//Anexo  32-D
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(), documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion(), rutaDocHis.get(0).getRutaDocumento()));
+					}else if(e.getIdExpediente() == 7){//Dictamen del Auditor
+						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion(), documento.getPeriodoInicialAuditor(), documento.getPeriodoFinalAuditor(),rutaDocHis.get(0).getRutaDocumento()));
 					}else if(e.getIdExpediente() == 10){//Certificados de depositos
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(),  documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion(), rutaDocHis.get(0).getRutaDocumento()));
 					}else if(e.getIdExpediente() == 34){//Constancia de almacenamiento
@@ -599,6 +600,8 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(), documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion()));
 					}else if(e.getIdExpediente() == 5){//Anexo  32-D
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(), documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion()));
+					}else if(e.getIdExpediente() == 7){//Dictamen del Auditor
+						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion(), documento.getPeriodoInicialAuditor(), documento.getPeriodoFinalAuditor()));
 					}else if(e.getIdExpediente() == 10){//Certificados de depositos
 						lstsExpedientesSPCartaAdhesionV.add(new DocumentacionSPCartaAdhesionV(e.getIdExpediente(), e.getExpediente(), folioCartaAdhesion, documento.getFechaExpedicionAnexo(),  documento.getIdExpSPCartaAdhesion(), documento.getRutaDocumento(), documento.getObservacion()));
 					}else if(e.getIdExpediente() == 34){//Constancia de almacenamiento
@@ -3410,6 +3413,22 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 
 	public void setReporteCruce(boolean reporteCruce) {
 		this.reporteCruce = reporteCruce;
+	}
+
+	public Date getFechaPeriodoInicialAuditor() {
+		return fechaPeriodoInicialAuditor;
+	}
+
+	public void setFechaPeriodoInicialAuditor(Date fechaPeriodoInicialAuditor) {
+		this.fechaPeriodoInicialAuditor = fechaPeriodoInicialAuditor;
+	}
+
+	public Date getFechaPeriodoFinalAuditor() {
+		return fechaPeriodoFinalAuditor;
+	}
+
+	public void setFechaPeriodoFinalAuditor(Date fechaPeriodoFinalAuditor) {
+		this.fechaPeriodoFinalAuditor = fechaPeriodoFinalAuditor;
 	}
 	
 	

@@ -92,6 +92,35 @@ public class DocumentacionSPCartaAdhesionV{
 		this.observacion= observacion;
 		this.rutaDocumentoHistorico = rutaDocumentoHistorico;
 	}
+	
+	//Expediente Solicitud de apoyo (7) Dictamen del Auditor
+	public DocumentacionSPCartaAdhesionV(Integer idExpediente, String expediente, String folioCartaAdhesion, Long idExpSPCartaAdhesion, String rutaDocumento, Boolean observacion, Date PeriodoInicialAuditor, Date PeriodoFinalAuditor) {
+		super();
+		this.idExpediente = idExpediente;
+		this.expediente = expediente;
+		this.folioCartaAdhesion = folioCartaAdhesion;	
+		this.idExpSPCartaAdhesion = idExpSPCartaAdhesion;
+		this.rutaDocumento = rutaDocumento;
+		this.observacion = observacion;
+		this.PeriodoInicialAuditor = PeriodoInicialAuditor;
+		this.PeriodoFinalAuditor = PeriodoFinalAuditor;
+	}
+	
+	//Expediente Solicitud de apoyo (7) Dictamen del Auditor Historico
+		public DocumentacionSPCartaAdhesionV(Integer idExpediente, String expediente, String folioCartaAdhesion, Long idExpSPCartaAdhesion, String rutaDocumento, Boolean observacion, Date PeriodoInicialAuditor, Date PeriodoFinalAuditor,  String rutaDocumentoHistorico) {
+			super();
+			this.idExpediente = idExpediente;
+			this.expediente = expediente;
+			this.folioCartaAdhesion = folioCartaAdhesion;	
+			this.idExpSPCartaAdhesion = idExpSPCartaAdhesion;
+			this.rutaDocumento = rutaDocumento;
+			this.observacion = observacion;
+			this.PeriodoInicialAuditor = PeriodoInicialAuditor;
+			this.PeriodoFinalAuditor = PeriodoFinalAuditor;
+			this.rutaDocumentoHistorico = rutaDocumentoHistorico;
+		}
+
+
 
 	//Expediente escrito libre(1)
 	public DocumentacionSPCartaAdhesionV(Integer idExpediente, String expediente, String folioCartaAdhesion, Long idExpSPCartaAdhesion, Date fechaDocumento, Date fechaAcuse, String rutaDocumento) {

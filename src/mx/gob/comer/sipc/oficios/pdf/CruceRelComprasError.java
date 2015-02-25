@@ -17,7 +17,6 @@ import mx.gob.comer.sipc.action.relaciones.RelacionComprasAction;
 import mx.gob.comer.sipc.dao.RelacionesDAO;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasDetalle;
-import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.CuentasBancariasV;
