@@ -114,7 +114,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private RelacionesDAO rDAO = new RelacionesDAO();
 	private String folioCartaAdhesion; 
 	private Programa programa;
-	private Integer idPrograma;
+	private int idPrograma;
 	private Integer idComprador;
 	private Integer idEstado;
 	private String claveBodega;
@@ -5051,6 +5051,17 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 
 	public void setFechaDeReporte(Date fechaDeReporte) {
 		this.fechaDeReporte = fechaDeReporte;
+	}
+
+	public int getIdPrograma() {
+		return idPrograma;
+	}
+
+	public void setIdPrograma(int idPrograma) {
+		this.idPrograma = idPrograma;
 	}	
+	
+	
+	
 }
 

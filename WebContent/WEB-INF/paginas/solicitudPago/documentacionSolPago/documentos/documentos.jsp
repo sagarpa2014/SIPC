@@ -255,7 +255,7 @@
 								<s:else>&nbsp;</s:else>
 							</td>
 							<td>
-								<s:if test="%{idPrograma < 41}">								
+								<s:if test="%{idPrograma < '41'}">								
 									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>									
 								</s:if>
