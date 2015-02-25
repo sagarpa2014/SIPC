@@ -9,6 +9,7 @@
 <s:set  name="archivoRelacionCompras1"><s:property value="%{archivoRelacionCompras}" /></s:set>
 <s:hidden id="archivoRelacionCom" name="" value="%{archivoRelacionCompras}"/>
 <s:set name="reporteCruce1"><s:property value="%{reporteCruce}" /></s:set>
+<s:set name="idPrograma1"><s:property value="%{idPrograma}"/></s:set>
 <div class="clear"></div>
 <div class="borderBottom" style="text-align:center"><h1>Entrega de Documentos</h1></div><br>	
 	<table  class="clean" width="100%">	
@@ -215,7 +216,7 @@
 								<label class=""><span class="norequerido">*</span>Cargar Documento</label>
 							</td>
 							<td>
-								<s:if test="%{idPrograma < 41}">
+								<s:if test="%{#idPrograma1 < 41}">
 									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 								</s:if>
 								<s:else>
@@ -255,7 +256,7 @@
 								<s:else>&nbsp;</s:else>
 							</td>
 							<td>
-								<s:if test="%{idPrograma < '41'}">								
+								<s:if test="%{#idPrograma1 < 41}">								
 									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>									
 								</s:if>
@@ -275,7 +276,7 @@
 						</s:elseif>
 						<s:elseif  test="estatusCA==4">
 							<td>
-								<s:if test="%{idPrograma < 41}">							
+								<s:if test="%{#idPrograma1 < 41}">							
 									<s:if test="observacion==true">
 										<label class="">Documento Corregido</label>
 									</s:if>
@@ -296,7 +297,7 @@
 							</td>
 							<td>
 								<s:if test="observacion==true">
-									<s:if test="%{idPrograma < 41}">	
+									<s:if test="%{#idPrograma1 < 41}">	
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									</s:if>
 								</s:if>
@@ -320,7 +321,7 @@
 						</s:elseif>
 						<s:elseif  test="estatusCA==5 || estatusCA == 9 || estatusCA == 10">
 							<td>
-								<s:if test="%{idPrograma < 41}">
+								<s:if test="%{#idPrograma1 < 41}">
 									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 								</s:if>
 								<s:else><!-- PROGRAMAS QUE YA CONTEMPLAN RELACION DE COMPRAS COMO UN MODULO  -->
@@ -349,7 +350,7 @@
 						</s:elseif>
 						<s:elseif test="estatusCA==6 || estatusCA==8">
 							<td>
-								<s:if test="%{idPrograma < 41}">
+								<s:if test="%{#idPrograma1 < 41}">
 									<s:if test="%{rutaDocumento!=null && rutaDocumento !=''}">
 										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 									</s:if>
@@ -378,7 +379,7 @@
 									&nbsp;
 								</s:if>
 								<s:else>
-									<s:if test="%{idPrograma < 41}">
+									<s:if test="%{#idPrograma1 < 41}">
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>										
 									</s:if>

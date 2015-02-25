@@ -2735,45 +2735,48 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		}else if(rca.getIdCriterio() == 22){//"VALORES NULOS EN BOLETA" 
 			StringBuilder composicionArreglo = new StringBuilder();	
 			double c = 0;
+			String [] arrayCamposQueAplica = rca.getCamposQueAplica().split(",");
 			if(siAplicaFolioContrato){
 				composicionArreglo.append("15,10,10,20,");
-				c = 55/rca.getLstGruposCamposDetalleRelacionV().size();
+				c = 55/arrayCamposQueAplica.length;
 			}else{
 				composicionArreglo.append("15,10,20,");
-				c = 45/rca.getLstGruposCamposDetalleRelacionV().size();
+				c = 45/arrayCamposQueAplica.length;
 			}
 							
-			for(int i = 1; i<=rca.getLstGruposCamposDetalleRelacionV().size(); i++){
+			for(int i = 1; i<=arrayCamposQueAplica.length; i++){
 				composicionArreglo.append(c).append(",");
 			}
 			composicionArreglo.deleteCharAt(composicionArreglo.length()-1);		
 			String [] arrayS = composicionArreglo.toString().split(",");
 			float[] x = new float[arrayS.length];
-			for(int i = 0; i < arrayS.length; i++){
+			for(int i = 0; i < arrayS.length; i++){ 
 				x[i] = Float.parseFloat(arrayS[i]);
 			}		
 			w = x;			
 		}else if(rca.getIdCriterio() == 23){//VALORES NULOS EN FACTURAS
 			StringBuilder composicionArreglo = new StringBuilder();	
 			double c = 0;
+			String [] arrayCamposQueAplica = rca.getCamposQueAplica().split(",");
 			if(siAplicaFolioContrato){
 				composicionArreglo.append("15,10,10,20,");
-				c = 55/rca.getLstGruposCamposDetalleRelacionV().size();
+				c = 55/arrayCamposQueAplica.length;
 			}else{
 				composicionArreglo.append("15,10,20,");
-				c = 45/rca.getLstGruposCamposDetalleRelacionV().size();
+				c = 45/arrayCamposQueAplica.length;
 			}
 						
-			for(int i = 1; i<=rca.getLstGruposCamposDetalleRelacionV().size(); i++){
+			for(int i = 1; i<=arrayCamposQueAplica.length; i++){
 				composicionArreglo.append(c).append(",");
-			}
+			} 
 			composicionArreglo.deleteCharAt(composicionArreglo.length()-1);		
 			String [] arrayS = composicionArreglo.toString().split(",");
 			float[] x = new float[arrayS.length];
 			for(int i = 0; i < arrayS.length; i++){
 				x[i] = Float.parseFloat(arrayS[i]);
 			}		
-			w = x;		
+			w = x;	
+			System.out.println("w lenb "+w.length);
 		}else if(rca.getIdCriterio() == 24){//VALORES NULOS EN PAGOS
 			StringBuilder composicionArreglo = new StringBuilder();	
 			double c = 0;

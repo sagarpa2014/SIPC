@@ -747,7 +747,6 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		return SUCCESS;		
 	}
 	
-
 	/* 3; "ASIGNADO A ESPECIALISTA"
 	   4; "DOCUMENTACIÓN COMPLETA CON OBSERVACIONES"
 	   5; "DOCUMENTACIÓN COMPLETA SIN OBSERVACIONES"
@@ -1426,9 +1425,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		return sustitucionARSatisfactoria;
 				
 	}
-	
-	
-	
+		
 	private boolean sustituirArchivoObservaciones(){
 		boolean sustitucionAOSatisfactoria = false;
 		try{
