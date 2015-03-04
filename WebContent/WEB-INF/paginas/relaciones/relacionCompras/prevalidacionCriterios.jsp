@@ -95,6 +95,9 @@
 	<s:if test="%{lstVolumenCumplido.size() > 0}"> <!--VOLUMEN DE FINIQUITO"-->
 		<span class="requerido">VOLUMEN DE FINIQUITO</span><br>
 	</s:if>
+	<s:if test="%{lstPrecioPagPorTipoCambio.size() > 0}"> <!--VOLUMEN DE FINIQUITO"-->
+		<span class="requerido">PRECIO PAGADO AL PRODUCTOR MENOR AL PACTADO EN EL CONTRATO</span><br>
+	</s:if>
 	
 </fieldset>
 <s:include value="incluyeLogXls.jsp"/>

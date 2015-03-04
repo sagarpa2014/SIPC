@@ -64,6 +64,7 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasIgualesFacAserca;
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasVsPago;
 import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotalesPorBodFac;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagosCamposRequeridos;
+import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagPorTipoCambio;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoMenor;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoProductor;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD;
@@ -235,6 +236,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<RendimientosProcedente> lstRendimientosProcedente;
 	private List<VolumenFiniquito> lstVolumenCumplido;
 	private Date fechaDeReporte;
+	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
 	
 	
 	public String capturaCargaArchivoRelCompras(){ 
@@ -1924,7 +1926,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
-										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true);	
+										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
@@ -2744,6 +2746,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
+
 						double difVolumenFacMayorBoleta = 0;
 						lstBoletasVsFacturas = rDAO.verificaBoletaVsFacturas(folioCartaAdhesion);
 						if(lstBoletasVsFacturas.size()>0){//VOLUMEN FACTURADO MAYOR
@@ -2989,6 +2992,92 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cDAO.guardaObjeto(b);
 							}
 						}						
+					}else if(l.getIdCriterio() == 15){// //PRECIO PAGADO AL PRODUCTOR DEBERÁ SER IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA						
+						sheet = wb.createSheet("PRECIO PAGADO POR TIPO CAMBIO");
+						sheet = setMargenSheet(sheet);
+						countRow = 0;
+						countColumn = 0;
+						lstPrecioPagPorTipoCambio = rDAO.consultaPrecioPagPorTipoCambio(folioCartaAdhesion);
+						if(lstPrecioPagPorTipoCambio.size()>0){
+							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
+							msj = l.getCriterio();
+							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue(msj);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("Clave Bodega");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Estado");
+							//Si aplica "FOLIO CONTRATO" en la configuracion del esquema 
+							if(siAplicaFolioContrato){
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Folio Contrato");
+							}	
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Productor");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("P.N.A. total de la factura (ton.) por contrato");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Precio pactado por tonelada");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Importe Facturado Por Contrato");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Importe  Calculado para Contrato");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Diferencia a Pagar");
+							for(PrecioPagPorTipoCambio c: lstPrecioPagPorTipoCambio){
+								countColumn = 0;
+								bd = new BitacoraRelcomprasDetalle();
+								bd.setMensaje( c.getClaveBodega()+";"+c.getNombreEstado()+";"+(siAplicaFolioContrato ? c.getFolioContrato()+";":"")
+										+c.getPaternoProductor()+";"+c.getMaternoProductor()+";"+c.getNombreProductor()+";"
+										+(c.getVolTotalFacVenta()!=null?c.getVolTotalFacVenta()+";":";0")
+										+(c.getPrecioPactadoPorTonelada()!=null?c.getPrecioPactadoPorTonelada()+";":";0")
+										+(c.getImpSolFacVenta()!=null?c.getImpSolFacVenta()+";":";0")
+										+(c.getImporteContrato()!=null?c.getImporteContrato()+";":";0")
+										+(c.getDiferenciaImporte()!=null?c.getDiferenciaImporte()+";":";0"));
+								b.getBitacoraRelcomprasDetalle().add(bd);								
+								//Actualiza el productor en campo factura_inconsistente como inconsistente
+								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(),
+										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), false, false, false, true);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getNombreEstado()!=null ? c.getNombreEstado()+"":"");
+								if(siAplicaFolioContrato){
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(c.getFolioContrato()!=null ? c.getFolioContrato()+"":"");
+								}
+								cell = row.createCell(++countColumn);
+								cell.setCellValue((c.getPaternoProductor()!=null && !c.getPaternoProductor().isEmpty() ? c.getPaternoProductor()+" " :"" )
+										+(c.getMaternoProductor()!=null ? c.getMaternoProductor()+" " :"") 
+										+(c.getNombreProductor()!=null ? c.getNombreProductor() :""));								
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getVolTotalFacVenta()!=null?c.getVolTotalFacVenta()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getPrecioPactadoPorTonelada()!=null?c.getPrecioPactadoPorTonelada()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getImpSolFacVenta()!=null?c.getImpSolFacVenta()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getImporteContrato()!=null?c.getImporteContrato()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getDiferenciaImporte()!=null?c.getDiferenciaImporte()+"":"");								
+								
+							}							
+							b.setMensaje(msj);							
+							b = (BitacoraRelcompras) cDAO.guardaObjeto(b);		
+						}else{ 
+							msj = "La validación es correcta \"EL PRECIO PAGADO AL PRODUCTOR ES IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA\"";
+							row = sheet.createRow(countRow);
+							cell = row.createCell(0);
+							cell.setCellValue(msj);
+							llenarBitacora(false, l.getIdCriterio());							
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}
+						
+						
 					}else if(l.getIdCriterio() == 23){// "VALORES REQUERIDOS EN CAMPOS DE FACTURAS"
 						sheet = wb.createSheet("FACTURAS VAL NULOS");
 						sheet = setMargenSheet(sheet);
@@ -3127,119 +3216,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					}					
 				}
 				for(CatCriteriosValidacion l:lstValidacionPorGrupo){
-					if(l.getIdCriterio()== 15){//PRECIO PAGADO AL PRODUCTOR DEBERÁ SER IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA
-						/*Double totalVolumenFacGlobal = 0.0;
-						lstRCTemp =	rDAO.consultaRelacionComprasTMP(folioCartaAdhesion);
-						facturaGlobal = new HashMap<String, Double>();
-						List<String> facturasVenta = new ArrayList<String>();
-						String ultimaFactura = "";
-						Date fechaFacturaGloblal = null;
-						if(aplicaAdendum){
-							//Setea fecha de acuerdo al contrato capturado.
-							Set<String> capFechaContratoIt = fechaContratoTipoCambio.keySet();
-							Iterator<String> it =  capFechaContratoIt.iterator();
-							while(it.hasNext()){
-								String folioContrato = it.next();
-								Date fecha= fechaContratoTipoCambio.get(folioContrato);
-								if(fecha != null){
-									int elementosActualiados = rDAO.actualizaFechaTipoCambioXAdendum(folioContrato, fecha, folioCartaAdhesion);
-									AppLogger.info("app", "Se actualizaron "+elementosActualiados+" para el folio contrato "+folioContrato+" carta "+folioCartaAdhesion);
-								}
-							}
-						}else{					
-							for(RelacionComprasTMP r: lstRCTemp){
-								if(r.getPersonaFacturaGlobal()!=null && !r.getPersonaFacturaGlobal().isEmpty()){						
-									if(r.getNumeroFacGlobal()!=null && !r.getNumeroFacGlobal().isEmpty()){
-										if(!ultimaFactura.equals(r.getNumeroFacGlobal())){
-											ultimaFactura = r.getNumeroFacGlobal();
-											fechaFacturaGloblal = r.getFechaFacGlobal();
-										}
-										//Preguntar si existe factura global en el mapa
-										if(facturaGlobal.containsKey(r.getNumeroFacGlobal())){
-											totalVolumenFacGlobal = facturaGlobal.get(r.getNumeroFacGlobal())+r.getVolTotalFacVenta();
-											//Actualiza registro de la relacion de compras con la factura que le corresponde
-											r.setNumeroFacGlobal(r.getNumeroFacGlobal());
-											r.setFechaFacGlobal(r.getFechaFacGlobal());								
-											cDAO.guardaObjeto(r);
-											facturaGlobal.put(r.getNumeroFacGlobal(),totalVolumenFacGlobal);
-										}else{
-											facturaGlobal.put(r.getNumeroFacGlobal(),r.getVolTotalFacVenta());
-										}					
-									}else{
-										if(r.getFolioFacturaVenta()!=null && !r.getFolioFacturaVenta().isEmpty() && r.getVolTotalFacVenta()!=null ){
-											if(!facturaGlobal.isEmpty()){									
-												totalVolumenFacGlobal = facturaGlobal.get(ultimaFactura)+r.getVolTotalFacVenta();
-												facturaGlobal.put(ultimaFactura,totalVolumenFacGlobal);
-												r.setNumeroFacGlobal(ultimaFactura);
-												r.setFechaFacGlobal(fechaFacturaGloblal);
-												cDAO.guardaObjeto(r);
-											}
-										}
-									}
-								}else{
-									//Guardar las facturas que no tienen factura global
-									if(r.getFolioFacturaVenta()!=null && !r.getFolioFacturaVenta().isEmpty()){
-										facturasVenta.add(r.getFolioFacturaVenta());
-										//Actualiza la fecha de tipo de cambio en las facturas que no tienen factura global
-										r.setFechaTipoCambio(r.getFechaEmisionFac());
-										cDAO.guardaObjeto(r);
-									}
-									
-								}
-							}								
-							//Proceso que verifica los volumenes de las facturas globales, deben ser mayores o iguales a las facturas por productor
-							//y setea fecha tipo de cambio de acuerdo al volumen global vs sumatoria volumen factura				
-							List<VolumenFacturaGlobalVsVolumenFacturas> lstVFacGlobal = rDAO.verificaVolumenFacturaGlobalVsVolumenFacturas(folioCartaAdhesion);				
-							for(VolumenFacturaGlobalVsVolumenFacturas v: lstVFacGlobal){
-								if(v.getVolumenFacturas()>v.getVolumenGlobal()){
-									//Actualizar fecha de tipo de cambio con la fecha de la factura del productor
-									rDAO.actualizaFechaTipoCambioXFactura(v.getNumeroFacGlobal(), folioCartaAdhesion);
-								}else{//Actualizar fecha de tipo de cambio con la fecha de la factura global
-									rDAO.actualizaFechaTipoCambioXFacturaGlobal(v.getNumeroFacGlobal(), folioCartaAdhesion);
-								}
-							}
-						}//End no aplica adendum		
-						
-						lstPrecioPagadoProductor = rDAO.consultaPrecioPagadoProductor(folioCartaAdhesion);		
-						String folioCProductor=  "", temFCProductor="";
-						if(lstPrecioPagadoProductor.size()>0){//
-							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-							for(PrecioPagadoProductor p: lstPrecioPagadoProductor){
-								folioCProductor = p.getFolioContrato()+p.getProductor();
-								totalVolSolFacVenta += p.getVolSolFacVenta();
-								totalPrecioTonelada += p.getPrecioTonelada();
-								totalImpSolFacVenta += p.getImpSolFacVenta();
-								totalTipoCambio += p.getTipoCambio();
-								totalPrecioPactadoPorTonelada += p.getPrecioPactadoPorTonelada();
-								totalPrecioPacXTipoCambio += p.getPrecioPacXTipoCambio();
-								totalPagarFacturaPnaPrecCal += p.getTotalPagarFacturaPnaPrecCal();
-								totalDifMontoFac += p.getDifMontoFac();
-								if(!folioCProductor.equals(temFCProductor)){
-									totalDifMontoTotal += p.getDifMontoTotal();
-								}					
-								temFCProductor = p.getFolioContrato()+p.getProductor();
-								bd = new BitacoraRelcomprasDetalle();						
-								bd.setMensaje(p.getClaveBodega()+";"+p.getFolioContrato()+";"
-										+ p.getProductor()+";"+ p.getPaternoProductor() + ";"+ p.getMaternoProductor() + ";"
-										+ p.getNombreProductor() + ";"+ p.getFolioFacturaVenta() + ";"+p.getVolSolFacVenta()+";"
-										+ p.getFechaTipoCambio() + ";"+p.getPrecioTonelada()+";"+p.getImpSolFacVenta()+";"+p.getPrecioPactadoPorTonelada()+";"
-										+ p.getTipoCambio()+";"+p.getPrecioPacXTipoCambio()+";"
-										+ p.getTotalPagarFacturaPnaPrecCal()+";"+p.getDifMontoFac()+";"+p.getDifMontoTotal());
-								b.getBitacoraRelcomprasDetalle().add(bd);						
-							}
-							//guarda los totales					
-												
-							msj = "PRECIO MENOR ENTRE PRECIO FACTURA Y PRECIO PACTADO EN CONTRATO X TIPO DE CAMBIO";
-							b.setMensaje(msj);
-							crearCeldaenLogXls();
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta";
-							crearCeldaenLogXls();
-							llenarBitacora(false, l.getIdCriterio());
-							cDAO.guardaObjeto(b);
-						}*/
-					}else if(l.getIdCriterio() == 16){//"NO SE REPITAN CHEQUES-BANCO POR EMPRESA"
+					if(l.getIdCriterio() == 16){//"NO SE REPITAN CHEQUES-BANCO POR EMPRESA"
 						sheet = wb.createSheet("CHEQUES DUPLICADOS");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
@@ -5059,6 +5036,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 
 	public void setIdPrograma(int idPrograma) {
 		this.idPrograma = idPrograma;
+	}
+
+	public List<PrecioPagPorTipoCambio> getLstPrecioPagPorTipoCambio() {
+		return lstPrecioPagPorTipoCambio;
+	}
+
+	public void setLstPrecioPagPorTipoCambio(
+			List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio) {
+		this.lstPrecioPagPorTipoCambio = lstPrecioPagPorTipoCambio;
 	}	
 	
 	

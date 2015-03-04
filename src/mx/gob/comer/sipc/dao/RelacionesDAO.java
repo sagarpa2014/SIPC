@@ -4504,10 +4504,10 @@ public class RelacionesDAO {
 		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
 				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac)throws JDBCException {
 			return  actualizaFacMayBolOPagMenFac(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
-					paternoProductor, maternoProductor, nombreProductor, facMayBol, pagMenFac,  false);
+					paternoProductor, maternoProductor, nombreProductor, facMayBol, pagMenFac,  false, false);
 		}
 		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente)throws JDBCException {
+				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente, boolean facIncXTipoCambio)throws JDBCException {
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
@@ -4568,6 +4568,9 @@ public class RelacionesDAO {
 				}
 				if(rfcInconsistente){
 					set.append(" rfc_inconsistente = true,");
+				}
+				if(facIncXTipoCambio){
+					set.append(" factura_inconsistente = true,");
 				}
 								
 				set.deleteCharAt(set.length()-1);
@@ -5018,4 +5021,46 @@ public class RelacionesDAO {
 			return elementosActualizados;
 			
 		}
+		
+		public List<PrecioPagPorTipoCambio> consultaPrecioPagPorTipoCambio(String folioCartaAdhesion)throws  JDBCException{
+			List<PrecioPagPorTipoCambio> lst = new ArrayList<PrecioPagPorTipoCambio>();
+			StringBuilder consulta= new StringBuilder();	
+			consulta.append("select r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,v1.vol_total_fac_venta, v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
+			.append("from contrato_tipo_cambio_v v1, relacion_compras_tmp r ")
+			.append("where r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+			.append("and r.folio_contrato = v1.folio_contrato and coalesce(r.paterno_productor,'X') = coalesce(v1.paterno_productor,'X') ")
+			.append("and coalesce(r.materno_productor,'X') =  coalesce(v1.materno_productor,'X')  and coalesce(r.nombre_productor ,'X') = coalesce(v1.nombre_productor,'X') ")
+			.append("and diferecia_importe_pagado > 1.00 ")
+			.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, v1.vol_total_fac_venta,v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
+			.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
+			
+			SQLQuery query = session.createSQLQuery(consulta.toString());
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List<?> data = query.list();
+			
+			for(Object object : data){
+				Map<?, ?> row = (Map<?, ?>)object;
+				PrecioPagPorTipoCambio b = new PrecioPagPorTipoCambio();	
+				b.setClaveBodega((String) row.get("clave_bodega"));
+				b.setNombreEstado((String) row.get("nombre_estado"));
+				b.setFolioContrato((String) row.get("folio_contrato"));
+				b.setPaternoProductor((String) row.get("paterno_productor"));
+				b.setMaternoProductor((String) row.get("materno_productor"));
+				b.setNombreProductor((String) row.get("nombre_productor"));
+				BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+				b.setVolTotalFacVenta(valor.doubleValue());
+				valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
+				b.setPrecioPactadoPorTonelada(valor.doubleValue());
+				valor = (BigDecimal) row.get("imp_sol_fac_venta");
+				b.setImpSolFacVenta(valor.doubleValue());				
+				valor = (BigDecimal) row.get("importe_calculado_a_pagar");
+				b.setImporteContrato(valor.doubleValue());
+				valor = (BigDecimal) row.get("diferecia_importe_pagado");
+				b.setDiferenciaImporte(valor.doubleValue());		
+		        lst.add(b);	
+			}		
+			return lst;
+		}
+
+		
 }
