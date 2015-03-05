@@ -119,7 +119,7 @@
 					<div class="clear"></div>
 					
 					<div class="accion">
-						<s:submit  value="Prevalidación" cssClass="boton2" action="prevalidarRelacionCompras" onclick="return chkCamposPrevalidacion();"/>
+						<s:submit  value="Validar" cssClass="boton2" action="prevalidarRelacionCompras" onclick="return chkCamposPrevalidacion();"/>
 						<a href="<s:url value="/solicitudPago/selecAccionDocumentacion?folioCartaAdhesion=%{folioCartaAdhesion}"/>" onclick="" class="boton" title="" >Cancelar</a>
 					</div>
 				</fieldset>

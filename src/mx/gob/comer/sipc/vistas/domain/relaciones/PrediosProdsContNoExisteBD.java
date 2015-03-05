@@ -107,15 +107,23 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 		    	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
 		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
 		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
-		            	    if(this.folioPredio.compareToIgnoreCase(obj.folioPredio) == 0) { 
-		            	    	if(this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString()) == 0){
-		            	    		return this.folioPredioAlterno.compareToIgnoreCase(obj.folioPredioAlterno);     
-		            	    	}else{
-		            	    		return this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString());
-		            	    	}             
-		            	    }else{
-		            	    	return this.folioPredio.compareToIgnoreCase(obj.folioPredio); 
-		            	    }    		            	    
+		            		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
+		            			if(this.productor.compareToIgnoreCase(obj.productor) == 0) {		            			
+				            	    if(this.folioPredio.compareToIgnoreCase(obj.folioPredio) == 0) { 
+				            	    	if(this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString()) == 0){
+				            	    		return this.folioPredioAlterno.compareToIgnoreCase(obj.folioPredioAlterno);     
+				            	    	}else{
+				            	    		return this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString());
+				            	    	}             
+				            	    }else{
+				            	    	return this.folioPredio.compareToIgnoreCase(obj.folioPredio); 
+				            	    }
+		            			}else{
+		            				return this.productor.compareTo(obj.productor);
+		            			}           	    
+		            		}else{
+		            			return this.nombreProductor.compareTo(obj.nombreProductor);
+		            		}	            	    
 		            	}else{
 		            		return this.maternoProductor.compareTo(obj.maternoProductor);
 		            	}	                 

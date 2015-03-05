@@ -4257,7 +4257,7 @@ public class RelacionesDAO {
 		public List<BoletasFacturasPagosIncosistentes> consultaBoletasFacturasPagosIncosistentes(String folioCartaAdhesion, int idPrograma)throws  JDBCException{
 			List<BoletasFacturasPagosIncosistentes> lst = new ArrayList<BoletasFacturasPagosIncosistentes>();
 			StringBuilder consulta= new StringBuilder();	
-			consulta.append("SELECT  r.clave_bodega,  r.nombre_estado, r.estado_acopio, r.folio_contrato, r.rfc_productor, r.paterno_productor, r.materno_productor, r.nombre_productor, ") 
+			consulta.append("SELECT row_number() OVER (),  r.clave_bodega,  r.nombre_estado, r.estado_acopio, r.folio_contrato, r.rfc_productor, r.paterno_productor, r.materno_productor, r.nombre_productor, ") 
 			.append("(select COALESCE(sum(vol_total_fac_venta),0) ")
 			.append("from relacion_compras_tmp r1 ")
 			.append("where r.clave_bodega = r1.clave_bodega ") 
@@ -4310,8 +4310,8 @@ public class RelacionesDAO {
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r41.nombre_productor,'X')   ")
 			.append("and  r41.pago_inconsistente= true ")
 			.append(") ")
-			.append(") as  vol_en_pagos,  ")
-			.append("(select distinct COALESCE(r5.dif_volumen_fac_mayor,0)  ")
+			.append(") as  vol_en_pagos, ")
+			.append("(select COALESCE(max(r5.dif_volumen_fac_mayor),0)  ")
 			.append("from relacion_compras_tmp r5  ")
 			.append("where r.clave_bodega = r5.clave_bodega ") 
 			.append("and  r.nombre_estado = r5.nombre_estado ")
@@ -4320,7 +4320,7 @@ public class RelacionesDAO {
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r5.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r5.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r5.nombre_productor,'X') ")
-			.append("and  EXISTS ( ")
+			.append("and  EXISTS ( ") 
 			.append("select 1 ")
 			.append("from relacion_compras_tmp r51 ")
 			.append("where r.clave_bodega = r51.clave_bodega ") 
@@ -4376,8 +4376,8 @@ public class RelacionesDAO {
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
 			.append("and  r61.rfc_inconsistente = true ")
 			.append(") ")
-			.append(") as  diferencia_entre_rfc, ")			
-			.append("(select distinct COALESCE(r7.volumen_no_procedente,0) ")
+			.append(") as  diferencia_entre_rfc, ")		
+			.append("(select  COALESCE(max(r7.volumen_no_procedente),0) ")
 			.append("from relacion_compras_tmp r7 ")
 			.append("where r.clave_bodega = r7.clave_bodega ") 
 			.append("and  r.nombre_estado = r7.nombre_estado ")
@@ -4394,6 +4394,7 @@ public class RelacionesDAO {
 			
 			System.out.println("Query Resumen observaciones "+consulta.toString());
 			SQLQuery query = session.createSQLQuery(consulta.toString());
+			//SQLQuery query = session.createSQLQuery("select * from resumen_observacion_relacion_compras where folio_carta_adhesion = '"+folioCartaAdhesion+"'");
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 			List<?> data = query.list();
 			

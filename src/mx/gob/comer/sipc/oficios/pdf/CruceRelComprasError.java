@@ -977,7 +977,13 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				//colocarPrimerasColumnasDetalle(configTotales, w.length);
 				crearColumna("S-2-"+ l.getPaternoProductor()+" "+l.getMaternoProductor()+" "+l.getNombreProductor(),"DET");
 				crearColumna("S-2-"+ l.getFolioDocPago(), "DET");
-				crearColumna("S-2-"+l.getBancoSinaxc()+";"+"V-3-"+l.getVolTotalFacVenta()+";","DET");
+				System.out.println("l "+l.getVolTotalFacVenta());
+				crearColumna("S-2-"+l.getBancoSinaxc(),"DET");				
+				parrafo =  new Paragraph(l.getVolTotalFacVenta() != null ? TextUtil.formateaNumeroComoVolumen(l.getVolTotalFacVenta()):"", TIMESROMAN08);
+				parrafo.setLeading(1, 1);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 3, 1);
+				t.addCell(cell);			
 				if(siAplicaFolioContrato){					
 					crearColumna("S-1-"+l.getFolioContrato(),"DET");	
 				}
