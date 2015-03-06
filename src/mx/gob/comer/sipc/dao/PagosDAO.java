@@ -281,7 +281,7 @@ public class PagosDAO {
 	public Double getSumaImportePagos(String idPagos) throws Exception{
 		double sumaImportes = 0;
 		try{
-			StringBuilder hql = new StringBuilder().append("select new java.lang.Double( sum(importe) ) ")
+			StringBuilder hql = new StringBuilder().append("select new java.lang.Double( coalesce(sum(importe),0) ) ")
 					.append("from Pagos ").append("where ").append("idPago in(").append(idPagos).append(")");
 			List<Double> lst = (List<Double>) session.createQuery(hql.toString()).list();
 			if (lst != null && lst.size() > 0){

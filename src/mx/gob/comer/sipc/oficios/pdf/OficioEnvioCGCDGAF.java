@@ -94,7 +94,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			enunciado.add(new Chunk("Agencia de Servicios a la Comercialización y\n Desarrrollo de Mercados Agropecuarios\n", TIMESROMANBOLD12));
 			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMANBOLD10));
 			enunciado.add(new Chunk("Dirección General de Desarrollo de\nMercados e Infraestructura Comercial\n", TIMESROMANBOLD9));
-			enunciado.add(new Chunk("Dirección de Pago de Apoyos a la Comercialización\n", TIMESROMANBOLD9));
+			//enunciado.add(new Chunk("Dirección de Pago de Apoyos a la Comercialización\n", TIMESROMANBOLD9));
 			enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 /*
 			if(ata.getLeyendaOficio().length()<=40){
@@ -201,8 +201,9 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);
-		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos\n"
-				+ "de infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables\", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.", TIMESROMAN06);
+		//parrafo = new Paragraph(ata.getLeyendaConformidad(),  TIMESROMAN06);
+//		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos\n"
+//				+ "de infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables\", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.", TIMESROMAN06);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
 		document.add(parrafo);		
 	}
@@ -228,17 +229,28 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		piePagina.setTotalWidth(document.right() - document.left()); 
 		piePagina.setWidths(new int[]{8,92});
 		
+		//Elaboro
+		parrafo = new Paragraph("Elaboró:", TIMESROMAN08);
+		celda =	createCell(parrafo, 0, 2, 1);
+		piePagina.addCell(celda);
+		parrafo = new Paragraph();
+		parrafo.add(new Chunk(ata.getElaboro().getIniProfesion()+" "+ata.getElaboro().getNombre()+" "+ata.getElaboro().getPaterno()+" "+
+				(ata.getElaboro().getMaterno()!=null && !ata.getElaboro().getMaterno().isEmpty()?ata.getElaboro().getMaterno():"")+
+				".- "+ata.getElaboro().getPuesto(), TIMESROMAN08));
+		celda =	createCell(parrafo, 0, 2, 1);
+		piePagina.addCell(celda);
+		//addEmptyLine(1);
 		parrafo = new Paragraph("C.c.e.p.", TIMESROMAN08);
 		celda =	createCell(parrafo, 0, 2, 1);
 		piePagina.addCell(celda);
 		parrafo = new Paragraph();
 		//ccpe1
 		
-		parrafo.add(new Chunk(ata.getCcep1().getIniProfesion()+" "+ata.getCcep1().getNombre()+" "+ata.getCcep1().getPaterno()+" "+
-				(ata.getCcep1().getMaterno()!=null && !ata.getCcep1().getMaterno().isEmpty()?ata.getCcep1().getMaterno():"")+
-				".- "+ata.getCcep1().getPuesto()+".- ", TIMESROMAN08));
-		//parrafo.add(new Chunk("Luz Maria Corona Martinez"+".- "+"Mi puesto"+".- ", TIMESROMAN08));
-		parrafo.add(new Chunk((ata.getCcep1().getCorreo()!=null && !ata.getCcep1().getCorreo().isEmpty())?ata.getCcep1().getCorreo()+"\n":"\n", TIMESROMAN07));
+//		parrafo.add(new Chunk(ata.getCcep1().getIniProfesion()+" "+ata.getCcep1().getNombre()+" "+ata.getCcep1().getPaterno()+" "+
+//				(ata.getCcep1().getMaterno()!=null && !ata.getCcep1().getMaterno().isEmpty()?ata.getCcep1().getMaterno():"")+
+//				".- "+ata.getCcep1().getPuesto()+".- ", TIMESROMAN08));
+//		//parrafo.add(new Chunk("Luz Maria Corona Martinez"+".- "+"Mi puesto"+".- ", TIMESROMAN08));
+//		parrafo.add(new Chunk((ata.getCcep1().getCorreo()!=null && !ata.getCcep1().getCorreo().isEmpty())?ata.getCcep1().getCorreo()+"\n":"\n", TIMESROMAN07));
 
 		//ccpe2
 		parrafo.add(new Chunk(ata.getCcep2().getIniProfesion()+" "+ata.getCcep2().getNombre()+" "+ata.getCcep2().getPaterno()+" "+

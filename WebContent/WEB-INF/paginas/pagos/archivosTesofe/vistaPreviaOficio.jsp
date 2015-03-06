@@ -27,11 +27,11 @@
 		</span>		
 		<div class="clear"></div>
 		<div class="clear"></div>
-		<span class="derecha">
-			<font class="arial12normal">
-				Dirección de Pago de Apoyos a la Comercialización<br>
-			</font>
-		</span>		
+<%-- 		<span class="derecha"> --%>
+<!-- 			<font class="arial12normal"> -->
+<!-- 				Dirección de Pago de Apoyos a la Comercialización<br> -->
+<!-- 			</font> -->
+<%-- 		</span>		 --%>
 		<div class="clear"></div>
 		<br>
 		<p class="arial12normal">
@@ -85,17 +85,21 @@
 			<font class="arial12bold">								
 				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/><br>
 			</font>
-			<font class="arial8normal">
-				Facultado para "Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos de<br> 
-				infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.<br>
-			</font>			
+<!-- 			<font class="arial8normal">			 -->
+<!-- <!-- 				El Director General de Desarrollo de Mercados e Infraestructura Comercial, antes Director General de Desarrollo de Mercados, <br> --> -->
+<%-- 					<s:property value="leyendaConformidad"/> --%>
+<!-- 			</font>			 -->
 		</center>
+		<br>
+		<div id="elaboro">
+			<font class="arial12normal">Elaboro:&nbsp;<s:property value="%{elaboro.nombre}"/>.-&nbsp;<s:property value="%{elaboro.puesto}"/></font>
+		</div>
 		<br>
 		<div id="cpp">
 			<div id="frasecpp"><font class="arial12normal">C.c.e.p</font></div>
 			<div id="personal">
-				<font class="arial12normal"><s:property value="%{ccep1.iniProfesion}"/>&nbsp;<s:property value="%{ccep1.nombre}"/>&nbsp;<s:property value="%{ccep1.paterno}"/>&nbsp;<s:property value="%{ccep1.materno}"/>
-				.-<s:property value="%{ccep1.puesto}"/>.-<s:property value="%{ccep1.correo}"/></font><br> 
+<%-- 				<font class="arial12normal"><s:property value="%{ccep1.iniProfesion}"/>&nbsp;<s:property value="%{ccep1.nombre}"/>&nbsp;<s:property value="%{ccep1.paterno}"/>&nbsp;<s:property value="%{ccep1.materno}"/> --%>
+<%-- 				.-<s:property value="%{ccep1.puesto}"/>.-<s:property value="%{ccep1.correo}"/></font><br>  --%>
 				<font class="arial12normal"><s:property value="%{ccep2.iniProfesion}"/>&nbsp;<s:property value="%{ccep2.nombre}"/>&nbsp;<s:property value="%{ccep2.paterno}"/>&nbsp;<s:property value="%{ccep2.materno}"/>
 				.-<s:property value="%{ccep2.puesto}"/>.-<s:property value="%{ccep2.correo}"/></font><br>
 <!--				

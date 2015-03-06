@@ -68,6 +68,7 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 	private List<Personal> lstPersonalVoBo;
 	private Personal destinatario;
 	private Personal emisor;
+	private Personal elaboro;
 	private int idPrograma;
 	private int idEstado;
 	private String noOficio;
@@ -117,6 +118,7 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 	private String p14Texto;
 	
 	private String quintoParrafo;
+	private String leyendaConformidad;
 	
 	public String archivoTesofeEnvio(){
 		try{
@@ -148,8 +150,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			criterioPago = programa.getCriterioPago();
 			/*Recupera los pagos del programa seleccionado por el usuario con estatus = 1*/
 			lstPagosV = pDAO.consultaPagosV(-1, idPrograma, -1, "", "", "1");
-			claveOficio = "F00.4203/";
-			//claveOficio = "F00.4200/";
+//			claveOficio = "F00.4203/";
+			claveOficio = "F00.4200/";
 			anioOficio = "/"+new SimpleDateFormat("yyyy").format(new Date());
 						
 		}catch(JDBCException e){
@@ -192,7 +194,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 		Date fechaVigenciaLimitePago;
 		List<DocumentacionSPCartaAdhesionV> lstDocumentacionSPCartaAdhesion;
 		String selectedPagosAux;
-		
+		leyendaConformidad = "De conformidad con los artículos 8, fracción VIII, 21 y Noveno Transitorio del Reglamento Interior de la Agencia de Servicios" +
+				 " a la Comercialización y Desarrollo de Mercados Agropecuarios y el oficio No. F00.1000/001/2015";
 		noDepositos = 0;
 		lstPagosV = new ArrayList<PagosV>();
 		String oficio =claveOficio +noOficio +anioOficio;
@@ -289,8 +292,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 			}
 			
 			//Recupera el emisor
-			lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", true, false, false);
-//			lstPersonal = cDAO.consultaPersonal(0, "Director General de Desarrollo de Mercados", true, false, false);
+			//lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", true, false, false);
+			lstPersonal = cDAO.consultaPersonal(0, "Encargado del Despacho de la Dirección General de Desarrollo de Mercados e Infraestructura Comercial", true, false, false);
 			//lstPersonal = cDAO.consultaPersonal(0, "Coordinador General de Comercialización", true, false, false);
 			if(lstPersonal.size()>0){
 				emisor = lstPersonal.get(0);
@@ -298,18 +301,23 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 					  .append(lstPersonal.get(0).getPaterno())
 					  .append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
 				emisor.setNombre(emi.toString().toUpperCase());
-				//emisor.setPuesto(emisor.getPuesto().toUpperCase());
-				emisor.setPuesto("EL DIRECTOR");
+				emisor.setPuesto(emisor.getPuesto().toUpperCase());
+				//emisor.setPuesto("EL DIRECTOR");
 				//emisor.setPuesto("EL DIRECTOR GENERAL");
 				//emisor.setPuesto("EL COORDINADOR GENERAL");
 			}
+			
+			//Recupera los datos de quien elabora
+			lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", false, false, false);
+			elaboro = lstPersonal.get(0);	
+			elaboro.setNombre(elaboro.getNombre()+" "+(elaboro.getPaterno()!=null?elaboro.getPaterno():"")+(elaboro.getMaterno()!=null?elaboro.getMaterno():""));
 			//Recupera los cpp y vobo.
 			//if(idPrograma == 8){
-			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director en Jefe de ASERCA", false, false,false, idPrograma);
-			if(lstPersonal.size()>0){
-				ccep1 = lstPersonal.get(0);
-			}
-			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Coordinador General de Comercialización", false, false,false, idPrograma);
+//			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director en Jefe de ASERCA", false, false,false, idPrograma);
+//			if(lstPersonal.size()>0){
+//				ccep1 = lstPersonal.get(0);
+//			}
+			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Encargado del Despacho de ASERCA", false, false,false, idPrograma);
 			//lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director General de Desarrollo de Mercados", false, false,false, idPrograma);
 			if(lstPersonal.size()>0){
 				ccep2 = lstPersonal.get(0);
@@ -846,5 +854,24 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 
 	public void setQuintoParrafo(String quintoParrafo) {
 		this.quintoParrafo = quintoParrafo;
-	}	
+	}
+
+	public Personal getElaboro() {
+		return elaboro;
+	}
+
+	public void setElaboro(Personal elaboro) {
+		this.elaboro = elaboro;
+	}
+
+	public String getLeyendaConformidad() {
+		return leyendaConformidad;
+	}
+
+	public void setLeyendaConformidad(String leyendaConformidad) {
+		this.leyendaConformidad = leyendaConformidad;
+	}
+	
+	
+	
 }
