@@ -1066,17 +1066,40 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 						}
 						
 					}else if(estatusCA == 4){
-						if(siCargoDocto){
-							DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente()).get(0);
-							nombreArchivo = recuperaNomArchivoYCargaArchivo(epv.getIdExpediente(), rutaCartaAdhesion, false, true);
-							documento.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
-							documento.setObservacion(false);
-							if(epv.getIdExpediente() == 3){
-								if(idCriterioPago == 1 || idCriterioPago == 3){
-									//Guarda el Volumen Solicitado a Apoyar  
-									documento.setVolumen(volumen);
+						
+						if(idPrograma < 41 || (idPrograma >= 41 && epv.getIdExpediente() != 8 && epv.getIdExpediente() != 9)){
+							if(siCargoDocto){
+								DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente()).get(0);
+								nombreArchivo = recuperaNomArchivoYCargaArchivo(epv.getIdExpediente(), rutaCartaAdhesion, false, true);
+								documento.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
+								documento.setObservacion(false);
+								if(epv.getIdExpediente() == 3){
+									if(idCriterioPago == 1 || idCriterioPago == 3){
+										//Guarda el Volumen Solicitado a Apoyar  
+										documento.setVolumen(volumen);
+									}
 								}
+								List<ObservacionDocumentacionSP> lstObservacionDocumentacionSP = spDAO.consultaObservacionDocumentacion(documento.getIdExpSPCartaAdhesion());
+								for(ObservacionDocumentacionSP odsp : lstObservacionDocumentacionSP){
+									odsp.setIdOficioRespuesta(idOficioRespuesta);
+									//Verifica las fechas de tramite hasta la solicitud de pago
+									OficioObsSolicitudPago oficioObsSolicitudPago = spDAO.consultaOficioObsSolPagoMaxIdExp(odsp.getIdExpSPCA()).get(0);
+									Date fechaLimiteORPago = utileriasDAO.getFechaDiaHabilSumaDias(new SimpleDateFormat("yyyyMMdd").format(oficioObsSolicitudPago.getFechaAcuseObs()).toString(), periodoORPago);
+									String fechaLimiteORPagoS = new SimpleDateFormat("yyyyMMdd").format(fechaLimiteORPago).toString();
+									String fechaAcuseRespS = new SimpleDateFormat("yyyyMMdd").format(fechaAcuseResp).toString();	
+									if(Long.parseLong(fechaAcuseRespS)>Long.parseLong(fechaLimiteORPagoS)){
+										odsp.settRespuestaSP(true);
+								    }else{
+								    	odsp.settRespuestaSP(false);
+								    }				
+									//odsp.settRespuestaSP(false);
+									cDAO.guardaObjeto(odsp);	
+								}
+								documento = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(documento);
 							}
+						}else {	
+							DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente()).get(0);
+							documento.setObservacion(false);					
 							List<ObservacionDocumentacionSP> lstObservacionDocumentacionSP = spDAO.consultaObservacionDocumentacion(documento.getIdExpSPCartaAdhesion());
 							for(ObservacionDocumentacionSP odsp : lstObservacionDocumentacionSP){
 								odsp.setIdOficioRespuesta(idOficioRespuesta);
@@ -1093,9 +1116,9 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 								//odsp.settRespuestaSP(false);
 								cDAO.guardaObjeto(odsp);	
 							}
-							documento = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(documento);
+							documento = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(documento);							
+							
 						}
-						
 						
 						
 						
