@@ -197,6 +197,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			addEmptyLine(2);
 		}	
 */
+		System.out.println("Emisor --- - "+ata.getEmisor().getNombre());
 		parrafo = new Paragraph((ata.getEmisor().getIniProfesion()!=null && !ata.getEmisor().getIniProfesion().isEmpty()?ata.getEmisor().getIniProfesion().toUpperCase()+" ":"")
 				+ata.getEmisor().getNombre(), TIMESROMANBOLD10);
 		parrafo.setAlignment(Element.ALIGN_CENTER);
@@ -204,8 +205,8 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		//parrafo = new Paragraph(ata.getLeyendaConformidad(),  TIMESROMAN06);
 //		parrafo = new Paragraph("Facultado para \"Autorizar el pago de los apoyos a los beneficiarios de los programas, esquemas y servicios de apoyos de los productos Agroalimentarios y de los proyectos\n"
 //				+ "de infraestructura básica comercial, previo cumplimiento a las disposiciones jurídica aplicables\", según oficio F00.1000/004/2015 de la Dirección en Jefe de ASERCA.", TIMESROMAN06);
-		parrafo.setAlignment(Element.ALIGN_CENTER);
-		document.add(parrafo);		
+//		parrafo.setAlignment(Element.ALIGN_CENTER);
+//		document.add(parrafo);		
 	}
 
 	private void addEmptyLine(int number) throws DocumentException {
