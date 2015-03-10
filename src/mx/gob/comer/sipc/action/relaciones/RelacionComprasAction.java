@@ -2249,14 +2249,14 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Vendedor");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Volumen");
-								
-							
+							cell.setCellValue("Precio Pactado por Ton (Dlls)");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Volumen");								
 							for(VolumenFiniquito p: lstVolumenCumplido){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(p.getClaveBodega()+";"+(siAplicaFolioContrato?p.getFolioContrato()+";":"")+p.getNombreComprador()+";"+p.getNombreVendedor()+";"
-								+(p.getVolumen()!=null?p.getVolumen():0));								
+										+(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+";":0+";")+(p.getVolumen()!=null?p.getVolumen():0));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
@@ -2269,6 +2269,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(p.getNombreComprador()!=null ? p.getNombreComprador()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getNombreVendedor()!=null ? p.getNombreVendedor()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getVolumen()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen())+"":"");
 							}							
@@ -3019,7 +3021,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("P.N.A. total de la factura (ton.) por contrato");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Precio pactado por tonelada");
+							cell.setCellValue("Precio pactado por tonelada (dlls)");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Facturado Por Contrato");
 							cell = row.createCell(++countColumn);
@@ -3482,6 +3484,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						countRow = 0;
 						countColumn = 0;	
 						lstFacturasVsPago = rDAO.verificaFacturasVsPago(folioCartaAdhesion); 
+						int i = 0;
 						if(lstFacturasVsPago.size()>0){//En el listado se guarda las facturas menores a lo pagado
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
@@ -3516,6 +3519,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
 										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), false, true);
+								System.out.println("i pago actualizada "+i++);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");

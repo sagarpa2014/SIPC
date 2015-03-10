@@ -1792,10 +1792,12 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				}	
 				crearColumna("S-1-"+(l.getNombreComprador()!=null?l.getNombreComprador():""),"DET");
 				crearColumna("S-1-"+(l.getNombreVendedor()!=null?l.getNombreVendedor():""),"DET");
+				crearColumna("I-3-"+l.getPrecioPactadoPorTonelada()+";", "DET");
 				crearColumna("V-3-"+l.getVolumen()+";", "DET");
-				granTotalVol += (l.getVolumen() != null ? l.getVolumen():0);						
+				granTotalVol += (l.getPrecioPactadoPorTonelada() != null ? l.getPrecioPactadoPorTonelada():0);						
+				granTotalVol1 += (l.getVolumen() != null ? l.getVolumen():0);						
 			}							
-			colocarTotales("4,TOTAL;5,"+granTotalVol+",v;",  w.length);
+			colocarTotales("4,TOTAL;5,"+granTotalVol+",i;6,"+granTotalVol1+",v;",  w.length);
 		}//end criterio = 27
 	}
 
@@ -2475,6 +2477,8 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					p.setNombreVendedor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
 					++columna;
+					p.setPrecioPactadoPorTonelada(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					++columna;
 					p.setVolumen(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					lstVolumenCumplido.add(p);
 				}
@@ -2754,7 +2758,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}
 		}else if(rca.getIdCriterio() == 27){//VOLUMEN DE FINIQUITO
 			if(siAplicaFolioContrato){
-				float[] x1 = {10,10,30,30,20}; // %
+				float[] x1 = {10,10,30,30,10,10}; // %
 				w = x1;
 			}
 		}
@@ -3146,9 +3150,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}				
 		}else if(rca.getIdCriterio() == 15){
 			if(siAplicaFolioContrato){	
-				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-P.N.A TOTAL EN FAC POR CONTRATO;S-1-PRECIO PACTADO POR TON;S-1-IMPORTE FAC POR CONTRATO;S-1-IMPORTE CALCULADO PARA CONTRATO;S-1-DIFERENCIA A PAGAR", "DET");
+				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-P.N.A TOTAL EN FAC POR CONTRATO;S-1-PRECIO PACTADO POR TON (DLLS);S-1-IMPORTE FAC POR CONTRATO;S-1-IMPORTE CALCULADO PARA CONTRATO;S-1-DIFERENCIA A PAGAR", "DET");
 			}else{
-				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-PRODUCTOR;S-1-P.N.A TOTAL EN FAC POR CONTRATO;S-1-PRECIO PACTADO POR TON;S-1-IMPORTE FAC POR CONTRATO;S-1-IMPORTE CALCULADO PARA CONTRATO;S-1-DIFERENCIA A PAGAR", "DET");
+				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-PRODUCTOR;S-1-P.N.A TOTAL EN FAC POR CONTRATO;S-1-PRECIO PACTADO POR TON (DLLS);S-1-IMPORTE FAC POR CONTRATO;S-1-IMPORTE CALCULADO PARA CONTRATO;S-1-DIFERENCIA A PAGAR", "DET");
 			}					
 		}else if(rca.getIdCriterio() == 16){//"NO SE REPITAN CHEQUES-BANCO POR EMPRESA"
 			if(siAplicaFolioContrato){	
@@ -3363,7 +3367,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}
 		}else if(rca.getIdCriterio() == 27){
 			if(siAplicaFolioContrato){	
-				crearColumna("S-1-BODEGA;S-1-FOLIO CONTRATO;S-1-COMPRADOR;S-1-VENDEDOR;S-1-VOLUMEN", "DET");
+				crearColumna("S-1-BODEGA;S-1-FOLIO CONTRATO;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN", "DET");
 			}
 		}		
 		t.setHeaderRows(5);	 

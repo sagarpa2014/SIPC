@@ -10,6 +10,7 @@ public class VolumenFiniquito implements Comparable{
 	private String folioContrato;
 	private String nombreComprador;
 	private String nombreVendedor;
+	private Double precioPactadoPorTonelada;
 	private Double volumen;
 	
 
@@ -39,6 +40,13 @@ public class VolumenFiniquito implements Comparable{
 	}
 	public void setNombreVendedor(String nombreVendedor) {
 		this.nombreVendedor = nombreVendedor;
+	}	
+	
+	public Double getPrecioPactadoPorTonelada() {
+		return precioPactadoPorTonelada;
+	}
+	public void setPrecioPactadoPorTonelada(Double precioPactadoPorTonelada) {
+		this.precioPactadoPorTonelada = precioPactadoPorTonelada;
 	}
 	public Double getVolumen() {
 		return volumen;
