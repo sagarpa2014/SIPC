@@ -2951,6 +2951,7 @@ public class RelacionesDAO {
 				.append("HAVING coalesce(sum(imp_total_pago_sinaxc),0) < coalesce(sum(imp_sol_fac_venta),0) ")
 				.append("ORDER BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor");				
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturasVsPago.class).list();
+		System.out.println("Query pagos vs facturas");
 		return lst;
 	}	
 	
@@ -4538,12 +4539,24 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where folio_contrato ='").append(folioContrato).append("' ");
 					}
-				}	
+				}else{
+					if(where.length()>0){
+						where.append(" and folio_contrato is null ");
+					}else{
+						where.append(" where folio_contrato is null ");
+					}
+				}
 				if (paternoProductor != null && !paternoProductor.isEmpty()){
 					if(where.length()>0){
 						where.append(" and paterno_productor ='").append(paternoProductor).append("' ");
 					}else{
 						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor is null ");
+					}else{
+						where.append(" where paterno_productor is null");
 					}
 				}
 				if (maternoProductor != null && !maternoProductor.isEmpty()){
@@ -4551,6 +4564,12 @@ public class RelacionesDAO {
 						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
 					}else{
 						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor is null ");
+					}else{
+						where.append(" where materno_productor is null");
 					}
 				}
 				if (nombreProductor != null && !nombreProductor.isEmpty()){
@@ -4647,12 +4666,24 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
 					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor  is null ");
+					}else{
+						where.append(" where paterno_productor  is null ");
+					}
 				}
 				if (maternoProductor != null && !maternoProductor.isEmpty()){
 					if(where.length()>0){
 						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
 					}else{
 						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor is null ");
+					}else{
+						where.append(" where materno_productor is null");
 					}
 				}
 				if (nombreProductor != null && !nombreProductor.isEmpty()){
@@ -4714,12 +4745,24 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
 					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor  is null ");
+					}else{
+						where.append(" where paterno_productor  is null ");
+					}
 				}
 				if (maternoProductor != null && !maternoProductor.isEmpty()){
 					if(where.length()>0){
 						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
 					}else{
 						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor is null ");
+					}else{
+						where.append(" where materno_productor is null");
 					}
 				}
 				if (nombreProductor != null && !nombreProductor.isEmpty()){
@@ -4765,12 +4808,24 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
 					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor  is null ");
+					}else{
+						where.append(" where paterno_productor  is null ");
+					}
 				}
 				if (maternoProductor != null && !maternoProductor.isEmpty()){
 					if(where.length()>0){
 						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
 					}else{
 						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor  is null ");
+					}else{
+						where.append(" where materno_productor  is null ");
 					}
 				}
 				if (nombreProductor != null && !nombreProductor.isEmpty()){
@@ -4846,12 +4901,24 @@ public class RelacionesDAO {
 				}else{
 					where.append("where paterno_productor ='").append(paternoProductor).append("' ");
 				}
+			}else{
+				if(where.length()>0){
+					where.append(" and paterno_productor  is null ");
+				}else{
+					where.append(" where paterno_productor  is null ");
+				}
 			}
 			if (maternoProductor != null && !maternoProductor.isEmpty()){
 				if(where.length()>0){
 					where.append(" and materno_productor ='").append(maternoProductor).append("' ");
 				}else{
 					where.append("where materno_productor ='").append(maternoProductor).append("' ");
+				}
+			}else{
+				if(where.length()>0){
+					where.append(" and materno_productor  is null ");
+				}else{
+					where.append(" where materno_productor  is null ");
 				}
 			}
 			if (nombreProductor != null && !nombreProductor.isEmpty()){
@@ -4945,10 +5012,10 @@ public class RelacionesDAO {
 		public List<VolumenFiniquito> consultaVolumenCumplido(String folioCartaAdhesion)throws  JDBCException{
 			List<VolumenFiniquito> lst = new ArrayList<VolumenFiniquito>();
 			StringBuilder consulta= new StringBuilder();	
-			consulta.append("select r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, b.volumen ")
-			.append("from relacion_compras_tmp r, bodegas_contratos b ")
-			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and r.clave_bodega = b.clave_bodega  and b.folio_contrato = r.folio_contrato ")
-			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, b.volumen ");			
+			consulta.append("select r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")
+			.append("from relacion_compras_tmp r, bodegas_contratos b, contratos_relacion_compras c ")
+			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and r.clave_bodega = b.clave_bodega  and b.folio_contrato = r.folio_contrato and c.folio_contrato = r.folio_contrato ")
+			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ");			
 			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -4962,7 +5029,9 @@ public class RelacionesDAO {
 		        b.setNombreComprador((String) row.get("nombre_comprador"));
 		        b.setNombreVendedor((String) row.get("nombre_vendedor"));
 		        BigDecimal valor = (BigDecimal) row.get("volumen");
-		        b.setVolumen(valor!=null ? valor.doubleValue():0.0);		        
+		        b.setVolumen(valor!=null ? valor.doubleValue():0.0);	
+		        valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
+		        b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():0.0);		        
 		        lst.add(b);	
 			}		
 			return lst;
