@@ -112,6 +112,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 	
 	private void getNoOficio() throws DocumentException{
 		parrafo = new Paragraph("Oficio No. "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio(), TIMESROMANBOLD12);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);
 	}
 	private void getLugarYFecha() throws DocumentException {
