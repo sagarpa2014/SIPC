@@ -1454,13 +1454,12 @@ function chkCamposInicializa(){
 		var tempEdo ="";
 		var tempVariedad ="";
 		var tempCuota ="";
-		
+		var siCapturoPrecioPagado = 0;
 		for (i=1;i<parseInt(numCampos)+1;i++){
 			cult = $('#c'+i).val();
 			edo = $('#e'+i).val();
 			variedad = $('#va'+i).val();
 			cuota = $('#cuota'+i).val();
-			
 			if(idCriterioPago == 1){
 				if(cult==-1 || edo==-1 || variedad == -1 || (cuota == "" || cuota == null)){
 		   			$('#dialogo_1').html('Capture los valores del registro '+i+' en los estados a apoyar');
@@ -1473,13 +1472,18 @@ function chkCamposInicializa(){
 			   		abrirDialogo();
 			 		return false;
 				}
-			}			
+			}		
+			var precioPagado = "";
 	   		for (j=1;j<parseInt(numCampos)+1;j++){
 	   			if(i!=j){
 	   				tempCult = $('#c'+j).val();
 	   				tempEdo = $('#e'+j).val();
 	   				tempVariedad = $('#va'+j).val();
 	   				tempCuota = $('#cuota'+j).val();
+	   				precioPagado = $('#precioPagado'+j).val();
+	   				if(precioPagado != null && precioPagado != "" ){
+	   					siCapturoPrecioPagado = 1;
+	   				}
 	   				if(cult == tempCult && edo == tempEdo && variedad == tempVariedad && cuota ==  tempCuota){
 	   					$('#dialogo_1').html('El registro '+i+' se encuentra repetido, favor de verificar');
 	   			   		abrirDialogo();
@@ -1495,11 +1499,62 @@ function chkCamposInicializa(){
 			   		return false;
 	   			}	
 	   		}
-	   				   			
-	   		 //}
-			
 		}// end for
+		
+		if(parseInt(siCapturoPrecioPagado) == 1){
+			//Verificar que todos los campos de precio pagado sean capturados
+			for (j=1;j<parseInt(numCampos)+1;j++){
+				precioPagado = $('#precioPagado'+j).val();
+   				if(precioPagado == null || precioPagado == "" ){
+   					$('#dialogo_1').html('Debe capturar el precio pagado en el registro '+j+', si eligió capturar este campo todos los registros serán requeridos');
+			   		abrirDialogo();
+			   		return false;
+   				}
+			}
+		}
 	}// end validacion de los campos de cuotas	
+	var dia = "", mes = "", anio = "";
+	var fechaInicioAcopio = $('#fechaInicioAcopio').val(); 
+	var fechaFinAcopio = $('#fechaFinAcopio').val();
+	
+	if(fechaInicioAcopio !=null &&  fechaInicioAcopio != ""){
+		if(fechaFinAcopio  == null || fechaFinAcopio == ""){
+			$('#dialogo_1').html('Seleccione la fecha fin del periodo de acopio');
+			abrirDialogo();
+			return false;
+		}
+	}
+	
+	if(fechaFinAcopio != null && fechaFinAcopio != ""){
+		if(fechaInicioAcopio  == null || fechaInicioAcopio == ""){
+			$('#dialogo_1').html('Seleccione la fecha inicio del periodo de acopio');
+			abrirDialogo();
+			return false;
+		}
+	}
+	
+	
+	if(fechaInicioAcopio != null && fechaFinAcopio != null ){
+		var fechaInicioAcopioTmp =  "";
+		dia = fechaInicioAcopio.substring(0,2);
+		mes = fechaInicioAcopio.substring(3,5);
+		anio = fechaInicioAcopio.substring(6,10);
+		fechaInicioAcopioTmp =  anio+""+""+mes+""+dia;
+		var fechaFinAcopioTmp =  "";
+		dia = fechaFinAcopio.substring(0,2);
+		mes = fechaFinAcopio.substring(3,5);
+		anio = fechaFinAcopio.substring(6,10);
+		fechaFinAcopioTmp =  anio+""+""+mes+""+dia;
+		if(parseInt(fechaFinAcopioTmp) < parseInt(fechaInicioAcopioTmp)){
+			$('#dialogo_1').html('La fecha fin de acopio seleccionada no puede ser menor a la fecha inicio de acopio, por favor verifique');
+			abrirDialogo();
+			return false;
+		}
+		
+	}	
+	
+	
+	
 	
 	var periodoDOFSI = $('#periodoDOFSI').val();
 	patron =/^\d{1,10}$/;
@@ -2199,6 +2254,7 @@ function agregarNumCamposCultivoEstadoIniProg(){
 		if(idCriterioPago == 1){
 			tds += '<td><input type="text" id="cuota'+numCampos+'" name="cuota" maxlength="15" class="cantidad" size="20" ></td>';
 		}
+		tds += '<td><input type="text" id="precioPagado'+numCampos+'" name="precioPagado" maxlength="15" class="cantidad" size="20" ></td>';
 		tds += '</tr>';
 		$("#tableCultivoEstadoIniProg").append(tds);
 		$('#c1').clone().attr('id', 'c'+numCampos).attr('onchange', 'recuperaCultivoByVariedad(this.value,'+numCampos+')').appendTo('#contenedorCultivoEdo'+numCampos);
