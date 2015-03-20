@@ -28,8 +28,12 @@ public class Programa{
 	private String desApoyoEnOficioClc;
 	private Date inicioPeriodoAcopio;
 	private Date finPeriodoAcopio;
-	
-	
+	private Date fechaRegistro;
+	private Date fechaActualiza;
+	private Integer usuarioRegistro;
+	private Integer usuarioActualiza;
+	private Date fechaInicioAcopio;
+	private Date fechaFinAcopio;
 
 	
 	public Programa() {
@@ -179,5 +183,36 @@ public class Programa{
 		this.finPeriodoAcopio = finPeriodoAcopio;
 	}
 	
+	@Column(name =  "fecha_registro")
+	public Date getFechaRegistro() {
+		return fechaRegistro;
+	}
+	public void setFechaRegistro(Date fechaRegistro) {
+		this.fechaRegistro = fechaRegistro;
+	}
+	@Column(name =  "fecha_actualiza")
+	public Date getFechaActualiza() {
+		return fechaActualiza;
+	}
+	public void setFechaActualiza(Date fechaActualiza) {
+		this.fechaActualiza = fechaActualiza;
+	}
+	
+	@Column(name =  "usuario_registro")
+	public Integer getUsuarioRegistro() {
+		return usuarioRegistro;
+	}
+	public void setUsuarioRegistro(Integer usuarioRegistro) {
+		this.usuarioRegistro = usuarioRegistro;
+	}
+	
+	@Column(name =  "usuario_actualiza")
+	public Integer getUsuarioActualiza() {
+		return usuarioActualiza;
+	}
+	public void setUsuarioActualiza(Integer usuarioActualiza) {
+		this.usuarioActualiza = usuarioActualiza;
+	}
+		
 }
 	
