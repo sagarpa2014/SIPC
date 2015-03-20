@@ -92,6 +92,7 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 	private Integer[] selectedEdos;
 	private Integer[] selectedVariedad;
 	private Double[] cuota;
+	private Double[] precioPagado;
 	//volumen por cultivo variedad
 	private String selectedCultVXCV;
 	private String selectedVariedadVXCV;
@@ -127,6 +128,9 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 
 	private boolean cartaAdhesionSistema;
 	private int count;	
+	private Date fechaInicioAcopio;
+	private Date fechaFinAcopio;
+	
 	public String listarProgramas(){
 		try{
 			session = ActionContext.getContext().getSession();
@@ -177,6 +181,7 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 				ce.setIdEstado(c.getIdEstado());
 				ce.setIdVariedad(c.getIdVariedad());
 				ce.setCuota(c.getCuota());	
+				ce.setPrecioPagado(c.getPrecioPagado());
 				lstCuotasEsquema.add(ce);
 			}		
 			if(editar==3 || editar==4){
@@ -384,12 +389,12 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 		return SUCCESS;
 	}
 	
-	
 	public String recuperaCultivoByVariedad(){
 		//Recupera los datos de la variedad por cultivo
 		lstVariedad = cDAO.consultaVariedad(0, idCultivo, null);
 		return SUCCESS;		
 	}
+	
 	public String recuperaCultivoByVariedadVXCV(){
 		//Recupera los datos de la variedad por cultivo
 		lstVariedad = cDAO.consultaVariedad(0, idCultivo, null);
@@ -404,7 +409,8 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 			if(editar==3 || editar == 4){
 				//Borra todo los elementos asociados al programa
 				programa = cDAO.consultaPrograma(idPrograma).get(0);
-				
+				programa.setFechaActualiza(new Date());
+				programa.setUsuarioActualiza((Integer) session.get("idUsuario"));
 				if(editar == 4){// adiciones
 					//recupera incializacion 
 					inicializa =  iDAO.consultaInicializacionPrograma(programa.getIdPrograma()).get(0);
@@ -431,10 +437,14 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 				elementosBorrados = iDAO.borrarEstadosByProgramas(idPrograma);
 				AppLogger.info("app", "Se borraron "+elementosBorrados+" de la tabla programas_estados");
 				
-			}			
+			}
+			
 			programa.setDescripcionCorta(descCorta);
 			programa.setDescripcion(descLarga);
 			programa.setDescripcionLarga(descLineamiento);
+			programa.setInicioPeriodoAcopio(fechaInicioAcopio);
+			programa.setFinPeriodoAcopio(fechaFinAcopio);
+			
 			if(editar!=4){
 				integrarCiclo();
 			}
@@ -492,8 +502,7 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 			//conformando la cadena de estados
 			nombreEstados = Utilerias.conformaCadena(nombreEstados.split(","));
 			//conformando la cadena de cultivos
-			nombreCultivos = Utilerias.conformaCadena(nombreCultivos.split(","));
-			
+			nombreCultivos = Utilerias.conformaCadena(nombreCultivos.split(","));		
 			
 			//Recupera nuevamente el programa para actualizar los estados y productos del mismo 			
 			programa = cDAO.consultaPrograma(programa.getIdPrograma()).get(0);
@@ -508,6 +517,10 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 				programa.setRutaDocumentos(rutaPrograma);
 				//Cargar Archivo
 				nombreArchivo = cargarArchivoAviso(rutaPrograma);
+				if(editar == 0){
+					programa.setFechaRegistro(new Date());
+					programa.setUsuarioRegistro((Integer) session.get("idUsuario"));
+				}
 			}else if(editar==3){
 				
 			}
@@ -517,13 +530,11 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 			//Guarda Volumen por cultivo variedad en caso de que haya dicho si en ¿Desea agregar volumen por cultivo variedad?
 			if(idCriterioPago == 1 || idCriterioPago == 3){
 				if (volxCulVar == 0){
-					System.out.println(selectedCultVXCV.length());
 					String [] idCultivo = selectedCultVXCV.split(",");
 					String [] idVariedad = selectedVariedadVXCV.split(",");
 					String [] volumen = selectedVolumenVXCV.split(",");
 					for (int i = 0; i < idCultivo.length; i++) {
 						CultivoVariedadEsquema cve = new CultivoVariedadEsquema();
-						System.out.println(idCultivo[i]);
 						cve.setIdCultivo(Integer.parseInt(idCultivo[i].trim()));
 						cve.setIdVariedad(Integer.parseInt(idVariedad[i].trim()));
 						cve.setVolumen(Double.parseDouble(volumen[i].trim()));
@@ -606,7 +617,8 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 				if(idCriterioPago == 1){
 					ce.setCuota(cuota[i]);	
 				}					
-				
+				ce.setPrecioPagado(precioPagado[i]);
+				ce.setIdPrograma(programa.getIdPrograma());
 				inicializa.getCuotasEsquema().add(ce);
 				
 			}
@@ -713,6 +725,8 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 			hcoCE.setCuota(ce.getCuota());
 			hcoCE.setFechaCreacion(fechaCreacion);
 			hcoCE.setUsuarioCreacion((Integer) session.get("idUsuario"));
+			hcoCE.setPrecioPagado(ce.getPrecioPagado());
+			hcoCE.setIdPrograma(ce.getIdPrograma());
 			hcoIE.getHcoCuotasEsquema().add(hcoCE);
 		}
 		
@@ -842,7 +856,9 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 		descCorta = programa.getDescripcionCorta();
 		descLineamiento = programa.getDescripcionLarga();
 		idComponente = programa.getIdComponente();
-		numCampos = lstCuotasEsquemaV.size();		
+		numCampos = lstCuotasEsquemaV.size();	
+		fechaInicioAcopio = programa.getInicioPeriodoAcopio();
+		fechaFinAcopio = programa.getFinPeriodoAcopio();
 		periodoCASP = lstCuotasEsquemaV.get(0).getPeriodoCartaSp();
 		periodoDOFSI = lstCuotasEsquemaV.get(0).getPeriodoDofSi();
 		periodoORPago = lstCuotasEsquemaV.get(0).getPeriodoOrPago();
@@ -1400,5 +1416,23 @@ public class InicializacionProgramaAction extends ActionSupport implements Sessi
 	public void setLstVarVolXCultivoVariedad(
 			List<Variedad> lstVarVolXCultivoVariedad) {
 		this.lstVarVolXCultivoVariedad = lstVarVolXCultivoVariedad;
-	}		
+	}
+	public Double[] getPrecioPagado() {
+		return precioPagado;
+	}
+	public void setPrecioPagado(Double[] precioPagado) {
+		this.precioPagado = precioPagado;
+	}
+	public Date getFechaInicioAcopio() {
+		return fechaInicioAcopio;
+	}
+	public void setFechaInicioAcopio(Date fechaInicioAcopio) {
+		this.fechaInicioAcopio = fechaInicioAcopio;
+	}	
+	public Date getFechaFinAcopio() {
+		return fechaFinAcopio;
+	}
+	public void setFechaFinAcopio(Date fechaFinAcopio) {
+		this.fechaFinAcopio = fechaFinAcopio;
+	}	
 }
