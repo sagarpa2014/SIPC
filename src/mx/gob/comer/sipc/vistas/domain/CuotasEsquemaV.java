@@ -34,6 +34,7 @@ public class CuotasEsquemaV {
 	private String variedad;
 	private Double cuota;
 	private String leyendaAtentaNota;
+	private Double precioPagado;
 	
 	@Id
 	@Column(name = "id_cuotas_esquema")	
@@ -227,6 +228,19 @@ public class CuotasEsquemaV {
 	public void setLeyendaAtentaNota(String leyendaAtentaNota) {
 		this.leyendaAtentaNota = leyendaAtentaNota;
 	}
+	
+	@Column(name = "precio_pagado")
+	public Double getPrecioPagado() {
+		return precioPagado;
+	}
+	public void setPrecioPagado(Double precioPagado) {
+		this.precioPagado = precioPagado;
+	}
+	
+	
+	
+	
+	
 	
 	
 }
