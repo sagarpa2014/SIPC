@@ -352,3 +352,22 @@ function getTotalAlmacenamiento(volumen, id, msj){
 		$('#totalAlmacenamiento').val(totalVolumenAlmacenamiento.toFixed(3));		
 	}
 }
+
+
+function validarNumerosValidos(volumen, id, msj){	
+	if(volumen!=null && volumen !=''){		
+		var patron =/^\d{1,13}((\.\d{1,2})|(\.))?$/;
+		if (!volumen.match(patron)){	
+			if(id!=0){
+				$('#'+id).val(null);
+			}
+			if(msj==1){
+				$('#dialogo_1').html('El valor capturado es incorrecto, se deben capturar numeros y se aceptan hasta 7 digitos a la izquierda y 2 máximo a la derecha ');
+				abrirDialogo();
+			}
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+}
