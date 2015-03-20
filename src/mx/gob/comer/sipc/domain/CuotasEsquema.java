@@ -17,6 +17,8 @@ public class CuotasEsquema {
 	private Integer idCultivo;
 	private Integer idVariedad;
 	private Double cuota;
+	private Double precioPagado;
+	private Integer idPrograma;
 	
 	
 	@Id
@@ -68,6 +70,22 @@ public class CuotasEsquema {
 	}
 	public void setCuota(Double cuota) {
 		this.cuota = cuota;
+	}
+	
+	@Column(name = "precio_pagado")
+	public Double getPrecioPagado() {
+		return precioPagado;
+	}
+	public void setPrecioPagado(Double precioPagado) {
+		this.precioPagado = precioPagado;
+	}
+	
+	@Column(name = "id_programa")
+	public Integer getIdPrograma() {
+		return idPrograma;
+	}
+	public void setIdPrograma(Integer idPrograma) {
+		this.idPrograma = idPrograma;
 	}
 	
 }
