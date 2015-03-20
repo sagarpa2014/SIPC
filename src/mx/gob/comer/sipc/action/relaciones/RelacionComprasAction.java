@@ -862,7 +862,11 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					  if(valor!=null && !valor.isEmpty()){
 						  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
 							  AppLogger.info("app","fila: "+contRow+" Columna"+contColumna+" grupo 9 campo 15 el valor es "+valor);
-							  rcTmp.setFolioFacturaVenta(valor);
+							  if(valor.length() >= 32 && valor.length() <= 36){
+								  rcTmp.setFolioFacturaVenta(valor);
+								 }else{
+									 AppLogger.info("app","fila: "+contRow+" Columna"+contColumna+" no tiene de 32 a 36 caracteres "+valor);
+								 }			  
 						  }else{
 							  AppLogger.info("app", lstGruposCamposDetalleRelacionV.get(contColumna).getCampo()+" Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Valor no permitido, se esperaba valor de tipo "+ lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato());
 							  
@@ -965,8 +969,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
 								  AppLogger.info("app","fila "+contRow+" Columna"+contColumna+" grupo 12 campo 21 el valor es "+valor);
 								  try{
-										Double d = Double.parseDouble(valor);
-										valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+									  if(!valor.equals("1F") && !valor.equals("1D")){
+										  Double d = Double.parseDouble(valor);
+										  valor = TextUtil.formateaNumeroComoCantidadSincomas(d); 
+									  }										
 									}catch (Exception e){
 										
 									}	
@@ -1888,7 +1894,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}	
-					}else if(l.getIdCriterio() == 12){// "QUE EL RFC CORRESPONDA AL PRODUCTOR"
+					}else if(l.getIdCriterio() == 12){// "QUE EL RFC CORRESPONDA AL PRODUCTOR"t
 						sheet = wb.createSheet("RFC CORRESPONDE RFC PROD");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
@@ -3288,8 +3294,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}					
-					}else if(l.getIdCriterio()== 17){//"CHEQUES FUERA DEL PERIODO"
-						sheet = wb.createSheet("CHEQUES FUERA PER");
+					}else if(l.getIdCriterio()== 17){//"PAGOS FUERA DEL PERIODO"
+						sheet = wb.createSheet("PAGOS FUERA PER");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;		
@@ -3365,7 +3371,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								
 								cDAO.guardaObjeto(b);
 							}else{ 
-								msj = "La validación es correcta \"LOS CHEQUES SE ENCUENTRAN DENTRO DEL PERIODO DEL AUDITOR\"";
+								msj = "La validación es correcta \"LOS PAGOS SE ENCUENTRAN DENTRO DEL PERIODO DEL AUDITOR\"";
 								row = sheet.createRow(countRow);
 								cell = row.createCell(0);
 								cell.setCellValue(msj);
@@ -3468,7 +3474,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}else{
-								msj = "La validación es correcta \"CHEQUES SE ENCUENTRAN DENTRO DEL PERIODO DEL CONTRATO\"";
+								msj = "La validación es correcta \"PAGOS SE ENCUENTRAN DENTRO DEL PERIODO DEL CONTRATO\"";
 								row = sheet.createRow(countRow);
 								cell = row.createCell(0);
 								cell.setCellValue(msj);
@@ -3769,7 +3775,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						
 					}			
 				}//end recorrido lstValidacionPorGrupo PAGOS
-				nombreArchivoLogXls = "Cheques.xls";
+				nombreArchivoLogXls = "Pagos.xls";
 				nombreArchivoLogCargaXls = "LogCargaArchivo.xls"; //Log del archivo excel  // AHS 29012015
 				FileOutputStream out = new FileOutputStream(new File(rutaCartaAdhesion+nombreArchivoLogXls));
 			    wb.write(out);

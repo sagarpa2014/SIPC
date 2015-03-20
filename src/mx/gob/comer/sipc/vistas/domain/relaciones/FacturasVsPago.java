@@ -26,6 +26,8 @@ public class FacturasVsPago implements Comparable{
 	private Double impSolFacVenta;
 	@Column(name =  "imp_total_pago_sinaxc")
 	private Double impTotalPagoSinaxc;
+	@Column(name =  "diferencia_importe")
+	private Double diferencia_importe;	
 	@Column(name =  "vol_total_fac_venta")
 	private Double volTotalFacVenta;
 	
@@ -90,6 +92,12 @@ public class FacturasVsPago implements Comparable{
 		this.impTotalPagoSinaxc = impTotalPagoSinaxc;
 	}
 	
+	public Double getDiferencia_importe() {
+		return diferencia_importe;
+	}
+	public void setDiferencia_importe(Double diferencia_importe) {
+		this.diferencia_importe = diferencia_importe;
+	}
 	public Double getVolTotalFacVenta() {
 		return volTotalFacVenta;
 	}
