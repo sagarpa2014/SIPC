@@ -22,6 +22,9 @@ public class HcoCuotasEsquema {
 	private Double cuota;
 	private Date fechaCreacion;
 	private Integer usuarioCreacion;
+	private Double precioPagado;
+	private Integer idPrograma;
+	
 	
 	
 	@Id
@@ -96,5 +99,22 @@ public class HcoCuotasEsquema {
 	public void setUsuarioCreacion(Integer usuarioCreacion) {
 		this.usuarioCreacion = usuarioCreacion;
 	}
+	
+	@Column(name = "precio_pagado")
+	public Double getPrecioPagado() {
+		return precioPagado;
+	}
+	public void setPrecioPagado(Double precioPagado) {
+		this.precioPagado = precioPagado;
+	}
+	@Column(name = "id_programa")
+	public Integer getIdPrograma() {
+		return idPrograma;
+	}
+	public void setIdPrograma(Integer idPrograma) {
+		this.idPrograma = idPrograma;
+	}
+	
+	
 	
 }
