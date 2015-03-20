@@ -127,7 +127,28 @@
 		<div class="clear"></div>		
 	<div class="clear"></div>
 	<div class="borderBottom" style="text-align:center"><h1>Tiempos del tr&aacute;mite</h1></div><br> 
-	<div class="clear"></div>	
+	<div>
+		<label class="left1">Fecha Inicio de Acopio</label>
+		<s:if test="%{fechaInicioAcopio==null}" >
+			<s:textfield name="fechaInicioAcopio" value="%{fechaInicioAcopio}"  maxlength="10" size="10" id="fechaInicioAcopio" readonly="true" cssClass="dateBox" />
+		</s:if>
+		<s:else>
+			<s:textfield key="fechaInicioAcopio" value="%{getText('fecha1',{fechaInicioAcopio})}"  maxlength="10" size="10" id="fechaInicioAcopio" readonly="true" cssClass="dateBox" />
+		</s:else>
+		<img src="../images/calendar.gif" id="trg2" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+	</div>
+	<div class="clear"></div>
+	<div>
+		<label class="left1">Fecha Fin de Acopio</label>
+		<s:if test="%{fechaFinAcopio==null}" >
+			<s:textfield name="fechaFinAcopio" value="%{fechaFinAcopio}"  maxlength="10" size="10" id="fechaFinAcopio" readonly="true" cssClass="dateBox" />
+		</s:if>
+		<s:else>
+			<s:textfield key="fechaFinAcopio" value="%{getText('fecha1',{fechaFinAcopio})}"  maxlength="10" size="10" id="fechaFinAcopio" readonly="true" cssClass="dateBox" />
+		</s:else>
+		<img src="../images/calendar.gif" id="trg3" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+	</div>	
+	<div class="clear"></div>
 	<div class="izquierda">
 		<label><span class="requerido">*</span>Publicaci&oacute;n de Avisos en DOF hasta Presentaci&oacute;n de Sol. de Inscripci&oacute;n:&nbsp;&nbsp;</label>
 	</div>
@@ -305,6 +326,27 @@ $(document).ready(function() {
 			button         :    "trg1",  
 			align          :    "Br",           
 			singleClick    :    true
-		});		
+		});	
+	
+	//-->
+	<!--
+		Calendar.setup({
+			inputField     :    "fechaInicioAcopio",     
+			ifFormat       :    "%d/%m/%Y",     
+			button         :    "trg2",  
+			align          :    "Br",           
+			singleClick    :    true
+		});	
+	
+	//-->
+	<!--
+		Calendar.setup({
+			inputField     :    "fechaFinAcopio",     
+			ifFormat       :    "%d/%m/%Y",     
+			button         :    "trg3",  
+			align          :    "Br",           
+			singleClick    :    true
+		});	
+	
 	//-->
 </script>

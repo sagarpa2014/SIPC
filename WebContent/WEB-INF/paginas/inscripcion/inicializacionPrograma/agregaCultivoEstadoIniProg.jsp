@@ -11,6 +11,7 @@
 				<s:if test="idCriterioPago == 1">
 					<th class="clean">Cuota</th>
 				</s:if>
+				<th class="clean">Precio Pagado</th>
 			</tr>
 			<s:iterator value="lstCuotasEsquema" var="resultado"  status="itStatus">
 				<tr>
@@ -35,6 +36,16 @@
 							</s:else>
 						</td>
 					</s:if>
+					<td id="contenedorPrecioPagado<s:property value="%{#itStatus.count}"/>">
+							<s:if test ="precioPagado!=null">
+								<s:textfield id="precioPagado%{#itStatus.count}" name="precioPagado" maxlength="15" size="20"  cssClass="cantidad" value="%{getText('importeSinComas',{precioPagado})}" onblur="validarNumerosValidos(this.value, 'precioPagado%{#itStatus.count}', 1);"/>
+							</s:if>
+							<s:else>
+								<s:textfield id="precioPagado%{#itStatus.count}" name="precioPagado" maxlength="15" size="20"  cssClass="cantidad" value="%{}"  onblur="validarNumerosValidos(this.value, 'precioPagado%{#itStatus.count}', 1);"/>
+							</s:else>
+					</td>
+					
+					
 				</tr>	
 			</s:iterator>
 		</table>
