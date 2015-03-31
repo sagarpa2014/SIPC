@@ -138,6 +138,8 @@ public class RelacionComprasTMP  implements Comparable{
 	private Boolean rfcInconsistente;	
 	@Column(name =  "dif_volumen_fac_mayor")
 	private Double difVolumenFacMayor;
+	@Column(name =  "variedad")
+	private String variedad;
 		
 	public RelacionComprasTMP() {
 		super();
@@ -553,6 +555,14 @@ public class RelacionComprasTMP  implements Comparable{
 
 	public void setDifVolumenFacMayor(Double difVolumenFacMayor) {
 		this.difVolumenFacMayor = difVolumenFacMayor;
+	}
+
+	public String getVariedad() {
+		return variedad;
+	}
+
+	public void setVariedad(String variedad) {
+		this.variedad = variedad;
 	}
 
 	@Override
