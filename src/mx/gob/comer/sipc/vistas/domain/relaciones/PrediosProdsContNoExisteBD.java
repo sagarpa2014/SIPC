@@ -31,6 +31,8 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	private Integer folioPredioSec;
 	@Column(name =  "folio_predio_alterno")
 	private String folioPredioAlterno;	
+	@Column(name =  "folio_carta_externa")
+	private String folioCartaExterna;	
 	
 	public Long getId() {
 		return id;
@@ -98,6 +100,13 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	}
 	public void setFolioPredioAlterno(String folioPredioAlterno) {
 		this.folioPredioAlterno = folioPredioAlterno;
+	}	
+	
+	public String getFolioCartaExterna() {
+		return folioCartaExterna;
+	}
+	public void setFolioCartaExterna(String folioCartaExterna) {
+		this.folioCartaExterna = folioCartaExterna;
 	}
 	@Override
 	public int compareTo(Object o) {

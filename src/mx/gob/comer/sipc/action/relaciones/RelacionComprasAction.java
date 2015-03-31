@@ -66,6 +66,7 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotalesPorBodF
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagosCamposRequeridos;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagPorTipoCambio;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoMenor;
+import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoNoCorrespondeConPagosV;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoProductor;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoPagados;
@@ -237,6 +238,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<VolumenFiniquito> lstVolumenCumplido;
 	private Date fechaDeReporte;
 	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
+	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoNoCorrespondeConPagosV;
+	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoMenorQueAviso;
 	
 	
 	public String capturaCargaArchivoRelCompras(){ 
@@ -395,7 +398,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					b.setStatus(1);//termino bien el proceso de estructura
 					b.setIdCriterio(99);
 					List<BitacoraRelcompras> lstBitacoraHCO = rDAO.consultaBitacoraRelacionHCO(folioCartaAdhesion);
-					System.out.println("lstBitacoraHCO "+lstBitacoraHCO.size());
 					if(lstBitacoraHCO.size()==1){
 						b.setCarga(true);
 					}
@@ -485,7 +487,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			bandFinArchivo = false;
 		   while(cellIterator.hasNext()){
 			   valor =  recuperarDatoDeCelda(cellIterator.next());
-			   if (valor != null && !valor.equals("")){
+ 			   if (valor != null && !valor.equals("")){
 				   bandFinArchivo = true;
 			   }
 			   if(contRow < (lstGruposCamposEncabezadoRelacionV.size())){
@@ -513,7 +515,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							   claveBodega = lstBodegas.get(0).getClaveBodega();
 							   claveBodegaCorrecta = true;
 						   }else{
-							   msj = "Fila: "+contRow+". No se encontro la bodega "+valor;
+							   msj = "Fila: "+(contRow+1)+". No se encontro la bodega "+valor;
 							   bd = new BitacoraRelcomprasDetalle();
 							   bd.setMensaje(msj);
 							   b.getBitacoraRelcomprasDetalle().add(bd);
@@ -522,7 +524,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							   AppLogger.error("errores","Error interno bodega "+errorInternoArchivo+contRow);
 							   errorInternoArchivo = true;
 							   errorLecturaArchivo = true;
-							   break; 
+							   //break; 
 							   								   
 						   }
 						//}
@@ -576,7 +578,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					 estadoCorrecto = false;
 				 }else{//Si se encontraron menos columnas
 					 if(contColumna < lstGruposCamposDetalleRelacionV.size()+2){
-						 msj = "Fila:"+contRow+". Se esperaban "+(lstGruposCamposDetalleRelacionV.size()+2)+", se encontraron solo " + contColumna;
+						 msj = "Fila:"+(contRow+1)+". Se esperaban "+(lstGruposCamposDetalleRelacionV.size()+2)+", se encontraron solo " + contColumna;
 						 errorInternoArchivo = true;
 						 crearCeldaenLogXls();
 					 }
@@ -926,6 +928,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							  } 								  
 							 
 					   }
+				   }else if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 70){ //"VARIEDAD "
+					   if(valor!=null && !valor.isEmpty()){
+							  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
+								  AppLogger.info("app","fila "+(contRow+1)+" Columna"+contColumna+" grupo 9 campo 70 el valor es "+valor);
+								  rcTmp.setVariedad(valor);
+							  }else{
+								  AppLogger.info("app",lstGruposCamposDetalleRelacionV.get(contColumna).getCampo()+" Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Valor no permitido, se esperaba valor de tipo "+ lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato());
+							  } 							  
+					   }
 				   }	   
 		   }else if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdGrupo().intValue() == 10){//GRUPO 10 "CONTRATO DE COMPRA-VENTA A TÉRMINO"
 			   if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 21){//"FOLIO"							  
@@ -1135,14 +1146,25 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	}
 
 	private void guardarRelacioncompras(int numeroHoja){
+		    int numRegNoGuardados = 0;
 			for(RelacionComprasTMP l: lstRCTemp){
 				cDAO.guardaObjeto(l);
 			}
 			if(lstRCTemp.size()>0){
 				siSeguardoRelacion = true;
 			}
+			numRegNoGuardados = (contRow-lstGruposCamposEncabezadoRelacionV.size())-lstRCTemp.size();
+			System.out.println("numRegNoGuardados "+numRegNoGuardados);
 			msj = "Se guardaron "+lstRCTemp.size()+" registros en la base de datos de la hoja "+numeroHoja;
 			lstLog.add(msj);
+			if(numRegNoGuardados > 0){
+				msj = "No fue posible guardar "+(numRegNoGuardados == 1?"registro":"registros")+" en la base de datos de la hoja"+numeroHoja+", por favor verifique";
+				lstLog.add(msj);
+			}	
+			if((contRow-lstGruposCamposEncabezadoRelacionV.size()) >1){
+				msj = "Total registros del detalle "+(contRow-lstGruposCamposEncabezadoRelacionV.size())+" de la hoja "+numeroHoja;
+				lstLog.add(msj);
+			}					
 			crearCeldaenLogXls();		
 			
 					
@@ -1478,13 +1500,16 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Secuencial");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Predio Alterno");							
+							cell.setCellValue("Predio Alterno");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Carta Adhesión");
 							for(PrediosProdsContNoExisteBD p: lstPrediosProdsContNoExistenBD){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(p.getClaveBodega()+";"+p.getNombreEstado()+";"+(siAplicaFolioContrato?p.getFolioContrato()+";":"")+p.getProductor()+";"+p.getPaternoProductor()+";"
 										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"
-										+p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+p.getFolioPredioAlterno());								
+										+p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+p.getFolioPredioAlterno()+";"
+										+(p.getFolioCartaExterna()!=null&&!p.getFolioCartaExterna().isEmpty()?p.getFolioCartaExterna():"null;"));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaPredioIncosistente(p.getId());
@@ -1509,6 +1534,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(p.getFolioPredioSec()!=null?p.getFolioPredioSec()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getFolioPredioAlterno()!=null && !p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getFolioCartaExterna()!=null && !p.getFolioCartaExterna().isEmpty()?p.getFolioCartaExterna():"");
 							}
 							
 							b.setMensaje(msj);
@@ -2216,7 +2243,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(bod.getRendimientoMaximoAceptable()!=null?bod.getRendimientoMaximoAceptable()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(bod.getVolNoProcedente()!=null?bod.getVolNoProcedente()+"":""); // AHS [LINEA] - 17022015
-							}					
+							}				
 							                                                                                          
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
@@ -3214,7 +3241,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 				}						
 				lstBitacoraRelCompras = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, s, "0,1");
 				if(lstBitacoraRelCompras.size() > 0){
-					//Actualiza campo boleta_incosistente en la tabla relacion_compras_tmp
+					//Actualiza campo pago_incosistente en la tabla relacion_compras_tmp
 					rDAO.actualizaBolFactPagEnRelacionComprasTMP(folioCartaAdhesion, false, false, true);
 					//Actualiza campo pagos_menores_facturas en la tabla relacion_compras_tmp
 					rDAO.actualizaCamposIconsistentes(folioCartaAdhesion, false, true, false, false);
@@ -3557,13 +3584,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}						
-					}else if(l.getIdCriterio()== 19){//"PRECIO PAGADO MENOR"
-						sheet = wb.createSheet("PRECIO PAGADO MENOR");
+					}else if(l.getIdCriterio() == 19){//"11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS"
+						sheet = wb.createSheet("PRECIO PAGADO CORRES PAGOS");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
-						lstPrecioPagadoMenor = rDAO.consultaPrecioPagadoMenor(folioCartaAdhesion); 
-						if(lstPrecioPagadoMenor.size() > 0){//En el listado se guarda las facturas menores a lo pagado
+						lstPrecioPagadoNoCorrespondeConPagosV = rDAO.consultaPrecioPagadoNoCorrespondeConPagosV(folioCartaAdhesion); 
+						if(lstPrecioPagadoNoCorrespondeConPagosV.size() > 0){//"11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS" 
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
@@ -3585,26 +3612,22 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Cheque");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Importe Factura");
-							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Total");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Precio en Rel de Compras");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Precio Calculado");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Precio Pagado");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Observación");							
-							for(PrecioPagadoMenor f: lstPrecioPagadoMenor){
+							cell.setCellValue("Precio Calculado");														
+							for(PrecioPagadoNoCorrespondeConPagosV f: lstPrecioPagadoNoCorrespondeConPagosV){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(f.getClaveBodega()+";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")+
 										f.getPaternoProductor()+";"+f.getMaternoProductor()+";"+f.getNombreProductor()+";"+
-										f.getPesoNeto()+";"+f.getImporteCheque()+";"+f.getImporteFactura()+";"+
-										f.getImporteTotal()+";"+f.getPrecioEnRelCompras()+";"+f.getPrecioCalculado()+";"+
-										f.getPrecioPagado()+";"+f.getObservacion());
-								b.getBitacoraRelcomprasDetalle().add(bd);
+										f.getVolTotalFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
+										f.getImpPrecioTonPagiSinaxc()+";"+(f.getPrecioCalculado()!=null ? f.getPrecioCalculado():0));
+								b.getBitacoraRelcomprasDetalle().add(bd);								
+								//Actualiza los pagos del productor como inconsistente
+								rDAO.actualizaPagosInconsistente(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
+										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), true);
 							 	row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
@@ -3619,26 +3642,20 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(f.getMaternoProductor()!=null ? f.getMaternoProductor()+" " :"") 
 										+(f.getNombreProductor()!=null ? f.getNombreProductor() :""));
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getPesoNeto()!=null?f.getPesoNeto()+"":"");								
+								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");								
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImporteCheque()!=null?f.getImporteCheque()+"":"");
+								cell.setCellValue(f.getImpDocPagoSinaxc()!=null?f.getImpDocPagoSinaxc()+"":"");
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImporteFactura()!=null?f.getImporteFactura()+"":"");
+								cell.setCellValue(f.getImpTotalPagoSinaxc()!=null?f.getImpTotalPagoSinaxc()+"":"");
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImporteTotal()!=null?f.getImporteTotal()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getPrecioEnRelCompras()!=null?f.getPrecioEnRelCompras()+"":"");
+								cell.setCellValue(f.getImpPrecioTonPagiSinaxc()!=null?f.getImpPrecioTonPagiSinaxc()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(f.getPrecioCalculado()!=null?f.getPrecioCalculado()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getPrecioPagado()!=null?f.getPrecioPagado()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getObservacion());
 							}							
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{ 
-							msj = "La validación es correcta \"PRECIO PAGADO MENOR\"";
+							msj = "La validación es correcta \"PRECIO PAGADO CORRESPONDE CON PAGOS\"";
 							row = sheet.createRow(countRow);
 							cell = row.createCell(0);
 							cell.setCellValue(msj);
@@ -3773,6 +3790,90 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}
 						
+					}else if(l.getIdCriterio() == 28){//"11.2 PRECIO MENOR AL ESTABLECIDO EN AVISO"
+						sheet = wb.createSheet("PRECIO PAG MEN AL EST EN AVISO");
+						sheet = setMargenSheet(sheet);
+						countRow = 0;
+						countColumn = 0;
+						lstPrecioPagadoMenorQueAviso = rDAO.consultaPrecioMenorQAviso(folioCartaAdhesion); 
+						if(lstPrecioPagadoMenorQueAviso.size() > 0){//"11.2 PRECIO MENOR AL ESTABLECIDO EN AVISO" 
+							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
+							msj = l.getCriterio();
+							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue(msj);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("Clave Bodega");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Estado");
+							if(siAplicaFolioContrato){
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Folio Contrato");
+							}
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Productor");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Peso Neto Fac (ton)");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Importe Cheque");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Importe Total");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Precio en Rel de Compras");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Precio Calculado");	
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Precio en Aviso");	
+							for(PrecioPagadoNoCorrespondeConPagosV f: lstPrecioPagadoMenorQueAviso){
+								countColumn = 0;
+								bd = new BitacoraRelcomprasDetalle();
+								bd.setMensaje(f.getClaveBodega()+";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")+
+										f.getPaternoProductor()+";"+f.getMaternoProductor()+";"+f.getNombreProductor()+";"+
+										f.getVolTotalFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
+										f.getImpPrecioTonPagiSinaxc()+";"+(f.getPrecioCalculado()!=null ? f.getPrecioCalculado()+";":0+";")+
+										(f.getPrecioPagadoEnAviso()!=null ? f.getPrecioPagadoEnAviso()+";":0+";"));
+								b.getBitacoraRelcomprasDetalle().add(bd);
+								//Actualiza los pagos del productor como inconsistente
+								rDAO.actualizaPagosInconsistente(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
+										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), true);
+							 	row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getNombreEstado()!=null ? f.getNombreEstado()+"":"");
+								if(siAplicaFolioContrato){
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(f.getFolioContrato()!=null ? f.getFolioContrato()+"":"");
+								}
+								cell = row.createCell(++countColumn);
+								cell.setCellValue((f.getPaternoProductor()!=null && !f.getPaternoProductor().isEmpty() ? f.getPaternoProductor()+" " :"" )
+										+(f.getMaternoProductor()!=null ? f.getMaternoProductor()+" " :"") 
+										+(f.getNombreProductor()!=null ? f.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");								
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getImpDocPagoSinaxc()!=null?f.getImpDocPagoSinaxc()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getImpTotalPagoSinaxc()!=null?f.getImpTotalPagoSinaxc()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getImpPrecioTonPagiSinaxc()!=null?f.getImpPrecioTonPagiSinaxc()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getPrecioCalculado()!=null?f.getPrecioCalculado()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getPrecioPagadoEnAviso()!=null?f.getPrecioPagadoEnAviso()+"":"");
+							}							
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}else{ 
+							msj = "La validación es correcta \"PRECIO PAGADO ES MENOR AL ESTABLECIDO EN AVISO\"";
+							row = sheet.createRow(countRow);
+							cell = row.createCell(0);
+							cell.setCellValue(msj);
+							llenarBitacora(false, l.getIdCriterio());
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}
 					}			
 				}//end recorrido lstValidacionPorGrupo PAGOS
 				nombreArchivoLogXls = "Pagos.xls";
@@ -5055,9 +5156,27 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setLstPrecioPagPorTipoCambio(
 			List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio) {
 		this.lstPrecioPagPorTipoCambio = lstPrecioPagPorTipoCambio;
+	}
+
+	public List<PrecioPagadoNoCorrespondeConPagosV> getLstPrecioPagadoNoCorrespondeConPagosV() {
+		return lstPrecioPagadoNoCorrespondeConPagosV;
+	}
+
+	public void setLstPrecioPagadoNoCorrespondeConPagosV(
+			List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoNoCorrespondeConPagosV) {
+		this.lstPrecioPagadoNoCorrespondeConPagosV = lstPrecioPagadoNoCorrespondeConPagosV;
+	}
+
+	public List<PrecioPagadoNoCorrespondeConPagosV> getLstPrecioPagadoMenorQueAviso() {
+		return lstPrecioPagadoMenorQueAviso;
+	}
+
+	public void setLstPrecioPagadoMenorQueAviso(
+			List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoMenorQueAviso) {
+		this.lstPrecioPagadoMenorQueAviso = lstPrecioPagadoMenorQueAviso;
 	}	
 	
 	
-	
+		
 }
 

@@ -98,6 +98,11 @@
 	<s:if test="%{lstPrecioPagPorTipoCambio.size() > 0}"> <!--VOLUMEN DE FINIQUITO"-->
 		<span class="requerido">PRECIO PAGADO AL PRODUCTOR MENOR AL PACTADO EN EL CONTRATO</span><br>
 	</s:if>
-	
+	<s:if test="%{lstPrecioPagadoNoCorrespondeConPagosV.size() > 0}"> <!--11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS"-->
+		<span class="requerido">PRECIO PAGADO NO CORRESPONDE CON PAGOS</span><br>
+	</s:if>	
+	<s:if test="%{lstPrecioPagadoMenorQueAviso.size() > 0}"> <!--11.2 PRECIO MENOR AL ESTABLECIDO EN AVISO"-->
+		<span class="requerido">PRECIO PAGADO ES MENOR AL ESTABLECIDO EN AVISO</span><br>
+	</s:if>
 </fieldset>
 <s:include value="incluyeLogXls.jsp"/>

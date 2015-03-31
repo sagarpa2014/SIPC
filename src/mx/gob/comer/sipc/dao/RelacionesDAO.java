@@ -14,7 +14,6 @@ import mx.gob.comer.sipc.domain.catalogos.Productores;
 import mx.gob.comer.sipc.domain.catalogos.Relaciones;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasDetalle;
-
 import mx.gob.comer.sipc.domain.transaccionales.CamposRelacion;
 import mx.gob.comer.sipc.domain.transaccionales.CamposRelacionCertificados;
 import mx.gob.comer.sipc.domain.transaccionales.CamposRelacionMaritima;
@@ -30,7 +29,6 @@ import mx.gob.comer.sipc.domain.transaccionales.ComprasPagoProdAxc;
 import mx.gob.comer.sipc.domain.transaccionales.ComprasPagoProdSinAxc;
 import mx.gob.comer.sipc.domain.transaccionales.ComprasPredio;
 import mx.gob.comer.sipc.domain.transaccionales.CriteriosValidacionTransaccional;
-
 import mx.gob.comer.sipc.domain.transaccionales.GruposRelacion;
 import mx.gob.comer.sipc.domain.transaccionales.IniEsquemaRelacion;
 import mx.gob.comer.sipc.domain.transaccionales.PersonalizacionRelaciones;
@@ -65,6 +63,7 @@ import org.hibernate.JDBCException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
 
@@ -3530,17 +3529,82 @@ public class RelacionesDAO {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	public List<PrecioPagadoMenor> consultaPrecioPagadoMenor(String folioCartaAdhesion)throws JDBCException {
-		List<PrecioPagadoMenor> lst = null;
-		
+	
+	public List<PrecioPagadoNoCorrespondeConPagosV> consultaPrecioPagadoNoCorrespondeConPagosV(String folioCartaAdhesion)throws JDBCException {
+		List<PrecioPagadoNoCorrespondeConPagosV> lst = new ArrayList<PrecioPagadoNoCorrespondeConPagosV>();		
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("select * ")		
-		.append(" from  precio_pagado_menor_v ")
-		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and obs <> 'OK'");
+		.append(" from  precio_pagado_no_corresponde_con_pagos_v ")
+		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and abs((COALESCE(imp_precio_ton_pago_sinaxc,0) - COALESCE(precio_calculado,0)))>1.00  ");
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		
-		lst= session.createSQLQuery(consulta.toString()).addEntity(PrecioPagadoMenor.class).list();
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			BigDecimal valor = null;
+			PrecioPagadoNoCorrespondeConPagosV  r = new PrecioPagadoNoCorrespondeConPagosV();
+			r.setFolioCartaAdhesion((String) row.get("folio_carta_adhesion"));
+			r.setClaveBodega((String) row.get("clave_bodega"));
+			r.setNombreEstado((String) row.get("nombre_estado"));
+			r.setFolioContrato((String) row.get("folio_contrato"));
+			r.setPaternoProductor((String) row.get("paterno_productor"));
+			r.setMaternoProductor((String) row.get("materno_productor"));
+			r.setNombreProductor((String) row.get("nombre_productor"));
+			valor = (BigDecimal) row.get("vol_total_fac_venta");
+			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_doc_pago_sinaxc");
+			r.setImpDocPagoSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_total_pago_sinaxc");
+			r.setImpTotalPagoSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_precio_ton_pago_sinaxc");
+			r.setImpPrecioTonPagiSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("precio_calculado");
+			r.setPrecioCalculado(valor!=null ? valor.doubleValue():null);			
+			lst.add(r);
+		}
+		return lst;
+						
+	}
+	
+	
+	public List<PrecioPagadoNoCorrespondeConPagosV> consultaPrecioMenorQAviso(String folioCartaAdhesion)throws JDBCException {
+		List<PrecioPagadoNoCorrespondeConPagosV> lst = new ArrayList<PrecioPagadoNoCorrespondeConPagosV>();		
+		StringBuilder consulta= new StringBuilder();
+		consulta.append("select * ")		
+		.append(" from  precio_pagado_no_corresponde_con_pagos_v ")
+		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and abs((COALESCE(precio_pagado_en_aviso,0) - COALESCE(precio_calculado,0)))>1.00 ");
+		//.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  ");
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			BigDecimal valor = null;
+			PrecioPagadoNoCorrespondeConPagosV  r = new PrecioPagadoNoCorrespondeConPagosV();
+			r.setFolioCartaAdhesion((String) row.get("folio_carta_adhesion"));
+			r.setClaveBodega((String) row.get("clave_bodega"));
+			r.setNombreEstado((String) row.get("nombre_estado"));
+			r.setFolioContrato((String) row.get("folio_contrato"));
+			r.setPaternoProductor((String) row.get("paterno_productor"));
+			r.setMaternoProductor((String) row.get("materno_productor"));
+			r.setNombreProductor((String) row.get("nombre_productor"));
+			valor = (BigDecimal) row.get("vol_total_fac_venta");
+			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_doc_pago_sinaxc");
+			r.setImpDocPagoSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_total_pago_sinaxc");
+			r.setImpTotalPagoSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_precio_ton_pago_sinaxc");
+			r.setImpPrecioTonPagiSinaxc(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("precio_calculado");
+			r.setPrecioCalculado(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("precio_pagado_en_aviso");
+			r.setPrecioPagadoEnAviso(valor!=null ? valor.doubleValue():null);
+			
+			lst.add(r);
+		}
 		return lst;
 						
 	}
@@ -4609,6 +4673,94 @@ public class RelacionesDAO {
 			return elementosActuializados;
 		}
 		
+		public int actualizaPagosInconsistente(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor, boolean pagos)throws JDBCException {
+			int elementosActuializados = 0;
+			StringBuilder where = new StringBuilder();
+			try{
+				StringBuilder set  = new StringBuilder();
+				if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+					where.append(" where folio_carta_adhesion ='").append(folioCartaAdhesion).append("' ");
+				}
+				
+				if (claveBodega != null && !claveBodega.isEmpty()){
+					if(where.length()>0){
+						where.append(" and clave_bodega ='").append(claveBodega).append("' ");
+					}else{
+						where.append(" where clave_bodega ='").append(claveBodega).append("' ");
+					}
+				}
+				
+				if (nombreEstado != null && !nombreEstado.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_estado ='").append(nombreEstado).append("' ");
+					}else{
+						where.append(" where nombre_estado ='").append(nombreEstado).append("' ");
+					}
+				}	
+				if (folioContrato != null && !folioContrato.isEmpty()){
+					if(where.length()>0){
+						where.append(" and folio_contrato ='").append(folioContrato).append("' ");
+					}else{
+						where.append(" where folio_contrato ='").append(folioContrato).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and folio_contrato is null ");
+					}else{
+						where.append(" where folio_contrato is null ");
+					}
+				}
+				if (paternoProductor != null && !paternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and paterno_productor ='").append(paternoProductor).append("' ");
+					}else{
+						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor is null ");
+					}else{
+						where.append(" where paterno_productor is null");
+					}
+				}
+				if (maternoProductor != null && !maternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
+					}else{
+						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor is null ");
+					}else{
+						where.append(" where materno_productor is null");
+					}
+				}
+				if (nombreProductor != null && !nombreProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_productor ='").append(nombreProductor).append("' ");
+					}else{
+						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
+					}
+				}
+				set.append("set " );				
+				if(pagos){
+					set.append(" pago_inconsistente = true,");
+				}								
+				set.deleteCharAt(set.length()-1);
+				StringBuilder hql = new StringBuilder()			
+				.append("UPDATE  relacion_compras_tmp  ").append(set.toString()).append(where.toString());
+				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
+				
+			}catch (JDBCException e){
+				transaction.rollback();
+				throw e;
+			}	
+			return elementosActuializados;
+		}
+		
+		
 		
 		public int actualizaPredioIncosistente(Long id)throws JDBCException {
 			int elementosActuializados = 0;
@@ -4982,31 +5134,100 @@ public class RelacionesDAO {
 		public List<PrediosProdsContNoExisteBD> verificaSiPrediosProdsContExistenBD(String folioCartaAdhesion, int idPrograma)throws JDBCException{
 			List<PrediosProdsContNoExisteBD> lst = null;
 			StringBuilder consulta= new StringBuilder();
-			consulta.append("select distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, folio_predio, folio_predio_sec, null AS folio_predio_alterno, id_relacion_compras_tmp AS id ")
-			.append("from relacion_compras_tmp  r ")
-			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and  folio_predio is not null ")
-			.append("and folio_predio_sec is not null ")
-			.append("and not exists ")
-			.append("	(select 1 ")
-			.append("	from predios_relaciones p ")
-			.append("	where p.predio = r.folio_predio ")
-			.append("	and p.predio_secuencial = r.folio_predio_sec ")
-			.append("	and p.productor = r.productor ")
-			.append("	and p.folio_contrato = r.folio_contrato ")
-			.append("	and p.id_programa =").append(idPrograma).append(") ")
-			.append("UNION ")
-			.append("select  distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, NULL AS folio_predio, 0 AS folio_predio_sec, folio_predio_alterno, id_relacion_compras_tmp AS id ")
-			.append("from relacion_compras_tmp  r ")
-			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//			consulta.append("select distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, folio_predio, folio_predio_sec, null AS folio_predio_alterno, id_relacion_compras_tmp AS id ")
+//			.append("from relacion_compras_tmp  r ")
+//			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//			.append("and  folio_predio is not null ")
+//			.append("and folio_predio_sec is not null ")
+//			.append("and not exists ")
+//			.append("	(select 1 ")
+//			.append("	from predios_relaciones p ")
+//			.append("	where p.predio = r.folio_predio ")
+//			.append("	and p.predio_secuencial = r.folio_predio_sec ")
+//			.append("	and p.productor = r.productor ")
+//			.append("	and p.folio_contrato = r.folio_contrato ")
+//			.append("	and p.id_programa =").append(idPrograma).append(") ")
+//			.append("UNION ")
+//			.append("select  distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, NULL AS folio_predio, 0 AS folio_predio_sec, folio_predio_alterno, id_relacion_compras_tmp AS id ")
+//			.append("from relacion_compras_tmp  r ")
+//			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//			.append("and  folio_predio_alterno is not null ")
+//			.append("and not exists ")
+//			.append("	(select 1 ")
+//			.append("	from predios_relaciones p ")
+//			.append("	where p.predio_alterno = r.folio_predio_alterno ")
+//			.append("	and p.productor = r.productor ")
+//			.append("	and p.folio_contrato = r.folio_contrato	")
+//			.append("	and p.id_programa =").append(idPrograma).append(") ");
+//			
+		
+			consulta.append("select distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, ")
+			.append("materno_productor, nombre_productor, folio_predio, folio_predio_sec, null AS folio_predio_alterno, id_relacion_compras_tmp AS id, ")
+			.append("(select folio_carta_adhesion ")
+			.append("from relacion_compras_tmp ")
+			.append("where folio_contrato = r.folio_contrato ")
+			.append("and rfc_productor = r.rfc_productor ")
+			.append("and folio_predio = r.folio_predio  ")
+			.append("and folio_predio_sec = r.folio_predio_sec ") 
+			.append("and folio_carta_adhesion != r.folio_carta_adhesion ")
+			.append("limit 1 ")
+			.append(") folio_carta_externa ")	
+			.append("from relacion_compras_tmp  r ") 
+			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+			.append("and  folio_predio is not null  ")
+			.append("and  folio_predio_sec is not null ") 
+			.append("and  ")
+			.append("	((exists ") 
+			.append("(select 1 ")
+			.append("from relacion_compras_tmp ")
+			.append("where folio_contrato = r.folio_contrato ")
+			.append("and rfc_productor = r.rfc_productor ")
+			.append(" and folio_predio = r.folio_predio  ")
+			.append("and folio_predio_sec = r.folio_predio_sec ") 
+			.append(" and folio_carta_adhesion != r.folio_carta_adhesion ")
+			.append("	)) ")
+			.append(" OR 	 ")
+			.append("(not exists ") 
+			.append("(select 1  ")
+			.append("from predios_relaciones p ") 
+			.append("where p.predio = r.folio_predio ") 
+			.append("and p.predio_secuencial = r.folio_predio_sec ") 
+			.append("and p.productor = r.productor 	 ")
+			.append("and p.folio_contrato = r.folio_contrato ") 	
+			.append("and p.id_programa =").append(idPrograma).append(") ) ")
+			.append(") ")
+			.append("UNION ") 
+			.append("select distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, ") 
+			.append("NULL AS folio_predio, 0 AS folio_predio_sec, folio_predio_alterno, id_relacion_compras_tmp AS id , ")
+			.append("(select folio_carta_adhesion ")
+			.append("from relacion_compras_tmp ")
+			.append("where folio_contrato = r.folio_contrato ")
+			.append("and rfc_productor = r.rfc_productor ")
+			.append("and folio_predio_alterno = r.folio_predio_alterno ")
+			.append("and folio_carta_adhesion != r.folio_carta_adhesion ")
+			.append("limit 1 ")
+			.append(") folio_carta ")
+			.append("from relacion_compras_tmp  r ") 
+			.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
 			.append("and  folio_predio_alterno is not null ")
-			.append("and not exists ")
-			.append("	(select 1 ")
-			.append("	from predios_relaciones p ")
-			.append("	where p.predio_alterno = r.folio_predio_alterno ")
-			.append("	and p.productor = r.productor ")
-			.append("	and p.folio_contrato = r.folio_contrato	")
-			.append("	and p.id_programa =").append(idPrograma).append(") ");
+			.append("and ((exists  ")
+			.append("(select 1 ")
+			.append("from relacion_compras_tmp ")
+			.append("where folio_contrato = r.folio_contrato ")
+			.append("and rfc_productor = r.rfc_productor ")
+			.append("and folio_predio_alterno = r.folio_predio_alterno ")
+			.append("and folio_carta_adhesion != r.folio_carta_adhesion ")
+			.append(")) ")
+			.append("or 	 ")
+			.append("(not exists ") 	
+			.append("(select 1 from predios_relaciones p ") 
+			.append("where p.predio_alterno = r.folio_predio_alterno ") 
+			.append(" and p.productor = r.productor  ")
+			.append(" and p.folio_contrato = r.folio_contrato ") 
+			.append(" and p.id_programa =").append(idPrograma).append(") ) ")
+			.append(") ");
+			
+			
 			
 			System.out.println("cpredios existan "+consulta.toString());
 			lst= session.createSQLQuery(consulta.toString()).addEntity(PrediosProdsContNoExisteBD.class).list();
