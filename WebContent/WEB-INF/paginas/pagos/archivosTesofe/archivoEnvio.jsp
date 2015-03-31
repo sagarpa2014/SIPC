@@ -25,7 +25,7 @@
 		</div>
 		<div>
 			<label class="left1"><span class="requerido">*</span>Secuencia Inicial:</label>
-			<s:textfield id="secuenciaInicialArchivoUsuario" name="secuenciaInicialArchivoUsuario" maxlength="4" size="6" />
+			<s:textfield id="secuenciaInicialArchivoUsuario" name="secuenciaInicialArchivoUsuario" maxlength="5" size="6" />
 		</div>
 		<div id="validaNumeroSecuenciaArchivo"></div>
 		<s:if test='nombreArchivo!=null'>
@@ -80,7 +80,7 @@ function validaFolioCLC(){
 	var patronOficio =/^F00.\d{4}\/\d{1,8}\/\d{4}$/;
 	var patronFolioCLC =/^\d{1,5}$/;
 	var patronConsecutivoArchivo =/^\d{2}$/;
-	var patronSecuenciaInicialArchivoUsuario =/^\d{1,4}$/;
+	var patronSecuenciaInicialArchivoUsuario =/^\d{1,5}$/;
 
 	if(!oficioCGC.match(patronOficio)){
 		$('#dialogo_1').html('El oficio es incorrecto, se debe capturar conforme a la siguiente nomenclatura ejemplo: F00.4200/99999/2015');
@@ -99,7 +99,7 @@ function validaFolioCLC(){
 		return false;
 	}	
 	if(!secuenciaInicialArchivoUsuario.match(patronSecuenciaInicialArchivoUsuario)){
-		$('#dialogo_1').html('La secuencia inicial proporcinada por el usuario es incorrecta, se deben capturar hasta 4 digitos');
+		$('#dialogo_1').html('La secuencia inicial proporcinada por el usuario es incorrecta, se deben capturar hasta 5 digitos');
 		abrirDialogo();
 		return false;
 	}	
