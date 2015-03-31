@@ -70,7 +70,7 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 		getTitulo();
 		addEmptyLine(1);
 		getCiclo();
-		addEmptyLine(1);
+		//addEmptyLine(1);
 		getPeriodo();
 		addEmptyLine(1);
 		getCuerpo();
@@ -110,10 +110,12 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 	private void getTitulo() throws DocumentException{
 		parrafo = new Paragraph("REPORTE DE SEGUIMIENTO DE COSECHA EN CENTROS DE ACOPIO", TIMESROMANBOLD10);
 		parrafo.setAlignment(Rectangle.ALIGN_CENTER);
+		parrafo.setLeading(1,1);
 		document.add(parrafo);
 	}
 	private void getCiclo() throws DocumentException {
 		parrafo = new Paragraph("CICLO AGRÍCOLA "+ata.getCiclo(), TIMESROMANBOLD10);
+		parrafo.setLeading(1,1);
 		parrafo.setAlignment(Rectangle.ALIGN_CENTER);
 		document.add(parrafo);	
 	}

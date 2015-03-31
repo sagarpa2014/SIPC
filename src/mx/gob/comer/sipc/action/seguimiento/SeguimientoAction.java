@@ -90,7 +90,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private Double mmaritimo;
 	private Double mtotal;
 	private Double existenciaAM;
-	private Double existenciaAMAnt;
+	private double existenciaAMAnt;
 	private int idEstado;
 	private String destino;
 	private String observaciones;
@@ -229,7 +229,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				idVariedad = sca.getIdVariedad();
 				if (idVariedad==null)
 					idVariedad = 0;
-				validaClaveBodega();				
+				validaClaveBodega();
 			} else {
 				idVariedad = 0;
 				fechaActual = new Date();
@@ -427,8 +427,10 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					 if(idCultivo > 0 && idVariedad > 0){
 						 if(registrar!=1&&registrar!=2){
 							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad);
+							 System.out.println("Existencia !=1 y != 2"+existenciaAMAnt);
 						 } else {
-							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, sca.getPeriodoInicial(), sca.getPeriodoFinal()); 
+							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, sca.getPeriodoInicial(), sca.getPeriodoFinal());
+							 System.out.println("Existencia ==1 y == 2"+existenciaAMAnt);
 						 }
 					 }
 				}
@@ -525,17 +527,18 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			e.printStackTrace();
 			AppLogger.error("errores", "Ocurrió un error al generar el reporte de seguimiento de acopio debido a:"+e.getCause());
 		}
-		return SUCCESS;
+		return null;
 	}
 
 	public void consigueOficio() throws Exception{
 		try{
-			rutaSalida = cDAO.consultaParametros("RUTA_SEGUIMIENTO_ACOPIO");	
-			nombreReporte = "SeguimientoAcopio-"+idSeguimiento+".pdf"; 
+			//rutaSalida = cDAO.consultaParametros("RUTA_SEGUIMIENTO_ACOPIO");	
+			System.out.println("consigue ruta "+rutaSalida);
+			//nombreReporte = "SeguimientoAcopio-"+idSeguimiento+".pdf"; 
 			if (!rutaSalida.endsWith(File.separator)){
 				rutaSalida += File.separator;
 			}
-			Utilerias.entregarArchivo(rutaSalida,nombreReporte,"pdf");
+			Utilerias.entregarArchivo(rutaSalida,"pdf");
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1683,10 +1686,10 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	public void setUsuario(Usuarios usuario) {
 		this.usuario = usuario;
 	}
-	public Double getExistenciaAMAnt() {
+	public double getExistenciaAMAnt() {
 		return existenciaAMAnt;
 	}
-	public void setExistenciaAMAnt(Double existenciaAMAnt) {
+	public void setExistenciaAMAnt(double existenciaAMAnt) {
 		this.existenciaAMAnt = existenciaAMAnt;
 	}
 }

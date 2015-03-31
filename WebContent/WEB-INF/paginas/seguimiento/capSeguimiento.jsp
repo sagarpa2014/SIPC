@@ -220,18 +220,18 @@
 			</td>
 			<td>
 				<s:if test="%{sca.pagadoTon != null && sca.pagadoTon != ''}">
-					<s:textfield id="pagadoTon" name="pagadoTon" value="%{getText('volumenSinComas',{sca.pagadoTon})}" maxlength="14" size="20"  cssClass="cantidad" />
+					<s:textfield id="pagadoTon" name="pagadoTon" value="%{getText('volumenSinComas',{sca.pagadoTon})}" maxlength="14" size="20"  cssClass="cantidad" onchange="calcularPorcentajeDeLoPagado(this.value)"/>
 				</s:if>
 				<s:else>
-					<s:textfield id="pagadoTon" name="pagadoTon" value="%{}" maxlength="14" size="20"  cssClass="cantidad" />
+					<s:textfield id="pagadoTon" name="pagadoTon" value="%{}" maxlength="14" size="20"  cssClass="cantidad"  onchange="calcularPorcentajeDeLoPagado(this.value)"/>
 				</s:else>
 			</td>
 			<td colspan="3">
 				<s:if test="%{sca.pagadoPorcentaje != null && sca.pagadoPorcentaje != ''}">
-					<s:textfield id="pagadoPorcentaje" name="pagadoPorcentaje" value="%{getText('importeSinComas',{sca.pagadoPorcentaje})}" maxlength="14" size="20"  cssClass="cantidad" />
+					<s:textfield id="pagadoPorcentaje" name="pagadoPorcentaje" value="%{getText('importeSinComas',{sca.pagadoPorcentaje})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" />
 				</s:if>
 				<s:else>
-					<s:textfield id="pagadoPorcentaje" name="pagadoPorcentaje" value="%{}" maxlength="14" size="20"  cssClass="cantidad" />
+					<s:textfield id="pagadoPorcentaje" name="pagadoPorcentaje" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/>
 				</s:else>
 				
 			</td>
@@ -354,14 +354,15 @@
 			<td>
 				<label class="left1">Avance Cosecha:</label>
 			</td>
-			<td colspan="4">
+			<td colspan="1">
 				<s:if test="%{sca.avanceCosecha != null && sca.avanceCosecha != ''}">
-					<s:textfield id="avanceCosecha" name="avanceCosecha"  value="%{getText('importeSinComas',{sca.avanceCosecha})}" maxlength="14" size="20"  cssClass="cantidad" />
+					<s:textfield id="avanceCosecha" name="avanceCosecha"  value="%{getText('importeSinComas',{sca.avanceCosecha})}" maxlength="14" size="20"  cssClass="cantidad" /> %
 				</s:if>
 				<s:else>
 					<s:textfield id="avanceCosecha" name="avanceCosecha" value="%{}" maxlength="14" size="20"  cssClass="cantidad"/>
 				</s:else>
 			</td>
+			<td colspan="3" ></td>
 		</tr> 
 		<tr>
 			<td>

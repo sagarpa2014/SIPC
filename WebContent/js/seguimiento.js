@@ -141,6 +141,7 @@ function chkCamposSeguimientoAcopio(){
 			}
 		}
 		$("#acopioTotalTon").removeAttr("disabled");
+		$("#pagadoPorcentaje").removeAttr("disabled");
 		
 		/***** PAGADO EN TONELADAS ****/
 		var pagadoTon = $('#pagadoTon').val();
@@ -412,11 +413,19 @@ function getTotalMovilizado(volumen, id, msj){
 	}	
 	if(mmaritimo!=null && mmaritimo !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mmaritimo));	
+	}	
+	var totalExistencia = 0.0;	
+	var acopioTotalTon =  $('#acopioTotalTon').val();
+	var existenciaAMAnt =  $('#existenciaAMAnt').val();
+	var existencia = parseFloat(acopioTotalTon)+parseFloat(existenciaAMAnt);
+	if(parseFloat(totalVolumenMovilizado) > existencia){
+		$('#'+id).val(null);
+		$('#dialogo_1').html('No se puede movilizar mas de lo acopiado');
+		abrirDialogo();
+		return false;
 	}
 	$('#mtotal').val(totalVolumenMovilizado.toFixed(3));
 	var mtotal =  $('#mtotal').val();
-	var totalExistencia = 0.0;	
-	var acopioTotalTon =  $('#acopioTotalTon').val();
 	var existenciaAMAnt =  $('#existenciaAMAnt').val();
 	totalExistencia = parseFloat(existenciaAMAnt) + parseFloat(acopioTotalTon-mtotal);
 //alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
@@ -503,7 +512,7 @@ function getTotalAcopio(volumen, id, msj){
 	var mtotal =  $('#mtotal').val();
 	var existenciaAMAnt =  $('#existenciaAMAnt').val();
 	totalExistencia = parseFloat(existenciaAMAnt) + parseFloat(acopioTotalTon-mtotal);
-//alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
+	//alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
 	$('#existenciaAM').val(totalExistencia.toFixed(3));
 }
 
@@ -569,4 +578,21 @@ function recuperaVariedadByCultivo(idCultivo){
 				});
 		   }
 		});//fin ajax
+}
+
+
+function calcularPorcentajeDeLoPagado(pagadoTon){	
+	var validaVolumen = validarVolumen(pagadoTon,0,0);
+	if(validaVolumen == 0){
+		$('#dialogo_1').html('El valor de lo pagado es inválido, se deben capturar decimales y aceptan hasta 10 digitos a la izquierda y 3 máximo a la derecha');
+		abrirDialogo();
+		return false;
+	}
+	var acopioTotalTon =  $('#acopioTotalTon').val();
+	var pagadoPorcentaje = 0;
+	if(acopioTotalTon !=null && acopioTotalTon != ''){
+		pagadoPorcentaje = parseFloat(pagadoTon * 100) / parseFloat(acopioTotalTon);
+		$('#pagadoPorcentaje').val(pagadoPorcentaje.toFixed(2));
+	}
+	
 }

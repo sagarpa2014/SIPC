@@ -560,6 +560,7 @@ public class SeguimientoDAO {
 			 .append("						  and id_variedad = s.id_variedad)");
 
 			resp = Double.parseDouble(session.createSQLQuery("SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+query.toString()).list().get(0).toString());
+			System.out.println("Query existencia bodega: SELECT  COALESCE(sum(existencia_am),0) from seguimiento_centro_acopio s "+ query.toString() );
 			
 		}catch(JDBCException e){
 			e.printStackTrace();

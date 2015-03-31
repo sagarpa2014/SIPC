@@ -1958,4 +1958,26 @@ public class CatalogosDAO {
 		return lst;
 		
 	}
+	
+	public void isolatedGuardaObjeto(Object o)
+	{
+		try
+		{
+			session = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(o);
+			transaction.commit();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (session != null && session.isOpen())
+			{
+				session.close();
+			}
+		}
+	}	
 }
