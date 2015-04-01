@@ -1,8 +1,10 @@
 package mx.gob.comer.sipc.dao;
 
-
-
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import mx.gob.comer.sipc.domain.Cultivo;
 import mx.gob.comer.sipc.domain.Expediente;
 import mx.gob.comer.sipc.domain.Programa;
@@ -29,9 +31,13 @@ import mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 import mx.gob.comer.sipc.vistas.domain.PrgEspecialistaNumCartasV;
 import mx.gob.comer.sipc.vistas.domain.ProgramaNumCartasV;
+
+import org.hibernate.Criteria;
 import org.hibernate.JDBCException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
 
@@ -1097,9 +1103,9 @@ public class SolicitudPagoDAO {
 		session.createSQLQuery(hql).executeUpdate();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<Programa> consultarProgramasPrimerPagoEfectuado(){
-		List<Programa> lst = null;
+		List<Programa> lst = new ArrayList<Programa>();
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("select p.id_programa, p.descripcion_corta,p.descripcion_larga, p.ciclo, p.ciclo_corto, p.producto, p.estados, p.descripcion, p.ruta_documentos, p.id_area, p.criterio_pago, p.id_componente,	p.id_unidad_medida,	p.numero_etapa,	p.des_apoyo_en_oficio_clc ")
 				.append("from programas p, pagos pa ")
@@ -1117,9 +1123,29 @@ public class SolicitudPagoDAO {
 				.append("group by p.id_programa, p.descripcion_corta,p.descripcion_larga, p.ciclo, p.ciclo_corto, p.producto, p.estados, p.descripcion, p.ruta_documentos, p.id_area, p.criterio_pago, p.id_componente,	p.id_unidad_medida,	p.numero_etapa,	p.des_apoyo_en_oficio_clc ")
 				.append("order by p.descripcion_corta ");
 		
-		
 		System.out.println("CONSULTA"+consulta.toString());
-		lst = session.createSQLQuery(consulta.toString()).addEntity(Programa.class).list();
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		BigInteger valorInt = null;
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			Programa b = new Programa();	
+			//valorInt = (BigInteger) row.get("id_programa");			
+			b.setIdPrograma((Integer)row.get("id_programa"));	
+			b.setDescripcionCorta((String) row.get("descripcion_corta"));			
+			b.setDescripcionLarga((String) row.get("descripcion_larga"));
+			b.setCiclo((String) row.get("ciclo"));
+			b.setCicloCorto((String) row.get("ciclo_corto"));
+			b.setProducto((String) row.get("producto"));
+			b.setEstados((String) row.get("estados"));		
+			b.setDescripcion((String) row.get("descripcion"));
+			b.setRutaDocumentos((String) row.get("ruta_documentos"));
+	        lst.add(b);	
+		}	
+		
+		
+		
 		return lst;		
 	}
 	
