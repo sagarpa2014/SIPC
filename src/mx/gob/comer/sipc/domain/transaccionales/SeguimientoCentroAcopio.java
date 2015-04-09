@@ -46,6 +46,7 @@ public class SeguimientoCentroAcopio {
 	private String justificacionAutoriza;
 	private String rutaJustificacionAutoriza;
 	private Integer idVariedad;
+	private String rfcOperador;
 	
 	@Id	
 	@GeneratedValue(generator = "seguimiento_centro_acopio_id_seguimiento_ca_seq")
@@ -330,5 +331,15 @@ public class SeguimientoCentroAcopio {
 	}
 	public void setIdVariedad(Integer idVariedad) {
 		this.idVariedad = idVariedad;
+	}
+	
+	@Column(name = "rfc_operador")
+	public String getRfcOperador() {
+		return rfcOperador;
+	}
+	public void setRfcOperador(String rfcOperador) {
+		this.rfcOperador = rfcOperador;
 	}	
+	
+	
 }

@@ -2,7 +2,6 @@ package mx.gob.comer.sipc.action.seguimiento;
 
 import java.io.File;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,6 +47,8 @@ import mx.gob.comer.sipc.vistas.domain.OperadoresBodegasV;
 import mx.gob.comer.sipc.vistas.domain.ReporteSeguimientoAcopioV;
 import mx.gob.comer.sipc.vistas.domain.ResumenAvanceAcopioV;
 import mx.gob.comer.sipc.vistas.domain.SeguimientoCentroAcopioV;
+
+
 
 
 
@@ -153,6 +154,9 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private Date fechaActual;
 	
 	private Usuarios usuario;
+	List<OperadoresBodegasV> lstObv;
+	private String rutaSalidaTmp;
+	private String rfcOperador;
 
 	public SeguimientoAction() {
 		super();
@@ -215,7 +219,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	}
 	
 	public String capSeguimiento(){
-		try{
+		try{			
+			lstObv = new ArrayList<OperadoresBodegasV>();
 			if(registrar!=0 ){
 				sca = sDAO.consultaSeguimientoCA(idSeguimientoCA).get(0);
 				idCiclo = sca.getIdCiclo(); 
@@ -226,6 +231,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				descEstatus = cDAO.consultaEstatusSeguimiento(sca.getIdEstatus()).get(0).getDescripcion();
 				justificacionAutoriza = sca.getJustificacionAutoriza(); 
 				rutaJustificacionAutoriza = sca.getRutaJustificacionAutoriza();
+				rfcOperador = sca.getRfcOperador();
 				idVariedad = sca.getIdVariedad();
 				if (idVariedad==null)
 					idVariedad = 0;
@@ -304,7 +310,12 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setPagadoPorcentaje(pagadoPorcentaje);
 						sca.setPagadoTon(pagadoTon);
 						sca.setPrecioPromPagAXC(precioPromPagAXC);
-			//			sca.setPrecioPromPagLibre(precioPromPagLibre);
+						sca.setPrecioPromPagLibre(precioPromPagLibre);
+						
+						if(!rfcOperador.equals("-1")){
+							sca.setRfcOperador(rfcOperador);
+						}
+						
 					} else {
 						addActionError("Ya existe información de seguimiento de acopio de la bodega: "+claveBodega+
 								" para el periodo inicio: "+new java.text.SimpleDateFormat("dd/MM/yyyy").format(periodoInicial)+
@@ -362,7 +373,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setPagadoPorcentaje(pagadoPorcentaje);
 					sca.setPagadoTon(pagadoTon);
 					sca.setPrecioPromPagAXC(precioPromPagAXC);
-		//			sca.setPrecioPromPagLibre(precioPromPagLibre);
+					sca.setPrecioPromPagLibre(precioPromPagLibre);
+					if(!rfcOperador.equals("-1")){
+						sca.setRfcOperador(rfcOperador);
+					}
+					
 
 				}
 			} else { //Autorizacion de cambios
@@ -405,6 +420,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	
 	public String validaClaveBodega(){
 		try{
+			existenciaAMAnt = 0;
 			List<Bodegas> lstBodegas = cDAO.consultaBodegas(claveBodega);
 			if(lstBodegas.size()>0){
 				nombreCentroAcopio = lstBodegas.get(0).getNombre();
@@ -419,15 +435,17 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					cadena = cicloCorto+ejercicioS;  
 					System.out.println("cadena "+cadena);
 					//Recupera el operador del centro de acopio
-					 List<OperadoresBodegasV> lstObv = sDAO.consultaOperadoresBodegasV(cadena, claveBodega);
+					lstObv = sDAO.consultaOperadoresBodegasV(null, claveBodega);
 					 if(lstObv.size()>0){
 						 operadorCentroAcopio =  lstObv.get(0).getNombre();
-					 }			
+					 }else{
+						 lstObv = new ArrayList<OperadoresBodegasV>(); 	 
+					 }
 					 
 					 if(idCultivo > 0 && idVariedad > 0){
 						 if(registrar!=1&&registrar!=2){
 							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad);
-							 System.out.println("Existencia !=1 y != 2"+existenciaAMAnt);
+							 System.out.println("Existencia !=1 y != 2 "+existenciaAMAnt);
 						 } else {
 							 existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad, sca.getPeriodoInicial(), sca.getPeriodoFinal());
 							 System.out.println("Existencia ==1 y == 2"+existenciaAMAnt);
@@ -502,7 +520,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			}
 			//nombreReporte =new java.text.SimpleDateFormat("yyyyMMddHHmmssSS").format(new Date() )+"-SeguimientoAcopio.pdf";
 			nombreReporte ="SeguimientoAcopio-"+idSeguimiento+".pdf";
-			rutaSalida +=nombreReporte;
+			rutaSalidaTmp = rutaSalida;
+			rutaSalida += nombreReporte;			
 			rutaRaiz = context.getRealPath("/");
 			rutaLogoS = context.getRealPath("/images/logoSagarpa.png");
 			rutaLogoA = context.getRealPath("/images/logoASERCA.jpg");
@@ -533,12 +552,12 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	public void consigueOficio() throws Exception{
 		try{
 			//rutaSalida = cDAO.consultaParametros("RUTA_SEGUIMIENTO_ACOPIO");	
-			System.out.println("consigue ruta "+rutaSalida);
+			System.out.println("consigue ruta "+rutaSalidaTmp+"nombre reporte "+nombreReporte);
 			//nombreReporte = "SeguimientoAcopio-"+idSeguimiento+".pdf"; 
-			if (!rutaSalida.endsWith(File.separator)){
-				rutaSalida += File.separator;
-			}
-			Utilerias.entregarArchivo(rutaSalida,"pdf");
+//			if (!rutaSalida.endsWith(File.separator)){
+//				rutaSalida += File.separator;
+//			}
+			Utilerias.entregarArchivo(rutaSalidaTmp,nombreReporte,"pdf");
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1692,4 +1711,25 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	public void setExistenciaAMAnt(double existenciaAMAnt) {
 		this.existenciaAMAnt = existenciaAMAnt;
 	}
+
+	public List<OperadoresBodegasV> getLstObv() {
+		return lstObv;
+	}
+
+	public void setLstObv(List<OperadoresBodegasV> lstObv) {
+		this.lstObv = lstObv;
+	}
+
+	
+	public String getRfcOperador() {
+		return rfcOperador;
+	}
+	
+
+	public void setRfcOperador(String rfcOperador) {
+		this.rfcOperador = rfcOperador;
+	}
+	
+	
+	
 }

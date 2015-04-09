@@ -43,12 +43,12 @@
 				<label class="left1"><span class="requerido">*</span>Existencia de Grano de la Visita Anterior:</label>
 			</td>
 			<td colspan="4">
-				<s:if test="existenciaAMAnt==null">
-					<s:textfield id="existenciaAMAnt" name="existenciaAMAnt" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
-				</s:if>
-				<s:else>
+<%-- 				<s:if test="existenciaAMAnt==0"> --%>
+<%-- 					ok<s:textfield id="existenciaAMAnt" name="existenciaAMAnt" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.) --%>
+<%-- 				</s:if> --%>
+<%-- 				<s:else> --%>
 					<s:textfield id="existenciaAMAnt" name="existenciaAMAnt" value="%{getText('volumenSinComas',{existenciaAMAnt})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
-				</s:else>
+<%-- 				</s:else> --%>
 			</td>
 		</tr>	
 		<tr>
@@ -106,49 +106,14 @@
   				<s:else>
   					<s:textfield id="claveBodega" name="claveBodega" maxlength="15" size="15"  value="%{}" onchange="validaClaveBodega();" />
   				</s:else>  					
-  				<div id="validaClaveBodega"></div>
+  				
   			</td>
 		</tr>
-		<tr>
-			<td>
-				<label class="left1">Nombre o Razón Social del Centro de Acopio Registrado en ASERCA:</label>	
+		<tr id="">
+			<td  colspan="4" id="validaClaveBodega">
+				<s:include value="datosBodega.jsp"/>
 			</td>
-			<td colspan="4" id="">
-				<s:if test="%{nombreCentroAcopio!=null && nombreCentroAcopio != ''}">
-					<s:textfield id="nombreCentroAcopio" name="nombreCentroAcopio" maxlength="15" size="80"  value="%{nombreCentroAcopio}" onchange="" disabled="true"/>
-				</s:if>
-				<s:else>
-					<s:textfield id="nombreCentroAcopio" name="nombreCentroAcopio" maxlength="15" size="80"  value="%{}" onchange="" disabled="true"/>
-				</s:else>				
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label class="left1">Nombre Local o Regional del Centro de Acopio:</label>
-			</td>
-			<td colspan="4"  id="">
-				<s:if test="%{nomRegionalCentroAcopio!=null && nomRegionalCentroAcopio != ''}">
-					<s:textfield id="nomRegionalCentroAcopio" name="nomRegionalCentroAcopio" maxlength="15" size="80"  value="%{nomRegionalCentroAcopio}" onchange="" disabled="true"/>	
-				</s:if>
-				<s:else>
-					<s:textfield id="nomRegionalCentroAcopio" name="nomRegionalCentroAcopio" maxlength="15" size="80"  value="%{}" onchange="" disabled="true"/>
-				</s:else>
-				
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label class="left1">Nombre o Razón Social del Operador del Centro de Acopio:</label>
-			</td>
-			<td colspan="4">
-				<s:if test="%{operadorCentroAcopio!=null && operadorCentroAcopio != ''}">
-					<s:textfield id="operadorCentroAcopio" name="operadorCentroAcopio" maxlength="15" size="80"  value="%{operadorCentroAcopio}" onchange=""  disabled="true" />
-				</s:if>
-				<s:else>
-					<s:textfield id="operadorCentroAcopio" name="operadorCentroAcopio" maxlength="15" size="80"  value="%{}" onchange=""   disabled="true"/>
-				</s:else>
-				
-			</td>
+<%-- 			 --%>
 		</tr>
 		<tr>
 			<td>
@@ -257,6 +222,19 @@
 					$ <s:textfield id="precioPromPagAXC" name="precioPromPagAXC" value="%{}" maxlength="14" size="20"  cssClass="cantidad" /> (AXC)
 				</s:else>
 			</td>
+		</tr>
+		<tr>
+			<td>
+				<label class="left1">Precio Promedio Pagado:</label>
+			</td>
+			<td colspan="4">
+				<s:if test="%{sca.precioPromPagLibre != null && sca.precioPromPagLibre != ''}">
+					$ <s:textfield id="precioPromPagLibre" name="precioPromPagLibre" value="%{getText('importeSinComas',{sca.precioPromPagLibre })}" maxlength="14" size="20"  cssClass="cantidad" /> (Libre Mercado)
+				</s:if>
+				<s:else>
+					$ <s:textfield id="precioPromPagLibre" name="precioPromPagLibre" value="%{}" maxlength="14" size="20"  cssClass="cantidad" /> (Libre Mercado)
+				</s:else>
+			</td>
 		</tr>		
 		<tr>
 			<td>
@@ -352,7 +330,7 @@
 		</tr>
 		<tr>
 			<td>
-				<label class="left1">Avance Cosecha:</label>
+				<label class="left1">Avance de Acopio o Recepción:</label>
 			</td>
 			<td colspan="1">
 				<s:if test="%{sca.avanceCosecha != null && sca.avanceCosecha != ''}">

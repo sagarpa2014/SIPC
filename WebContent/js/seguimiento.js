@@ -288,7 +288,9 @@ function chkCamposSeguimientoAcopio(){
 
 
 
+
 function validaClaveBodega(){
+	
 	//Valida que la bodega exista en la base de datos
 	var claveBodega =   $('#claveBodega').val();
 	if((claveBodega == "" || claveBodega == null)){
@@ -311,23 +313,25 @@ function validaClaveBodega(){
 		   success: function(data){
 			   var $response=$(data);
 			   var errorClaveBodega = $response.filter('#errorCB').text();
-			   var nombreCentroAcopio = $response.filter('#nombreCentroAcopioR').text();
-			   var nomRegionalCentroAcopio = $response.filter('#nomRegionalCentroAcopioR').text();
-			   var operadorCentroAcopio = $response.filter('#operadorCentroAcopioR').text();
-			   
+//			   var nombreCentroAcopio = $response.filter('#nombreCentroAcopioR').text();
+//			   var nomRegionalCentroAcopio = $response.filter('#nomRegionalCentroAcopioR').text();
+//			   var operadorCentroAcopio = $response.filter('#operadorCentroAcopioR').text();
+//			   
 			   var existenciaAMAnt = $response.filter('#existenciaAMR').text();
 		   
-			   console.log("errorClaveBodega"+errorClaveBodega);
 			   if(errorClaveBodega == 1){
 				   $('#errorClaveBodega').val(1);
 			   }else{
 				   $('#errorClaveBodega').val(0);
 			   }
-			   console.log("nombreCentroAcopio"+nombreCentroAcopio);	
-			   $('#nombreCentroAcopio').val(nombreCentroAcopio);
-			   $('#nomRegionalCentroAcopio').val(nomRegionalCentroAcopio);
-			   $('#operadorCentroAcopio').val(operadorCentroAcopio);
+//			   console.log("nombreCentroAcopio"+nombreCentroAcopio);	
+//			   $('#nombreCentroAcopio').val(nombreCentroAcopio);
+//			   $('#nomRegionalCentroAcopio').val(nomRegionalCentroAcopio);
+//			   $('#operadorCentroAcopio').val(operadorCentroAcopio);
 			   
+			   if(existenciaAMAnt == null || existenciaAMAnt == ''){
+				   existenciaAMAnt = 0;
+			   }
 			   $('#existenciaAMAnt').val(existenciaAMAnt);
 			   
 			   $("#validaClaveBodega").html(data).ready(function () {	
@@ -335,6 +339,22 @@ function validaClaveBodega(){
 			   });
 		   }
 		});//fin ajax
+}
+
+
+function recuperaExistenciaEnSeguimiento(){
+	var claveBodega =   $('#claveBodega').val();
+		
+	var idCiclo =   $('#idCiclo').val();
+	var ejercicio =   $('#ejercicio').val();
+	var idCultivo =   $('#idCultivo').val();
+	var idVariedad =   $('#idVariedad').val();
+	
+	if((claveBodega != "" && claveBodega != null 
+			&& idCiclo != -1 && ejercicio != -1 
+			&& idCultivo != -1 && idVa )){
+		return false;
+	}
 }
 
 

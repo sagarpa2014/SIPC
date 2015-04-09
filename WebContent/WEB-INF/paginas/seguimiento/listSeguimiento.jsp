@@ -69,14 +69,16 @@
 					<a href='<s:url value="/seguimiento/capSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}&registrar=1"/>' class="botonVerDetalles" ></a>
 			 	</display:column>
 			 	<s:if test="%{#session.idPerfil==11}"> <!-- Regional -->
-				 	<s:if test="%{#attr.r.idEstatus == 1 || #attr.r.idEstatus == 3}">
-					 	<display:column title="Editar"  headerClass="sortable">
-					 		<a href='<s:url value="/seguimiento/capSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}&registrar=2"/>' class="editar"></a>	 			 	
-					 	</display:column>
-					 	<display:column title="Eliminar"  headerClass="sortable">
-					 		<a href='<s:url value="/seguimiento/eliminarSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}"/>' class="borrar" title="" onclick="if (confirm('¿Esta seguro de eliminar registro?')){}else{return false;}"></a>	 			 	
-					 	</display:column>					 	
-				 	</s:if>
+				 	<display:column title="Editar"  headerClass="sortable">
+					 	<s:if test="%{#attr.r.idEstatus == 1 || #attr.r.idEstatus == 3}">
+						 	<a href='<s:url value="/seguimiento/capSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}&registrar=2"/>' class="editar"></a>
+						</s:if> 			 			 	
+					</display:column>
+					<display:column title="Eliminar"  headerClass="sortable">
+						<s:if test="%{#attr.r.idEstatus == 1 || #attr.r.idEstatus == 3}">
+							<a href='<s:url value="/seguimiento/eliminarSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}"/>' class="borrar" title="" onclick="if (confirm('¿Esta seguro de eliminar registro?')){}else{return false;}"></a>
+						 </s:if>	 			 	
+					</display:column>					 	
 				 </s:if>
 				 <s:if test="%{#session.idPerfil==12}"> <!-- DGPC -->
 				 	<display:column title="Autorizar Cambios"  headerClass="sortable">
