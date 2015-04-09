@@ -5330,6 +5330,7 @@ public class RelacionesDAO {
 			.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
 			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
+			System.out.println("Tipo cambio "+consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 			List<?> data = query.list();
 			

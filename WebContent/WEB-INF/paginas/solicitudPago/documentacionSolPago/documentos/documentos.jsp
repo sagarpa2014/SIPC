@@ -293,6 +293,12 @@
 											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
 										</s:if>
 									</s:elseif>
+									<s:else>
+										<s:if test="observacion==true">
+											<label class="">Documento Corregido</label>
+										</s:if>
+										<s:else><a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a></s:else>
+									</s:else>
 								</s:else>
 							</td>
 							<td>
@@ -300,6 +306,11 @@
 									<s:if test="%{#idPrograma1 < 41}">	
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									</s:if>
+									<s:else>
+										<s:if test="%{idExpediente!=8 && idExpediente!=9 }">
+											<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+										</s:if>
+									</s:else>
 								</s:if>
 								<s:else>&nbsp;</s:else>
 							</td>
