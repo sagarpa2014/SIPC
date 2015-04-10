@@ -171,14 +171,14 @@
 				</s:else>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				<label class="left1">Nombre o Razón Social del Comprador:</label>
-			</td>
-			<td colspan="4">
-				<s:select id="idComprador" name="idComprador" list="lstComprador" listKey="idComprador" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" onchange="recuperaCartasByComprador()"  style="width:650px" value="%{sca.idComprador}"/>
-			</td>
-		</tr>				
+<!-- 		<tr> -->
+<!-- 			<td> -->
+<!-- 				<label class="left1">Nombre o Razón Social del Comprador:</label> -->
+<!-- 			</td> -->
+<!-- 			<td colspan="4"> -->
+<%-- 				<s:select id="idComprador" name="idComprador" list="lstComprador" listKey="idComprador" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" onchange="recuperaCartasByComprador()"  style="width:650px" value="%{sca.idComprador}"/> --%>
+<!-- 			</td> -->
+<!-- 		</tr>				 -->
 		<tr>
 			<td>
 				<label class="left1">Pagado:</label>
@@ -266,6 +266,14 @@
 				
 			</td>
 			<td>
+				<s:if test="%{sca.mautoconsumo != null && sca.mautoconsumo != ''}">
+					<s:textfield id="mautoconsumo" name="mautoconsumo" value="%{getText('volumenSinComas',{sca.mautoconsumo})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalMovilizado(this.value, 'mautoconsumo',1);"/>
+				</s:if>
+				<s:else>
+					<s:textfield id="mautoconsumo" name="mautoconsumo" value="%{}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalMovilizado(this.value, 'mautoconsumo',1);" />
+				</s:else>				
+			</td>			
+			<td>
 				<s:if test="%{sca.mtotal != null && sca.mtotal != ''}">
 					<s:textfield id="mtotal" name="mtotal"  value="%{getText('volumenSinComas',{sca.mtotal})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:if>
@@ -284,6 +292,9 @@
 			</td>
 			<td>
 				<label class="left1"><span class="norequerido">*</span>Mar&iacute;timo</label>			
+			</td>
+			<td>
+				<label class="left1"><span class="norequerido">*</span>Autoconsumo</label>			
 			</td>
 			<td>
 				<label class="left1"><span class="norequerido">*</span>Total</label>			
@@ -424,10 +435,7 @@
 		<s:submit  value="Guardar" cssClass="boton2"/>
 	</div>
 </s:if>
-<s:if test="registrar!=1 && registrar!=3">
-	<div class="clear"></div>
-	<div class="derecha"><a href="<s:url value="/seguimiento/capSeguimiento"/>" onclick="" title="Agregar Seguimiento" >[Agregar Seguimiento]</a></div><br>
-</s:if>
+
 <div class="clear"></div>
 <div class="izquierda"><a href="<s:url value="/seguimiento/listSeguimiento"/>" onclick="" title="" >&lt;&lt; Regresar</a></div>
 </form>
@@ -468,6 +476,7 @@
 			$("#mfurgon").attr('disabled','disabled');
 			$("#mcamion").attr('disabled','disabled');
 			$("#mmaritimo").attr('disabled','disabled');
+			$("#mautoconsumo").attr('disabled','disabled');
 			$("#destino").attr('disabled','disabled');
 			$("#observaciones").attr('disabled','disabled');
 			$("#precioPromPagAXC").attr('disabled','disabled');

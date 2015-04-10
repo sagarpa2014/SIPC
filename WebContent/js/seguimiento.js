@@ -204,6 +204,19 @@ function chkCamposSeguimientoAcopio(){
 				return false;
 			}
 		}
+
+		/***** MOVILIZADO AUTOCONSUMO ****/
+		var mautoconsumo = $('#mautoconsumo').val();
+		if(mautoconsumo != null && mautoconsumo != ''){
+	//		validaVolumen ="";
+			validaVolumen = validarVolumen(mautoconsumo,0,0);
+			if(validaVolumen == 0){
+				$('#dialogo_1').html('El valor del volumen Autoconsumo es inválido, se deben capturar decimales y aceptan hasta 10 digitos a la izquierda y 3 máximo a la derecha');
+				abrirDialogo();
+				return false;
+			}
+		}
+
 		$("#mtotal").removeAttr("disabled"); 
 		/***** EXISTENCIA (ACOPIO-MOVILIZADO) ****/
 		var existenciaAM = $('#existenciaAM').val();
@@ -425,6 +438,7 @@ function getTotalMovilizado(volumen, id, msj){
 	var mfurgon =  $('#mfurgon').val();
 	var mcamion =  $('#mcamion').val();
 	var mmaritimo =  $('#mmaritimo').val();
+	var mautoconsumo =  $('#mautoconsumo').val();
 	if(mfurgon!=null && mfurgon !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mfurgon));	
 	}	
@@ -433,6 +447,9 @@ function getTotalMovilizado(volumen, id, msj){
 	}	
 	if(mmaritimo!=null && mmaritimo !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mmaritimo));	
+	}	
+	if(mautoconsumo!=null && mautoconsumo !=''){
+		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mautoconsumo));	
 	}	
 	var totalExistencia = 0.0;	
 	var acopioTotalTon =  $('#acopioTotalTon').val();

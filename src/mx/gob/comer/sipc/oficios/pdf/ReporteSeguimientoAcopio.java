@@ -74,7 +74,7 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 		getPeriodo();
 		addEmptyLine(1);
 		getCuerpo();
-		getEmisor();
+		//getEmisor(); -- AHS 09042015 
 		document.close();
 	}
 	
@@ -255,14 +255,14 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 			cell =createCell(parrafo, 0, 1, 2);
 			t.addCell(cell);
 
-			parrafo =  new Paragraph("COMERCIALIZADOR/COMPRADOR:", TIMESROMAN08);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 2, 2, 2);
-			t.addCell(cell);
-			parrafo =  new Paragraph(reporte.getNombreComprador(), TIMESROMAN08);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 1, 2);
-			t.addCell(cell);
+//			parrafo =  new Paragraph("COMERCIALIZADOR/COMPRADOR:", TIMESROMAN08);
+//			cell = new PdfPCell(parrafo);
+//			cell =createCell(parrafo, 2, 2, 2);
+//			t.addCell(cell);
+//			parrafo =  new Paragraph(reporte.getNombreComprador(), TIMESROMAN08);
+//			cell = new PdfPCell(parrafo);
+//			cell =createCell(parrafo, 0, 1, 2);
+//			t.addCell(cell);
 
 			parrafo =  new Paragraph("CULTIVO:", TIMESROMAN08);
 			cell = new PdfPCell(parrafo);
@@ -356,6 +356,10 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 2, 2);
 			nested4.addCell(cell);
+			parrafo =  new Paragraph("AUTOCONSUMO:", TIMESROMAN08);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 2, 2);
+			nested4.addCell(cell);
 			parrafo =  new Paragraph("TOTAL:", TIMESROMAN08);
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 2, 2);
@@ -376,6 +380,10 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 1, 2);
 			nested4.addCell(cell);
+			parrafo =  new Paragraph(TextUtil.formateaNumeroComoVolumen(reporte.getMautoconsumo())+" tons.", TIMESROMAN08);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 1, 2);
+			nested4.addCell(cell);			
 			parrafo =  new Paragraph(TextUtil.formateaNumeroComoVolumen(reporte.getMtotal())+" tons.", TIMESROMAN08);
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 1, 2);
@@ -440,11 +448,20 @@ public class ReporteSeguimientoAcopio extends PdfPageEventHelper {
 			
 			t.addCell(new PdfPCell(nested3));
 */
-			parrafo =  new Paragraph("PRECIO PROMEDIO PAGADO:", TIMESROMAN08);
+			parrafo =  new Paragraph("PRECIO PROMEDIO PAGADO AXC:", TIMESROMAN08);
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 2, 2, 2);
 			t.addCell(cell);
 			parrafo =  new Paragraph("$ "+TextUtil.formateaNumeroComoCantidad(reporte.getPrecioPromPagAXC()), TIMESROMAN08);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 1, 2);
+			t.addCell(cell);
+			
+			parrafo =  new Paragraph("PRECIO PROMEDIO PAGADO LIBRE MERCADO:", TIMESROMAN08);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 2, 2, 2);
+			t.addCell(cell);
+			parrafo =  new Paragraph("$ "+TextUtil.formateaNumeroComoCantidad(reporte.getPrecioPromPagLibre()), TIMESROMAN08);
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 1, 2);
 			t.addCell(cell);

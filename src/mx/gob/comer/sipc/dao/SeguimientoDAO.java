@@ -616,4 +616,156 @@ public class SeguimientoDAO {
 		return convertedDate;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<SeguimientoCentroAcopioV> isolatedConsultaSeguimientoCAV(long idSeguimientoCA, Integer idCiclo, Integer ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, Integer idUsuario) throws JDBCException {
+		Session s = null;
+		StringBuilder consulta= new StringBuilder();
+		List<SeguimientoCentroAcopioV> lst=null;
+
+		try{			
+			s = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+
+			if (idSeguimientoCA != 0 && idSeguimientoCA != -1){
+				consulta.append("where idSeguimientoCA = ").append(idSeguimientoCA);
+			}
+				
+			if (idCiclo != null && idCiclo != 0 && idCiclo!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and idCiclo=").append(idCiclo);
+				}else{
+					consulta.append("where idCiclo=").append(idCiclo);
+				}
+			}
+			
+			if (ejercicio != null && ejercicio != 0 && ejercicio!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and ejercicio=").append(ejercicio);
+				}else{
+					consulta.append("where ejercicio=").append(ejercicio);
+				}
+			}
+			
+			if (periodoInicial != null  && !periodoInicial.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and  (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+							.append(" and '").append(periodoInicial).append("'");
+				}else{
+					consulta.append(" where (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+							.append(" and '").append(periodoInicial).append("'");
+				}
+			}
+			
+			if (periodoFinal != null &&  !periodoFinal.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and  (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+							.append(" and '").append(periodoFinal).append("'");
+				}else{
+					consulta.append(" where (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+							.append(" and '").append(periodoFinal).append("'");
+				}
+			}
+			
+			if (claveBodega != null && !claveBodega.isEmpty()){
+				if(consulta.length()>0){
+					consulta.append(" and claveBodega like '%").append(claveBodega).append("%'");
+				}else{
+					consulta.append("where claveBodega like '%").append(claveBodega).append("%'");
+				}
+			}
+	
+			if (idUsuario!=null && idUsuario != 0 && idUsuario!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and usuarioRegistro=").append(idUsuario);
+				}else{
+					consulta.append("where usuarioRegistro=").append(idUsuario);
+				}
+			}
+	
+			consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
+			lst= s.createQuery(consulta.toString()).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(s!=null && s.isOpen()){
+				s.close();
+			}
+		}
+		return lst;	
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<SeguimientoCentroAcopioV> isolatedConsultaSeguimientoCAV(long idSeguimientoCA, Integer idCiclo, Integer ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, String estados) throws JDBCException {
+		Session s = null;
+		StringBuilder consulta= new StringBuilder();
+		List<SeguimientoCentroAcopioV> lst=null;
+		try{			
+			s = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+
+			if (idSeguimientoCA != 0 && idSeguimientoCA != -1){
+				consulta.append("where idSeguimientoCA = ").append(idSeguimientoCA);
+			}
+				
+			if (idCiclo != null && idCiclo != 0 && idCiclo!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and idCiclo=").append(idCiclo);
+				}else{
+					consulta.append("where idCiclo=").append(idCiclo);
+				}
+			}
+			
+			if (ejercicio != null && ejercicio != 0 && ejercicio!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and ejercicio=").append(ejercicio);
+				}else{
+					consulta.append("where ejercicio=").append(ejercicio);
+				}
+			}
+			
+			if (periodoInicial != null  && !periodoInicial.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and  (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+							.append(" and '").append(periodoInicial).append("'");
+				}else{
+					consulta.append(" where (TO_CHAR(periodoInicial,'YYYY-MM-DD')) between '").append(periodoInicial).append("'")
+							.append(" and '").append(periodoInicial).append("'");
+				}
+			}
+			
+			if (periodoFinal != null &&  !periodoFinal.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and  (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+							.append(" and '").append(periodoFinal).append("'");
+				}else{
+					consulta.append(" where (TO_CHAR(periodoFinal,'YYYY-MM-DD')) between '").append(periodoFinal).append("'")
+							.append(" and '").append(periodoFinal).append("'");
+				}
+			}
+			
+			if (claveBodega != null && !claveBodega.isEmpty()){
+				if(consulta.length()>0){
+					consulta.append(" and claveBodega like '%").append(claveBodega).append("%'");
+				}else{
+					consulta.append("where claveBodega like '%").append(claveBodega).append("%'");
+				}
+			}
+	
+			if (estados != null && !estados.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and idEstadoBodega in (").append(estados).append(")");
+				} else {
+					consulta.append(" where idEstadoBodega in (").append(estados).append(")");
+				}
+			}
+	
+			consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
+			lst= s.createQuery(consulta.toString()).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(s!=null && s.isOpen()){
+				s.close();
+			}
+		}
+		return lst;			
+	}
 }// fin de clase

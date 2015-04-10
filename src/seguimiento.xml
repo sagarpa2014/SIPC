@@ -138,6 +138,13 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success" type="tiles">listSeguimiento</result>
             <result name="input" type="tiles">listSeguimiento</result>
-        </action>          
+        </action>
+        <action name="exportaListSeguimiento" method="exportaListSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">				
+            <interceptor-ref name="chksession"/>
+			<interceptor-ref name="defaultStackHibernateStrutsValidation" />		
+			<interceptor-ref name="execAndWait" />
+			<result type="tiles" name="SUCCESS">resultadoGeneracionExcelListaSegui</result>
+			<result type="tiles" name="wait">procesando</result>			
+		</action>
     </package>
 </struts>

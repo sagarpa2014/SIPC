@@ -48,12 +48,6 @@ import mx.gob.comer.sipc.vistas.domain.ReporteSeguimientoAcopioV;
 import mx.gob.comer.sipc.vistas.domain.ResumenAvanceAcopioV;
 import mx.gob.comer.sipc.vistas.domain.SeguimientoCentroAcopioV;
 
-
-
-
-
-
-
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;
 import org.hibernate.JDBCException;
@@ -65,7 +59,7 @@ import com.opensymphony.xwork2.ActionSupport;
 @SuppressWarnings("serial")
 public class SeguimientoAction extends ActionSupport implements ServletContextAware, SessionAware, Serializable{
 	private Map<String, Object> session;
-	private int idCiclo;
+	private Integer idCiclo;
 	private int idCicloAux;
 	private Integer ejercicio;
 	private Integer ejercicioAux;
@@ -89,6 +83,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private Double mfurgon;
 	private Double mcamion;
 	private Double mmaritimo;
+	private Double mautoconsumo;
 	private Double mtotal;
 	private Double existenciaAM;
 	private double existenciaAMAnt;
@@ -210,6 +205,12 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			}
 			lstEjercicios = cDAO.consultaEjercicio(0);
 			lstCiclos = cDAO.consultaCiclo(0);	
+			
+			session.put("idCiclo", idCiclo);
+			session.put("ejercicio", ejercicio);
+			session.put("periodoInicial", periodoInicial);
+			session.put("periodoFinal", periodoFinal);
+			session.put("claveBodega", claveBodega);			
 		}catch (JDBCException e){
 			addActionError("Ocurrió un error inesperado, favor de informar al administrador");
 			AppLogger.error("errores","Ocurrió un error en consultaSeguimiento debido a: " +e.getCause() );
@@ -285,11 +286,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setAvanceCosecha(avanceCosecha);
 						sca.setExistenciaAM(existenciaAM);
 						sca.setFechaEnvio(fechaEnvio);
-						if (idComprador==0 || idComprador==-1){
-							sca.setIdComprador(null);
-						} else {
-							sca.setIdComprador(idComprador);
-						}
+//						if (idComprador==0 || idComprador==-1){
+//							sca.setIdComprador(null);
+//						} else {
+//							sca.setIdComprador(idComprador);
+//						}
 						sca.setIdCultivo(idCultivo);
 						if(idVariedad != -1){
 							sca.setIdVariedad(idVariedad);	
@@ -304,6 +305,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setMcamion(mcamion);
 						sca.setMfurgon(mfurgon);
 						sca.setMmaritimo(mmaritimo);
+						sca.setMautoconsumo(mautoconsumo);
 						sca.setMtotal(mtotal);
 						//sca.setNombreReciboInfo(nombreReciboInfo);
 						sca.setObservaciones(observaciones);
@@ -348,11 +350,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setAvanceCosecha(avanceCosecha);
 					sca.setExistenciaAM(existenciaAM);
 					sca.setFechaEnvio(fechaEnvio);
-					if (idComprador==0 || idComprador==-1){
-						sca.setIdComprador(null);
-					} else {
-						sca.setIdComprador(idComprador);
-					}
+//					if (idComprador==0 || idComprador==-1){
+//						sca.setIdComprador(null);
+//					} else {
+//						sca.setIdComprador(idComprador);
+//					}
 					sca.setIdCultivo(idCultivo);
 					if(idVariedad != -1){
 						sca.setIdVariedad(idVariedad);	
@@ -367,6 +369,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setMcamion(mcamion);
 					sca.setMfurgon(mfurgon);
 					sca.setMmaritimo(mmaritimo);
+					sca.setMautoconsumo(mautoconsumo);
 					sca.setMtotal(mtotal);
 					//sca.setNombreReciboInfo(nombreReciboInfo);
 					sca.setObservaciones(observaciones);
@@ -476,7 +479,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		lstVariedad = cDAO.consultaVariedad(idVariedad, 0, null);
 		//lstEstados = cDAO.consultaEstado(0);
 		lstOperadorCA = cDAO.consultaEstado(0);
-		lstComprador  = cDAO.consultaComprador(0);
+		//lstComprador  = cDAO.consultaComprador(0);
 	}
 
 	public String vistaPreviaOficio(){
@@ -705,6 +708,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMovilizadoCamion()), cf));
 				// MOVILIZADO MARITIMO
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMovilizadoMaritimo()), cf));
+				// MOVILIZADO AUTOCONSUMO
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMovilizadoAutoconsumo()), cf));				
 				// MOVILIZADO TOTAL
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMovilizadoTotal()), cf));
 				// EXISTENCIA ACOP-MOV
@@ -889,6 +894,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMcamion()), cf));
 				// MOVILIZADO MARITIMO
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMmaritimo()), cf));
+				// MOVILIZADO AUTOCONSUMO
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMautoconsumo()), cf));
 				// MOVILIZADO TOTAL
 				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMtotal()), cf));
 				// EXISTENCIA ACOP-MOV
@@ -1176,12 +1183,179 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		return SUCCESS;
 	}
 
+	public String exportaListSeguimiento() throws Exception{
+		try{
+			int idPerfil = (Integer) session.get("idPerfil");
+			idUsuario = (Integer)session.get("idUsuario");
+			if((Integer)session.get("idCiclo")!=null)
+				idCiclo = (Integer)session.get("idCiclo");
+			if((Integer)session.get("ejercicio")!=null)
+				ejercicio = (Integer)session.get("ejercicio");
+			if((Date)session.get("periodoInicial")!=null)
+				periodoInicial = (Date)session.get("periodoInicial");
+			if((Date)session.get("periodoFinal")!=null)
+				periodoFinal = (Date)session.get("periodoFinal");
+			if((String)session.get("claveBodega")!=null)
+				claveBodega = (String)session.get("claveBodega");
+			
+			usuario = cDAO.isolatedconsultaUsuarios(idUsuario, null, null).get(0);
+
+			if (session==null){
+				session = ActionContext.getContext().getSession();	
+			}			
+
+			String rutaPlantilla = context.getRealPath("/WEB-INF/archivos/plantillas");
+			// Leer la Ruta de salida configurada en la tabla parametros
+			String rutaSalida = utileriasDAO.isolatedGetParametros("RUTA_SEGUIMIENTO_ACOPIO");
+			if(!new File(rutaSalida).exists() ){
+				rutaSalida =context.getRealPath("/WEB-INF/archivos/reportesSeguimiento");
+			}
+			
+			//Consulta el reporte de acuerdo a los criterios seleccionados por el usuario
+			if(idPerfil == 12){
+				listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1);
+				//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), -1);
+			} else {
+				// Caso particular: Regional Occidente
+				if(idPerfil == 11 && usuario.getArea().equals("1,6,14,18")){
+					listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, usuario.getArea());
+					//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), usuario.getArea());
+				} else {
+					listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, idUsuario);
+					//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), idUsuario);
+				}
+			}
+			
+			if(listSeguimientoCentroAcopioV!=null && listSeguimientoCentroAcopioV.size()>0){
+				// Generar XLS
+				nombreReporte = construyeArchivoListaSeguimiento(rutaPlantilla,rutaSalida,listSeguimientoCentroAcopioV);
+			}
+		}catch (JDBCException e) {
+			e.printStackTrace();
+			AppLogger.error("errores","Ocurrio un error al realizar la consulta de la Relacion de Seguimientos de Acopio registrados, debido a: "+e.getCause());
+		}finally{
+			/*Recupera catalogos de Ejercicios y Ciclos*/
+			lstEjercicios = cDAO.isolatedConsultaEjercicio(0);
+			lstCiclos = cDAO.isolatedConsultaCiclo(0);	
+		}		
+		return "SUCCESS";
+	}
+
+	private String construyeArchivoListaSeguimiento(String rutaPlantilla, String rutaSalida, List<SeguimientoCentroAcopioV> lst){
+		String xlsOut = "ReporteSeguimientosAcopio-"+new SimpleDateFormat("yyyyMMddHHmmss").format( new Date() )+".xls";
+		if(!rutaPlantilla.endsWith(File.separator)){
+			rutaPlantilla += File.separator;
+		}
+		rutaPlantilla += "PLANTILLA_LISTASEGUI.xls";
+		if(!rutaSalida.endsWith(File.separator)){
+			rutaSalida += File.separator;
+		}
+				
+		Workbook workbook = null;
+		WritableWorkbook copy = null;
+		try{
+			// Abrir plantilla
+			workbook = Workbook.getWorkbook(new File(rutaPlantilla));
+			// Hacer copia
+			
+			copy = Workbook.createWorkbook(new File(rutaSalida+xlsOut), workbook);
+			WritableSheet sheet = copy.getSheet(0); 
+			// Escribir datos
+			
+			WritableCellFormat cf = new WritableCellFormat();
+			cf.setBorder( Border.ALL , BorderLineStyle.THIN );
+	        // Fecha del Reporte
+
+			sheet.addCell( new Label(4,4, lst.get(0).getCiclo(), cf));
+
+			int row = 11;
+			for(int i= 0;i<lst.size();i++){				
+				int col = 0;
+				SeguimientoCentroAcopioV p = lst.get(i);
+		        // CLAVE DEL CENTRO DE ACOPIO
+		        sheet.addCell( new Label(col++,row, p.getClaveBodega(), cf));
+				// NOMBRE O RAZÓN SOCIAL DEL CENTRO DE ACOPIO REGISTRADO EN ASERCA
+				sheet.addCell( new Label(col++,row, p.getNombreBodega(), cf));
+				// NOMBRE LOCAL O REGIONAL DEL CENTRO DE ACOPIO
+				sheet.addCell( new Label(col++,row, p.getNombreLocalBodega(), cf));
+				// OPERADOR DEL CENTRO DE ACOPIO
+				sheet.addCell( new Label(col++,row, p.getNombreOperador(), cf));
+				// NOMBRE O RAZÓN SOCIAL DEL COMPRADOR
+				sheet.addCell( new Label(col++,row, p.getNombreComprador(), cf));
+				// CULTIVO
+				sheet.addCell( new Label(col++,row, p.getNombreCultivo(), cf));
+				// VARIEDAD
+				sheet.addCell( new Label(col++,row, p.getNombreVariedad(), cf));
+				// PERIODO INICIAL
+				sheet.addCell( new Label(col++,row, new SimpleDateFormat("dd-MM-yyyy").format(p.getPeriodoInicial()), cf));
+				// PERIODO FINAL
+				sheet.addCell( new Label(col++,row, new SimpleDateFormat("dd-MM-yyyy").format(p.getPeriodoFinal()), cf));
+				// VOLUMEN PROGRAMA DE ASERCA (TONS)
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumenAXC()), cf));
+				// PRECIO PAGADO 
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getPrecioPromPagAXC()), cf));
+				// VOLUMEN LIBRE MERCADO (TONS)
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumenMercadoLibre()), cf));
+				// ACOPIO TONELADAS
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getAcopioTotalTon()), cf));
+				// PAGADO TONS.
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getPagadoTon()), cf));
+				// PAGADO %
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoImporteSinComas(p.getPagadoPorcentaje()), cf));
+				// MOVILIZADO FURGON
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMfurgon()), cf));
+				// MOVILIZADO CAMION
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMcamion()), cf));
+				// MOVILIZADO MARITIMO
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMmaritimo()), cf));
+				// MOVILIZADO AUTOCONSUMO
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMautoconsumo()), cf));
+				// MOVILIZADO TOTAL
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getMtotal()), cf));
+				// EXISTENCIA ACOP-MOV
+				sheet.addCell( new Label(col++,row, TextUtil.formateaNumeroComoVolumenSinComas(p.getExistenciaAM()), cf));
+				// DESTINO
+				sheet.addCell( new Label(col++,row, p.getDestino(), cf));
+				// AVANCE COSECHA
+				sheet.addCell( new Label(col++,row, p.getAvanceCosecha(), cf));
+				// OBSERVACIONES
+				sheet.addCell( new Label(col++,row, p.getObservaciones(), cf));				
+		        row++;
+			}
+	        
+			// Leyenda del Encabezado
+			WritableCell cell = null;
+			cell = sheet.getWritableCell(7,0);
+			if (cell.getType() == CellType.LABEL){
+			  ((Label) cell).setString("REP. SEGUI. ACOPIO"+ Calendar.getInstance().get(Calendar.YEAR));
+			} 			
+		}catch(Exception e){
+			System.err.println( e.getMessage() );
+		}finally{
+			// Cerrar y guardar copia
+			if(copy!=null){
+				try{
+					copy.write(); 
+					copy.close();
+				}catch(Exception e){
+					System.out.println( e.getMessage() );
+				}
+			}
+			// Cerrar plantilla
+			if(workbook!=null){
+				workbook.close();
+			}
+		}
+		setXls(xlsOut);
+		return xlsOut;
+	}
+
 	
-	public int getIdCiclo() {
+	public Integer getIdCiclo() {
 		return idCiclo;
 	}
 
-	public void setIdCiclo(int idCiclo) {
+	public void setIdCiclo(Integer idCiclo) {
 		this.idCiclo = idCiclo;
 	}
 
@@ -1720,16 +1894,19 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		this.lstObv = lstObv;
 	}
 
-	
 	public String getRfcOperador() {
 		return rfcOperador;
 	}
-	
 
 	public void setRfcOperador(String rfcOperador) {
 		this.rfcOperador = rfcOperador;
 	}
-	
-	
-	
+
+	public Double getMautoconsumo() {
+		return mautoconsumo;
+	}
+
+	public void setMautoconsumo(Double mautoconsumo) {
+		this.mautoconsumo = mautoconsumo;
+	}	
 }

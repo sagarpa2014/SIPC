@@ -63,6 +63,7 @@
 					<display:column  property="mfurgon" title="Movilizado Furgón"  format="{0, number,0.000}" total="true" class="d"/>
 					<display:column  property="mcamion" title="Movilizado Camión"  format="{0, number,0.000}" total="true" class="d"/>
 					<display:column  property="mmaritimo" title="Movilizado Marítimo"  format="{0, number,0.000}" total="true" class="d"/>
+					<display:column  property="mautoconsumo" title="Autoconsumo"  format="{0, number,0.000}" total="true" class="d"/>
 					<display:column  property="mtotal" title="Movilizado Total"  format="{0, number,0.000}" total="true" class="d"/>
 					<display:column  property="existenciaAM" title="Existencia (Acop.-Mov.)"  format="{0, number,0.000}" total="true" class="d"/>
 					<display:column  property="destino" title="Destino"/>

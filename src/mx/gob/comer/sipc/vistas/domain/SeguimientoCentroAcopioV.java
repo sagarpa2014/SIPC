@@ -41,6 +41,7 @@ public class SeguimientoCentroAcopioV {
 	private Double mfurgon;
 	private Double mcamion;
 	private Double mmaritimo;
+	private Double mautoconsumo;
 	private Double mtotal;
 	private Double existenciaAM;
 	private Integer idEstado;
@@ -214,7 +215,15 @@ public class SeguimientoCentroAcopioV {
 	public void setMmaritimo(Double mmaritimo) {
 		this.mmaritimo = mmaritimo;
 	}
-	
+
+	@Column(name = "mov_autoconsumo")
+	public Double getMautoconsumo() {
+		return mautoconsumo;
+	}
+	public void setMautoconsumo(Double mautoconsumo) {
+		this.mautoconsumo = mautoconsumo;
+	}
+
 	@Column(name = "mov_total")
 	public Double getMtotal() {
 		return mtotal;

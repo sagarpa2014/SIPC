@@ -82,10 +82,10 @@
 					<td colspan="2"><font class="arial12bold">ACOPIO TOTAL TONELADAS:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.acopioTotalTon})}"/> tons.</td>
 				</tr>
-				<tr>
-					<td colspan="2"><font class="arial12bold">NOMBRE O RAZÓN SOCIAL DEL COMPRADOR:</font></td>
-					<td align="left"><s:property value="%{nombreComprador}"/></td>
-				</tr>				
+<!-- 				<tr> -->
+<!-- 					<td colspan="2"><font class="arial12bold">NOMBRE O RAZÓN SOCIAL DEL COMPRADOR:</font></td> -->
+<%-- 					<td align="left"><s:property value="%{nombreComprador}"/></td> --%>
+<!-- 				</tr>				 -->
 				<tr>
 					<td rowspan="2"><font class="arial12bold">PAGADO</font></td>
 					<td><font class="arial12bold">T.M.:</font></td>
@@ -96,8 +96,12 @@
 					<td align="left"><s:property value="%{pagadoPorcentaje}"/></td>
 				</tr>
 				<tr>
-					<td colspan="2"><font class="arial12bold">PRECIO PROMEDIO PAGADO</font></td>
+					<td colspan="2"><font class="arial12bold">PRECIO PROMEDIO PAGADO AXC</font></td>
 					<td align="left">$ <s:property value="%{getText('importe',{#resultado.precioPromPagAXC})}"/></td>
+				</tr>
+				<tr>
+					<td colspan="2"><font class="arial12bold">PRECIO PROMEDIO PAGADO LIBRE MERCADO</font></td>
+					<td align="left">$ <s:property value="%{getText('importe',{#resultado.precioPromPagLibre})}"/></td>
 				</tr>				
 				<tr>
 					<td rowspan="4"><font class="arial12bold">MOVILIZADO</font></td>
@@ -113,7 +117,11 @@
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.mmaritimo})}"/> tons.</td>
 				</tr>
 				<tr>
-					<td><font class="arial12bold">TOTAL:</font></td>
+					<td><font class="arial12bold">AUTOCONSUMO:</font></td>
+					<td align="left"><s:property value="%{getText('volumen',{#resultado.mautoconsumo})}"/> tons.</td>
+				</tr>
+				<tr>
+					<td colspan="2"><font class="arial12bold">TOTAL:</font></td>
 					<td align="left"><s:property value="%{getText('volumen',{#resultado.mtotal})}"/> tons.</td>
 				</tr>
 				<tr>
@@ -138,30 +146,6 @@
 				</tr>
 			</s:iterator>
 		</table>	
-		<br>
-		<div class="clear"></div>
-		<table style="width:80%" class="clean">
-			<tr>
-				<td align="center" width="48%"><font class="arial12bold">GERENTE/ALMACENISTA</font></td>
-				<td width="4%"></td>
-				<td align="center" width="48%"><font class="arial12bold">RECIBO INFORMACIÓN</font></td>
-			</tr>		
-			<tr>
-				<td align="center"><font class="arial12bold">Empresa/Centro de Acopio</font></td>
-				<td></td>
-				<td align="center"><font class="arial12bold">En Representación de ASERCA</font></td>
-			</tr>
-			<tr>
-				<td><br><br><br></td>
-				<td><br><br><br></td>
-				<td><br><br><br></td>
-			</tr>				
-			<tr>
-				<td align="center"><font class="arial12bold">Nombre, Firma y Sello del Centro de Acopio</font></td>
-				<td></td>
-				<td align="center"><font class="arial12bold">Nombre y Firma de ASERCA</font></td>
-			</tr>
-		</table>
 	</center>				
 	<br>
 	<br>

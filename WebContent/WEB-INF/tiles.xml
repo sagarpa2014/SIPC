@@ -272,7 +272,7 @@
 	</definition>
 	
 	<!-- SEGUIMIENTO DE ACOPIO -->
-	<definition name="capSeguimiento" extends="masterTemplate">
+	<definition name="capSeguimiento" extends="morewidthtemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/seguimiento/capSeguimiento.jsp"/>
 	</definition>
 	<definition name="listSeguimiento" extends="masterTemplate">
@@ -295,8 +295,11 @@
 	</definition>
 	<definition name="resultadoGeneracionExcelRepResAva" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelRepResAva.jsp" />
+	</definition>
+	<definition name="resultadoGeneracionExcelListaSegui" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/comunes/resultadoGeneracionExcelListaSegui.jsp" />
 	</definition>	
-
+	
 	<!-- DEVOLUCIONES -->
 	<definition name="consultaPagosCADevolucion" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/pagos/devoluciones/consultaPagosCADevolucion.jsp"/>

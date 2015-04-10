@@ -1979,5 +1979,88 @@ public class CatalogosDAO {
 				session.close();
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Usuarios> isolatedconsultaUsuarios(int idUsuario, String nomUsuario, String password) throws  JDBCException{
+		Session s = null;
+		StringBuilder consulta= new StringBuilder();
+		List<Usuarios> lst=null;
+		try{
+			s = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+		
+			if (idUsuario != 0 && idUsuario != -1){
+				consulta.append("where idUsuario = ").append(idUsuario);
+			}	
+			if (!(nomUsuario==null || nomUsuario.equals(""))){
+				if(consulta.length()>0){
+					consulta.append(" and nombreUsuario = '").append(nomUsuario).append("'");
+				}else{
+					consulta.append("where nombreUsuario= '").append(nomUsuario).append("'");
+				}
+			}
+			if (!(password==null || password.equals(""))){
+				if(consulta.length()>0){
+					consulta.append(" and contrasenia = '").append(password).append("'");
+				}else{
+					consulta.append("where contrasenia= '").append(password).append("'");
+				}
+			}
+			consulta.insert(0, "From Usuarios ").append(" ORDER BY nombre, paterno, materno");
+			lst= s.createQuery(consulta.toString()).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(s!=null && s.isOpen()){
+				s.close();
+			}
+		}		
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Ejercicios> isolatedConsultaEjercicio(int ejercicio) throws JDBCException {
+		Session s = null;
+		StringBuilder consulta= new StringBuilder();
+		List<Ejercicios> lst=null;
+		try{
+			s = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+
+			if (ejercicio != 0 && ejercicio != -1){
+				consulta.append("where ejercicio = ").append(ejercicio);
+			}
+			consulta.insert(0, "From Ejercicios ").append(" ORDER BY ejercicio");
+			lst= s.createQuery(consulta.toString()).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(s!=null && s.isOpen()){
+				s.close();
+			}
+		}		
+		return lst;
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Ciclo> isolatedConsultaCiclo(int idCiclo)throws JDBCException {
+		Session s = null;
+		StringBuilder consulta= new StringBuilder();
+		List<Ciclo> lst = null;
+		try{
+			s = com.googlecode.s2hibernate.struts2.plugin.util.HibernateSessionFactory.getNewSession();
+		
+			if(idCiclo!=0 && idCiclo != -1){
+				consulta.append("where idCiclo = ").append(idCiclo);
+			}
+			consulta.insert(0, "From Ciclo ");
+			lst= s.createQuery(consulta.toString()).list();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(s!=null && s.isOpen()){
+				s.close();
+			}
+		}		
+		return lst;
 	}	
 }

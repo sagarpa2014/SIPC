@@ -34,6 +34,7 @@ public class ReporteSeguimientoAcopioV {
 	private Double movilizadoFurgon;
 	private Double movilizadoCamion;
 	private Double movilizadoMaritimo;
+	private Double movilizadoAutoconsumo;
 	private Double movilizadoTotal;
 	private Double existenciaAM;
 	private Double avanceCosecha;
@@ -261,5 +262,13 @@ public class ReporteSeguimientoAcopioV {
 	}
 	public void setAvanceCosecha(Double avanceCosecha) {
 		this.avanceCosecha = avanceCosecha;
+	}
+	
+	@Column(name = "movilizado_autoconsumo")
+	public Double getMovilizadoAutoconsumo() {
+		return movilizadoAutoconsumo;
+	}
+	public void setMovilizadoAutoconsumo(Double movilizadoAutoconsumo) {
+		this.movilizadoAutoconsumo = movilizadoAutoconsumo;
 	}
 }

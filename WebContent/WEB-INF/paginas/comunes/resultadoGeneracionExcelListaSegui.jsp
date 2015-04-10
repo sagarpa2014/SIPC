@@ -12,7 +12,7 @@
 	</s:if>
 	<s:else>
 		<span class="error">
-			No se pudo generar el reporte resumen de avance de seguimiento, por favor verifique!!!
+			No se pudo generar el listado de reportes de seguimientos de acopio registrados, por favor verifique!!!
 		</span>	
 		<br>
 		<div class="accion">
@@ -21,7 +21,7 @@
 	</s:else>
 </div>
 <div class="clear"></div>
-<div class="izquierda"><a href="<s:url value="/seguimiento/consultaReporteResumenAvance"/>" onclick="" title="" >&lt;&lt; Regresar</a></div>
+<div class="izquierda"><a href="<s:url value="/seguimiento/listSeguimiento"/>" onclick="" title="" >&lt;&lt; Regresar</a></div>
 
 
 

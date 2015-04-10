@@ -43,6 +43,11 @@
 	</s:if>
 
 	<s:if test="listSeguimientoCentroAcopioV.size() > 0">
+		<br/>
+		<div class="exporta_csv">
+			<label class="label2"> Exportar Datos </label> <a href="<s:url value="/seguimiento/exportaListSeguimiento"/>" title="Exportar Datos" ></a>
+		</div>
+		<div class="clear"></div>	
 		<fieldset id="reporte2">
 			<legend>Resultado de B&uacute;squeda</legend>	
 			<display:table id="r"  name="listSeguimientoCentroAcopioV"  list="listSeguimientoCentroAcopioV"  pagesize="50" sort="list" requestURI="/seguimiento/listSeguimiento"  class="displaytag">
@@ -60,11 +65,6 @@
 				<display:column title="Vista Preliminar"  headerClass="sortable" >
 					<a href="#" class="botonVistaPreliminar" title="" onclick="vistaPreviaOficio(<s:property value="%{#attr.r.idSeguimientoCA}"/>)"></a>
 			 	</display:column>
-			 	<s:if test="%{#session.idPerfil==11}"> <!-- Regional -->
-				 	<display:column title="Generacion PDF" headerClass="sortable" >
-						<a href='<s:url value="/seguimiento/generarReporteSeguimiento?idSeguimiento=%{#attr.r.idSeguimientoCA}"/>' class="botonPDF" onclick="if (confirm('¿Esta seguro de Generar Formato (PDF)?')){}else{return false;}"></a>
-				 	</display:column>
-				 </s:if>		
 				<display:column title="Ver Detalle"  headerClass="sortable" >
 					<a href='<s:url value="/seguimiento/capSeguimiento?idSeguimientoCA=%{#attr.r.idSeguimientoCA}&registrar=1"/>' class="botonVerDetalles" ></a>
 			 	</display:column>
@@ -80,6 +80,11 @@
 						 </s:if>	 			 	
 					</display:column>					 	
 				 </s:if>
+			 	 <s:if test="%{#session.idPerfil==11}"> <!-- Regional -->
+				 	<display:column title="Generacion PDF" headerClass="sortable" >
+						<a href='<s:url value="/seguimiento/generarReporteSeguimiento?idSeguimiento=%{#attr.r.idSeguimientoCA}"/>' class="botonPDF" onclick="if (confirm('¿Esta seguro de Generar Formato (PDF)?')){}else{return false;}"></a>
+				 	</display:column>
+				 </s:if>				 
 				 <s:if test="%{#session.idPerfil==12}"> <!-- DGPC -->
 				 	<display:column title="Autorizar Cambios"  headerClass="sortable">
 				 		<s:if test="%{#attr.r.idEstatus == 2}">
