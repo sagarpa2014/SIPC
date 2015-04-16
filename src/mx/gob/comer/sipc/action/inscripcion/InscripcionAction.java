@@ -336,7 +336,7 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 			
 			if(lstSolInsV.get(0).getFolioCartaAdhesion() != null){
 				folioCartaAdhesion = lstSolInsV.get(0).getFolioCartaAdhesion();
-				lstPagosV = pDAO.consultaPagosV(-1, -1, -1, null, null, null, folioCartaAdhesion);
+				lstPagosV = pDAO.consultaPagosV(-1, -1, -1, null, null, "1,2,4,5,6,7,9,10", folioCartaAdhesion);
 				for(PagosV p: lstPagosV){
 					totalVolEnTramPago += p.getVolumen();
 					totalImpEnTramPago += p.getImporte();

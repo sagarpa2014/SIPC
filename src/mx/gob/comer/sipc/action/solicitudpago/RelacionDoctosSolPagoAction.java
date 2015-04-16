@@ -434,7 +434,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 					deshabilitaAlcanceDocumentacion = false;
 				}
 				//Recupera los pagos 
-				lstPagosV = pDAO.consultaPagosV(-1, -1, -1, null, null, null, folioCartaAdhesion);
+				lstPagosV = pDAO.consultaPagosV(-1, -1, -1, null, null, "1,2,4,5,6,7,9,10", folioCartaAdhesion);
 				for(PagosV p: lstPagosV){
 					totalVolEnTramPago += p.getVolumen();
 					totalImpEnTramPago += p.getImporte();
