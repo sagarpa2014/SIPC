@@ -628,7 +628,7 @@ function calcularPorcentajeDeLoPagado(pagadoTon){
 	var acopioTotalTon =  $('#acopioTotalTon').val();
 	var pagadoPorcentaje = 0;
 	if(acopioTotalTon !=null && acopioTotalTon != ''){
-		pagadoPorcentaje = parseFloat(pagadoTon * 100) / parseFloat(acopioTotalTon);
+		pagadoPorcentaje = parseFloat(acopioTotalTon * 100) / parseFloat(pagadoTon);
 		$('#pagadoPorcentaje').val(pagadoPorcentaje.toFixed(2));
 	}
 	

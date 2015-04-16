@@ -265,6 +265,7 @@ function convierteAmayuscula(id){
 }
 
 function validarVolumen(volumen, id, msj){	
+	alert("validarVolumen");
 	if(volumen!=null && volumen !=''){		
 		var patron =/^\d{1,7}((\.\d{1,3})|(\.))?$/;
 		if (!volumen.match(patron)){	

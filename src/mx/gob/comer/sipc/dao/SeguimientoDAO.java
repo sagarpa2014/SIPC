@@ -509,7 +509,7 @@ public class SeguimientoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ResumenAvanceAcopioV> isolatedconsultaReporteResumen(int idCicloSeg)throws  JDBCException{
+	public List<ResumenAvanceAcopioV> isolatedconsultaReporteResumen(int idCicloSeg, String idEstadoBodega)throws  JDBCException{
 		Session s = null;
 		StringBuilder consulta= new StringBuilder();
 		List<ResumenAvanceAcopioV> lst = null;
@@ -524,6 +524,13 @@ public class SeguimientoDAO {
 				}
 			}
 
+			if (idEstadoBodega != null && !idEstadoBodega.equals("")){
+				if(consulta.length()>0){
+					consulta.append(" and idEstadoBodega in (").append(idEstadoBodega).append(")");
+				} else {
+					consulta.append(" where idEstadoBodega in (").append(idEstadoBodega).append(")");
+				}
+			}
 			consulta.insert(0, "From ResumenAvanceAcopioV ").append(" order by ciclo, nombreEstadoBodega, nombreCultivo");
 			lst= s.createQuery(consulta.toString()).list();
 		}catch(Exception e){

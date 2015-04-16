@@ -348,7 +348,7 @@
 					<s:textfield id="avanceCosecha" name="avanceCosecha"  value="%{getText('importeSinComas',{sca.avanceCosecha})}" maxlength="14" size="20"  cssClass="cantidad" /> %
 				</s:if>
 				<s:else>
-					<s:textfield id="avanceCosecha" name="avanceCosecha" value="%{}" maxlength="14" size="20"  cssClass="cantidad"/>
+					<s:textfield id="avanceCosecha" name="avanceCosecha" value="%{}" maxlength="14" size="20"  cssClass="cantidad"/>%
 				</s:else>
 			</td>
 			<td colspan="3" ></td>

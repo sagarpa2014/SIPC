@@ -271,14 +271,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
 						capacidadCA = cDAO.consultaCapacidadBodega(claveBodega).get(0);
 						Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodega, idCiclo, ejercicio, idCultivo);
-						if((almacenamientoCA+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
-						//if((acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
-							cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
-						} else {
-							cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
-												  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
-												  " tons. de acuerdo a lo acopiado: "+(almacenamientoCA+acopioTotalTon)+" tons., verifiquelo!!!";
-						}
+						
 						sca.setIdEstatus(1);
 						sca.setVolumenMercadoLibre(volumenMercadoLibre);
 						sca.setVolumenAXC(volumenAXC);
@@ -313,9 +306,18 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setPagadoTon(pagadoTon);
 						sca.setPrecioPromPagAXC(precioPromPagAXC);
 						sca.setPrecioPromPagLibre(precioPromPagLibre);
-						
-						if(!rfcOperador.equals("-1")){
-							sca.setRfcOperador(rfcOperador);
+						if(rfcOperador != null &&  !rfcOperador.isEmpty()){
+							if(!rfcOperador.equals("-1")){
+								sca.setRfcOperador(rfcOperador);
+							}
+						}						
+						if((almacenamientoCA+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+							//if((acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+								cuadroSatisfactorio = "Se registró satisfactoriamente el registro";		
+						} else {
+								cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
+													  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
+													  " tons. de acuerdo a lo acopiado: "+(almacenamientoCA+acopioTotalTon)+" tons., verifiquelo!!!";
 						}
 						
 					} else {
@@ -334,14 +336,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					CapacidadesBodegas capacidadCA = new CapacidadesBodegas();
 					capacidadCA = cDAO.consultaCapacidadBodega(claveBodegaAux).get(0);
 					Double almacenamientoCA = sDAO.obtieneAcopioBodega(claveBodegaAux, idCicloAux, ejercicioAux, idCultivo);
-					if(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
-					//if(acopioTotalTon<=capacidadCA.getTotalAlmacenamiento()){
-						cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
-					} else {
-						cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
-											  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
-											  " tons. de acuerdo a lo acopiado: "+(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon))+" tons., verifiquelo!!!";
-					}
+					
 					
 					sca.setIdEstatus(1);
 					sca.setVolumenMercadoLibre(volumenMercadoLibre);
@@ -377,10 +372,19 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setPagadoTon(pagadoTon);
 					sca.setPrecioPromPagAXC(precioPromPagAXC);
 					sca.setPrecioPromPagLibre(precioPromPagLibre);
-					if(!rfcOperador.equals("-1")){
-						sca.setRfcOperador(rfcOperador);
+					if(rfcOperador != null &&  !rfcOperador.isEmpty()){
+						if(!rfcOperador.equals("-1")){
+							sca.setRfcOperador(rfcOperador);
+						}
 					}
-					
+					if(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon)<=capacidadCA.getTotalAlmacenamiento()){
+						//if(acopioTotalTon<=capacidadCA.getTotalAlmacenamiento()){
+							cuadroSatisfactorio = "Se registró satisfactoriamente el registro";
+					} else {
+							cuadroSatisfactorio = "Se registró satisfactoriamente el registro. "+
+												  "NOTA: Se ha rebasado la capacidad de la bodega: "+capacidadCA.getTotalAlmacenamiento().toString()+
+												  " tons. de acuerdo a lo acopiado: "+(((almacenamientoCA-sca.getAcopioTotalTon())+acopioTotalTon))+" tons., verifiquelo!!!";
+					}
 
 				}
 			} else { //Autorizacion de cambios
@@ -411,9 +415,10 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			registrar = 1;
 		}catch (JDBCException e) {
 	    	e.printStackTrace();
-	    
+	    	addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
 	    } catch (Exception e) {
 			e.printStackTrace();
+			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
 		} finally {
 			listSeguimiento();
 		}
@@ -972,8 +977,10 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	public String exportaReporteResumenAva() throws Exception{
 		try{
 			if (session==null){
-				session = ActionContext.getContext().getSession();	
+				session = ActionContext.getContext().getSession();					
 			}
+			idUsuario = (Integer) session.get("idUsuario");
+			usuario = cDAO.consultaUsuarios(idUsuario, null, null).get(0);
 			//setTipo("pagos");
 			
 			String rutaPlantilla = context.getRealPath("/WEB-INF/archivos/plantillas");
@@ -981,10 +988,9 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			String rutaSalida = utileriasDAO.isolatedGetParametros("RUTA_SEGUIMIENTO_ACOPIO");
 			if(!new File(rutaSalida).exists() ){
 				rutaSalida =context.getRealPath("/WEB-INF/archivos/reportesSeguimiento");
-			}
-	
+			}	
 			//Consulta el reporte de acuerdo a los criterios seleccionados por el usuario
-			lstReporteResumen = sDAO.isolatedconsultaReporteResumen((Integer)session.get("idCicloSeg"));
+			lstReporteResumen = sDAO.isolatedconsultaReporteResumen((Integer)session.get("idCicloSeg"), usuario.getArea());
 			
 			if(lstReporteResumen!=null && lstReporteResumen.size()>0){
 				// Generar XLS
