@@ -310,7 +310,7 @@ public class ReportesDAO {
 		StringBuilder groupBy= new StringBuilder();
 		StringBuilder orderBy= new StringBuilder();
 		final String from =" from tramitados_pagados_pendiente_v t";
-		final String where =" where estatus=5";
+		final String where =" where estatus IN (5,10)"; // AHS [LINEA] 16042015
 		
 		String [] elementSelect = new String [idCriterios.length];
 		String [] elementOrderBy = new String [idCriterios.length];
@@ -1228,9 +1228,9 @@ public class ReportesDAO {
 				sqlVolumenAplicados.append(selectVolumen+condicionCultivo);
 				sqlImporteAplicados.append(selectImporte+condicionCultivo);
 				
-				sqlAplicados.append(" where ps.estatus =5 ");
-				sqlVolumenAplicados.append(" where ps.estatus =5 ");
-				sqlImporteAplicados.append(" where ps.estatus =5 ");
+				sqlAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlVolumenAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlImporteAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
 				if(programa !=0){
 					sqlAplicados.append(condicionPrograma);
 					sqlVolumenAplicados.append(condicionPrograma);
@@ -1261,9 +1261,9 @@ public class ReportesDAO {
 				sqlVolumenAplicados.append(selectVolumen+condicionBodega);
 				sqlImporteAplicados.append(selectImporte+condicionBodega);
 				
-				sqlAplicados.append(" where ps.estatus =5 ");
-				sqlVolumenAplicados.append(" where ps.estatus =5 ");
-				sqlImporteAplicados.append(" where ps.estatus =5 ");
+				sqlAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlVolumenAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlImporteAplicados.append(" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
 				if(programa !=0){
 					sqlAplicados.append(condicionPrograma);
 					sqlVolumenAplicados.append(condicionPrograma);
@@ -1290,9 +1290,9 @@ public class ReportesDAO {
 					sqlImporteAplicados.append(condicionEstado);
 				}								
 			} else {
-				sqlAplicados.append(selectCount+" where ps.estatus =5 ");
-				sqlVolumenAplicados.append(selectVolumen+" where ps.estatus =5 ");
-				sqlImporteAplicados.append(selectImporte+" where ps.estatus =5 ");
+				sqlAplicados.append(selectCount+" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlVolumenAplicados.append(selectVolumen+" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
+				sqlImporteAplicados.append(selectImporte+" where ps.estatus in (5,10) "); // AHS [LINEA] 16042015
 				if(programa !=0){
 					sqlAplicados.append(condicionPrograma);
 					sqlVolumenAplicados.append(condicionPrograma);
