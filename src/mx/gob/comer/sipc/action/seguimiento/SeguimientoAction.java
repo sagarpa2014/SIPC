@@ -481,7 +481,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		lstEjercicios = cDAO.consultaEjercicio(0);
 		lstCiclos = cDAO.consultaCiclo(0);
 		lstCultivo = cDAO.consultaCultivo();
-		lstVariedad = cDAO.consultaVariedad(idVariedad, 0, null);
+		lstVariedad = cDAO.consultaVariedad(idVariedad, 0, null, true);
 		//lstEstados = cDAO.consultaEstado(0);
 		lstOperadorCA = cDAO.consultaEstado(0);
 		//lstComprador  = cDAO.consultaComprador(0);
@@ -1165,7 +1165,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 
 	public String recuperaVariedadByCultivo(){
 		//Recupera los datos de la variedad por cultivo
-		lstVariedad = cDAO.consultaVariedad(-1, idCultivo, null);
+		lstVariedad = cDAO.consultaVariedad(-1, idCultivo, null, true);
 
 		if((claveBodega!=null && !claveBodega.equals("")) && idCiclo != -1 && ejercicio !=-1 && idCultivo > 0 && idVariedad > 0){
 			existenciaAMAnt = sDAO.consultaExistenciaBodega(claveBodega, idCiclo, ejercicio, idCultivo, idVariedad);

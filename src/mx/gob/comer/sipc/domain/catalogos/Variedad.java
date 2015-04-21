@@ -12,6 +12,7 @@ public class Variedad {
 	private int idVariedad;
 	private int idCultivo;
 	private String variedad;
+	private Boolean aplicaSegBodega;
 	
 	@Id	
 	@Column(name =  "id_variedad")
@@ -36,6 +37,14 @@ public class Variedad {
 	}
 	public void setVariedad(String variedad) {
 		this.variedad = variedad;
+	}
+	
+	@Column(name =  "aplica_seg_bodega")
+	public Boolean getAplicaSegBodega() {
+		return aplicaSegBodega;
+	}
+	public void setAplicaSegBodega(Boolean aplicaSegBodega) {
+		this.aplicaSegBodega = aplicaSegBodega;
 	}	
 
 }

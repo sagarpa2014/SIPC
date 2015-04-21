@@ -887,8 +887,11 @@ public class CatalogosDAO {
 		return consultaVariedad(0,0, idVariedades);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<Variedad> consultaVariedad(int idVariedad, int idCultivo, String idVariedades)throws JDBCException {
+		return consultaVariedad(0,0, idVariedades, false);
+	}
+	@SuppressWarnings("unchecked")
+	public List<Variedad> consultaVariedad(int idVariedad, int idCultivo, String idVariedades, boolean aplicaSeguimiento)throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<Variedad> lst = null;
 		if(idVariedad!=0 && idVariedad != -1){
@@ -907,6 +910,13 @@ public class CatalogosDAO {
 			}else{
 				consulta.append(" where idVariedad in  (").append(idVariedades).append(")");
 			}	
+		}
+		if(aplicaSeguimiento){
+			if(consulta.length()>0){
+				consulta.append(" and aplicaSegBodega = true");
+			}else{
+				consulta.append(" where aplicaSegBodega = true");
+			}
 		}
 		consulta.insert(0, "From Variedad ");
 		lst= session.createQuery(consulta.toString()).list();
