@@ -451,21 +451,35 @@ function getTotalMovilizado(volumen, id, msj){
 	if(mautoconsumo!=null && mautoconsumo !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mautoconsumo));	
 	}	
+	totalVolumenMovilizado = parseFloat(totalVolumenMovilizado);
+	totalVolumenMovilizado = totalVolumenMovilizado.toFixed(3);
+	//alert("totalVolumenMovilizado "+totalVolumenMovilizado);
 	var totalExistencia = 0.0;	
 	var acopioTotalTon =  $('#acopioTotalTon').val();
+	acopioTotalTon = parseFloat(acopioTotalTon);
+	acopioTotalTon = acopioTotalTon.toFixed(3);
 	var existenciaAMAnt =  $('#existenciaAMAnt').val();
+	existenciaAMAnt = parseFloat(existenciaAMAnt);
+	existenciaAMAnt = existenciaAMAnt.toFixed(3);
+	//alert("existenciaAMAnt  "+existenciaAMAnt);
 	var existencia = parseFloat(acopioTotalTon)+parseFloat(existenciaAMAnt);
-	if(parseFloat(totalVolumenMovilizado) > existencia){
+	existencia  = parseFloat(existencia);
+	existencia = existencia.toFixed(3);
+	//alert("existenciaa  "+existencia);
+	if(totalVolumenMovilizado > existencia){
+		//alert("totalVolumenMovilizado :"+totalVolumenMovilizado+">  existencia "+existencia);
 		$('#'+id).val(null);
 		$('#dialogo_1').html('No se puede movilizar mas de lo acopiado');
 		abrirDialogo();
 		return false;
 	}
-	$('#mtotal').val(totalVolumenMovilizado.toFixed(3));
+	$('#mtotal').val(totalVolumenMovilizado);
 	var mtotal =  $('#mtotal').val();
-	var existenciaAMAnt =  $('#existenciaAMAnt').val();
-	totalExistencia = parseFloat(existenciaAMAnt) + parseFloat(acopioTotalTon-mtotal);
-//alert('existenciaAMAnt: '+existenciaAMAnt+' (acopioTotalTon-mtotal): '+(acopioTotalTon-mtotal)+' totalExistencia: '+totalExistencia);	
+	mtotal =  parseFloat(mtotal);
+	mtotal = mtotal.toFixed(3);
+
+	totalExistencia = (parseFloat(existencia).toFixed(3) -  parseFloat(mtotal).toFixed(3));
+	//alert(' existencia '+existencia+' totalExistencia: '+totalExistencia);	
 	$('#existenciaAM').val(totalExistencia.toFixed(3));
 }
 
