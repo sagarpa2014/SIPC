@@ -462,24 +462,26 @@ function getTotalMovilizado(volumen, id, msj){
 	existenciaAMAnt = parseFloat(existenciaAMAnt);
 	existenciaAMAnt = existenciaAMAnt.toFixed(3);
 	//alert("existenciaAMAnt  "+existenciaAMAnt);
+	//alert("acopioTotalTon  "+acopioTotalTon);
 	var existencia = parseFloat(acopioTotalTon)+parseFloat(existenciaAMAnt);
 	existencia  = parseFloat(existencia);
 	existencia = existencia.toFixed(3);
 	//alert("existenciaa  "+existencia);
-	if(totalVolumenMovilizado > existencia){
+	if(parseFloat(totalVolumenMovilizado) > parseFloat(existencia)){
 		//alert("totalVolumenMovilizado :"+totalVolumenMovilizado+">  existencia "+existencia);
 		$('#'+id).val(null);
 		$('#dialogo_1').html('No se puede movilizar mas de lo acopiado');
 		abrirDialogo();
 		return false;
 	}
+	
 	$('#mtotal').val(totalVolumenMovilizado);
 	var mtotal =  $('#mtotal').val();
 	mtotal =  parseFloat(mtotal);
 	mtotal = mtotal.toFixed(3);
 
 	totalExistencia = (parseFloat(existencia).toFixed(3) -  parseFloat(mtotal).toFixed(3));
-	//alert(' existencia '+existencia+' totalExistencia: '+totalExistencia);	
+		
 	$('#existenciaAM').val(totalExistencia.toFixed(3));
 }
 

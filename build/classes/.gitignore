@@ -1,11 +1,11 @@
+/struts.xml
+/mx
+/pagos.xml
 /relaciones.xml
 /reportes.xml
 /seguimiento.xml
 /solicitudPago.xml
 /struts.properties
-/struts.xml
-/mx
-/pagos.xml
 /catalogos.xml
 /displaytag.properties
 /hibernate.cfg.xml
