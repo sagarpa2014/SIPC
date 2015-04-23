@@ -305,11 +305,11 @@
 				<label class="left1"><span class="requerido">*</span>Existencia (Acopio-Movilizado):</label>
 			</td>
 			<td colspan="4">
-				<s:if test="%{sca.existenciaAM != null && sca.existenciaAM != ''}">	
-					<s:textfield id="existenciaAM" name="existenciaAM" value="%{getText('volumenSinComas',{sca.existenciaAM})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
+				<s:if test="%{sca.existenciaAM == null} ">	
+					<s:textfield id="existenciaAM" name="existenciaAM" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
 				</s:if>
 				<s:else>
-					<s:textfield id="existenciaAM" name="existenciaAM" value="%{}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
+					<s:textfield id="existenciaAM" name="existenciaAM" value="%{getText('volumenSinComas',{sca.existenciaAM})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true"/> (T.M.)
 				</s:else>				
 			</td>
 		</tr>
