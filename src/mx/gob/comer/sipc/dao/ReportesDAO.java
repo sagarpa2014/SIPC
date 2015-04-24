@@ -265,14 +265,14 @@ public class ReportesDAO {
 
 	@SuppressWarnings("rawtypes")
 	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, int pagado, 
-			int inicio, int numRegistros, int pagina, String fechaInicio, String fechaFin, int idPrograma, int idCultivo, int idVariedad, int idBodega)throws  JDBCException{
+			int inicio, int numRegistros, int pagina, String fechaInicio, String fechaFin, Integer idPrograma, Integer idCultivo, Integer idVariedad, Integer idBodega)throws  JDBCException{
 		return consultaReporteDinamico(tipoReporte, idCriterios, agrupados, 0, 0, 0, pagado, 0,0, inicio, numRegistros, pagina, fechaInicio, fechaFin, idPrograma, idCultivo, idVariedad, idBodega);
 	}
 
 	public List consultaReporteDinamico(int tipoReporte, String [] idCriterios, String[] agrupados, 
 			int registrado, int autorizado, int solicitado, int pagado, int rechazado, int pendiente, 
-			int inicio, int numRegistros, int pagina, String fechaInicio,String fechaFin, int idPrograma, 
-			int idCultivo, int idVariedad, int idBodega)throws  JDBCException{
+			int inicio, int numRegistros, int pagina, String fechaInicio, String fechaFin, Integer idPrograma, 
+			Integer idCultivo, Integer idVariedad, Integer idBodega)throws  JDBCException{
 		
 		List lista = new ArrayList<Object>();
 		StringBuilder consulta= new StringBuilder();
@@ -410,7 +410,7 @@ public class ReportesDAO {
 			elementGroupBy[agrupacionPrograma]=" t.id_programa, t.programa,";
 			elementOrderBy[agrupacionPrograma]=" t.programa,";
 			condicionPrograma=" and ps.id_programa=t.id_programa ";
-			if(idPrograma>0){
+			if(idPrograma!=null && idPrograma>0){
 				condicionPrograma+=" and t.id_programa = "+idPrograma+" ";
 			}
 		}		
@@ -433,9 +433,15 @@ public class ReportesDAO {
 			condicionFechaPago = " and ps.fecha_pago=t.fecha_pago ";
 		}
 		if(estado != 0){
-			elementSelect[agrupacionEstado]=" t.id_estado, t.estado,";
-			elementGroupBy[agrupacionEstado]=" t.id_estado, t.estado,";
-			elementOrderBy[agrupacionEstado]=" t.estado,";
+			if(participante != 0){
+				elementSelect[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-') as nom_mpio_predominante,";
+				elementGroupBy[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-'),";
+				elementOrderBy[agrupacionEstado]=" t.estado,";
+			} else {
+				elementSelect[agrupacionEstado]=" t.id_estado, t.estado,";
+				elementGroupBy[agrupacionEstado]=" t.id_estado, t.estado,";
+				elementOrderBy[agrupacionEstado]=" t.estado,";				
+			}
 			
 			if(cultivo != 0){
 				if(tipoReporte == 1){
@@ -467,7 +473,7 @@ public class ReportesDAO {
 				elementGroupBy[agrupacionCultivo]=" t.id_cultivo, t.cultivo,";
 				elementOrderBy[agrupacionCultivo]=" t.cultivo,";
 				condicionCultivo = " ps.id_pago = pd.id_pago and coalesce(pd.id_cultivo,0)=t.id_cultivo ";
-				if(idCultivo > 0){
+				if(idCultivo!=null && idCultivo > 0){
 					condicionCultivo +=" and t.id_cultivo = "+idCultivo+" ";
 				}
 
@@ -476,7 +482,7 @@ public class ReportesDAO {
 					elementGroupBy[agrupacionVariedad]=" t.id_variedad, t.variedad,";
 					elementOrderBy[agrupacionVariedad]=" t.variedad,";
 					condicionCultivo += " and coalesce(pd.id_variedad,0)=t.id_variedad ";
-					if(idVariedad > 0){
+					if(idVariedad!=null && idVariedad > 0){
 						condicionCultivo +=" and t.id_variedad = "+idVariedad+" ";
 					}
 				}
@@ -486,7 +492,7 @@ public class ReportesDAO {
 					elementGroupBy[agrupacionBodega]=" t.id_bodega, t.clave_bodega,";
 					elementOrderBy[agrupacionBodega]=" t.clave_bodega,";
 					condicionCultivo += " and coalesce(pd.clave_bodega,'NO DEFINIDA')=t.clave_bodega ";
-					if(idBodega > 0){
+					if(idBodega!=null && idBodega > 0){
 						condicionCultivo +=" and t.id_bodega = "+idBodega+" ";
 					}
 				}
@@ -521,7 +527,7 @@ public class ReportesDAO {
 					elementGroupBy[agrupacionBodega]=" t.id_bodega, t.clave_bodega,";
 					elementOrderBy[agrupacionBodega]=" t.clave_bodega,";
 					condicionEstado += " and coalesce(pd.clave_bodega,'NO DEFINIDA')=t.clave_bodega ";
-					if(idBodega > 0){
+					if(idBodega!=null && idBodega > 0){
 						condicionEstado +=" and t.id_bodega = "+idBodega+" ";
 					}
 				}
@@ -551,7 +557,7 @@ public class ReportesDAO {
 			elementGroupBy[agrupacionCultivo]=" t.id_cultivo, t.cultivo,";
 			elementOrderBy[agrupacionCultivo]=" t.cultivo,";
 			condicionCultivo = " ps.id_pago = pd.id_pago and coalesce(pd.id_cultivo,0)=t.id_cultivo ";
-			if(idCultivo > 0){
+			if((idCultivo!=null && idCultivo > 0)){
 				condicionCultivo +=" and t.id_cultivo = "+idCultivo+" ";
 			}
 
@@ -560,7 +566,7 @@ public class ReportesDAO {
 				elementGroupBy[agrupacionVariedad]=" t.id_variedad, t.variedad,";
 				elementOrderBy[agrupacionVariedad]=" t.variedad,";
 				condicionCultivo += " and coalesce(pd.id_variedad,0)=t.id_variedad ";
-				if(idVariedad > 0){
+				if((idVariedad!=null && idVariedad > 0)){
 					condicionCultivo +=" and t.id_variedad = "+idVariedad+" ";
 				}
 			}
@@ -570,7 +576,7 @@ public class ReportesDAO {
 				elementGroupBy[agrupacionBodega]=" t.id_bodega, t.clave_bodega,";
 				elementOrderBy[agrupacionBodega]=" t.clave_bodega,";
 				condicionCultivo += " and coalesce(pd.clave_bodega,'NO DEFINIDA')=t.clave_bodega ";
-				if(idBodega > 0){
+				if(idBodega!=null && idBodega > 0){
 					condicionCultivo +=" and t.id_bodega = "+idBodega+" ";
 				}
 			}
@@ -599,7 +605,7 @@ public class ReportesDAO {
 			elementGroupBy[agrupacionBodega]=" t.id_bodega, t.clave_bodega,";
 			elementOrderBy[agrupacionBodega]=" t.clave_bodega,";
 			condicionBodega = " ps.id_pago = pd.id_pago and coalesce(pd.clave_bodega,'NO DEFINIDA')=t.clave_bodega ";
-			if(idBodega > 0){
+			if(idBodega!=null && idBodega > 0){
 				condicionBodega +=" and t.id_bodega = "+idBodega+" ";
 			}
 			
@@ -608,7 +614,7 @@ public class ReportesDAO {
 				elementGroupBy[agrupacionVariedad]=" t.id_variedad, t.variedad,";
 				elementOrderBy[agrupacionVariedad]=" t.variedad,";
 				condicionBodega += " and coalesce(pd.id_variedad,0)=t.id_variedad ";
-				if(idVariedad > 0){
+				if((idVariedad!=null && idVariedad > 0)){
 					condicionBodega +=" and t.id_variedad = "+idVariedad+" ";
 				}
 			}
@@ -639,7 +645,7 @@ public class ReportesDAO {
 			elementOrderBy[agrupacionVariedad]=" t.variedad,";
 			condicionVariedad += "ps.id_pago = pd.id_pago and coalesce(pd.id_variedad,0)=t.id_variedad ";
 			
-			if(idVariedad > 0){
+			if(idVariedad!=null && idVariedad > 0){
 				condicionVariedad +=" and t.id_variedad = "+idVariedad+" ";
 			}
 			
@@ -1609,17 +1615,17 @@ public class ReportesDAO {
 		select.deleteCharAt(select.length()-1);
 		
 		if(tipoReporte == 1){
-			if(programa !=0 && idPrograma>0){
+			if(programa !=0 && (idPrograma!=null && idPrograma>0)){
 				consulta.append(" where t.id_programa = "+idPrograma+" "+" ");
-				if(cultivo !=0 && idCultivo>0){
+				if(cultivo !=0 && (idCultivo!=null && idCultivo > 0)){
 					consulta.append(" and t.id_cultivo = "+idCultivo+" "+" ");
-					if(variedad !=0 && idVariedad>0){
+					if(variedad !=0 && (idVariedad!=null && idVariedad > 0)){
 						consulta.append(" and t.id_variedad = "+idVariedad+" "+" ");
 					}
-					if(bodega !=0 && idBodega>0){
+					if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 						consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 					}
-				} else if(bodega !=0 && idBodega>0){
+				} else if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 					consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 				}
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
@@ -1628,12 +1634,12 @@ public class ReportesDAO {
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
 					consulta.append("and TO_DATE(t.fecha_oficio, 'DD-MM-YYYY')='").append(fechaInicio).append("'");					
 				}				
-			}else if (cultivo !=0 && idCultivo>0){
+			}else if (cultivo !=0 && (idCultivo!=null && idCultivo > 0)){
 				consulta.append(" where t.id_cultivo = "+idCultivo+" "+" ");
-				if(variedad !=0 && idVariedad>0){
+				if(variedad !=0 && (idVariedad!=null && idVariedad > 0)){
 					consulta.append(" and t.id_variedad = "+idVariedad+" "+" ");
 				}
-				if(bodega !=0 && idBodega>0){
+				if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 					consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 				}
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
@@ -1642,7 +1648,7 @@ public class ReportesDAO {
 				}else if ((fechaInicio != null && !fechaInicio.equals(""))){
 					consulta.append("and TO_DATE(t.fecha_oficio, 'DD-MM-YYYY')='").append(fechaInicio).append("'");
 				}
-			} else if(bodega !=0 && idBodega>0){
+			} else if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 				consulta.append(" where t.id_bodega = "+idBodega+" "+" ");				
 				if((fechaInicio != null && !fechaInicio.equals(""))&& (fechaFin !=null && !fechaFin.equals(""))){
 					consulta.append("  and to_number(TO_CHAR(to_date(t.fecha_oficio, 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999') between to_number(TO_CHAR(to_date('").append(fechaInicio).append("', 'DD-MM-YYYY'), 'YYYYMMDD'), '99999999')")
@@ -1665,28 +1671,28 @@ public class ReportesDAO {
 				consulta.insert(0,select.toString()+"\n"+from+" ").append(groupBy.toString()+" ").append(orderBy.toString()).append(" limit ").append(numRegistros).append(" offset ").append(inicio);
 			}
 		}else{
-			if(programa !=0 && idPrograma>0){
+			if(programa !=0 && (idPrograma!=null && idPrograma>0)){
 				consulta.append(where+" and t.id_programa = "+idPrograma+" "+" ");
-				if(cultivo !=0 && idCultivo>0){
+				if(cultivo !=0 && (idCultivo!=null && idCultivo > 0)){
 					consulta.append(" and t.id_cultivo = "+idCultivo+" "+" ");
-					if(variedad !=0 && idVariedad>0){
+					if(variedad !=0 && (idVariedad!=null && idVariedad > 0)){
 						consulta.append(" and t.id_variedad = "+idVariedad+" "+" ");
 					}
-					if(bodega !=0 && idBodega>0){
+					if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 						consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 					}					
-				} else if(bodega !=0 && idBodega>0){
+				} else if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 					consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 				}
-			}else if (cultivo !=0 && idCultivo>0){
+			}else if (cultivo !=0 && (idCultivo!=null && idCultivo > 0)){
 				consulta.append(where+" and t.id_cultivo = "+idCultivo+" "+" ");
-				if(variedad !=0 && idVariedad>0){
+				if(variedad !=0 && (idVariedad!=null && idVariedad > 0)){
 					consulta.append(" and t.id_variedad = "+idVariedad+" "+" ");
 				}
-				if(bodega !=0 && idBodega>0){
+				if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 					consulta.append(" and t.id_bodega = "+idBodega+" "+" ");
 				}	
-			} else if(bodega !=0 && idBodega>0){
+			} else if(bodega !=0 && (idBodega!=null && idBodega > 0)){
 				consulta.append(where+" and t.id_bodega = "+idBodega+" "+" ");				
 			} else {
 				consulta.append(where+" ");

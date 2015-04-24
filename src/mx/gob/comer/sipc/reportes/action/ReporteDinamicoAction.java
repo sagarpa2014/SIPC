@@ -782,7 +782,11 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			configuracionRegistros[agrupacionFechaPago]="0,1";
 		}
 		if(estado != 0){
-			configuracionRegistros[agrupacionEstado]="1,1";
+			if(participante != 0){
+				configuracionRegistros[agrupacionEstado]="1,2";
+			} else {
+				configuracionRegistros[agrupacionEstado]="1,1";
+			}
 		}
 		if(cultivo != 0){
 			configuracionRegistros[agrupacionCultivo]="1,1";
@@ -905,8 +909,13 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 			ordenadosReporte[agrupacionFechaPago]="Fecha Pago,";
 		}
 		if(estado != 0){
-			ordenados[agrupacionEstado]="<th>Estado</th>";
-			ordenadosReporte[agrupacionEstado]="Estado,";
+			if(participante != 0){
+				ordenados[agrupacionEstado]="<th>Estado</th><th>Municipio</th>";
+				ordenadosReporte[agrupacionEstado]="Estado,Municipio,";
+			} else {
+				ordenados[agrupacionEstado]="<th>Estado</th>";
+				ordenadosReporte[agrupacionEstado]="Estado,";
+			}
 		}
 		if(cultivo != 0){
 			ordenados[agrupacionCultivo]="<th>Cultivo</th>";
