@@ -61,7 +61,7 @@
 				<div class="clear"></div>			
 				<s:if test="%{nombreArchivoExcel99 != null}">
 					<fieldset>
-						<legend>Archivo cargado:</legend>
+						<legend>Ultimo Archivo cargado:</legend>
 						<div class="exporta_csv">
 							<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaCartaAdhesion+nombreArchivoExcel99}"/>" title="Descargar Archivo" ></a>
 						</div>	

@@ -5357,6 +5357,32 @@ public class RelacionesDAO {
 			}		
 			return lst;
 		}
-
 		
+		
+		public List<BitacoraRelcompras> consultaBitacoraRelcompras(String folioCartaAdhesion)throws  JDBCException{
+			List<BitacoraRelcompras> lst = new ArrayList<BitacoraRelcompras>(); 
+			StringBuilder consulta= new StringBuilder();	
+			
+			consulta.append("select criterio from bitacora_relcompras b, cat_criterios_validacion c ")  
+					.append("where  b.id_criterio = c.id_criterio and status = 0 and ")
+					.append(" folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  ")
+					.append(" and nombre_archivo is not null ")
+					.append("order by numero_validacion ");
+			
+			
+			SQLQuery query = session.createSQLQuery(consulta.toString());
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List<?> data = query.list();
+			
+			for(Object object : data){
+				Map<?, ?> row = (Map<?, ?>)object;
+				BitacoraRelcompras b = new BitacoraRelcompras();
+				b.setMensaje((String) row.get("criterio"));
+						
+		        lst.add(b);	
+			}		
+			return lst;
+		}
+		
+				
 }

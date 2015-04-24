@@ -476,6 +476,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		}		
 		//Indica si hay reporte de cruces
 		lstBitacoraRelcompras  = rDAO.consultaBitacoraRelcomprasDif99(folioCartaAdhesion, null, true);
+		//lstBitacoraRelcompras =  rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
 		if(lstBitacoraRelcompras.size()>0){
 			reporteCruce = true;
 		}

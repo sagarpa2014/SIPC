@@ -1127,7 +1127,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			bhco.setStatus(b.getStatus());
 			bhco.setNombreArchivo(b.getNombreArchivo());
 			bhco.setRutaArchivo(b.getRutaArchivo());
-			bhco.setFechaRegistro(new Date());
+			bhco.setFechaRegistroHCO(new Date());
+			bhco.setFechaRegistro(b.getFechaRegistro());
 			bhco.setUsuarioCreacion((Integer) session.get("idUsuario"));
 			bhco.setBitacoraRelcomprasDetalleHCO(new HashSet<BitacoraRelcomprasDetalleHCO>());
 			//Recuperar la bitacora detalle
@@ -4080,7 +4081,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					}
 				}
 				
-				lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, null, "0", true);
+				lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
 				if(countStatus == lstBitacoraRelComprasPorGrupo.size()){
 					cuadroSatisfactorio = "No se encontro ninguna incosistencia en el grupo seleccionado";
 					return SUCCESS;
@@ -4275,9 +4276,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	}
 	
 	public String verReportesCruce() {
-		
-		lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, null, "0", true);
-		
+		//lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcomprasHCO(folioCartaAdhesion);
+		lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
 		return SUCCESS;
 	}
 	

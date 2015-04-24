@@ -50,6 +50,8 @@ public class BitacoraRelcomprasHCO {
 	private String nombreArchivo;
 	@Column(name = "ruta_archivo")
 	private String rutaArchivo;
+	@Column(name = "fecha_registro_hco")
+	private Date fechaRegistroHCO;
 	
 
 	public BitacoraRelcomprasHCO (){
@@ -127,5 +129,15 @@ public class BitacoraRelcomprasHCO {
 
 	public void setRutaArchivo(String rutaArchivo) {
 		this.rutaArchivo = rutaArchivo;
+	}
+
+	public Date getFechaRegistroHCO() {
+		return fechaRegistroHCO;
+	}
+
+	public void setFechaRegistroHCO(Date fechaRegistroHCO) {
+		this.fechaRegistroHCO = fechaRegistroHCO;
 	}	
+	
+	
 }
