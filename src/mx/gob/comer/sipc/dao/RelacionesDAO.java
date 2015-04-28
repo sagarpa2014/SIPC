@@ -5363,7 +5363,7 @@ public class RelacionesDAO {
 			List<BitacoraRelcompras> lst = new ArrayList<BitacoraRelcompras>(); 
 			StringBuilder consulta= new StringBuilder();	
 			
-			consulta.append("select criterio from bitacora_relcompras b, cat_criterios_validacion c ")  
+			consulta.append("select criterio, ruta_archivo, nombre_archivo from bitacora_relcompras b, cat_criterios_validacion c ")  
 					.append("where  b.id_criterio = c.id_criterio and status = 0 and ")
 					.append(" folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  ")
 					.append(" and nombre_archivo is not null ")
@@ -5378,6 +5378,9 @@ public class RelacionesDAO {
 				Map<?, ?> row = (Map<?, ?>)object;
 				BitacoraRelcompras b = new BitacoraRelcompras();
 				b.setMensaje((String) row.get("criterio"));
+				b.setNombreArchivo((String) row.get("nombre_archivo"));
+				b.setRutaArchivo((String) row.get("ruta_archivo"));
+				
 						
 		        lst.add(b);	
 			}		
