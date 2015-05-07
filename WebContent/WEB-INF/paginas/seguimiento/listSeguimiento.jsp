@@ -50,7 +50,7 @@
 		<div class="clear"></div>	
 		<fieldset id="reporte2">
 			<legend>Resultado de B&uacute;squeda</legend>	
-			<display:table id="r"  name="listSeguimientoCentroAcopioV"  list="listSeguimientoCentroAcopioV"  pagesize="50" sort="list" requestURI="/seguimiento/listSeguimiento"  class="displaytag">
+			<display:table id="r"  name="listSeguimientoCentroAcopioV"  list="listSeguimientoCentroAcopioV"  pagesize="50" sort="list" requestURI="/seguimiento/consultaSeguimiento"  class="displaytag">
 				<display:column  property="claveBodega" title="Centro de Acopio"/>		
 				<display:column  property="ciclo" title="Ciclo Agr&iacute;cola"/>
 				<display:column  property="nombreCultivo" title="Cultivo"/>
