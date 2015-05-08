@@ -1004,13 +1004,13 @@ function chkCamposACA(){
 			var volumenInscripcionValidar = $('#volumenInscripcionValidar').val();
 			volumenInscripcionValidar = parseFloat(volumenInscripcionValidar);
 			volumenInscripcionValidar = volumenInscripcionValidar.toFixed(3);
-			
-			if(parseFloat(totalVolumen) > volumenInscripcionValidar){
+			if(parseFloat(totalVolumen) > parseFloat(volumenInscripcionValidar)){
 				console.log("totalVolumen "+totalVolumen);
 				$('#dialogo_1').html('El volumen total asignado '+totalVolumen+' no puede exceder del volumen de la solicitud, favor de verificar');
 			   		abrirDialogo();
 			 		return false;
 			}
+			
 		}else{
 			var importeDisponibleValidar = $('#importeDisponibleValidar').val();
 			importeDisponibleValidar = parseFloat(importeDisponibleValidar);
@@ -1195,7 +1195,6 @@ function chkCamposACA(){
 	}
 	
 	
-
 }//****************** end chkCamposACA
 
 /******** INICIALIZACION ESQUEMA *********/
@@ -1778,16 +1777,17 @@ function recuperarListaDeCuotas(count){
 	var idCultivo = $('#c'+count).val();
 	var idVariedad = $('#va'+count).val();
 	var idInicializacionEsquema = $('#idInicializacionEsquema').val();
+	var idPrograma = $('#idPrograma').val();
 	if(idEstado==-1 || idCultivo == -1 || idVariedad == -1 ){
 		 $('#importe'+count).val("");	
 		 $('#vxcv'+count).val("");	
 	}
 	
-	recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count);
+	recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count, idPrograma);
 	
 }
 
-function recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count){
+function recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idCultivo, idVariedad, count, idPrograma){
 	$.ajax({
 		   async: false,
 		   type: "POST",
@@ -1796,6 +1796,7 @@ function recuperarListaDeCuotaByEdoCulVar(idInicializacionEsquema, idEstado, idC
 		   		"&idVariedad="+idVariedad+
 		   		"&idEstado="+idEstado+
 		   		"&idInicializacionEsquema="+idInicializacionEsquema+
+		   		"&idPrograma="+idPrograma+
 		   		"&count="+count,		   		
 		   success: function(data){			   	
 			   $('#lstCuota'+count).html(data).ready(function () {

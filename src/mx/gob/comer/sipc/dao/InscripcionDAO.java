@@ -15,6 +15,7 @@ import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.CicloPrograma;
 import mx.gob.comer.sipc.domain.transaccionales.CultivoVariedadEsquema;
 import mx.gob.comer.sipc.domain.transaccionales.DetalleAsignacionCartasAdhesion;
+import mx.gob.comer.sipc.domain.transaccionales.EtapaIniEsquema;
 import mx.gob.comer.sipc.domain.transaccionales.ProgramaEstado;
 import mx.gob.comer.sipc.domain.transaccionales.SolicitudInscripcion;
 import mx.gob.comer.sipc.log.AppLogger;
@@ -1231,6 +1232,27 @@ public class InscripcionDAO {
 	}
 	
 	
+	
+	@SuppressWarnings("unchecked")
+	public List<EtapaIniEsquema> consultaCuotaPorEtapa(int idPrograma, int idEtapa) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<EtapaIniEsquema> lst=null;
+		if (idPrograma != 0 && idPrograma != -1){
+			consulta.append("where idPrograma = ").append(idPrograma);
+		}
+		
+		if (idEtapa != 0 && idEtapa != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idEtapa =").append(idEtapa);
+			}else{
+				consulta.append("where idEtapa=").append(idEtapa);
+			}
+		}		
+		
+		consulta.insert(0, "From EtapaIniEsquema ");
+		lst= session.createQuery(consulta.toString()).list();	
+		return lst;
+	}
 		
 	
 }//end class

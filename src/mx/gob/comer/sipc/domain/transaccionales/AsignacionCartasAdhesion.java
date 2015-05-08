@@ -29,6 +29,12 @@ public class AsignacionCartasAdhesion {
 		super();
 	}
 	
+	
+	public AsignacionCartasAdhesion(String folio, Double cuota) {
+		super();
+		this.folioCartaAdhesion = folio;
+		this.cuota = cuota;
+	}
 	public AsignacionCartasAdhesion(Double cuota) {
 		super();
 		this.cuota = cuota;

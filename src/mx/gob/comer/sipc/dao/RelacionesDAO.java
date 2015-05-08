@@ -3204,6 +3204,7 @@ public class RelacionesDAO {
 		.append("having to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
 		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");	
 		SQLQuery query = session.createSQLQuery(consulta.toString());
+		System.out.println("Pagos Fuera de periodo "+consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
 		for(Object object : data){
@@ -3226,6 +3227,7 @@ public class RelacionesDAO {
 			b.setImpTotalPagoSinaxc(valor!=null ? valor.doubleValue():null);
 			lst.add(b);			
 		}
+
 
 
 		return lst;
@@ -4221,6 +4223,7 @@ public class RelacionesDAO {
 					          +"order by folio_contrato";
 			
 			lst= session.createSQLQuery(consulta.toString()).addEntity(ContratosRelacionCompras.class).list();
+			
 			return lst;
 		}
 		

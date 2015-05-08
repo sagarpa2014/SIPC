@@ -26,6 +26,7 @@ import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.CultivoVariedadEsquema;
 import mx.gob.comer.sipc.domain.transaccionales.DetalleAsignacionCartasAdhesion;
+import mx.gob.comer.sipc.domain.transaccionales.EtapaIniEsquema;
 import mx.gob.comer.sipc.domain.transaccionales.SolicitudInscripcion;
 import mx.gob.comer.sipc.domain.catalogos.Componente;
 import mx.gob.comer.sipc.domain.catalogos.Variedad;
@@ -1305,14 +1306,35 @@ public class InscripcionAction extends ActionSupport implements SessionAware, Se
 	
 	public String recuperarListaDeCuotaByEdoCulVar(){
 		lstCuota = new ArrayList<AsignacionCartasAdhesion>();
-		if(idEstado!=-1 && idCultivo !=-1 && idVariedad!=-1){
-			ce = iDAO.consultaCuotasEsquema(idInicializacionEsquema, idEstado, idCultivo, idVariedad);
-			if(ce.size()>0){
-				for(CuotasEsquema c: ce){
-					lstCuota.add(new AsignacionCartasAdhesion(c.getCuota())); 
+		//Verifica el criterio de pago a traves del programa
+		programa = cDAO.consultaPrograma(idPrograma).get(0);
+		idCriterioPago = programa.getCriterioPago();
+		
+		
+		if(idCriterioPago ==1 ){
+			if(idEstado!=-1 && idCultivo !=-1 && idVariedad!=-1){
+				ce = iDAO.consultaCuotasEsquema(idInicializacionEsquema, idEstado, idCultivo, idVariedad);
+				if(ce.size()>0){
+					for(CuotasEsquema c: ce){
+						lstCuota.add(new AsignacionCartasAdhesion(c.getCuota())); 
+					}
 				}
 			}
+		}else if(idCriterioPago == 3){
+			if(idEstado!=-1 && idCultivo !=-1 && idVariedad!=-1){
+				List<EtapaIniEsquema> lstEtapaIniEsquema = iDAO.consultaCuotaPorEtapa(idPrograma, -1);
+				StringBuilder cadena =  new StringBuilder();
+				Double sumaMonto = 0.0;
+				for(EtapaIniEsquema c: lstEtapaIniEsquema){
+					cadena.append(TextUtil.formateaNumeroComoCantidad(c.getMonto())+" / ");
+					sumaMonto += c.getMonto();
+				}
+				cadena.deleteCharAt(cadena.length()-2);
+				lstCuota.add(new AsignacionCartasAdhesion(cadena.toString(), sumaMonto)); 
+			}
 		}
+		
+		
 			
 		
 		
