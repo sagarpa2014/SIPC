@@ -53,6 +53,9 @@
 	<s:if test="%{lstRfcProductorVsRfcFactura.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
 		<span class="requerido">LOS RFC DE LAS FACTURAS NO CORRESPONDEN AL PRODUCTOR</span><br>
 	</s:if>
+	<s:if test="%{lstRfcProductorVsRfcFacturaSinContrato.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
+		<span class="requerido">LOS RFC DE LAS FACTURAS NO CORRESPONDEN AL PRODUCTOR</span><br>
+	</s:if>
 	<s:if test="%{lstFacturaFueraPeriodo.size() > 0}"> <!--Factura fuera del periodo del Auditor -->
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO <s:text name="fecha1"><s:param value="%{fechaInicio}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFin}"/></s:text></span><br>
 	</s:if>

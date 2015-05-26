@@ -17,6 +17,7 @@ import mx.gob.comer.sipc.action.relaciones.RelacionComprasAction;
 import mx.gob.comer.sipc.dao.RelacionesDAO;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcomprasDetalle;
+import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.CuentasBancariasV;
@@ -76,6 +77,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	private List<ProductorFactura> lstProductorFactura;
 	private List<BoletasVsFacturas> lstBoletasVsFacturas;
 	private List<RfcProductorVsRfcFactura> lstRfcProductorVsRfcFactura;
+	private List<RelacionComprasTMP> lstRfcProductorVsRfcFacturaSinContrato;
 	private List<FacturaFueraPeriodoAuditor> lstFacturaFueraPeriodoAuditor;
 	private List<FacturasIgualesFacAserca> lstFacturasIgualesFacAserca;
 	private List<ChequesDuplicadoBancoPartipante> lstChequesDuplicadoBancoPartipante;
@@ -692,10 +694,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			colocarTotales("3,GRAN TOTAL;5,"+granTotalVol+",v"+";6,"+granTotalVol1+",v;7,"+granTotalVol2+",v", w.length);	
 		}else if(rca.getIdCriterio() == 12){//"10 DIFERENCIA DE RFC DE PRODUCTOR RELACION DE COMPRAS CON LO REGISTRADO EN EL CONTRATO"
 			Collections.sort(lstRfcProductorVsRfcFactura);			
-			for (RfcProductorVsRfcFactura l: lstRfcProductorVsRfcFactura){	
-//				configTotales = new String [2];
-//				configTotales[0] = "3,TOTAL CON;7,"+totalVolPorContrato+",v";
-//				configTotales[1] = "3,TOTAL BOD;7,"+totalVolPorBodega+",v";				
+			for (RfcProductorVsRfcFactura l: lstRfcProductorVsRfcFactura){					
 				claveBodega = l.getClaveBodega();
 				nombreEstado =  l.getNombreEstado();
 				folioContrato = l.getFolioContrato();
@@ -721,16 +720,34 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				if(siAplicaFolioContrato){				
 					temFolioContrato = l.getFolioContrato();
 				}				
-//				totalVolPorContrato += l.getVolTotalFacVenta();
-//				totalVolPorBodega += l.getVolTotalFacVenta();
-//				granTotalVol += l.getVolTotalFacVenta();
 				contBitacoraDet ++;
 			}
-//			colocarTotales("3,TOTAL CON;7,"+totalVolPorContrato+",v", w.length);
-//			colocarTotales("3,TOTAL BOD;7,"+totalVolPorBodega+",v", w.length);
-//			colocarTotales("3,GRAN TOTAL;7,"+granTotalVol+",v", w.length);
-//			
 			
+		}else if(rca.getIdCriterio() == 30){//10.1 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS BASE DE DATOS
+			Collections.sort(lstRfcProductorVsRfcFacturaSinContrato);			
+			for (RelacionComprasTMP l: lstRfcProductorVsRfcFacturaSinContrato){					
+				claveBodega = l.getClaveBodega();
+				nombreEstado =  l.getNombreEstado();
+				paternoProductor = l.getPaternoProductor();
+				maternoProductor = l.getMaternoProductor();
+				nombreProductor = l.getNombreProductor();
+				colocarPrimerasColumnasDetalle(configTotales, w.length);							
+				parrafo =  new Paragraph(l.getRfcProductor(), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				parrafo =  new Paragraph(l.getRfcFacVenta(), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);				
+				parrafo =  new Paragraph(l.getVolTotalFacVenta() != null ? TextUtil.formateaNumeroComoVolumen(l.getVolTotalFacVenta()):"", TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 3, 1);
+				t.addCell(cell);
+				claveBodegaTmp = l.getClaveBodega();
+				nomEstadoTmp = l.getNombreEstado();					
+				contBitacoraDet ++;
+			}	
 		}else if(rca.getIdCriterio() == 13){// 5.2 FACTURAS FUERA DE PERIODO
 			if(rca.getLstBitacoraRelCompras().get(0).getMensaje().contains("/")){
 				Collections.sort(lstFacturaFueraPeriodoAuditor);
@@ -2138,6 +2155,25 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					r.setVolTotalFacVenta(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")&&!bS[columna].equals("-")?bS[columna]:"0"));
 					lstRfcProductorVsRfcFactura.add(r);
+				}else if(rca.getIdCriterio() == 30){
+					columna = 0;
+					RelacionComprasTMP  r = new RelacionComprasTMP();
+					r.setClaveBodega(bS[columna]);
+					++columna;
+					r.setNombreEstado(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");					
+					++columna;
+					r.setPaternoProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setMaternoProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setNombreProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setRfcProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setRfcFacVenta(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setVolTotalFacVenta(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")&&!bS[columna].equals("-")?bS[columna]:"0"));
+					lstRfcProductorVsRfcFacturaSinContrato.add(r);
 				}else if(rca.getIdCriterio() == 13){
 					if(rca.getLstBitacoraRelCompras().get(0).getMensaje().contains("/")){
 						FacturaFueraPeriodoAuditor f  = new FacturaFueraPeriodoAuditor();
@@ -2699,7 +2735,15 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				float[] x1 = {10,10,20,20,20,20}; // %
 				w = x1;
 			}
-			
+		}else if(rca.getIdCriterio() == 30){//"Que el rfc corresponda al productor sin contrato"
+			System.out.println("SIaPLICAcONTRATO "+siAplicaFolioContrato);
+				if(siAplicaFolioContrato){
+					float[] x1 = {10,10,10,20,20,20,10}; // %
+					w = x1;
+				}else{
+					float[] x1 = {10,10,20,20,20,20}; // %
+					w = x1;
+				}	
 		}else if(rca.getIdCriterio() == 13){//"Factura fuera del periodo del Auditor"
 			if(siAplicaFolioContrato){
 				if(rca.getLstBitacoraRelCompras().get(0).getMensaje().contains("/")){
@@ -2882,6 +2926,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		}else if(rca.getIdCriterio() == 27){//VOLUMEN DE FINIQUITO
 			if(siAplicaFolioContrato){
 				float[] x1 = {10,10,30,30,10,10}; // %
+				w = x1;
+			}else{
+				float[] x1 = {10,30,30,15,15}; // %
 				w = x1;
 			}
 		}else if(rca.getIdCriterio() == 28){//PRECIO MENOR AL ESTABLECIDO EN AVISO
@@ -3216,6 +3263,20 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 1, 1);
 			t.addCell(cell);	
+		}else if(rca.getIdCriterio() == 30){//"QUE EL RFC CORRESPONDA AL PRODUCTOR SIN CONTRATO"
+			colocarPrimerasColumnasEncDetalle();	
+			parrafo =  new Paragraph("RFC PRODUCTOR", TIMESROMAN08BOLD);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 1, 1);
+			t.addCell(cell);
+			parrafo =  new Paragraph("RFC FACTURA", TIMESROMAN08BOLD);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 1, 1);
+			t.addCell(cell);	
+			parrafo =  new Paragraph("PESO NETO ANA. (TON) FAC", TIMESROMAN08BOLD);
+			cell = new PdfPCell(parrafo);
+			cell =createCell(parrafo, 0, 1, 1);
+			t.addCell(cell);	
 		}else if(rca.getIdCriterio() == 13){//"Factura fuera del periodo del Auditor"
 			colocarPrimerasColumnasEncDetalle();
 			parrafo =  new Paragraph("FOLIO FACTURA", TIMESROMAN08BOLD);
@@ -3478,11 +3539,13 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			if(siAplicaFolioContrato){	
 				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-TOTAL FACTURADO;S-1-RENDIMIENTO MAXIMO ACEPTABLE;S-1-VOLUMEN NO ACEPTABLE;", "DET");
 			}else{
-				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-TOTAL FACTURADO;S-1-RENDIMIENTO MAXIMO ACEPTABLE;S-1-VOLUMEN NO ACEPTABLE;", "DET");
+				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-PRODUCTOR;S-1-TOTAL FACTURADO;S-1-RENDIMIENTO MAXIMO ACEPTABLE;S-1-VOLUMEN NO ACEPTABLE;", "DET");
 			}
 		}else if(rca.getIdCriterio() == 27){
 			if(siAplicaFolioContrato){	
 				crearColumna("S-1-BODEGA;S-1-FOLIO CONTRATO;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN", "DET");
+			}else{
+				crearColumna("S-1-BODEGA;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN", "DET");
 			}
 		}else if(rca.getIdCriterio() == 28){//PRECIO MENOR AL ESTABLECIDO EN AVISO			
 			if(siAplicaFolioContrato){	
@@ -3593,6 +3656,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		lstPrecioPagPorTipoCambio = new ArrayList<PrecioPagPorTipoCambio>();
 		lstPrecioPagadoNoCorrespondeConPagosV = new ArrayList<PrecioPagadoNoCorrespondeConPagosV>();
 		lstPrecioPagadoMenorQueAviso = new ArrayList<PrecioPagadoNoCorrespondeConPagosV>();
+		lstRfcProductorVsRfcFacturaSinContrato = new ArrayList<RelacionComprasTMP>();
 		
 	}
 

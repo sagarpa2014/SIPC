@@ -240,6 +240,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
 	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoNoCorrespondeConPagosV;
 	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoMenorQueAviso;
+	private List<RelacionComprasTMP> lstRfcProductorVsRfcFacturaSinContrato;
 	
 	
 	public String capturaCargaArchivoRelCompras(){ 
@@ -539,22 +540,26 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					   b.getBitacoraRelcomprasDetalle().add(bd);
 					   crearCeldaenLogXls();
 				   }else{					  
-						   //verificar en bd si el estado existe en SIPC
-						   List<Estado> lstEdo = cDAO.consultaEstado(0, valor);
-						   nombreEstado = valor;
-						   if(lstEdo.size() > 0){
-							   idEstado = lstEdo.get(0).getIdEstado();
-							   estadoCorrecto = true;
-						   }else{
-							   msj = "Fila: "+contRow+". No se encontro el estado "+valor;
-							   bd = new BitacoraRelcomprasDetalle();
-							   bd.setMensaje(msj);
-							   b.getBitacoraRelcomprasDetalle().add(bd);
-							   errorInternoArchivo = true;
-							   errorLecturaArchivo = true;
-							   crearCeldaenLogXls();								   
-						   }
-						
+					   //verificar en bd si el estado existe en SIPC
+					   List<Estado> lstEdo = cDAO.consultaEstado(0, valor);
+					   nombreEstado = valor;
+					   if(lstEdo.size() > 0){
+						   idEstado = lstEdo.get(0).getIdEstado();
+						   estadoCorrecto = true;
+					   }else{
+						   msj = "Fila: "+contRow+". No se encontro el estado "+valor;
+						   bd = new BitacoraRelcomprasDetalle();
+						   bd.setMensaje(msj);
+						   b.getBitacoraRelcomprasDetalle().add(bd);
+						   errorInternoArchivo = true;
+						   errorLecturaArchivo = true;
+						   crearCeldaenLogXls();								   
+					   }
+					
+//					   idEstado = 99;
+//					   nombreEstado = valor;
+//					   estadoCorrecto = true;
+//					   rcTmp.setEstadoAcopio(99);
 					   rcTmp.setEstadoAcopio(idEstado);
 					   rcTmp.setNombreEstado(nombreEstado);
 					   nomEstadoTmp = valor;
@@ -1994,6 +1999,69 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					
 						}
+					}else if(l.getIdCriterio() == 30){
+						sheet = wb.createSheet("RFC CORRESPONDE RFC PROD"); //10.1 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS BASE DE DATOS
+						sheet = setMargenSheet(sheet);
+						countRow = 0;
+						countColumn =0;
+						lstRfcProductorVsRfcFacturaSinContrato = rDAO.verificaRFCProductorVsRFCFacturaSinContrato(folioCartaAdhesion);  
+						if(lstRfcProductorVsRfcFacturaSinContrato.size()>0){//En el listado se guardan las facturas duplicadas por productor
+							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
+							msj = l.getCriterio();
+							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue(msj);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("Clave Bodega");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Estado");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Productor");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("RFC Productor");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("RFC Factura");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Peso Neto ana. (ton) Fac ");
+							for(RelacionComprasTMP r: lstRfcProductorVsRfcFacturaSinContrato){
+								countColumn = 0;
+								bd = new BitacoraRelcomprasDetalle();
+								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
+										+r.getNombreProductor()+";"
+									+r.getRfcProductor()+";"+r.getRfcFacVenta()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
+								b.getBitacoraRelcomprasDetalle().add(bd);
+								//Actualiza el productor como inconsistente
+								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), null,
+										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
+								cell = row.createCell(++countColumn);
+								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
+										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
+										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getRfcFacVenta()!=null && !r.getRfcFacVenta().isEmpty()?r.getRfcFacVenta():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
+							}							
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}else{
+							msj = "La validación es correcta \"RFC DE LAS FACTURAS SI CORRESPONDEN AL PRODUCTOR\"";							
+							row = sheet.createRow(countRow);
+							cell = row.createCell(0);
+							cell.setCellValue(msj);
+							llenarBitacora(false, l.getIdCriterio());
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+					
+						}			
 					}else if(l.getIdCriterio() == 20){
 						sheet = wb.createSheet("RESUMEN DE OBSERVACIONES");
 						sheet = setMargenSheet(sheet);
@@ -2045,7 +2113,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								valorMaximo = calcularMaximo(array);
 								
 								bd = new BitacoraRelcomprasDetalle();
-								System.out.println("bod.getVolTotalFacVenta() "+bod.getVolTotalFacVenta());
+								//System.out.println("bod.getVolTotalFacVenta() "+bod.getVolTotalFacVenta());
 								bd.setMensaje(bod.getClaveBodega()+";"+bod.getNombreEstado()+";"+(siAplicaFolioContrato?bod.getFolioContrato()+";":"")+bod.getPaternoProductor()+";"+bod.getMaternoProductor()+";"
 										+bod.getNombreProductor()+";"+bod.getVolTotalFacturado()+";"+bod.getVolBolTicket()+";"+bod.getVolTotalFacVenta()+";"+bod.getVolEnpagos()+";"
 										+(bod.getVolumenNoProcedente()!=null?bod.getVolumenNoProcedente()+";":";")+bod.getDiferenciaEntreVolumen()+";"
@@ -2862,7 +2930,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;						
-						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){
+						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){//PERIODO POR DICTAMEN DE AUDITOR
 							fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
 							fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
 							lstFacturaFueraPeriodo = rDAO.verificaFacturaFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
@@ -5174,9 +5242,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setLstPrecioPagadoMenorQueAviso(
 			List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoMenorQueAviso) {
 		this.lstPrecioPagadoMenorQueAviso = lstPrecioPagadoMenorQueAviso;
+	}
+
+	public List<RelacionComprasTMP> getLstRfcProductorVsRfcFacturaSinContrato() {
+		return lstRfcProductorVsRfcFacturaSinContrato;
+	}
+
+	public void setLstRfcProductorVsRfcFacturaSinContrato(
+			List<RelacionComprasTMP> lstRfcProductorVsRfcFacturaSinContrato) {
+		this.lstRfcProductorVsRfcFacturaSinContrato = lstRfcProductorVsRfcFacturaSinContrato;
 	}	
-	
-	
-		
 }
 

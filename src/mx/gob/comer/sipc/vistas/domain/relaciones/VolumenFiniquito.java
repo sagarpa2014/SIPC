@@ -58,7 +58,7 @@ public class VolumenFiniquito implements Comparable{
 	public int compareTo(Object o) {
 		VolumenFiniquito obj= (VolumenFiniquito) o;     
     	if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) {
-    		  return this.folioContrato.compareToIgnoreCase(obj.folioContrato); 
+    		  return (this.folioContrato!=null?this.folioContrato:"").compareToIgnoreCase(obj.folioContrato); 
     	}else{
     		return this.claveBodega.compareTo(obj.claveBodega);
     	}	                 

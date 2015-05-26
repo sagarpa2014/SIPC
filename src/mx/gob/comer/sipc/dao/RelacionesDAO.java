@@ -2938,6 +2938,43 @@ public class RelacionesDAO {
 	}
 
 	
+	
+	public List<RelacionComprasTMP> verificaRFCProductorVsRFCFacturaSinContrato(String folioCartaAdhesion)throws  JDBCException{ 
+		List<RelacionComprasTMP> lst =new ArrayList<RelacionComprasTMP>();
+		StringBuilder consulta= new StringBuilder();
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado,  r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc rfc_productor, r.rfc_fac_venta , ") // AHS 29012015
+				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado " )
+				.append(" and  COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X' )")
+				.append(" and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  ) as vol_total_fac_venta ")
+				.append("FROM relacion_compras_tmp r, productores p ") 
+				.append("WHERE r.rfc_fac_venta is not null ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+				.append("and p.productor = r.productor ").append("and p.rfc <> r.rfc_fac_venta ") 
+				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc, r.rfc_fac_venta ");		
+		
+		System.out.println("Consulta RFC sin contrato "+consulta.toString());
+		
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			RelacionComprasTMP  r = new RelacionComprasTMP();
+			r.setClaveBodega((String) row.get("clave_bodega"));
+			r.setNombreEstado((String) row.get("nombre_estado"));
+			r.setNombreProductor((String) row.get("nombre_productor"));
+			r.setPaternoProductor((String) row.get("paterno_productor"));
+			r.setMaternoProductor((String) row.get("materno_productor"));
+			r.setRfcProductor((String) row.get("rfc_productor"));
+			r.setRfcFacVenta((String) row.get("rfc_fac_venta"));	
+			BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			lst.add(r);
+		}
+			
+		return lst; 
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	public List<FacturasVsPago> verificaFacturasVsPago(String folioCartaAdhesion)throws JDBCException{
 		List<FacturasVsPago> lst = null;
@@ -4335,7 +4372,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r1.clave_bodega ") 
 			.append("and  r.nombre_estado = r1.nombre_estado ")
 			.append("and  r.estado_acopio = r1.estado_acopio ")
-			.append("and  r.folio_contrato = r1.folio_contrato ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r1.folio_contrato,'X') ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X') ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  and r.folio_carta_adhesion = r1.folio_carta_adhesion ) as vol_total_fac_venta, ")
@@ -4344,7 +4381,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r2.clave_bodega ") 
 			.append("and  r.nombre_estado = r2.nombre_estado ")
 			.append("and  r.estado_acopio = r2.estado_acopio ")
-			.append("and  r.folio_contrato = r2.folio_contrato ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r2.folio_contrato,'X') ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r2.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r2.materno_productor,'X') ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r2.nombre_productor,'X') and r.folio_carta_adhesion = r2.folio_carta_adhesion ")
@@ -4355,7 +4392,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r3.clave_bodega ") 
 			.append("and  r.nombre_estado = r3.nombre_estado  ")
 			.append("and  r.estado_acopio = r3.estado_acopio  ")
-			.append("and  r.folio_contrato = r3.folio_contrato  ") 
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r3.folio_contrato,'X')  ") 
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r3.paterno_productor,'X')  ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r3.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r3.nombre_productor,'X') and r.folio_carta_adhesion = r3.folio_carta_adhesion ")
@@ -4366,7 +4403,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r4.clave_bodega ") 
 			.append("and  r.nombre_estado = r4.nombre_estado ")
 			.append("and  r.estado_acopio = r4.estado_acopio ") 
-			.append("and  r.folio_contrato = r4.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r4.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r4.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r4.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r4.nombre_productor,'X')   and r.folio_carta_adhesion = r4.folio_carta_adhesion ")
@@ -4376,7 +4413,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r41.clave_bodega ") 
 			.append("and  r.nombre_estado = r41.nombre_estado ")
 			.append("and  r.estado_acopio = r41.estado_acopio  ")
-			.append("and  r.folio_contrato = r41.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r41.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r41.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r41.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r41.nombre_productor,'X')   ")
@@ -4388,7 +4425,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r5.clave_bodega ") 
 			.append("and  r.nombre_estado = r5.nombre_estado ")
 			.append("and  r.estado_acopio = r5.estado_acopio  ")
-			.append("and  r.folio_contrato = r5.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r5.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r5.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r5.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r5.nombre_productor,'X') and  r.folio_carta_adhesion = r5.folio_carta_adhesion  ")
@@ -4398,7 +4435,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r51.clave_bodega ") 
 			.append("and  r.nombre_estado = r51.nombre_estado ")
 			.append("and  r.estado_acopio = r51.estado_acopio  ")
-			.append("and  r.folio_contrato = r51.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r51.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r51.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r51.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r51.nombre_productor,'X') and r.folio_carta_adhesion = r51.folio_carta_adhesion  ")
@@ -4410,7 +4447,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r6.clave_bodega ") 
 			.append("and  r.nombre_estado = r6.nombre_estado ")
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
-			.append("and  r.folio_contrato = r6.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')  and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
@@ -4420,7 +4457,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r61.clave_bodega ") 
 			.append("and  r.nombre_estado = r61.nombre_estado ")
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
-			.append("and  r.folio_contrato = r61.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
@@ -4432,7 +4469,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r6.clave_bodega ") 
 			.append("and  r.nombre_estado = r6.nombre_estado ")
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
-			.append("and  r.folio_contrato = r6.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
@@ -4442,7 +4479,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r61.clave_bodega ") 
 			.append("and  r.nombre_estado = r61.nombre_estado ")
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
-			.append("and  r.folio_contrato = r61.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
@@ -4454,7 +4491,7 @@ public class RelacionesDAO {
 			.append("where r.clave_bodega = r7.clave_bodega ") 
 			.append("and  r.nombre_estado = r7.nombre_estado ")
 			.append("and  r.estado_acopio = r7.estado_acopio  ")
-			.append("and  r.folio_contrato = r7.folio_contrato  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r7.folio_contrato,'X')  ")
 			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r7.paterno_productor,'X') ")
 			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r7.materno_productor,'X')  ")
 			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r7.nombre_productor,'X') and r.folio_carta_adhesion = r7.folio_carta_adhesion  ")

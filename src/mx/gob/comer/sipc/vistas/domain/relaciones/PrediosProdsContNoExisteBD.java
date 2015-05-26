@@ -113,7 +113,7 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 		PrediosProdsContNoExisteBD obj= (PrediosProdsContNoExisteBD) o;     
 	    if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) { 
 	    	if(this.nombreEstado.compareToIgnoreCase(obj.nombreEstado) == 0){
-		    	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0){
+	    		if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){
 		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
 		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
 		            		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {

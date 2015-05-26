@@ -117,7 +117,7 @@ public class ChequesDuplicadoBancoPartipante implements Comparable{
 	    	if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0){
 		    	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0){
 		    		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
-		            	if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0) {
+		    			if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){
 		            		  return this.claveBodega.compareToIgnoreCase(obj.claveBodega); 
 		            	}else{
 		            		return this.folioContrato.compareTo(obj.folioContrato);

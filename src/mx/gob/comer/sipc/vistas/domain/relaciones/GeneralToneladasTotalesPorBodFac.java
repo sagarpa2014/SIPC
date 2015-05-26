@@ -98,7 +98,7 @@ public class GeneralToneladasTotalesPorBodFac implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		GeneralToneladasTotalesPorBodFac obj= (GeneralToneladasTotalesPorBodFac) o;     
-	    if(this.folioContrato.compareToIgnoreCase(obj.folioContrato) == 0) { 
+		if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){
 	    	if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0){
 	    		return this.nombreEstado.compareToIgnoreCase(obj.nombreEstado);
 	    	}else{
