@@ -58,6 +58,7 @@ public class SeguimientoCentroAcopioV {
 	private String descEstatus;
 	private Integer idEstadoBodega;
 	private String nombreEstadoBodega;
+	private Integer regionalId;
 	private Integer idCicloSeg;
 	private Integer idVariedad;
 	private String nombreVariedad;
@@ -423,7 +424,14 @@ public class SeguimientoCentroAcopioV {
 	public void setNombreEstadoBodega(String nombreEstadoBodega) {
 		this.nombreEstadoBodega = nombreEstadoBodega;
 	}
-
+	
+	@Column(name = "regional_id")	
+	public Integer getRegionalId() {
+		return regionalId;
+	}
+	public void setRegionalId(Integer regionalId) {
+		this.regionalId = regionalId;
+	}
 	@Column(name = "id_ciclo_seg")
 	public Integer getIdCicloSeg() {
 		return idCicloSeg;

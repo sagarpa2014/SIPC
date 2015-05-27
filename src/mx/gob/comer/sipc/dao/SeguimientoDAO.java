@@ -106,9 +106,12 @@ public class SeguimientoDAO {
 		
 		return consultaSeguimientoCAV(idSeguimientoCA, -1, -1, null, null, null, idUsuario);
 	}
-
-	@SuppressWarnings("unchecked")
 	public List<SeguimientoCentroAcopioV> consultaSeguimientoCAV(long idSeguimientoCA, int idCiclo, int ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, Integer idUsuario) throws JDBCException {
+		
+		return consultaSeguimientoCAV(idSeguimientoCA, idCiclo, ejercicio,  periodoInicial, periodoFinal, claveBodega, idUsuario, 0,0);
+	}
+	@SuppressWarnings("unchecked")
+	public List<SeguimientoCentroAcopioV> consultaSeguimientoCAV(long idSeguimientoCA, int idCiclo, int ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, Integer idUsuario, int idEstadoBodega, int regionalId) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<SeguimientoCentroAcopioV> lst=null;
 		if (idSeguimientoCA != 0 && idSeguimientoCA != -1){
@@ -166,6 +169,23 @@ public class SeguimientoDAO {
 				consulta.append("where usuarioRegistro=").append(idUsuario);
 			}
 		}
+		
+		if (idEstadoBodega != 0 && idEstadoBodega!=-1){
+			if(consulta.length()>0){
+				consulta.append(" and idEstadoBodega =").append(idEstadoBodega);
+			}else{
+				consulta.append("where idEstadoBodega =").append(idEstadoBodega);
+			}
+		}
+
+		if (regionalId != 0 && regionalId !=-1){
+			if(consulta.length()>0){
+				consulta.append(" and regionalId=").append(regionalId);
+			}else{
+				consulta.append("where regionalId=").append(regionalId);
+			}
+		}
+
 
 		consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
 		lst= session.createQuery(consulta.toString()).list();
@@ -232,7 +252,7 @@ public class SeguimientoDAO {
 			}
 		}
 
-		consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
+		consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal desc ").insert(0, "From SeguimientoCentroAcopioV ");
 		lst= session.createQuery(consulta.toString()).list();
 		return lst;
 	}
@@ -624,7 +644,7 @@ public class SeguimientoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SeguimientoCentroAcopioV> isolatedConsultaSeguimientoCAV(long idSeguimientoCA, Integer idCiclo, Integer ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, Integer idUsuario) throws JDBCException {
+	public List<SeguimientoCentroAcopioV> isolatedConsultaSeguimientoCAV(long idSeguimientoCA, Integer idCiclo, Integer ejercicio,  Date periodoInicial, Date periodoFinal, String claveBodega, Integer idUsuario, int idEstadoBodega, int regionalId) throws JDBCException {
 		Session s = null;
 		StringBuilder consulta= new StringBuilder();
 		List<SeguimientoCentroAcopioV> lst=null;
@@ -687,6 +707,23 @@ public class SeguimientoDAO {
 					consulta.append("where usuarioRegistro=").append(idUsuario);
 				}
 			}
+			if (idEstadoBodega != 0 && idEstadoBodega!=-1){
+				if(consulta.length()>0){
+					consulta.append(" and idEstadoBodega =").append(idEstadoBodega);
+				}else{
+					consulta.append("where idEstadoBodega =").append(idEstadoBodega);
+				}
+			}
+
+			if (regionalId != 0 && regionalId !=-1){
+				if(consulta.length()>0){
+					consulta.append(" and regionalId=").append(regionalId);
+				}else{
+					consulta.append("where regionalId=").append(regionalId);
+				}
+			}
+
+
 	
 			consulta.append(" order by nombreBodega, ciclo, periodoInicial, periodoFinal ").insert(0, "From SeguimientoCentroAcopioV ");
 			lst= s.createQuery(consulta.toString()).list();

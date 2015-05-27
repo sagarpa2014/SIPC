@@ -34,6 +34,7 @@ import mx.gob.comer.sipc.domain.Usuarios;
 import mx.gob.comer.sipc.domain.catalogos.Bodegas;
 import mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegas;
 import mx.gob.comer.sipc.domain.catalogos.Ciclo;
+import mx.gob.comer.sipc.domain.catalogos.Regional;
 import mx.gob.comer.sipc.domain.catalogos.Variedad;
 import mx.gob.comer.sipc.domain.transaccionales.SeguimientoCentroAcopio;
 import mx.gob.comer.sipc.log.AppLogger;
@@ -152,6 +153,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	List<OperadoresBodegasV> lstObv;
 	private String rutaSalidaTmp;
 	private String rfcOperador;
+	private int regionalId;
+	private List<Regional> lstRegionales;
 
 	public SeguimientoAction() {
 		super();
@@ -168,6 +171,9 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			
 			lstEjercicios = cDAO.consultaEjercicio(0);
 			lstCiclos = cDAO.consultaCiclo(0);
+			lstEstados = cDAO.consultaEstado(0);
+			lstRegionales = cDAO.consultaRegional(0);
+			
 			if(idPerfil == 12){			
 				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, -1);
 			} else { 
@@ -194,7 +200,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			usuario = cDAO.consultaUsuarios(idUsuario, null, null).get(0);
 			
 			if(idPerfil == 12){
-				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1);
+				listSeguimientoCentroAcopioV = sDAO.consultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1, idEstado, regionalId);
 			} else {
 				// Caso particular: Regional Occidente
 				if(idPerfil == 11 && usuario.getArea().equals("1,6,14,18")){
@@ -205,12 +211,18 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			}
 			lstEjercicios = cDAO.consultaEjercicio(0);
 			lstCiclos = cDAO.consultaCiclo(0);	
+			lstEstados = cDAO.consultaEstado(0);
+			lstRegionales = cDAO.consultaRegional(0);
 			
 			session.put("idCiclo", idCiclo);
 			session.put("ejercicio", ejercicio);
 			session.put("periodoInicial", periodoInicial);
 			session.put("periodoFinal", periodoFinal);
-			session.put("claveBodega", claveBodega);			
+			session.put("claveBodega", claveBodega);	
+			session.put("idEstado", idEstado);	
+			session.put("regionalId", regionalId);	
+			
+			
 		}catch (JDBCException e){
 			addActionError("Ocurrió un error inesperado, favor de informar al administrador");
 			AppLogger.error("errores","Ocurrió un error en consultaSeguimiento debido a: " +e.getCause() );
@@ -1203,7 +1215,11 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 				periodoFinal = (Date)session.get("periodoFinal");
 			if((String)session.get("claveBodega")!=null)
 				claveBodega = (String)session.get("claveBodega");
-			
+			if((Integer)session.get("idEstado")!=null)
+				idEstado = (Integer)session.get("idEstado");
+			if((Integer)session.get("regionalId")!=null)
+				regionalId = (Integer)session.get("regionalId");
+				
 			usuario = cDAO.isolatedconsultaUsuarios(idUsuario, null, null).get(0);
 
 			if (session==null){
@@ -1219,7 +1235,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 			
 			//Consulta el reporte de acuerdo a los criterios seleccionados por el usuario
 			if(idPerfil == 12){
-				listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1);
+				listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, -1, idEstado, regionalId);
 				//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), -1);
 			} else {
 				// Caso particular: Regional Occidente
@@ -1227,7 +1243,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, usuario.getArea());
 					//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), usuario.getArea());
 				} else {
-					listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, idUsuario);
+					listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, idCiclo, ejercicio, periodoInicial, periodoFinal, claveBodega, idUsuario,-1,-1);
 					//listSeguimientoCentroAcopioV = sDAO.isolatedConsultaSeguimientoCAV(0, (Integer)session.get("idCiclo"), (Integer)session.get("ejercicio"), (Date)session.get("periodoInicial"), (Date)session.get("periodoFinal"), (String)session.get("claveBodega"), idUsuario);
 				}
 			}
@@ -1356,6 +1372,14 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 		return xlsOut;
 	}
 
+	
+	public String recuperaEstadosByRegional() throws Exception{
+		
+		lstEstados = cDAO.consultaEstado(0,null,regionalId);
+		
+		return SUCCESS;
+	}
+	
 	
 	public Integer getIdCiclo() {
 		return idCiclo;
@@ -1914,5 +1938,24 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 
 	public void setMautoconsumo(Double mautoconsumo) {
 		this.mautoconsumo = mautoconsumo;
+	}
+
+	
+	public int getRegionalId() {
+		return regionalId;
+	}
+
+	public void setRegionalId(int regionalId) {
+		this.regionalId = regionalId;
+	}
+
+	public List<Regional> getLstRegionales() {
+		return lstRegionales;
+	}
+
+	public void setLstRegionales(List<Regional> lstRegionales) {
+		this.lstRegionales = lstRegionales;
 	}	
+	
+	
 }

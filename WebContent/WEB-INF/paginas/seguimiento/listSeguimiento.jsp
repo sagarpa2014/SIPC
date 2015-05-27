@@ -32,6 +32,22 @@
 	  				<s:textfield id="claveBodega" name="claveBodega" maxlength="15" size="15"  value="%{}" onchange="" />		
 	  			</td>
 			</tr>
+			<s:if test="%{#session.idPerfil==12}">
+				<tr>		  			
+		  			<td>
+		  				<label class="left1">Regional:</label>
+		  			</td>
+		  			<td >
+		  				<s:select id="idRegional" name="regionalId" list="lstRegionales" listKey="idRegional" listValue="%{regional}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{}" onclick="recuperaEstadosByRegional(this.value);" />		
+		  			</td>
+		  			<td>
+		  				<label class="left1">Estado:</label>
+		  			</td>
+		  			<td id="recuperaEstadosByRegional" >
+		  				<s:select id="idEstado" name="idEstado" list="lstEstados" listKey="idEstado" listValue="%{nombre}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{}" onchange="" />		
+		  			</td>
+				</tr>
+			</s:if>
 			</table>
 			
 			<div class="accion">	    	

@@ -25,6 +25,12 @@
             <result name="success" type="tiles">listSeguimiento</result>
             <result name="input" type="tiles">listSeguimiento</result>
         </action> 
+        <action name="recuperaEstadosByRegional" method="recuperaEstadosByRegional" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/seguimiento/respuestaEstadoByRegional.jsp</result>
+            <result name="input" >/WEB-INF/paginas/seguimiento/respuestaEstadoByRegional.jsp</result>
+        </action> 
         <action name="capSeguimiento" method="capSeguimiento" class="mx.gob.comer.sipc.action.seguimiento.SeguimientoAction">
 			<interceptor-ref name="chksession"/> 
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>

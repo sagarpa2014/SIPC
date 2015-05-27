@@ -542,7 +542,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					   crearCeldaenLogXls();
 				   }else{					  
 					   //verificar en bd si el estado existe en SIPC
-					   List<Estado> lstEdo = cDAO.consultaEstado(0, valor);
+					   List<Estado> lstEdo = cDAO.consultaEstado(0, valor,0);
 					   nombreEstado = valor;
 					   if(lstEdo.size() > 0){
 						   idEstado = lstEdo.get(0).getIdEstado();

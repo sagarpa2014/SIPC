@@ -65,6 +65,7 @@
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposVialidad"/>
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposAsentamiento"/>
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Regional"/>
 		 
 		<!-- Transaccionales -->
 		<mapping class="mx.gob.comer.sipc.domain.Pagos"/>

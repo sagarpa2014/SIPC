@@ -13,6 +13,7 @@ import java.util.List;
 
 
 
+
 import mx.gob.comer.sipc.domain.AuditoresExternos;
 import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Comprador;
@@ -51,6 +52,7 @@ import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
 import mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento;
 import mx.gob.comer.sipc.domain.catalogos.ExpedienteRepresentante;
 import mx.gob.comer.sipc.domain.catalogos.Modalidad;
+import mx.gob.comer.sipc.domain.catalogos.Regional;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteComprador;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteLegal;
 import mx.gob.comer.sipc.domain.catalogos.TipoDocumentoPago;
@@ -67,6 +69,7 @@ import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
 
 
 
@@ -136,21 +139,31 @@ public class CatalogosDAO {
 	
 	
 	public List<Estado> consultaEstado(int idEstado) throws JDBCException {
-		 return consultaEstado( idEstado,  null);
+		 return consultaEstado( idEstado,  null, 0);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Estado> consultaEstado(int idEstado, String clave) throws JDBCException {
+	public List<Estado> consultaEstado(int idEstado, String clave, int regionalId) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<Estado> lst=null;
 		if (idEstado != 0 && idEstado != -1){
 			consulta.append("where idEstado = ").append(idEstado);
 		}
+		
+	
 		if (!(clave==null || clave.equals(""))){
 			if(consulta.length()>0){
 				consulta.append(" and clave = '").append(clave).append("'");
 			}else{
 				consulta.append("where clave = '").append(clave).append("'");
+			}
+		}
+		
+		if (regionalId != 0 && regionalId != -1){
+			if(consulta.length()>0){
+				consulta.append(" and regionalId = ").append(regionalId);
+			}else{
+				consulta.append("where regionalId = ").append(regionalId);
 			}
 		}
 		consulta.insert(0, "From Estado ").append(" ORDER BY nombre");
@@ -2073,4 +2086,17 @@ public class CatalogosDAO {
 		}		
 		return lst;
 	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Regional> consultaRegional(int idRegional) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Regional> lst=null;
+		if (idRegional != 0 && idRegional != -1){
+			consulta.append("where idRegional = ").append(idRegional);
+		}
+		consulta.insert(0, "From Regional ");
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+	
 }

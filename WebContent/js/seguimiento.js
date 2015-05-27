@@ -649,3 +649,16 @@ function calcularPorcentajeDeLoPagado(pagadoTon){
 	}
 	
 }
+
+function recuperaEstadosByRegional(idRegional){
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: "recuperaEstadosByRegional",
+		   data: "regionalId="+idRegional,
+		   success: function(data){
+				$("#recuperaEstadosByRegional").html(data).ready(function () {
+				});
+		   }
+		});//fin ajax
+}
