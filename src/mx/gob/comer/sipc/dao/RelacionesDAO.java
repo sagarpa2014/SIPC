@@ -3,6 +3,7 @@ package mx.gob.comer.sipc.dao;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,7 @@ import mx.gob.comer.sipc.domain.transaccionales.ProgramaRelacionCiclos;
 import mx.gob.comer.sipc.domain.transaccionales.ProgramaRelacionCultivos;
 import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 import mx.gob.comer.sipc.log.AppLogger;
+import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.ComprasBodegaTicketV;
 import mx.gob.comer.sipc.vistas.domain.ComprasDatosParticipanteV;
 import mx.gob.comer.sipc.vistas.domain.ComprasDatosProductorV;
@@ -3208,6 +3210,44 @@ public class RelacionesDAO {
 	}
 	
 	
+	
+	public List<FacturaFueraPeriodoPago> verificaFacturaFueraDePeriodoComplemento(String folioCartaAdhesion, String fechaInicio, String fechaFin, Date fechaInicioD, Date fechaFinD )throws JDBCException, ParseException{
+		List<FacturaFueraPeriodoPago> lst = new ArrayList<FacturaFueraPeriodoPago>();
+		StringBuilder consulta= new StringBuilder();
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		.append("from relacion_compras_tmp ")
+		.append("WHERE folio_factura_venta is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+		.append("and (TO_CHAR(fecha_emision_fac,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
+		.append("group by clave_bodega,  nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor,  folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		.append("order by clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
+		
+		System.out.println("Factura Fuera P Complemento "+consulta.toString());
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>) object;
+			FacturaFueraPeriodoPago b = new FacturaFueraPeriodoPago();
+			b.setClaveBodega((String) row.get("clave_bodega"));
+			b.setNombreEstado((String) row.get("nombre_estado"));
+			b.setFolioContrato((String) row.get("folio_contrato"));
+			b.setPaternoProductor((String) row.get("paterno_productor"));
+			b.setMaternoProductor((String) row.get("materno_productor"));
+			b.setNombreProductor((String) row.get("nombre_productor"));
+			b.setFolioFacturaVenta((String) row.get("folio_factura_venta"));
+			b.setFechaEmisionFac((Date) row.get("fecha_emision_fac"));
+			BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+			b.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			b.setPeriodoInicialPago(fechaInicioD);
+			b.setPeriodoFinalPago(fechaFinD);	
+			lst.add(b);			
+		}
+
+		
+		return lst;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<ChequeFueraPeriodoAuditor> verificaChequeFueraDePeriodo(String folioCartaAdhesion, String fechaInicio, String fechaFin)throws JDBCException{
 		List<ChequeFueraPeriodoAuditor> lst = null;
@@ -3289,6 +3329,51 @@ public class RelacionesDAO {
 		
 		return lst;
 	}
+	
+	
+	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoComplemento(String folioCartaAdhesion, String fechaInicio, String fechaFin, Date fechaInicioD, Date fechaFinD)throws JDBCException{
+		List<ChequeFueraPeriodoContrato> lst = new ArrayList<ChequeFueraPeriodoContrato>();
+		StringBuilder consulta= new StringBuilder();
+		consulta.append("SELECT row_number() OVER () AS id, folio_carta_adhesion, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc, ")
+		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
+		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
+		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta ")
+		.append("from relacion_compras_tmp r ")
+		.append("WHERE folio_doc_pago is not null  ").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+		.append("and (TO_CHAR(fecha_doc_pago_sinaxc,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
+		.append("group by  folio_carta_adhesion, clave_bodega,  nombre_estado,  folio_contrato, nombre_productor, paterno_productor, materno_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc ")
+		.append("order by clave_bodega,  nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
+		System.out.println("Pago Fuera P Complemento "+consulta.toString());
+		
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>) object;
+			ChequeFueraPeriodoContrato b = new ChequeFueraPeriodoContrato();
+			b.setClaveBodega((String) row.get("clave_bodega"));
+			b.setNombreEstado((String) row.get("nombre_estado"));
+			b.setFolioContrato((String) row.get("folio_contrato"));
+			b.setPaternoProductor((String) row.get("paterno_productor"));
+			b.setMaternoProductor((String) row.get("materno_productor"));
+			b.setNombreProductor((String) row.get("nombre_productor"));
+			b.setFolioDocPago((String) row.get("folio_doc_pago"));
+			b.setBancoSinaxc((String) row.get("banco_sinaxc"));
+			b.setFechaDocPagoSinaxc((Date) row.get("fecha_doc_pago_sinaxc"));
+			BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+			b.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			b.setPeriodoInicialPago(fechaInicioD);
+			b.setPeriodoFinalPago(fechaFinD);	
+			valor = (BigDecimal) row.get("imp_total_pago_sinaxc");
+			b.setImpTotalPagoSinaxc(valor!=null ? valor.doubleValue():null);
+			lst.add(b);			
+			
+		}
+		
+		
+		return lst;
+	}
+
 	
 	@SuppressWarnings("unchecked")
 	public List<ChequesDuplicadoBancoPartipante> verifiChequeDuplicadosPorEmpresaBanco(String folioCartaAdhesion)throws JDBCException{

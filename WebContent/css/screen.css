@@ -198,7 +198,7 @@ a.botonProcesarArchivo:hover span { display:inline; top: -18px; left: -5px; posi
 ul.log li, ol.log li		{ list-style: none; padding-left:15px; background-image: url(../images/doc.gif); background-repeat: no-repeat; background-position: left center; }
 /*Nuevos estilos*/
 .derecha { float: right;}
-.izquierda { float: left;}
+.izquierda { float: left;  padding: 0px 4px;}
 .centro { float: center;}
 .arial12bold {color: #000;;  font-family:Helvetica; font-size: 12px; font-weight: bold;}
 .arial12boldrojo {color:#B82323; font-family:Helvetica; font-size: 11px; font-weight: bold;}

@@ -435,14 +435,18 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
 			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
             <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaPeriodo.jsp</result>
-        </action> 
-        
-        
+        </action>
         <action name="respuestaPeriodoContratoAdendum" method="respuestaPeriodoContratoAdendum" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
 			<interceptor-ref name="chksession"/>         
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
 			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoAdendum.jsp</result>
             <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoAdendum.jsp</result>
+        </action>        
+        <action name="respuestaPeriodoContratoComplemento" method="respuestaPeriodoContratoComplemento" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoComplemento.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoContratoComplemento.jsp</result>
         </action>
         <action name="recuperaCamposFactura" method="recuperaCamposFactura" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
 			<interceptor-ref name="chksession"/>         

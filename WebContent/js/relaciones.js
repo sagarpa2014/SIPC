@@ -3089,9 +3089,18 @@ function ajaxRecuperaCamposFactura(idCriterio, folioCartaAdhesion){
 }
 
 function activaPeriodoPorAdendun(){	
-	if($('#aplicaAdendum').is(":checked")){
-		var folioCartaAdhesion = $('#folioCartaAdhesion').val();		
-		ajaxRecuperaContrato(folioCartaAdhesion);
+	
+//	if($('#aplicaAdendum').is(":checked")){
+	if($('input:radio[name=aplicaAdendum]').is(":checked")){
+		var aplicaAdendum = $("input:radio[name=aplicaAdendum]:checked").val();
+		var folioCartaAdhesion = $('#folioCartaAdhesion').val();
+		if(aplicaAdendum == 1){		
+			ajaxRecuperaContrato(folioCartaAdhesion);
+			$("#respuestaPeriodoContratoComplemento").fadeOut('slow');
+		}else{			
+			ajaxRecuperaPeriodoComplemento();
+			$("#respuestaPeriodoContratoAdendum").fadeOut('slow');
+		}		
 	}else{
 		$("#recuperaPeriodoAuditor").fadeOut('slow');
 		$("#respuestaPeriodoContratoAdendum").fadeOut('slow');
@@ -3112,6 +3121,20 @@ function ajaxRecuperaContrato(folioCartaAdhesion){
 	}); //termina ajax
 }
 
+
+function ajaxRecuperaPeriodoComplemento(){
+	$.ajax({
+		async: false,
+		type: "POST",
+		url: "respuestaPeriodoContratoComplemento",
+		success: function(data){
+			$('#respuestaPeriodoContratoComplemento').html(data).ready(function () {
+				$("#respuestaPeriodoContratoComplemento").fadeIn('slow');
+			});
+		}
+	}); //termina ajax
+}
+
 function chkCamposPrevalidacion (){	
 	var grupoCriterio = $('#grupoCriterio').val();
 	if(grupoCriterio == -1){
@@ -3120,11 +3143,11 @@ function chkCamposPrevalidacion (){
 	    return false;
 	}		
 	if(grupoCriterio =="Boletas" || grupoCriterio =="Facturas" || grupoCriterio =="Pagos"){
-		
+
 		if ($('input:radio[name=pideTipoPeriodo]').length){			
 			if($('input:radio[name=pideTipoPeriodo]').is(":checked")){
-				var pideTipoPeriodo = $('input:radio[name=pideTipoPeriodo]:checked').val();
-				if(pideTipoPeriodo == 1 || pideTipoPeriodo == 2){
+				var pideTipoPeriodo = $('input:radio[name=pideTipoPeriodo]:checked').val();				
+				if(pideTipoPeriodo == 1 || pideTipoPeriodo == 2){//PERIODO POR LINEAMIENTO (1) : CONTRATO (2)
 					if($('#fechaInicio').length){
 						var fechaInicio = $('#fechaInicio').val();
 						if(fechaInicio == null || fechaInicio ==""){
@@ -3133,6 +3156,24 @@ function chkCamposPrevalidacion (){
 						 	return false;
 						}
 					}
+					if($('#fechaInicioCom').length){
+						var fechaInicioCom = $('#fechaInicioCom').val();
+						if(fechaInicioCom == null || fechaInicioCom ==""){
+							$('#dialogo_1').html('Debe capturar la fecha de inicio del periodo');
+							abrirDialogo();
+						 	return false;
+						}
+					}
+					
+					if($('#fechaFinCom').length) {
+						var fechaFinCom = $('#fechaFinCom').val();
+						if(fechaFinCom == null || fechaFinCom ==""){
+							$('#dialogo_1').html('Debe capturar la fecha de Fin del periodo');
+							abrirDialogo();
+						 	return false;
+						}
+					}
+					
 					if($('#fechaFin').length){
 						var fechaFin = $('#fechaFin').val();
 						if(fechaFin == null || fechaFin ==""){
@@ -3142,7 +3183,7 @@ function chkCamposPrevalidacion (){
 						}
 					}//end pide periodo 1() o 2 ()		
 				}else{
-					if($('#aplicaAdendum').is(":checked")){
+					if($('input:radio[name=aplicaAdendum]').is(":checked")){
 						if($('#fechaInicio').length){
 							var fechaInicio = $('#fechaInicio').val();
 							if(fechaInicio == null || fechaInicio ==""){
@@ -3151,14 +3192,17 @@ function chkCamposPrevalidacion (){
 							 	return false;
 							}
 						}
-						if($('#fechaFin').length){
+						
+						if($('#fechaFin').length) {
 							var fechaFin = $('#fechaFin').val();
 							if(fechaFin == null || fechaFin ==""){
-								$('#dialogo_1').html('Debe capturar la fecha de inicio del periodo');
+								$('#dialogo_1').html('Debe capturar la fecha de Fin del periodo');
 								abrirDialogo();
 							 	return false;
 							}
 						}
+						
+					
 					}
 				}			
 			}else{
@@ -3260,12 +3304,13 @@ function activaPeriodo (){
 	if(pideTipoPeriodo == 1){//LINEAMIENTO				
 	}else if(pideTipoPeriodo == 2){//CONTRATO AXC
 		$("#pideAdendum").fadeIn('slow');
-		$("#recuperaPeriodoAuditor").fadeOut('slow');
-		$("#aplicaAdendum").removeAttr('checked');		
+		$("#recuperaPeriodoAuditor").fadeOut('slow');	
+		$('input[name=aplicaAdendum]').removeAttr('checked');
 		//ajaxVerificaSiRecuperaPeriodoPorGrupo(grupoCriterio,folioCartaAdhesion,1);
 	}else if(pideTipoPeriodo == 3){//DICTAMEN AUDITOR
 		$("#pideAdendum").fadeOut('slow');
 		$("#respuestaPeriodoContratoAdendum").fadeOut('slow');
+		$("#respuestaPeriodoContratoComplemento").fadeOut('slow');
 		//Recuperar fechas del dictamen del auditor
 		$.ajax({
 			async: false,
