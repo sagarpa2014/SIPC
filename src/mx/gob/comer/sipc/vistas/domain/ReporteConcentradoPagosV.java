@@ -18,7 +18,7 @@ public class ReporteConcentradoPagosV {
 	private String estados;
 	private Integer criterioPago;
 	private Integer numeroEtapa;
-	private Integer estatus;
+//	private Integer estatus;
 	private Double volumen1erTrimestre;
 	private Double importe1erTrimestre;
 	private Double volumen2doTrimestre;
@@ -157,13 +157,13 @@ public class ReporteConcentradoPagosV {
 	public void setNumeroEtapa(Integer numeroEtapa) {
 		this.numeroEtapa = numeroEtapa;
 	}
-	@Column(name =  "estatus")
-	public Integer getEstatus() {
-		return estatus;
-	}
-	public void setEstatus(Integer estatus) {
-		this.estatus = estatus;
-	}
+//	@Column(name =  "estatus")
+//	public Integer getEstatus() {
+//		return estatus;
+//	}
+//	public void setEstatus(Integer estatus) {
+//		this.estatus = estatus;
+//	}
 	
 	@Column(name =  "solicitudes_1er_trimestre")
 	public Integer getSolicitudes1ertrimestre() {
