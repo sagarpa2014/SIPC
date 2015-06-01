@@ -45,7 +45,7 @@
 		<span class="requerido">LAS FACTURAS SON MAYORES AL VOLUMEN DE LAS BOLETAS</span><br>
 	</s:if>
 	<s:if test="%{lstBoletasFueraDePeriodo.size() > 0}"> <!--Boletas fuera del periodo de acopio  idCriterio 9 -->
-		<span class="requerido">BOLETAS FUERA DE PERIODO DE ACOPIO <s:text name="fecha1"><s:param value="%{fechaInicio}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFin}"/></s:text></span><br>	
+		<span class="requerido">BOLETAS FUERA DE PERIODO DE ACOPIO <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>	
 	</s:if>
 	<s:if test="%{lstBoletasFueraDePeriodoPago.size() > 0}"> <!--Boletas fuera del periodo de pago (Se valida contra folio de contrato) idCriterio 9 -->
 		<span class="requerido">BOLETAS FUERA DE PERIODO DEL CONTRATO</span><br>	
@@ -57,7 +57,7 @@
 		<span class="requerido">LOS RFC DE LAS FACTURAS NO CORRESPONDEN AL PRODUCTOR</span><br>
 	</s:if>
 	<s:if test="%{lstFacturaFueraPeriodo.size() > 0}"> <!--Factura fuera del periodo del Auditor -->
-		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO <s:text name="fecha1"><s:param value="%{fechaInicio}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFin}"/></s:text></span><br>
+		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
 	</s:if>
 	<s:if test="%{lstFacturaFueraPeriodoPagoAdendum.size() > 0}"> <!--Factura fuera del periodo del adendum -->
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO DE PAGO <s:text name="fecha1"><s:param value="%{fechaInicio}"/>-</s:text>-<s:text name="fecha1"><s:param value="%{fechaFin}"/></s:text></span><br>
@@ -66,7 +66,7 @@
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO DE PAGO</span><br>
 	</s:if>
 	<s:if test="%{lstChequeFueraPeriodoAuditor.size() > 0}"> <!--Cheques fuera del periodo del Auditor (solo aplica AXC) -->
-		<span class="requerido">LOS CHEQUES SE ENCUENTRAN FUERA DEL PERIODO DEL AUDITOR <s:text name="fecha1"><s:param value="%{fechaInicio}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFin}"/></s:text></span><br>
+		<span class="requerido">LOS CHEQUES SE ENCUENTRAN FUERA DEL PERIODO DEL AUDITOR <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
 	</s:if>
 	<s:if test="%{lstChequeFueraPeriodoContrato.size() > 0}"> <!--Cheques fuera del periodo de pago (solo aplica AXC)"-->
 		<span class="requerido">LOS CHEQUES SE ENCUENTRAN FUERA DEL PERIODO DE PAGO</span><br>

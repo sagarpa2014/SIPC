@@ -901,7 +901,7 @@ public class CatalogosDAO {
 	}
 	
 	public List<Variedad> consultaVariedad(int idVariedad, int idCultivo, String idVariedades)throws JDBCException {
-		return consultaVariedad(0,0, idVariedades, false);
+		return consultaVariedad(idVariedad,idCultivo, idVariedades, false);
 	}
 	@SuppressWarnings("unchecked")
 	public List<Variedad> consultaVariedad(int idVariedad, int idCultivo, String idVariedades, boolean aplicaSeguimiento)throws JDBCException {

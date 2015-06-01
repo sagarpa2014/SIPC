@@ -417,11 +417,11 @@
 			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaQuePeriodoAplicar.jsp</result>
             <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaVerificaQuePeriodoAplicar.jsp</result>
         </action>
-        <action name="recuperaPeriodoAuditor" method="recuperaPeriodoAuditor" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
+        <action name="recuperaCriterioAplicarPeriodo" method="recuperaCriterioAplicarPeriodo" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
 			<interceptor-ref name="chksession"/>         
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
-			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoAuditor.jsp</result>
-            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaPeriodoAuditor.jsp</result>
+			<result name="success">/WEB-INF/paginas/relaciones/relacionCompras/respuestaCriterioAplicarPeriodo.jsp</result>
+            <result name="input">WEB-INF/paginas/relaciones/relacionCompras/respuestaCriterioAplicarPeriodo.jsp</result>
         </action>
 
         <action name="verificaSiRecuperaPeriodo" method="verificaSiRecuperaPeriodo" class="mx.gob.comer.sipc.action.relaciones.RelacionComprasAction">
