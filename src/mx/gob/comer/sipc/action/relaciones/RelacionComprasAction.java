@@ -155,6 +155,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private String nombreArchivo;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private Date fechaInicioAuditor;
+	private Date fechaFinAuditor;
 	private List<ProductorExisteBD> lstProductorExisteBD;
 	private List<BoletasVsFacturas> lstBoletasVsFacturas;
 	private List<BoletasDuplicadas> lstBoletasDuplicadas;
@@ -176,7 +178,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private String rutaMarcaAgua;
 	private List<ChequeFueraPeriodoContrato> lstChequeFueraPeriodoContrato;
 	private List<ProductorPredioPagado> lstProductorPredioPagado;
-	private int aplicaAdendum;
+	private boolean aplicaAdendum;
+	private boolean aplicaComplemento;
 	private List<FacturaFueraPeriodoPagoAdendum> lstFacturaFueraPeriodoPagoAdendum;
 	private List<ChequeFueraPeriodoContrato> lstChequeFueraPeriodoPagoAdendum;
 	private List<ChequesDuplicadoBancoPartipante> lstChequesDuplicadoBancoPartipante;
@@ -209,7 +212,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private int aplicaPeriodoAuditor;
 	private boolean noSeTieneConfPerEnPrg;
 	private int pideTipoPeriodo;
-	private int aplicaAdendumOCompl;
+	
 	private List<BitacoraRelcompras> lstBitacoraRelComprasPorGrupo;
 	private String nombreEstado;
 	private String nombreArchivoExcel99;
@@ -1207,8 +1210,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			cartaAdhesion = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 			programa = cDAO.consultaPrograma(cartaAdhesion.getIdPrograma()).get(0);
 			if(programa.getInicioPeriodoAcopio()!=null && programa.getFinPeriodoAcopio()!=null){
-				fechaInicio = programa.getInicioPeriodoAcopio();
-				fechaFin = programa.getFinPeriodoAcopio();
+				fechaInicioAuditor = programa.getInicioPeriodoAcopio();
+				fechaFinAuditor = programa.getFinPeriodoAcopio();
 				System.out.println("si aplica lineamiento");
 				aplicaPeriodoLineamiento = 1;
 				return SUCCESS;
@@ -1256,15 +1259,18 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		return SUCCESS;
 	}
 
-	public String recuperaPeriodoAuditor(){
-		//Recupera el periodo del dictamen del auditor a través de la carta de adhesion		
-		List<DocumentacionSPCartaAdhesion> lstDocumentacionSP = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 7);
-		if(lstDocumentacionSP.size()>0){
-			if(lstDocumentacionSP.get(0).getPeriodoInicialAuditor() !=null && lstDocumentacionSP.get(0).getPeriodoFinalAuditor() != null){
-				fechaInicio = lstDocumentacionSP.get(0).getPeriodoInicialAuditor();
-				fechaFin = lstDocumentacionSP.get(0).getPeriodoFinalAuditor();
+	public String recuperaCriterioAplicarPeriodo(){
+		if(pideTipoPeriodo == 3){
+			//Recupera el periodo del dictamen del auditor a través de la carta de adhesion		
+			List<DocumentacionSPCartaAdhesion> lstDocumentacionSP = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 7);
+			if(lstDocumentacionSP.size()>0){
+				if(lstDocumentacionSP.get(0).getPeriodoInicialAuditor() !=null && lstDocumentacionSP.get(0).getPeriodoFinalAuditor() != null){
+					fechaInicioAuditor = lstDocumentacionSP.get(0).getPeriodoInicialAuditor();
+					fechaFinAuditor = lstDocumentacionSP.get(0).getPeriodoFinalAuditor();
+				}
 			}
 		}
+		
 		return SUCCESS;
 	}
 		
@@ -1277,7 +1283,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	}
 		
 	public String respuestaPeriodoContratoAdendum (){
-		
+			
 		//Recupera los periodos de los contratos de la relacion de compras  de la carta adhesion
 		lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
 		
@@ -1305,8 +1311,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	}
 	
 	public String prevalidarRelacionCompras(){
-		String fechaInicioS = "";
-		String fechaFinS = "";
+		String fechaInicioS = "", fechaInicioComS = "" ;
+		String fechaFinS = "", fechaFinComS = "";
 
 		try{
 			rutaCartaAdhesion = getRecuperaRutaCarta();	
@@ -2498,12 +2504,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						countColumn = 0;
 						
 						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){
-							fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
-							fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
+							fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicioAuditor).toString();
+							fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFinAuditor).toString();
 							lstBoletasFueraDePeriodo = rDAO.verificaBoletasFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
 							if(lstBoletasFueraDePeriodo.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-								msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicio).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFin).toString();
+								msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();
 								row = sheet.createRow(countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
@@ -2569,7 +2575,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							}
 					
 						}else{//Periodo por contrato
-							if(aplicaAdendum != 0){
+							if(aplicaAdendum){
 								//Actualizar periodo en la tabla de relacion de compras
 								lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
 								//lstRCTemp =	rDAO.consultaSoloContratosRelacionCompras(folioCartaAdhesion);								
@@ -2937,13 +2943,28 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;						
-						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){//PERIODO POR LINEAMIENTO (1) : DICTAMEN DE AUDITOR (2)
-							fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
-							fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
-							lstFacturaFueraPeriodo = rDAO.verificaFacturaFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
+						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){//PERIODO POR LINEAMIENTO (1) : DICTAMEN DE AUDITOR (3)
+							if(aplicaComplemento){
+								fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicioAuditor).toString();
+								fechaInicioComS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+								fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFinAuditor).toString();
+								fechaFinComS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+								lstFacturaFueraPeriodo = rDAO.verificaFacturaFueraDePeriodoAudLinComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS, fechaInicioComS, fechaFinComS);
+							}else{
+								fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicioAuditor).toString();
+								fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFinAuditor).toString();
+								lstFacturaFueraPeriodo = rDAO.verificaFacturaFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
+							}
+							
 							if(lstFacturaFueraPeriodo.size()>0){//En el listado se guardan las facturas duplicadas por productor
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-								msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicio).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFin).toString();
+								if(aplicaComplemento){
+									msj = l.getCriterio()+" "+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString()
+											+ " y "+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicio).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFin).toString();	
+								}else{									
+									msj = l.getCriterio()+" "+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();
+								}
+								
 								row = sheet.createRow(countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
@@ -3008,37 +3029,42 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cDAO.guardaObjeto(b);
 							}	
 						}else{//Periodo por contrato
-							if(aplicaAdendum != 0){
-								if(aplicaAdendum == 1){
-									//Actualizar periodo en la tabla de relacion de compras
-									lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
-									//lstRCTemp =	rDAO.consultaSoloContratosRelacionCompras(folioCartaAdhesion);								
-									for(ContratosRelacionCompras r: lstContratos){
-										//Preguntar si el folio del contrato se capturo la fecha del adendum									
-										if (fechaInicioAdendumContrato.get(r.getFolioContrato())!=null && fechaFinAdendumContrato.get(r.getFolioContrato())!=null){
-											//Actualiza fecha del adendum que se capturo
-											rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, fechaInicioAdendumContrato.get(r.getFolioContrato()), fechaFinAdendumContrato.get(r.getFolioContrato()));
-											r.setPeriodoInicialPagoAdendum(fechaInicioAdendumContrato.get(r.getFolioContrato()));
-											r.setPeriodoFinalPagoAdendum(fechaFinAdendumContrato.get(r.getFolioContrato()));										
-											cDAO.guardaObjeto(r);									
-										}else{
-											rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, r.getPeriodoInicialPago(), r.getPeriodoFinalPago());
-											r.setPeriodoInicialPagoAdendum(null);
-											r.setPeriodoFinalPagoAdendum(null);										
-											cDAO.guardaObjeto(r);	
-										}									
-									}
+							if(aplicaAdendum ){
+								//Actualizar periodo en la tabla de relacion de compras
+								lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
+								//lstRCTemp =	rDAO.consultaSoloContratosRelacionCompras(folioCartaAdhesion);								
+								for(ContratosRelacionCompras r: lstContratos){
+									//Preguntar si el folio del contrato se capturo la fecha del adendum									
+									if (fechaInicioAdendumContrato.get(r.getFolioContrato())!=null && fechaFinAdendumContrato.get(r.getFolioContrato())!=null){
+										//Actualiza fecha del adendum que se capturo
+										rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, fechaInicioAdendumContrato.get(r.getFolioContrato()), fechaFinAdendumContrato.get(r.getFolioContrato()));
+										r.setPeriodoInicialPagoAdendum(fechaInicioAdendumContrato.get(r.getFolioContrato()));
+										r.setPeriodoFinalPagoAdendum(fechaFinAdendumContrato.get(r.getFolioContrato()));										
+										cDAO.guardaObjeto(r);									
+									}else{
+										rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, r.getPeriodoInicialPago(), r.getPeriodoFinalPago());
+										r.setPeriodoInicialPagoAdendum(null);
+										r.setPeriodoFinalPagoAdendum(null);										
+										cDAO.guardaObjeto(r);	
+									}									
+								}
+								if(aplicaComplemento){
+									fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+									fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+									lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoContratoAdendumComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS );
+								} else {
 									lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoContratoAdendum(folioCartaAdhesion);
-								}else{
-									fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
-									fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
-									lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS, fechaInicio, fechaFin);
-									
-								}													
+								}
 							}else{
-								lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoContrato(folioCartaAdhesion); 
+								if(aplicaComplemento){
+									fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+									fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+									lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoContratoComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS);
+								} else {
+									lstFacturaFueraPeriodoPago = rDAO.verificaFacturaFueraDePeriodoContrato(folioCartaAdhesion);
+								}								
 							}			
-							if(lstFacturaFueraPeriodoPago.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
+							if(lstFacturaFueraPeriodoPago.size()>0){//En el listado se guardan las facturas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 								msj = l.getCriterio();
 								row = sheet.createRow(countRow);
@@ -3410,13 +3436,29 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;		
-						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){
-							fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
-							fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
-							 lstChequeFueraPeriodoAuditor = rDAO.verificaChequeFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS); 
+						if(pideTipoPeriodo == 1 || pideTipoPeriodo == 3){//PERIODO POR LINEAMIENTO (1) : DICTAMEN DE AUDITOR (3)
+							if(aplicaComplemento){
+								fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicioAuditor).toString();
+								fechaInicioComS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+								fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFinAuditor).toString();
+								fechaFinComS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+								lstChequeFueraPeriodoAuditor = rDAO.verificaChequeFueraDePeriodoAudLinComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS, fechaInicioComS, fechaFinComS);
+							}else{
+								fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicioAuditor).toString();
+								fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFinAuditor).toString();
+								lstChequeFueraPeriodoAuditor = rDAO.verificaChequeFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
+							}
+							
+							  
 							if(lstChequeFueraPeriodoAuditor.size()>0){//En el listado se guarda las facturas menores a lo pagado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-								msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicio).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFin).toString();
+								if(aplicaComplemento){
+									msj = l.getCriterio()+" " +new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString()
+										+	" y "+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicio).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFin).toString();
+								}else{
+									msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();	
+								}
+								
 								row = sheet.createRow(countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
@@ -3491,34 +3533,42 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cDAO.guardaObjeto(b);
 							}
 						}else{//Periodo por contrato
-							if(aplicaAdendum!=0){
-								if(aplicaAdendum == 1){
+							if(aplicaAdendum){
+//								if(aplicaAdendum ){
 									//Actualizar periodo en la tabla de relacion de compras
-									lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
-									//lstRCTemp =	rDAO.consultaSoloContratosRelacionCompras(folioCartaAdhesion);								
-									for(ContratosRelacionCompras r: lstContratos){
-										//Preguntar si el folio del contrato se capturo la fecha del adendum									
-										if (fechaInicioAdendumContrato.get(r.getFolioContrato())!=null && fechaFinAdendumContrato.get(r.getFolioContrato())!=null){
-											//Actualiza fecha del adendum que se capturo
-											rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, fechaInicioAdendumContrato.get(r.getFolioContrato()), fechaFinAdendumContrato.get(r.getFolioContrato()));
-											r.setPeriodoInicialPagoAdendum(fechaInicioAdendumContrato.get(r.getFolioContrato()));
-											r.setPeriodoFinalPagoAdendum(fechaFinAdendumContrato.get(r.getFolioContrato()));										
-											cDAO.guardaObjeto(r);									
-										}else{
-											rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, r.getPeriodoInicialPago(), r.getPeriodoFinalPago());
-											r.setPeriodoInicialPagoAdendum(null);
-											r.setPeriodoFinalPagoAdendum(null);										
-											cDAO.guardaObjeto(r);	
-										}									
-									}
-									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoPagoAdendum(folioCartaAdhesion);				
-								}else{//COMPLEMENTO
-									fechaInicioS = new SimpleDateFormat("yyyy-MM-dd").format(fechaInicio).toString();
-									fechaFinS = new SimpleDateFormat("yyyy-MM-dd").format(fechaFin).toString();
-									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoComplemento(folioCartaAdhesion,fechaInicioS, fechaFinS, fechaInicio, fechaFin);
+								lstContratos = rDAO.consultaPeriodosContratosRelCompras(folioCartaAdhesion);
+								//lstRCTemp =	rDAO.consultaSoloContratosRelacionCompras(folioCartaAdhesion);								
+								for(ContratosRelacionCompras r: lstContratos){
+									//Preguntar si el folio del contrato se capturo la fecha del adendum									
+									if (fechaInicioAdendumContrato.get(r.getFolioContrato())!=null && fechaFinAdendumContrato.get(r.getFolioContrato())!=null){
+										//Actualiza fecha del adendum que se capturo
+										rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, fechaInicioAdendumContrato.get(r.getFolioContrato()), fechaFinAdendumContrato.get(r.getFolioContrato()));
+										r.setPeriodoInicialPagoAdendum(fechaInicioAdendumContrato.get(r.getFolioContrato()));
+										r.setPeriodoFinalPagoAdendum(fechaFinAdendumContrato.get(r.getFolioContrato()));										
+										cDAO.guardaObjeto(r);									
+									}else{
+										rDAO.actualizaFechaAdendumContratoEnRelCompras(r.getFolioContrato(), folioCartaAdhesion, r.getPeriodoInicialPago(), r.getPeriodoFinalPago());
+										r.setPeriodoInicialPagoAdendum(null);
+										r.setPeriodoFinalPagoAdendum(null);										
+										cDAO.guardaObjeto(r);	
+									}									
+								}
+								if(aplicaComplemento){
+									fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+									fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoContratoAdendumComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS);
+								} else {
+									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoPagoAdendum(folioCartaAdhesion);
 								}
 							}else{
-								lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoContrato(folioCartaAdhesion); 
+								if(aplicaComplemento){
+									fechaInicioS = new SimpleDateFormat("yyyyMMdd").format(fechaInicio).toString();
+									fechaFinS = new SimpleDateFormat("yyyyMMdd").format(fechaFin).toString();
+									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoContratoComplemento(folioCartaAdhesion, fechaInicioS, fechaFinS);
+								} else {
+									lstChequeFueraPeriodoContrato = rDAO.verificaChequeFueraDePeriodoContrato(folioCartaAdhesion);
+								}
+								 
 							}				
 								
 							if(lstChequeFueraPeriodoContrato.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
@@ -4749,11 +4799,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		this.fechaFin = fechaFin;
 	}
 	
-	public int getAplicaAdendum() {
+	
+	public boolean isAplicaAdendum() {
 		return aplicaAdendum;
 	}
 
-	public void setAplicaAdendum(int aplicaAdendum) {
+	public void setAplicaAdendum(boolean aplicaAdendum) {
 		this.aplicaAdendum = aplicaAdendum;
 	}
 
@@ -5275,15 +5326,29 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		this.lstRfcProductorVsRfcFacturaSinContrato = lstRfcProductorVsRfcFacturaSinContrato;
 	}
 
-	public int getAplicaAdendumOCompl() {
-		return aplicaAdendumOCompl;
+	public boolean isAplicaComplemento() {
+		return aplicaComplemento;
 	}
 
-	public void setAplicaAdendumOCompl(int aplicaAdendumOCompl) {
-		this.aplicaAdendumOCompl = aplicaAdendumOCompl;
+	public void setAplicaComplemento(boolean aplicaComplemento) {
+		this.aplicaComplemento = aplicaComplemento;
 	}
-	
-	
+
+	public Date getFechaInicioAuditor() {
+		return fechaInicioAuditor;
+	}
+
+	public void setFechaInicioAuditor(Date fechaInicioAuditor) {
+		this.fechaInicioAuditor = fechaInicioAuditor;
+	}
+
+	public Date getFechaFinAuditor() {
+		return fechaFinAuditor;
+	}
+
+	public void setFechaFinAuditor(Date fechaFinAuditor) {
+		this.fechaFinAuditor = fechaFinAuditor;
+	}
 	
 }
 
