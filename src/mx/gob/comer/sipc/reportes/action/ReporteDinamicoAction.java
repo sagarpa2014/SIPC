@@ -439,7 +439,13 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 						try{
 							sheet.addCell(new Label(j, i, new SimpleDateFormat("yyyy-MM-dd").format((Date)registro[Integer.parseInt(posicion[j])]).toString(), cf2));
 						}catch (Exception e1) {	
+							e1.printStackTrace();
 							AppLogger.error("errores","El dato "+registro[Integer.parseInt(posicion[j])]+", no se pudo convertir a tipo Date");
+							try{
+								sheet.addCell(new Label(j, i, registro[Integer.parseInt(posicion[j])].toString(), cf2));
+							}catch(Exception e2){
+								
+							}
 						}
 					}
 					
@@ -783,7 +789,7 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 		}
 		if(estado != 0){
 			if(participante != 0){
-				configuracionRegistros[agrupacionEstado]="1,2";
+				configuracionRegistros[agrupacionEstado]="1,3";
 			} else {
 				configuracionRegistros[agrupacionEstado]="1,1";
 			}
@@ -910,8 +916,8 @@ public class ReporteDinamicoAction extends ActionSupport implements SessionAware
 		}
 		if(estado != 0){
 			if(participante != 0){
-				ordenados[agrupacionEstado]="<th>Estado</th><th>Municipio</th>";
-				ordenadosReporte[agrupacionEstado]="Estado,Municipio,";
+				ordenados[agrupacionEstado]="<th>Estado</th><th>Municipio</th><th>Num Productores Bene</th>";
+				ordenadosReporte[agrupacionEstado]="Estado,Municipio,Num Prod Beneficiados,";
 			} else {
 				ordenados[agrupacionEstado]="<th>Estado</th>";
 				ordenadosReporte[agrupacionEstado]="Estado,";

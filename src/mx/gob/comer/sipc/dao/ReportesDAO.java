@@ -434,7 +434,8 @@ public class ReportesDAO {
 		}
 		if(estado != 0){
 			if(participante != 0){
-				elementSelect[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-') as nom_mpio_predominante,";
+				elementSelect[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-') as nom_mpio_predominante, "
+						+ "(select  coalesce(sum(r.numero_prod_benef),0) from relacion_compras_tmp  r where r.numero_prod_benef is not null and r.folio_carta_adhesion = t.no_carta ) as numero_prod_benef,";
 				elementGroupBy[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-'),";
 				elementOrderBy[agrupacionEstado]=" t.estado,";
 			} else {
