@@ -435,7 +435,11 @@ public class ReportesDAO {
 		if(estado != 0){
 			if(participante != 0){
 				elementSelect[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-') as nom_mpio_predominante, "
-						+ "(select  coalesce(sum(r.numero_prod_benef),0) from relacion_compras_tmp  r where r.numero_prod_benef is not null and r.folio_carta_adhesion = t.no_carta ) as numero_prod_benef,";
+						//+"(SELECT coalesce( cast(ps.productores_beneficiados as bigint),0)  FROM pagos ps WHERE ps.id_pago = ((SELECT max(ps.id_pago) AS max "
+						//+"FROM pagos ps WHERE ps.no_carta = t.no_carta AND ps.estatus = 5 ))) as numero_prod_benef,";
+						+(bodega > 0 ?"(select coalesce(sum(numero_prod_benef),0) "
+						+" from relacion_compras_tmp r where r.folio_carta_adhesion =  t.no_carta and coalesce(r.clave_bodega,'NO DEFINIDA')=t.clave_bodega) as numero_prod_benef,":"");
+						
 				elementGroupBy[agrupacionEstado]=" t.id_estado, t.estado, coalesce(t.nom_mpio_predominante,'-'),";
 				elementOrderBy[agrupacionEstado]=" t.estado,";
 			} else {
@@ -1711,6 +1715,7 @@ public class ReportesDAO {
 			}
 				
 		}
+		System.out.println("DINAMICO "+consulta.toString());
 		lista =  session.createSQLQuery(consulta.toString()).list();
 		
 		return lista;

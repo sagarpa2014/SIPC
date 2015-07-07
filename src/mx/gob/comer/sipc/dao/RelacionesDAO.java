@@ -2909,6 +2909,7 @@ public class RelacionesDAO {
 				.append("WHERE folio_factura_venta is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("AND exists (select 1 from productor_facturas_v where r.productor = folio_productor and r.folio_factura_venta = folio_fac) ")
 				.append("ORDER BY 1,2,3,4 ");
+		System.out.println("Facturas Duplicadas "+consulta.toString());
 				
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ProductorFactura.class).list();
 			
@@ -2940,18 +2941,17 @@ public class RelacionesDAO {
 
 	
 	
-	public List<RelacionComprasTMP> verificaRFCProductorVsRFCFacturaSinContrato(String folioCartaAdhesion)throws  JDBCException{ 
+	public List<RelacionComprasTMP> verificaRFCVsCURPProductor(String folioCartaAdhesion)throws  JDBCException{ 
 		List<RelacionComprasTMP> lst =new ArrayList<RelacionComprasTMP>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado,  r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc rfc_productor, r.rfc_fac_venta , ") // AHS 29012015
+		consulta.append("SELECT  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,  rfc_productor, r.curp_productor, ") 
 				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado " )
 				.append(" and  COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X' )")
 				.append(" and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  ) as vol_total_fac_venta ")
-				.append("FROM relacion_compras_tmp r, productores p ") 
-				.append("WHERE r.rfc_fac_venta is not null ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
-				.append("and p.productor = r.productor ").append("and p.rfc <> r.rfc_fac_venta ") 
-				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc, r.rfc_fac_venta ");		
-		
+				.append("FROM relacion_compras_tmp r ") 
+				.append("WHERE  coalesce(substring(rfc_productor,1,10),'X') <>  coalesce(substring(curp_productor,1,10),'X') ")
+				.append(" and  rfc_productor is not null and curp_productor is not null ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.rfc_productor, r.curp_productor ");		
 		System.out.println("Consulta RFC sin contrato "+consulta.toString());
 		
 		SQLQuery query = session.createSQLQuery(consulta.toString());
@@ -2962,11 +2962,12 @@ public class RelacionesDAO {
 			RelacionComprasTMP  r = new RelacionComprasTMP();
 			r.setClaveBodega((String) row.get("clave_bodega"));
 			r.setNombreEstado((String) row.get("nombre_estado"));
+			r.setFolioContrato((String) row.get("folio_contrato"));
 			r.setNombreProductor((String) row.get("nombre_productor"));
 			r.setPaternoProductor((String) row.get("paterno_productor"));
 			r.setMaternoProductor((String) row.get("materno_productor"));
 			r.setRfcProductor((String) row.get("rfc_productor"));
-			r.setRfcFacVenta((String) row.get("rfc_fac_venta"));	
+			r.setCurpProductor((String) row.get("curp_productor"));	
 			BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
 			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
 			lst.add(r);
@@ -2994,31 +2995,48 @@ public class RelacionesDAO {
 		return lst;
 	}	
 	
-	@SuppressWarnings("unchecked")
-	public List<PrediosNoExistenBD> verificaSiPrediosExistenBD(String folioCartaAdhesion, int idPrograma)throws JDBCException{
-		List<PrediosNoExistenBD> lst = null;
+	public List<RelacionComprasTMP> verificaSiPrediosExistenBD(String folioCartaAdhesion, int idPrograma)throws JDBCException{
+		List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("select distinct folio_predio, folio_predio_sec, null AS folio_predio_alterno, id_relacion_compras_tmp AS id ")
+		consulta.append("select distinct clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor, folio_predio, id_relacion_compras_tmp AS id ")
 		.append("from relacion_compras_tmp  r ")
 		.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		.append("and  folio_predio is not null ")
-		.append("and folio_predio_sec is not null ")
 		.append("and not exists ")
 			.append("(select 1 ")
 			.append("from predios_relaciones p ")
 			.append("where p.predio = r.folio_predio ")
-			.append("and p.predio_secuencial = r.folio_predio_sec and p.id_programa =").append(idPrograma).append(") ")
-			.append("UNION ")
-		.append("select  distinct NULL AS folio_predio, 0 AS folio_predio_sec, folio_predio_alterno, id_relacion_compras_tmp AS id ")
-		.append("from relacion_compras_tmp  r ")
-		.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("and  folio_predio_alterno is not null ")
-		.append("and not exists ")
-			.append("(select 1")
-			.append("from predios_relaciones p ")
-			.append("where p.predio_alterno = r.folio_predio_alterno and p.id_programa =").append(idPrograma).append(") ");
+			.append(" and p.id_programa =").append(idPrograma).append(" and r.curp_productor = p.curp ) ")
+//			.append("UNION ")
+//		.append("select  distinct clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor, NULL AS folio_predio, 0 AS folio_predio_sec, folio_predio_alterno, id_relacion_compras_tmp AS id, 'NO' existe_pagado ")
+//		.append("from relacion_compras_tmp  r ")
+//		.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//		.append("and  folio_predio is not null ")
+//		.append("and exists ")
+//			.append("(select 1")
+//			.append("from predios_relaciones p ")
+//			.append("where p.predio = r.folio_predio and p.id_programa =").append(idPrograma).append(" and pagado = 'NO') ")
+		.append("order by  clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor,folio_predio ");
 		
-		lst= session.createSQLQuery(consulta.toString()).addEntity(PrediosNoExistenBD.class).list();
+			
+		System.out.println("Predios existan en bd "+consulta.toString());
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			RelacionComprasTMP b = new RelacionComprasTMP();
+			Integer id  = (Integer) row.get("id");
+			b.setIdRelacionComprasTmp(id.longValue());
+			b.setClaveBodega((String) row.get("clave_bodega"));
+		    b.setNombreEstado((String) row.get("nombre_estado"));
+		    b.setPaternoProductor((String) row.get("paterno_productor"));
+		    b.setMaternoProductor((String) row.get("materno_productor"));
+		    b.setNombreProductor((String) row.get("nombre_productor"));
+		    b.setFolioPredio((String) row.get("folio_predio"));
+		    lst.add(b);
+		}
+
 		return lst;
 	}
 	
@@ -3862,7 +3880,9 @@ public class RelacionesDAO {
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("select * ")		
 		.append(" from  precio_pagado_no_corresponde_con_pagos_v ")
-		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and abs((COALESCE(precio_pagado_en_aviso,0) - COALESCE(precio_calculado,0)))>1.00 ");
+		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion)
+		.append("' and (abs((COALESCE(precio_pagado_en_aviso,0) - COALESCE(precio_calculado,0)))>1.00 ")
+		.append(" or imp_doc_pago_sinaxc <> imp_sol_fac_venta)");
 		//.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  ");
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -3881,6 +3901,8 @@ public class RelacionesDAO {
 			r.setNombreProductor((String) row.get("nombre_productor"));
 			valor = (BigDecimal) row.get("vol_total_fac_venta");
 			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
+			valor = (BigDecimal) row.get("imp_sol_fac_venta");
+			r.setImpSolFacVenta(valor!=null ? valor.doubleValue():null);
 			valor = (BigDecimal) row.get("imp_doc_pago_sinaxc");
 			r.setImpDocPagoSinaxc(valor!=null ? valor.doubleValue():null);
 			valor = (BigDecimal) row.get("imp_total_pago_sinaxc");
@@ -4272,6 +4294,11 @@ public class RelacionesDAO {
 				consultaGroupBy.append("imp_sol_fac_venta,");
 				consultaWhereS +=" imp_sol_fac_venta is null or ";	
 			}
+			if(camposQueAplica.contains("70,")){
+				consultaSelect.append("id_variedad,");
+				consultaGroupBy.append("id_variedad,");
+				consultaWhereS +=" id_variedad is null or ";	
+			}
 			
 					
 			consultaSelect.deleteCharAt(consultaSelect.length()-1);
@@ -4333,11 +4360,19 @@ public class RelacionesDAO {
 		        		b.setImpSolFacVenta(null);
 		        	}
 		        }
-		        
+		        if(camposQueAplica.contains("70,")){
+		        	if((Integer) row.get("id_variedad")==null){
+		        		b.setVariedad("VALOR REQUERIDO");
+		        	}else{
+		        		b.setVariedad(null);
+		        	}
+		        }
 		        if((BigDecimal) row.get("vol_total_fac_venta")!=null){
 		        	BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
 		        	b.setVolTotalFacVentaD(valor.doubleValue());
 		        }
+		       
+		       
 		        lstFacturasCamposRequeridos.add(b);
 			}
 			
@@ -4588,6 +4623,7 @@ public class RelacionesDAO {
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 			List<?> data = query.list();
 			BigInteger valorInt = null;
+			System.out.println("Toneladas "+consulta.toString());
 			for(Object object : data){
 				Map<?, ?> row = (Map<?, ?>)object;
 				GeneralToneladasTotalesPorBodFac rl = new GeneralToneladasTotalesPorBodFac();
@@ -5052,12 +5088,12 @@ public class RelacionesDAO {
 		
 		
 		
-		public int actualizaPredioIncosistente(Long id)throws JDBCException {
+		public int actualizaPredioIncosistente(Long id, String folioCartaAdhesion)throws JDBCException {
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
 				if (id!=null){
-					where.append(" where id_relacion_compras_tmp =").append(id).append(" ");
+					where.append(" where id_relacion_compras_tmp =").append(id).append(" and folio_carta_adhesion = '"+folioCartaAdhesion+"'");
 				}				
 			
 				StringBuilder hql = new StringBuilder()			
@@ -5530,7 +5566,8 @@ public class RelacionesDAO {
 			consulta.append("select r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")
 			.append("from relacion_compras_tmp r, bodegas_contratos b, contratos_relacion_compras c ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and r.clave_bodega = b.clave_bodega  and b.folio_contrato = r.folio_contrato and c.folio_contrato = r.folio_contrato ")
-			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ");			
+			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")			
+			.append("order by r.clave_bodega, r.folio_contrato"); // AHS CAMBIO 29062015
 			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -5613,7 +5650,9 @@ public class RelacionesDAO {
 			consulta.append("select r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,v1.vol_total_fac_venta, v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
 			.append("from contrato_tipo_cambio_v v1, relacion_compras_tmp r ")
 			.append("where r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and r.folio_contrato = v1.folio_contrato and coalesce(r.paterno_productor,'X') = coalesce(v1.paterno_productor,'X') ")
+			.append("and r.folio_contrato = v1.folio_contrato ")
+			.append("and COALESCE(r.clave_bodega,'X') = COALESCE(v1.clave_bodega,'X') ") // AHS 26062015			
+			.append("and coalesce(r.paterno_productor,'X') = coalesce(v1.paterno_productor,'X') ")
 			.append("and coalesce(r.materno_productor,'X') =  coalesce(v1.materno_productor,'X')  and coalesce(r.nombre_productor ,'X') = coalesce(v1.nombre_productor,'X') ")
 			.append("and diferecia_importe_pagado > 1.00 ")
 			.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, v1.vol_total_fac_venta,v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
@@ -5677,5 +5716,92 @@ public class RelacionesDAO {
 			return lst;
 		}
 		
+		//FRIJOL
+		public List<RelacionComprasTMP> validaRFCFacVsFacComprador(String folioCartaAdhesion, int idPrograma)throws  JDBCException{			
+			List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
+			StringBuilder consulta= new StringBuilder();				
+			consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, ")
+					.append("p.rfc_productor, r.rfc_fac_venta, ")
+					.append("(select COALESCE(sum(vol_total_fac_venta),0) ") 
+					.append("from relacion_compras_tmp r1  ")
+					.append("where r.clave_bodega = r1.clave_bodega ") 
+					.append("and  r.nombre_estado = r1.nombre_estado  ")
+					.append("and  r.nombre_estado = r1.nombre_estado ")
+					.append("and  r.folio_contrato = r1.folio_contrato  ")
+					.append("and COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') ") 
+					.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X' ) ")
+					.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  ) as vol_total_fac_venta ")
+					.append("FROM relacion_compras_tmp r, pagos_topes_relaciones p ")
+					.append("WHERE r.rfc_fac_venta is not null ")
+					.append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  ")
+					.append("and CASE WHEN r.curp_productor IS NOT NULL THEN r.curp_productor ELSE r.rfc_productor END = CASE WHEN r.curp_productor IS NOT NULL THEN p.curp_productor ELSE p.rfc_productor END ")
+					.append("and p.estado = r.estado_acopio ")
+					.append("and p.cultivo = r.id_cultivo ")
+					.append("and p.variedad = r.id_variedad ")
+					.append("and p.id_programa = r.id_programa ")
+					.append("and p.rfc_comprador <> r.rfc_fac_venta ") 
+					.append("AND EXISTS (select distinct 1 from predios_relaciones pr where pr.curp = p.curp_productor and pr.id_programa = ").append(idPrograma).append(") ")
+					.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc_productor, r.rfc_fac_venta ");			
+			SQLQuery query = session.createSQLQuery(consulta.toString());
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List<?> data = query.list();
+			
+			for(Object object : data){
+				Map<?, ?> row = (Map<?, ?>)object;
+				RelacionComprasTMP b = new RelacionComprasTMP();
+				b.setClaveBodega((String) row.get("clave_bodega"));
+				b.setNombreEstado((String) row.get("nombre_estado"));
+				b.setFolioContrato((String) row.get("folio_contrato"));
+				b.setPaternoProductor((String) row.get("paterno_productor"));
+				b.setMaternoProductor((String) row.get("materno_productor"));
+				b.setNombreProductor((String) row.get("nombre_productor"));
+				b.setRfcProductor((String) row.get("rfc_productor"));
+				b.setRfcFacVenta((String) row.get("rfc_fac_venta"));
+				BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+				b.setVolTotalFacVenta(valor.doubleValue());
+						
+		        lst.add(b);	
+			}		
+			return lst;
+
+			
+			
+		}
+		
+		
+		public List<VolumenNoProcedente> validaVolumenNoProcedenteYApoyadoEnReg(String folioCartaAdhesion, int idPrograma)throws  JDBCException{
+			List<VolumenNoProcedente> lst = new ArrayList<VolumenNoProcedente>();
+			StringBuilder consulta= new StringBuilder();	
+			consulta.append("select  r.clave_bodega,  r.nombre_estado, r.folio_contrato, r.rfc_curp_productor, r.paterno_productor, r.materno_productor, r.nombre_productor, ")
+			.append("vol_total_fac_venta, volumen_pagado, volumen_no_procedente, id_variedad ")
+			.append("from volumen_no_procedente_y_apoyado_reg r ")
+			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+			.append("and id_programa = ").append(idPrograma).append(" and volumen_no_procedente > 0");
+			System.out.println("Query volumen no procedente por lo apoyado en regional "+consulta.toString());
+			SQLQuery query = session.createSQLQuery(consulta.toString());
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List<?> data = query.list();
+			
+			for(Object object : data){
+				Map<?, ?> row = (Map<?, ?>)object;
+				VolumenNoProcedente b = new VolumenNoProcedente();
+		        b.setFolioContrato((String) row.get("folio_contrato"));
+		        b.setClaveBodega((String) row.get("clave_bodega"));
+		        b.setNombreEstado((String) row.get("nombre_estado"));
+		        b.setPaternoProductor((String) row.get("paterno_productor"));
+		        b.setMaternoProductor((String) row.get("materno_productor"));
+		        b.setNombreProductor((String) row.get("nombre_productor"));
+		        BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
+		        b.setVolTotalFacturado(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("volumen_pagado"); 
+		        b.setVolApoyadoEnRegional(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("volumen_no_procedente"); 
+		        b.setVolNoProcedente(valor!=null ? valor.doubleValue():0.0);	
+		        Integer idVariedad = (Integer) row.get("id_variedad");
+		        b.setIdVariedad(idVariedad);
+		        lst.add(b);	
+			}		
+			return lst;
+		}
 				
 }

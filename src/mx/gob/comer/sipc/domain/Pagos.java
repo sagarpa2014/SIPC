@@ -60,6 +60,8 @@ public class Pagos {
 	private String rutaArchivoLC;
 	private String rutaArchivoPagoLC;
 	private Double porcentajeFianza;
+	private Integer idEjercicio; // AHS CAMBIO 29062015
+	private Date fechaReintegro; // AHS CAMBIO 29062015
 	
 	public Pagos (){
 		
@@ -369,5 +371,24 @@ public class Pagos {
 	public void setPorcentajeFianza(Double porcentajeFianza) {
 		this.porcentajeFianza = porcentajeFianza;
 	}
-	
+
+// AHS CAMBIO 29062015 [INICIO]
+	@Column(name = "id_ejercicio")
+	public Integer getIdEjercicio() {
+		return idEjercicio;
+	}
+
+	public void setIdEjercicio(Integer idEjercicio) {
+		this.idEjercicio = idEjercicio;
+	}
+
+	@Column(name = "fecha_reintegro")
+	public Date getFechaReintegro() {
+		return fechaReintegro;
+	}
+
+	public void setFechaReintegro(Date fechaReintegro) {
+		this.fechaReintegro = fechaReintegro;
+	}
+// AHS CAMBIO 29062015 [FIN]
 }

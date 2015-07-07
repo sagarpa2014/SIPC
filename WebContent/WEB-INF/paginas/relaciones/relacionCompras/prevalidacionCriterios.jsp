@@ -53,8 +53,9 @@
 	<s:if test="%{lstRfcProductorVsRfcFactura.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
 		<span class="requerido">LOS RFC DE LAS FACTURAS NO CORRESPONDEN AL PRODUCTOR</span><br>
 	</s:if>
-	<s:if test="%{lstRfcProductorVsRfcFacturaSinContrato.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
-		<span class="requerido">LOS RFC DE LAS FACTURAS NO CORRESPONDEN AL PRODUCTOR</span><br>
+	
+	<s:if test="%{lstRfcVsCurpProductor.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
+		<span class="requerido">LOS RFC VS CURP DEL PRODUCTOR NO CORRESPONDEN</span><br>
 	</s:if>
 	<s:if test="%{lstFacturaFueraPeriodo.size() > 0}"> <!--Factura fuera del periodo del Auditor -->
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
@@ -107,5 +108,8 @@
 	<s:if test="%{lstPrecioPagadoMenorQueAviso.size() > 0}"> <!--11.2 PRECIO MENOR AL ESTABLECIDO EN AVISO"-->
 		<span class="requerido">PRECIO PAGADO ES MENOR AL ESTABLECIDO EN AVISO</span><br>
 	</s:if>
+	<s:if test="%{lstVolNoProcedenteYApoyEnReg.size() > 0}"> <!--VOLUMEN NO PROCEDENTE POR APOYO EN LA REGIONAL"-->
+		<span class="requerido">VOLUMEN NO PROCEDENTE</span><br>
+	</s:if>	
 </fieldset>
 <s:include value="incluyeLogXls.jsp"/>

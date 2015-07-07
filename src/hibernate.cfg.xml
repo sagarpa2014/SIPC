@@ -258,7 +258,7 @@
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPago"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPagoAdendum"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.FacturasVsPago"/>		
-		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD"/>
+<!-- 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD"/> -->
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoPagados"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoValidadosDRDE"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ProductorExisteBD"/>

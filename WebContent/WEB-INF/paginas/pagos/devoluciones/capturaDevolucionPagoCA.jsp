@@ -84,6 +84,40 @@
 		<legend>Registro Devoluci&oacute;n</legend>	
 		<div class="clear"></div>	
 		<table  class="clean" style="width:100%">
+<!-- AHS CAMBIO 29062015 [INICIO] -->		
+			<tr>
+	  			<td>
+					<label class="left1"><span class="requerido">*</span>Ejercicio (Presupuestal):</label>
+	  			</td>
+	  			<td>					
+					<s:select id="idEjercicio" name="idEjercicio" list="lstEjercicios" listKey="idEjercicio" listValue="%{ejercicio}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0" value="%{dev.idEjercicio}" onchange=""/>
+	  			</td>
+			</tr>
+
+			<tr>
+				<td>
+					<label class="left1"><span class="requerido">*</span>Fecha Reintegro:</label>
+				</td>
+				<td>
+					<s:if test="%{dev.fechaReintegro == null || dev.fechaReintegro == ''}">
+						<s:textfield id="fechaReintegro" name="fechaReintegro" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="" />
+					</s:if>
+					<s:else>
+						<s:textfield id="fechaReintegro" name="fechaReintegro" maxlength="10" size="10"  readonly="true" cssClass="dateBox" value="%{getText('fecha1',{dev.fechaReintegro})}" />
+					</s:else>
+					<img width="16px" src="../images/calendar.gif" id="trgFechaReintegro" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha"/>
+					<script type="text/javascript">
+						Calendar.setup({
+							inputField     :    'fechaReintegro',     
+							ifFormat       :    "%d/%m/%Y",     
+							button         :    'trgFechaReintegro',  
+							align          :    "Br",           
+							singleClick    :    true
+							});
+					</script>
+				</td>
+			</tr>			
+<!-- AHS CAMBIO 29062015 [FIN] -->			
 			<tr>
 	  			<td>
 	  				<label class="left1"><span class="requerido">*</span>Linea de Captura:</label>

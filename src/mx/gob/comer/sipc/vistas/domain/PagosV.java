@@ -63,7 +63,10 @@ public class PagosV {
 	private Date fechaEmisionLC;
 	private Date fechaVigenciaLC;
 	private String rutaArchivoLC;
-	private String rutaArchivoPagoLC;	
+	private String rutaArchivoPagoLC;
+	private Integer idEjercicio;  // AHS CAMBIO 29062015
+	private Integer ejercicio;  // AHS CAMBIO 29062015
+	private Date fechaReintegro; // AHS CAMBIO 29062015
 	
 	
 	public PagosV (){
@@ -455,6 +458,32 @@ public class PagosV {
 		this.rutaArchivoPagoLC = rutaArchivoPagoLC;
 	}
 
-		
-	
+// AHS CAMBIO 29062015 [INICIO]
+	@Column(name = "id_ejercicio")
+	public Integer getIdEjercicio() {
+		return idEjercicio;
+	}
+
+	public void setIdEjercicio(Integer idEjercicio) {
+		this.idEjercicio = idEjercicio;
+	}
+
+	@Column(name = "ejercicio")
+	public Integer getEjercicio() {
+		return ejercicio;
+	}
+
+	public void setEjercicio(Integer ejercicio) {
+		this.ejercicio = ejercicio;
+	}
+
+	@Column(name = "fecha_reintegro")
+	public Date getFechaReintegro() {
+		return fechaReintegro;
+	}
+
+	public void setFechaReintegro(Date fechaReintegro) {
+		this.fechaReintegro = fechaReintegro;
+	}
+// AHS CAMBIO 29062015 [FIN]	
 }

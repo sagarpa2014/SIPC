@@ -317,7 +317,8 @@ public class ArchivosTesofeAction  extends ActionSupport implements ServletConte
 //			if(lstPersonal.size()>0){
 //				ccep1 = lstPersonal.get(0);
 //			}
-			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Encargado del Despacho de ASERCA", false, false,false, idPrograma);
+			lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Coordinador General de Comercialización", false, false,false, idPrograma);  // AHS CAMBIO 02072015 			
+			//lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Encargado del Despacho de ASERCA", false, false,false, idPrograma);
 			//lstPersonal = cDAO.consultaPersonalSQLQuery(0, "Director General de Desarrollo de Mercados", false, false,false, idPrograma);
 			if(lstPersonal.size()>0){
 				ccep2 = lstPersonal.get(0);

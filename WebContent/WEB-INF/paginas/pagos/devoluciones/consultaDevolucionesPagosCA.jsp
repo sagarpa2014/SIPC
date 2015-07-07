@@ -88,6 +88,10 @@
 		<fieldset id="reporte2">
 			<legend>Devoluciones</legend>	
 			<display:table id="r"  name="lstConsultaDevolucionesCA"  list="lstConsultaDevolucionesCA"  pagesize="50" sort="list" requestURI="/pagos/consultaDevolucionesPagosCA"  class="displaytag">
+				<display:column  property="ejercicio" title="Ejercicio Presupuestal"/> <!-- AHS CAMBIO 29062015 -->
+				<display:column  title="Fecha Reintegro">
+					<s:text name="fecha"> <s:param value="%{#attr.r.fechaReintegro}"/></s:text>
+				</display:column>				
 				<display:column  property="lineaCaptura" title="Linea de Captura"/>
 				<display:column  title="Fecha Emisi&oacute;n">
 					<s:text name="fecha"> <s:param value="%{#attr.r.fechaEmisionLC}"/></s:text>

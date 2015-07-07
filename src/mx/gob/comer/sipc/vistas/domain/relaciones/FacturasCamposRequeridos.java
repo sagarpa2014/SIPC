@@ -17,6 +17,7 @@ public class FacturasCamposRequeridos implements Comparable{
 	private String volTotalFacVenta;
 	private String volSolFacVenta;
 	private String impSolFacVenta;
+	private String variedad;
 	private Double volTotalFacVentaD;
 
 	
@@ -96,7 +97,13 @@ public class FacturasCamposRequeridos implements Comparable{
 	public void setImpSolFacVenta(String impSolFacVenta) {
 		this.impSolFacVenta = impSolFacVenta;
 	}	
-	
+		
+	public String getVariedad() {
+		return variedad;
+	}
+	public void setVariedad(String variedad) {
+		this.variedad = variedad;
+	}
 	public Double getVolTotalFacVentaD() {
 		return volTotalFacVentaD;
 	}

@@ -1934,6 +1934,30 @@ function llenarArrayOficioObs(idOficioObsSolPago, count){
 function chkCamposDevolucion(){	
 	var validaVolumen = "";
 	var validaImporte = "";
+
+/*  AHS CAMBIO 29062015 [INICIO] */
+	/********EJERCICIO********/
+	var idEjercicio = $('#idEjercicio').val();
+	if(idEjercicio == -1){
+		$('#dialogo_1').html('Seleccione el ejercicio presupuestal');
+		abrirDialogo();
+		return false;
+	}
+
+	/*****FECHA REINTEGRO****/
+	var fechaReintegro = $('#fechaReintegro').val();
+	var fechaReintegroTemp = 0;
+	if(fechaReintegro == null || fechaReintegro==""){
+		$('#dialogo_1').html('Seleccione la Fecha de Reintegro');
+		abrirDialogo();
+		return false;
+	}else{
+		dia = fechaReintegro.substring(0,2);
+		mes = fechaReintegro.substring(3,5);
+		anio = fechaReintegro.substring(6,10);
+		fechaReintegroTemp = anio+""+""+mes+""+dia;
+	}
+/*  AHS CAMBIO 29062015 [FIN] */
 	
 	/*********LINEA DE CAPTURA*****/
 	var lineaCaptura = $('#lineaCaptura').val();
@@ -1956,6 +1980,13 @@ function chkCamposDevolucion(){
 		mes = fechaEmision.substring(3,5);
 		anio = fechaEmision.substring(6,10);
 		fechaEmisionTemp = anio+""+""+mes+""+dia;
+/*  AHS CAMBIO 29062015 [INICIO] */
+		if(parseInt(fechaReintegroTemp) < fechaEmisionTemp){
+			$('#dialogo_1').html('La Fecha de Reintegro debe ser mayor a la Fecha de Emision de la Linea de Captura');
+			abrirDialogo();
+			return false;
+		}
+/*  AHS CAMBIO 29062015 [FIN] */
 	}
 	
 	/*****FECHA VIGENCIA LINEA CAPTURA****/
@@ -1974,6 +2005,13 @@ function chkCamposDevolucion(){
 			abrirDialogo();
 			return false;
 		}
+/*  AHS CAMBIO 29062015 [INICIO] */
+		if(parseInt(fechaVigenciaTemp) < fechaReintegroTemp){
+			$('#dialogo_1').html('La Fecha de Reintegro debe ser menor a la Fecha de Vigencia de la Linea de Captura');
+			abrirDialogo();
+			return false;
+		}
+/*  AHS CAMBIO 29062015 [FIN] */		
 	}			
 
 	/*****VOLUMEN DEVOLUCION****/

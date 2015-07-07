@@ -15,6 +15,7 @@ import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Bitacora;
 import mx.gob.comer.sipc.domain.Comprador;
 import mx.gob.comer.sipc.domain.CuentaBancaria;
+import mx.gob.comer.sipc.domain.Ejercicios;
 import mx.gob.comer.sipc.domain.Estado;
 import mx.gob.comer.sipc.domain.Pagos;
 import mx.gob.comer.sipc.domain.PagosDetalle;
@@ -35,6 +36,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.JDBCException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 
 
 
@@ -138,6 +140,10 @@ public class PagosAction extends ActionSupport implements SessionAware, Serializ
 	private String nombreReporte;
 	private String rutaSalida;
 	private String cuadroSatisfactorio;
+	
+	private List<Ejercicios> lstEjercicios; // AHS CAMBIO 29062015
+	private Integer idEjercicio; // AHS CAMBIO 29062015
+	private Date fechaReintegro; // AHS CAMBIO 29062015
 	
 	@SessionTarget
 	Session sessionTarget;
@@ -704,6 +710,8 @@ public class PagosAction extends ActionSupport implements SessionAware, Serializ
 				if (registrar==2){
 					dev = pDAO.consultaPagosV(idPagoDev, 0, 0, null, null, "10", 0, 0, cartaAdhesion).get(0);
 				}
+				lstEjercicios = cDAO.consultaEjercicio(0); // AHS CAMBIO 29062015 
+				
 				cartaAdhesion = pv.getNoCarta();
 			}	
 		}catch (JDBCException e) {
@@ -737,6 +745,8 @@ public class PagosAction extends ActionSupport implements SessionAware, Serializ
 			p.setLineaCaptura(lineaCaptura);
 			p.setFechaEmisionLC(fechaEmision);
 			p.setFechaVigenciaLC(fechaVigencia);
+			p.setIdEjercicio(idEjercicio);	// AHS CAMBIO 29062015
+			p.setFechaReintegro(fechaReintegro);  // AHS CAMBIO 29062015
 			
 			if(doc!=null){
 				verificarTamanioArchivo(doc);
@@ -1443,5 +1453,30 @@ public class PagosAction extends ActionSupport implements SessionAware, Serializ
 	public void setPeAux(PagosDetalle peAux) {
 		this.peAux = peAux;
 	}
-	
+
+// AHS CAMBIO 29062015 [INICIO]
+	public List<Ejercicios> getLstEjercicios() {
+		return lstEjercicios;
+	}
+
+	public void setLstEjercicios(List<Ejercicios> lstEjercicios) {
+		this.lstEjercicios = lstEjercicios;
+	}
+
+	public Integer getIdEjercicio() {
+		return idEjercicio;
+	}
+
+	public void setIdEjercicio(Integer idEjercicio) {
+		this.idEjercicio = idEjercicio;
+	}
+
+	public Date getFechaReintegro() {
+		return fechaReintegro;
+	}
+
+	public void setFechaReintegro(Date fechaReintegro) {
+		this.fechaReintegro = fechaReintegro;
+	}	
+// AHS CAMBIO 29062015 [FIN]	
 }

@@ -9,6 +9,7 @@
 <s:set  name="archivoRelacionCompras1"><s:property value="%{archivoRelacionCompras}" /></s:set>
 <s:hidden id="archivoRelacionCom" name="" value="%{archivoRelacionCompras}"/>
 <s:set name="reporteCruce1"><s:property value="%{reporteCruce}" /></s:set>
+Cruce<s:property value="%{reporteCruce}" />
 <s:set name="idPrograma1"><s:property value="%{idPrograma}"/></s:set>
 <div class="clear"></div>
 <div class="borderBottom" style="text-align:center"><h1>Entrega de Documentos</h1></div><br>	
