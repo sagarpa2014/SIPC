@@ -1739,54 +1739,90 @@ function chkArchivoConstanciasAlmacenamiento(){
 }
 
 // Dictamen Auditor
-function chkCamposregistraAuditorSolPago(){
-	var i=0;
-	var auditorV ="";
-	var volumenAuditor= "";
-
-	var numCamposAV = $('#numCamposAV').val();
-	if(numCamposAV == null || numCamposAV == ""){
-		$('#dialogo_1').html('Capture el Número de Campos Auditor con Volumen Dictaminado');
-   		abrirDialogo();
-		return false;
-	}else{
-		var patron =/^\d{1,3}$/;
-		if(!numCamposAV.match(patron)){
-			$('#dialogo_1').html('El valor del campo es inválido, se aceptan hasta 3 dígitos');
+function chkCamposregistraAuditorSolPago(){	
+	$("#numeroAuditor").removeAttr('disabled');
+	
+	if($('#errorNumeroAuditor').length){
+		if( $('#errorNumeroAuditor').val() == 1 ){
+			$('#dialogo_1').html('No existe el número de auditor que capturo, por favor verifique ');
 	   		abrirDialogo();
-	   		$('#numCamposAV').val(null);
 	   		return false;
-		}	
+		}else if($('#errorNumeroAuditor').val() == 2 ){
+			$('#dialogo_1').html('El numero de auditor que capturo ya existe para la carta de adhesión,  por favor verifique ');
+	   		abrirDialogo();
+	   		return false;
+		}
 	}
 	
-	for (i=1;i<parseInt(numCamposAV)+1;i++){
-		capNumeroAuditor = $('#capNumeroAuditor'+i).val();
-		auditorV = $('#auditorV'+i).val();
-		volumenAuditor = $('#v'+i).val();
-		if(capNumeroAuditor == ""|| auditorV == -1 || volumenAuditor == "" ){
-   			$('#dialogo_1').html('Capture los valores del registro '+i);
+	var fechaPeriodoInicialAuditor = $('#fechaPeriodoInicialAuditor').val();
+	if(fechaPeriodoInicialAuditor == null || fechaPeriodoInicialAuditor==""){
+		$('#dialogo_1').html('Seleccione la fecha inicio del auditor');
+		abrirDialogo();
+		return false;
+	}
+	
+	var fechaPeriodoFinalAuditor = $('#fechaPeriodoFinalAuditor').val();
+	if(fechaPeriodoFinalAuditor == null || fechaPeriodoFinalAuditor==""){
+		$('#dialogo_1').html('Seleccione la fecha fin del auditor');
+		abrirDialogo();
+		return false;
+	}		
+	var numCamposBodVolumen = $('#numCamposBodVolumen').val();
+	if(numCamposBodVolumen == 0){
+		$('#dialogo_1').html('Debe agregar por lo menos un registro en el volumen por bodega');
+		abrirDialogo();
+		return false;
+	}
+	var i = 0, j = 0;
+	for(i=1;i<=parseInt(numCamposBodVolumen);i++){ 
+		var claveBodega =$('#idBodega'+i).val();
+		var volumen =$('#volumen'+i).val();
+		var idDestino = $('#idDestino'+i).val();
+		if((claveBodega == "" || claveBodega == null) || (volumen == "" || volumen == null) || (idDestino == -1) ){
+			$('#dialogo_1').html('Capture los valores del registro '+i+' en la captura del volumen');
 	   		abrirDialogo();
 	 		return false;
-   		 }
-	}//end
+		}else{
+   			//Valida que el volumen sea un valor valido
+   			patron =/^\d{1,10}((\.\d{1,3})|(\.))?$/;
+  			 if(!volumen.match(patron)){
+	   			$('#dialogo_1').html('El valor de volumen es inválido, se aceptan hasta 10 digitos a la izquierda y 3 digitos máximo a la derecha');
+		   		abrirDialogo();
+		 		return false;
+  			 }
+//  			for (j=1;j<parseInt(numCamposBodVolumen)+1;j++){
+//   	   			if(i!=j){
+//   	   				var tempClaveBodega = $('#idBodega'+j).val();
+//   	   				var tempVolumen = $('#volumen'+j).val();
+//   	   				if(claveBodega == tempClaveBodega && tempVolumen == volumen){
+//   	   					$('#dialogo_1').html('El registro '+i+' se encuentra repetido, favor de verificar');
+//   	   			   		abrirDialogo();
+//   	   			 		return false;
+//   	   				}
+//   	   			}	   				
+//   	   		}// end for j
+		}
+		
+	}
+
 	
 }// end chkCamposregistraAuditorSolPago
 
-function validarNumeroAuditor(numeroAuditor, count){
+function validarNumeroAuditor(numeroAuditor){
 	if(numeroAuditor == null ||  numeroAuditor == ""){
-        $("#validarNumeroAuditor").fadeOut('slow');
-        return false;
+        $("#numeroAuditor").val(null);
 	}
-	
+	var folioCartaAdhesion =  $("#folioCartaAdhesion").val();
+	var tipoDocumentacion =  $("#tipoDocumentacion").val();
 	$.ajax({
 		   async: false,
 		   type: "POST",
 		   url: "validarNumeroAuditor",
-		   data: "numeroAuditor="+numeroAuditor+
-		   "&count="+count,
+		   data: "numeroAuditor="+numeroAuditor
+		   +"&folioCartaAdhesion="+folioCartaAdhesion
+		   +"&tipoDocumentacion="+tipoDocumentacion,
 		   success: function(data){
-				$('#validarNumeroAuditor'+count).html(data).ready(function () {
-					
+				$('#validarNumeroAuditor').html(data).ready(function () {
 				});
 		   }
 		});//fin ajax
@@ -2182,4 +2218,88 @@ function setVolumenByProcentaje(){
 				});
 		   }
 		});//fin ajax
+}
+
+//Funcion que agrega campos de la bodega y volumen
+function agregarCamposBodVol(){		
+	var numCamposTemp = $('#numCamposBodVolumen').val();
+	var folioCartaAdhesion = $('#folioCartaAdhesion').val();
+	var registrar = $('#registrar').val();
+	numCamposTemp = parseInt(numCamposTemp) + 1;	
+	$("#numCamposBodVolumen").val(numCamposTemp);
+	$("#removerCamposBodVolumen").fadeIn('slow');
+	var tds = "";
+	if(numCamposTemp == 1){
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: "agregaCamposVolumenBodega",
+		   data: "numCamposBodVolumen="+numCamposTemp+
+		   		"&registrar="+registrar+
+		   		"&folioCartaAdhesion="+folioCartaAdhesion,
+			success: function(data){
+				$('#contenedorBodegaVolumen').html(data).ready(function () {
+					$("#contenedorBodegaVolumen").fadeIn('slow');
+				});
+			}
+		}); //termina ajax
+	}else if(numCamposTemp != 1 && numCamposTemp > 0){
+		tds += '<tr>';
+		tds += '<td>'+numCamposTemp+'</td>';
+		tds += '<td id="contenedorBodega'+numCamposTemp+'"></td>';
+		tds += '<td><input type="text"  class="cantidad" id="volumen'+numCamposTemp+'"  name="capVolumen['+numCamposTemp+']" onchange="validarVolumen(this.value, \''+numCamposTemp+'\',1);" maxlength="15" size="20"></td>';
+//		tds += '<td  id="contenedorChkDestino'+numCamposTemp+'" align="center"><input type="checkbox"  id=idChkDestino"'+numCamposTemp+'"  name="capChkDestino['+numCamposTemp+']"  onclick="consigueDestinoAuditorSolPago(\''+numCamposTemp+'\');" ></td>';
+		tds += '<td  id="contenedorChkDestino'+numCamposTemp+'" align="center"></td>';
+		tds += '<td id="contenedorDestino'+numCamposTemp+'"></td>';
+		tds += '</tr>';
+		$("#tablaBodVol").append(tds);	
+		$('#idBodega1').clone().attr('id', 'idBodega'+numCamposTemp).attr('name', 'capBodega['+numCamposTemp+']').appendTo('#contenedorBodega'+numCamposTemp);
+		$('#idBodega'+numCamposTemp).val(-1);
+		$('#idDestino1').clone().attr('id', 'idDestino'+numCamposTemp).attr('name', 'capDestino['+numCamposTemp+']').appendTo('#contenedorDestino'+numCamposTemp);
+		$('#idDestino'+numCamposTemp).val(-1);
+		$('#idChkDestino1').clone().attr('id', 'idChkDestino'+numCamposTemp).attr('name', 'capChkDestino['+numCamposTemp+']').attr('onclick', 'consigueDestinoAuditorSolPago(\''+numCamposTemp+'\''+")").appendTo('#contenedorChkDestino'+numCamposTemp);
+	}
+	
+}//end agregarCamposCapacidad
+
+
+function removerCamposBodVol(){
+	var numCampos = $('#numCamposBodVolumen').val();
+	if(numCampos > 0){
+		if($('#tablaBodVol').length){
+			$('#tablaBodVol').each(function(){
+				$('tr:last', this).remove();			    
+			    if(numCampos==1){
+			    	$('tr:last', this).remove();				    
+			    }
+			});
+		}		
+		numCampos = parseInt(numCampos) -1;	
+		$('#numCamposBodVolumen').val(numCampos);		
+	}
+	if(numCampos == 0){
+		$("#removerCamposBodVolumen").fadeOut('slow');
+	}
+}//end removerCamposBodVol
+
+function consigueDestinoAuditorSolPago (numCampo){
+		
+	if($("#idChkDestino"+numCampo).is(":checked")) {
+		aplicaInternacional = true;
+	}else{
+		aplicaInternacional = false;
+	}
+	$.ajax({
+		async: false,
+		type: "POST",
+		url: "consigueDestinoAuditorSolPago",
+	   data: "aplicaInternacional ="+aplicaInternacional+
+	   		"&count="+numCampo,
+		success: function(data){
+			$('#contenedorDestino'+numCampo).html(data).ready(function () {
+				$("#contenedorDestino"+numCampo).fadeIn('slow');
+			});
+		}
+	}); //termina ajax
+	
 }

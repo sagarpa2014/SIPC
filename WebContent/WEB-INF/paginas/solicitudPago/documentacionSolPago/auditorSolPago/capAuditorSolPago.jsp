@@ -1,4 +1,5 @@
 <%@taglib uri="/struts-tags" prefix="s"%>
+<%@taglib prefix="display" uri="http://displaytag.sf.net" %>
 <script type="text/javascript" src="<s:url value="/js/solicitudPago.js" />"></script>
 
 <div class="borderBottom">
@@ -29,68 +30,39 @@
 			<font class="arial12bold"><s:property value="%{comprador.nombre}"/></font>
 		</div>
 		<div class="clear"></div>
-		<div>
-			<label class="left1"><span class="requerido">*</span>Número Auditores que Dictaminaron:</label>
-			<s:if test='%{estatus!=9}'>
-				<s:textfield id="numCamposAV" name="numCamposAV"  maxlength="3" size="5"  value="%{numCamposAV}" onchange="validarRfc();"/>
-			</s:if>
-			<s:else>
-				<s:textfield id="numCamposAV" name="numCamposAV"  disabled="true" maxlength="3" size="5"  value="%{numCamposAV}" onchange="validarRfc();"/>
-			</s:else>	
-		</div>
-		<div id="agregarAuditorVolumen">
-			<s:include value="agregaAuditorVolumen.jsp"></s:include>
-		</div>
-		<script>
-			$(document).ready(function() {
-				$("#numCamposAV").keyup(function(event){
-						//manda a llamar
-						var numCamposAV = $('#numCamposAV').val();
-						var folioCartaAdhesion = $('#folioCartaAdhesion').val();
-						var tipoDocumentacion = $('#tipoDocumentacion').val();
-						if(numCamposAV == null || numCamposAV == ""){
-							return false;
-						}
-						
-						var patron =/^\d{1,3}$/;
-						if(!numCamposAV.match(patron)){
-				    		$('#dialogo_2').html('El valor del campo es inválido, se aceptan hasta 3 dígitos');
-				       		abrirDialogo2();
-				       		$('#numCamposAV').val(null);
-				       		return false;
-				    	}  
-						var numCamposAVAnterior ="";
-						if(tipoDocumentacion==1 || tipoDocumentacion==2){
-							numCamposAVAnterior = $('#numCamposAVAnterior').val();
-						}
-						
-						$.ajax({
-							   async: false,
-							   type: "POST",
-							   url: "agregarAuditorVolumen",
-							   data: "numCamposAV="+numCamposAV+
-						   		"&numCamposAVAnterior="+numCamposAVAnterior+
-						   		"&folioCartaAdhesion="+folioCartaAdhesion+ 
-						   		"&tipoDocumentacion="+tipoDocumentacion, 
-							   success: function(data){
-									$('#agregarAuditorVolumen').html(data).ready(function () {
-										$("#agregarAuditorVolumen").fadeIn('slow');
-										
-									});
-							   }
-							});//fin ajax
-					});//termina keyup numCampos	
-			});	 
-		</script>
 	</fieldset>
-	<s:if test='%{estatus!=9}'>
-		<div class="clear"></div>
-		<div class="accion">
-			<s:submit  value="Guardar" cssClass="boton2" />
-			<a href="<s:url value="/solicitudPago/selecAccionDocumentacion?folioCartaAdhesion=%{folioCartaAdhesion}"/>" class="boton" title="">Cancelar</a>
-		</div>
+<%-- 	<s:if test='%{estatus!=9}'> --%>
+		<div class="derecha"><a href="<s:url value="/solicitudPago/agregarAuditor?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=%{tipoDocumentacion}&registrar=0"/>" onclick="" title="Agregar Auditor">[Agregar Auditor]</a></div><br>
+<%-- 	</s:if>	 --%>
+	<s:if test="lstAuditorSolPagoV.size() > 0">
+		<fieldset>			
+			<display:table id="r"  name="lstAuditorSolPagoV"  list="lstAuditorSolPagoV"  pagesize="50" sort="list" requestURI="//ejecutaBusquedaBodegas"  class="displaytag">
+				<display:column  property="numeroAuditor" title="Numero Auditor"/>
+				<display:column  property="nombre" title="Nombre"/>
+				<display:column title="Fecha Inicio"  headerClass="sortable">		
+					<s:if test="%{#attr.r.fechaInicio!=null}">
+						<s:text name="fecha"><s:param value="%{#attr.r.fechaInicio}"/></s:text>
+					</s:if>
+				</display:column>
+				<display:column title="Fecha Fin"  headerClass="sortable">
+					<s:if test="%{#attr.r.fechaFin!=null}">
+						<s:text name="fecha"><s:param value="%{#attr.r.fechaFin}"/></s:text>
+					</s:if>	
+				</display:column>	
+				<display:column title="Volumen" class="d">
+					<s:if test="%{#attr.r.volumenAuditor!=null}" >
+						<s:text name="volumen"><s:param value="%{#attr.r.volumenAuditor}"/></s:text>
+					</s:if>
+				</display:column>	
+				<display:column title="Editar"  headerClass="sortable">
+					<a href='<s:url value="/solicitudPago/agregarAuditor?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=%{tipoDocumentacion}&registrar=1&idAuditorSolPago=%{#attr.r.idAuditorSolPago}"/>' class="editar" title="" ></a>
+				</display:column>		
+				<display:column title="Ver Detalle"  headerClass="sortable">
+					<a href='<s:url value="/solicitudPago/agregarAuditor?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=%{tipoDocumentacion}&registrar=2&idAuditorSolPago=%{#attr.r.idAuditorSolPago}"/>' class="botonVerDetalles" title="" ></a>
+			 	</display:column>			 			
+			</display:table>		
+		</fieldset>		
+	</s:if>		
 	<div class="clear"></div>
-	</s:if>
 	<div class="izquierda"><a href="<s:url value="/solicitudPago/selecAccionDocumentacion?folioCartaAdhesion=%{folioCartaAdhesion}"/>" onclick="" title="" >&lt;&lt; Regresar</a></div>
-		
 </s:form>

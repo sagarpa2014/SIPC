@@ -1,5 +1,7 @@
 package mx.gob.comer.sipc.domain.transaccionales;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,8 @@ public class AuditorSolicitudPago {
 	private String folioCartaAdhesion;
 	private int tipoDocumentacion;
 	private Double volumenAuditor;
+	private Date fechaInicio;
+	private Date fechaFin;
 	
 	@Id	
 	@GeneratedValue(generator = "auditor_solicitud_pago_id_auditor_sol_pago_seq")
@@ -61,5 +65,19 @@ public class AuditorSolicitudPago {
 		this.volumenAuditor = volumenAuditor;
 	}
 	
+	@Column(name =  "fecha_inicio")
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
 	
+	@Column(name =  "fecha_fin")
+	public Date getFechaFin() {
+		return fechaFin;
+	}
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
 }

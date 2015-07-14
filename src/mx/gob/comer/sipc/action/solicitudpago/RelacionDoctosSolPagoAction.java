@@ -448,7 +448,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 			}*/
 			if(estatusCA != 3){
 				//consulta los auditores capturados
-				lstAuditorSolPagoV = spDAO.consultaAuditorSolPagoV(folioCartaAdhesion, 1);
+				lstAuditorSolPagoV = spDAO.consultaAuditorSolPagoV(folioCartaAdhesion, 1,0);
 			}
 			
 			//Recupera el total del volumen capturado en los certificados de deposito

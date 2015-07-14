@@ -5,5 +5,6 @@
 	<div class="msjError"><s:property value="%{msjError}"/></div>	
 </s:if>
 <s:else>
+	<label class="left1"><span class="requerido">*</span>Nombre de Auditor:</label>
 	<s:textfield name="" maxlength="60" size="60" value="%{nombreAuditor}" disabled="true"/>
 </s:else>

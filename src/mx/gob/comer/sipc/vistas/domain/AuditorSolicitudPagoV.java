@@ -1,6 +1,8 @@
 package mx.gob.comer.sipc.vistas.domain;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,13 +15,24 @@ public class AuditorSolicitudPagoV implements Serializable{
 	/**
 	 * 
 	 */
+	private long idAuditorSolPago;
 	private String numeroAuditor;
 	private String nombre;
 	private String folioCartaAdhesion;
 	private Double volumenAuditor;
 	private int tipoDocumentacion;
-
+	private Date fechaInicio;
+	private Date fechaFin;
+	
 	@Id
+	@Column(name = "id_auditor_sol_pago")
+	public long getIdAuditorSolPago() {
+		return idAuditorSolPago;
+	}
+	public void setIdAuditorSolPago(long idAuditorSolPago) {
+		this.idAuditorSolPago = idAuditorSolPago;
+	}
+
 	@Column(name = "numero_auditor")
 	public String getNumeroAuditor() {
 		return numeroAuditor;
@@ -60,7 +73,18 @@ public class AuditorSolicitudPagoV implements Serializable{
 		this.tipoDocumentacion = tipoDocumentacion;
 	}
 	
-	
-	
-		
+	@Column(name = "fecha_inicio")
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}	
+	@Column(name = "fecha_fin")
+	public Date getFechaFin() {
+		return fechaFin;
+	}
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}	
 }

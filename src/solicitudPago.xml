@@ -327,6 +327,12 @@
             <result name="success" type="tiles">capAuditorSolPago</result>
             <result name="input" type="tiles">capAuditorSolPago</result>
         </action>
+        <action name="agregarAuditor" method="agregarAuditor" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosAuditorSolPago</result>
+            <result name="input" type="tiles">datosAuditorSolPago</result>
+        </action>
         
         <action name="agregarAuditorVolumen" method="agregarAuditorVolumen" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
 			<interceptor-ref name="chksession"/>        
@@ -346,7 +352,18 @@
             <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/respuestaNumeroAuditor.jsp</result>
             <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/respuestaNumeroAuditor.jsp</result>
         </action>
-        
+         <action name="agregaCamposVolumenBodega" method="agregaCamposVolumenBodega" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/bodegaVolumen.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/bodegaVolumen.jsp</result>
+        </action>
+        <action name="consigueDestinoAuditorSolPago" method="consigueDestinoAuditorSolPago" class="mx.gob.comer.sipc.action.solicitudpago.AsignacionAuditorSolPagoAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/lstDestino.jsp</result>
+            <result name="input" >/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/lstDestino.jsp</result>
+        </action>       
         <!-- TRAMITE DE PAGO -->
         <action name="listarProgramasPagosCartaAdhesion" method="listarProgramasPagosCartaAdhesion" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
         	<interceptor-ref name="chksession"/>

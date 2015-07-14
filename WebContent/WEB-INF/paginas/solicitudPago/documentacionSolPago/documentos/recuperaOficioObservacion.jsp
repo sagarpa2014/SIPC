@@ -9,15 +9,15 @@
 						<label class="left1"><span class="norequerido">*</span>Oficio de Observaci&oacute;n&nbsp;<s:if test="alcance==true">(Alcance)</s:if></label>
 					</td>
 					<td>
-					<s:if test="sustituirArchivo == true">
-						<s:file name="docObsA"  id="resp%{#itStatus.count}" onchange="llenarArrayOficioObs(%{idOficioObsSolPago},  %{#itStatus.count});"/>
-						<s:hidden id="idOficioObs%{#itStatus.count}" name="idOficioObsSolPagoA" value="%{}" />
-					</s:if>
-					<s:else>
-						<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocObs}"/>" title="Archivo Oficio Observaci&oacute;n">
-							<s:property value="%{noOficioObs}"/>
-						</a>
-					</s:else>
+						<s:if test="sustituirArchivo == true">
+							<s:file name="docObsA"  id="resp%{#itStatus.count}" onchange="llenarArrayOficioObs(%{idOficioObsSolPago},  %{#itStatus.count});"/>
+							<s:hidden id="idOficioObs%{#itStatus.count}" name="idOficioObsSolPagoA" value="%{}" />
+						</s:if>
+						<s:else>
+							<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocObs}"/>" title="Archivo Oficio Observaci&oacute;n">
+								<s:property value="%{noOficioObs}"/>
+							</a>
+						</s:else>
 					</td>
 				</tr>
 			</s:if>

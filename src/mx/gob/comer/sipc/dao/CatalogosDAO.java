@@ -14,6 +14,7 @@ import java.util.List;
 
 
 
+
 import mx.gob.comer.sipc.domain.AuditoresExternos;
 import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Comprador;
@@ -52,6 +53,7 @@ import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
 import mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento;
 import mx.gob.comer.sipc.domain.catalogos.ExpedienteRepresentante;
 import mx.gob.comer.sipc.domain.catalogos.Modalidad;
+import mx.gob.comer.sipc.domain.catalogos.Pais;
 import mx.gob.comer.sipc.domain.catalogos.Regional;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteComprador;
 import mx.gob.comer.sipc.domain.catalogos.RepresentanteLegal;
@@ -69,6 +71,7 @@ import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
 
 
 
@@ -2096,6 +2099,27 @@ public class CatalogosDAO {
 		}
 		consulta.insert(0, "From Regional ");
 		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Pais> consultaPais(int idPais, String clavePais) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Pais> lst=null;
+		if (idPais != 0 && idPais != -1){
+			consulta.append("where idPais = ").append(idPais);
+		}	
+		if (!(clavePais==null || clavePais.equals(""))){
+			if(consulta.length()>0){
+				consulta.append(" and clavePais = '").append(clavePais).append("'");
+			}else{
+				consulta.append("where clavePais = '").append(clavePais).append("'");
+			}
+		}
+		consulta.insert(0, "From Pais ").append(" ORDER BY pais");
+		lst= session.createQuery(consulta.toString()).list();
+		
 		return lst;
 	}
 	

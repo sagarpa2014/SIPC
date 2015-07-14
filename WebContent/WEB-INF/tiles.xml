@@ -212,7 +212,9 @@
 	<definition name="capAuditorSolPago" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/capAuditorSolPago.jsp"/>
 	</definition>
-		
+	<definition name="datosAuditorSolPago" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/solicitudPago/documentacionSolPago/auditorSolPago/datosAuditorSolPago.jsp"/>
+	</definition>				
 	<!-- Representantes -->
 	<definition name="representantes" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/representantes/representantesLegales.jsp" />

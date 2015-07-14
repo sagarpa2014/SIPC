@@ -8,10 +8,12 @@ import java.util.Map;
 import mx.gob.comer.sipc.domain.Cultivo;
 import mx.gob.comer.sipc.domain.Expediente;
 import mx.gob.comer.sipc.domain.Programa;
+import mx.gob.comer.sipc.domain.catalogos.Bodegas;
 import mx.gob.comer.sipc.domain.catalogos.Variedad;
 import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartaEspecialista;
 import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.AuditorSolicitudPago;
+import mx.gob.comer.sipc.domain.transaccionales.AuditorVolumenSolPago;
 import mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.CertificadosDeposito;
 import mx.gob.comer.sipc.domain.transaccionales.ConstanciasAlmacenamiento;
@@ -31,6 +33,7 @@ import mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 import mx.gob.comer.sipc.vistas.domain.PrgEspecialistaNumCartasV;
 import mx.gob.comer.sipc.vistas.domain.ProgramaNumCartasV;
+import mx.gob.comer.sipc.vistas.domain.relaciones.VolumenNoProcedente;
 
 import org.hibernate.Criteria;
 import org.hibernate.JDBCException;
@@ -649,15 +652,25 @@ public class SolicitudPagoDAO {
 		return sumaCD;
 	}
 	
+	public List<AuditorSolicitudPago> consultaAuditorSolPago( String folioCartaAdhesion, int tipoDocumentacion)throws JDBCException {
+		return consultaAuditorSolPago(-1, folioCartaAdhesion,  tipoDocumentacion);
+	}
 	@SuppressWarnings("unchecked")
-	public List<AuditorSolicitudPago> consultaAuditorSolPago(String folioCartaAdhesion, int tipoDocumentacion)throws JDBCException {
+	public List<AuditorSolicitudPago> consultaAuditorSolPago(long idAuditorSolPago, String folioCartaAdhesion, int tipoDocumentacion)throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<AuditorSolicitudPago> lst = null;
 		if(folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
 			consulta.append("where folioCartaAdhesion ='").append(folioCartaAdhesion).append("'");
+		}		
+		if(idAuditorSolPago != 0 && idAuditorSolPago != -1){ 
+			if(consulta.length()>0){
+				consulta.append(" and idAuditorSolPago=").append(idAuditorSolPago);
+			}else{
+				consulta.append("where idAuditorSolPago=").append(idAuditorSolPago);
+			}
 		}
 		
-		if(tipoDocumentacion != 0 && tipoDocumentacion != -1){
+		if(tipoDocumentacion != 0 && tipoDocumentacion != -1){ 
 			if(consulta.length()>0){
 				consulta.append(" and tipoDocumentacion=").append(tipoDocumentacion);
 			}else{
@@ -871,8 +884,11 @@ public class SolicitudPagoDAO {
 		
 	}
 	
+	public List<AuditorSolicitudPagoV> consultaAuditorSolPagoV(String folioCartaAdhesion, int tipoDocumentacion, long idAuditorSolPago)throws JDBCException {
+		return consultaAuditorSolPagoV(folioCartaAdhesion,  tipoDocumentacion,  idAuditorSolPago, null);
+	}
 	@SuppressWarnings("unchecked")
-	public List<AuditorSolicitudPagoV> consultaAuditorSolPagoV(String folioCartaAdhesion, int tipoDocumentacion)throws JDBCException {
+	public List<AuditorSolicitudPagoV> consultaAuditorSolPagoV(String folioCartaAdhesion, int tipoDocumentacion, long idAuditorSolPago, String numeroAuditor)throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<AuditorSolicitudPagoV> lst = null;
 		if(folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
@@ -887,6 +903,20 @@ public class SolicitudPagoDAO {
 			}
 		}
 		
+		if(idAuditorSolPago != 0 && idAuditorSolPago != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idAuditorSolPago=").append(idAuditorSolPago);
+			}else{
+				consulta.append("where idAuditorSolPago=").append(idAuditorSolPago);
+			}
+		}
+		if(numeroAuditor != null && !numeroAuditor.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and numeroAuditor = '").append(numeroAuditor).append("'");
+			}else{
+				consulta.append("where numeroAuditor =").append(numeroAuditor).append("'");;
+			}
+		}
 		consulta.insert(0, "From AuditorSolicitudPagoV ");
 		lst= session.createQuery(consulta.toString()).list();
 		
@@ -1188,5 +1218,55 @@ public class SolicitudPagoDAO {
 		lst = session.createSQLQuery(consulta.toString()).addEntity(Expediente.class).list();
 		return lst;
 	}
+	
+	public List<Bodegas> consultaBodegasAutorizadasByCarta(String folioCartaAdhesion) throws JDBCException {
+		List<Bodegas> lst = new ArrayList<Bodegas>();
+		StringBuilder consulta= new StringBuilder();
+		consulta.append("select  distinct clave_bodega from asignacion_cartas_adhesion  where folio_carta_adhesion ='")
+		.append(folioCartaAdhesion).append("'");
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();		
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			Bodegas b = new Bodegas();
+			b.setClaveBodega((String) row.get("clave_bodega"));
+			lst.add(b);	
+		}			
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AuditorVolumenSolPago> consultaAuditorVolumenSolPago(long idAuditorSolPago)throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<AuditorVolumenSolPago> lst = null;
+		if(idAuditorSolPago != 0 && idAuditorSolPago != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idAuditorSolPago=").append(idAuditorSolPago);
+			}else{
+				consulta.append("where idAuditorSolPago=").append(idAuditorSolPago);
+			}
+		}
+		
+		consulta.insert(0, "From AuditorVolumenSolPago ");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+		
+	}
+	
+	public int borraAuditorVolumenSolPago(long idAuditorSolPago)throws JDBCException {
+		int elementosBorrados = 0;
+		try{
+			StringBuilder hql = new StringBuilder()
+			.append("DELETE FROM auditor_volumen_sol_pago WHERE id_auditor_sol_pago= ").append(idAuditorSolPago);
+			elementosBorrados = session.createSQLQuery(hql.toString()).executeUpdate();
+			
+		}catch (JDBCException e){
+			transaction.rollback();
+			throw e;
+		}	
+		return elementosBorrados;
+	}	
 
 }//End clase

@@ -7,6 +7,8 @@
 			<th class="clean">
 			<th class="clean">Auditor</th>
 			<th class="clean">Nombre</th>
+			<th class="clean">Fecha Inicio</th>
+			<th class="clean">Fecha Fin</th>
 			<th class="clean">Volumen</th>
 		</tr>
 		<s:iterator value="lstAuditorSolPagoV" var="resultado"  status="itStatus">
@@ -17,6 +19,18 @@
 				</td>
 				<td>
 					<s:textfield id=""  maxlength="15" size="50" value="%{nombre}"  disabled="true"/>
+				</td>
+				<td>
+					<s:if test="%{fechaInicio != null}" >
+						<s:textfield maxlength="15" size="15" value="%{getText('fecha1',{fechaInicio})}" disabled="true"/>
+					</s:if>
+					<s:else><s:textfield  maxlength="15" size="15" value="" disabled="true"/></s:else>					
+				</td>
+				<td>
+					<s:if test="%{fechaFin != null}" >
+						<s:textfield  maxlength="15" size="15" value="%{getText('fecha1',{fechaFin})}" disabled="true"/>
+					</s:if>
+					<s:else><s:textfield value=""   maxlength="15" size="15" disabled="true"/></s:else>
 				</td>
 				<td>
 					<s:textfield id="" name="" maxlength="15" size="20"  cssClass="cantidad" value="%{getText('volumen',{volumenAuditor})}"  disabled="true"/>					

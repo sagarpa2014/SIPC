@@ -272,7 +272,10 @@
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoMenor"/>	
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ContratosRelacionCompras"/>	
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosProdsContNoExisteBD"/>
-			
+		
+		
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.Pais"/>	
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AuditorVolumenSolPago"/>	
  		 		
 	</session-factory>
 </hibernate-configuration>
