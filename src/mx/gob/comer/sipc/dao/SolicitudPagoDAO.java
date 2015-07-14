@@ -823,7 +823,7 @@ public class SolicitudPagoDAO {
 		if(idEspecialista != 0 && idEspecialista != -1){
 			consulta.append("where idEspecialista =").append(idEspecialista);
 		}	
-		consulta.insert(0, "From PrgEspecialistaNumCartasV ").append(" order by programa");
+		consulta.insert(0, "From PrgEspecialistaNumCartasV ");//.append(" order by programa");
 		lst= session.createQuery(consulta.toString()).list();
 		
 		return lst;
@@ -835,7 +835,7 @@ public class SolicitudPagoDAO {
 		StringBuilder consulta= new StringBuilder();
 		List<ProgramaNumCartasV> lst = null;
 		
-		consulta.insert(0, "From ProgramaNumCartasV ").append(" order by programa");
+		consulta.insert(0, "From ProgramaNumCartasV ");//.append(" order by programa");
 		lst= session.createQuery(consulta.toString()).list();
 		
 		return lst;
