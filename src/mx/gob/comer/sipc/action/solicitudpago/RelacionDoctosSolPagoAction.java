@@ -225,6 +225,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	private String archivoRelacionCompras;
 	private boolean reporteCruce;
 	private List<BitacoraRelcompras> lstBitacoraRelcompras;
+	private String especialista;
 	/***METODOS**/
 	public String listarPrograma(){
 		try{
@@ -489,6 +490,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 			//Recupera los datos de la carta adhesion
 			//CartaAdhesion ca = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 			 AsignacionCAaEspecialistaV ca = spDAO.consultaCAaEspecialistaV(folioCartaAdhesion).get(0);
+			 especialista = ca.getEspecialista();
 			 //Verifica el estado del comprador "habilitado o inhabilitado"
 			setParticipante(cDAO.consultaComprador(ca.getIdComprador()).get(0));
 			comprador = participante.getNombre()+(participante.getApellidoPaterno()!=null?participante.getApellidoPaterno():"")+(participante.getApellidoMaterno()!=null?participante.getApellidoMaterno():"");
@@ -3453,7 +3455,13 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	public void setFechaPeriodoFinalAuditor(Date fechaPeriodoFinalAuditor) {
 		this.fechaPeriodoFinalAuditor = fechaPeriodoFinalAuditor;
 	}
-	
-	
+
+	public String getEspecialista() {
+		return especialista;
+	}
+
+	public void setEspecialista(String especialista) {
+		this.especialista = especialista;
+	}
 	
 }

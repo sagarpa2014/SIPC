@@ -1,5 +1,11 @@
 <%@taglib uri="/struts-tags" prefix="s"%>
 <script type="text/javascript" src="<s:url value="/js/solicitudPago.js" />"></script>
+
+<div class= "derecha">
+	<label class="left1">Responsable del expediente:</label>
+	<font class="arial12bold"><s:property value="%{especialista}"/></font>
+</div>
+<div class="clear"></div>
 <div class="borderBottom" style="text-align:center"><h1>Datos de Carta de Adhesi&oacute;n</h1></div><br>
 
 <table class ="clean">
