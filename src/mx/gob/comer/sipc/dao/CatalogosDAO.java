@@ -1,20 +1,6 @@
 package mx.gob.comer.sipc.dao;
 import java.math.BigInteger;
 import java.util.List;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import mx.gob.comer.sipc.domain.AuditoresExternos;
 import mx.gob.comer.sipc.domain.Bancos;
 import mx.gob.comer.sipc.domain.Comprador;
@@ -37,40 +23,16 @@ import mx.gob.comer.sipc.domain.PlazasBancarias;
 import mx.gob.comer.sipc.domain.Programa;
 import mx.gob.comer.sipc.domain.ProgramaComprador;
 import mx.gob.comer.sipc.domain.Usuarios;
-import mx.gob.comer.sipc.domain.catalogos.AlmacenGeneralDeposito;
-import mx.gob.comer.sipc.domain.catalogos.AreasResponsables;
-import mx.gob.comer.sipc.domain.catalogos.BodegaUso;
-import mx.gob.comer.sipc.domain.catalogos.Bodegas;
-import mx.gob.comer.sipc.domain.catalogos.CapacidadesBodegas;
-import mx.gob.comer.sipc.domain.catalogos.CatCriteriosValidacion;
-import mx.gob.comer.sipc.domain.catalogos.Ciclo;
-import mx.gob.comer.sipc.domain.catalogos.Componente;
-import mx.gob.comer.sipc.domain.catalogos.CriterioPago;
-import mx.gob.comer.sipc.domain.catalogos.Ejido;
-import mx.gob.comer.sipc.domain.catalogos.Especialista;
-import mx.gob.comer.sipc.domain.catalogos.EstadosCivil;
-import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
-import mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento;
-import mx.gob.comer.sipc.domain.catalogos.ExpedienteRepresentante;
-import mx.gob.comer.sipc.domain.catalogos.Modalidad;
-import mx.gob.comer.sipc.domain.catalogos.Pais;
-import mx.gob.comer.sipc.domain.catalogos.Regional;
-import mx.gob.comer.sipc.domain.catalogos.RepresentanteComprador;
-import mx.gob.comer.sipc.domain.catalogos.RepresentanteLegal;
-import mx.gob.comer.sipc.domain.catalogos.TipoDocumentoPago;
-import mx.gob.comer.sipc.domain.catalogos.TiposAsentamiento;
-import mx.gob.comer.sipc.domain.catalogos.TiposIdentificacion;
-import mx.gob.comer.sipc.domain.catalogos.TiposVialidad;
-import mx.gob.comer.sipc.domain.catalogos.UnidadMedida;
-import mx.gob.comer.sipc.domain.catalogos.Variedad;
+import mx.gob.comer.sipc.domain.catalogos.*;
 import mx.gob.comer.sipc.domain.transaccionales.SolicitudInscripcion;
 import mx.gob.comer.sipc.vistas.domain.*;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
+
+
 
 
 
@@ -2121,6 +2083,38 @@ public class CatalogosDAO {
 		lst= session.createQuery(consulta.toString()).list();
 		
 		return lst;
+	}
+	
+	
+	//CLIENTE DE PARTICIPANTE
+	@SuppressWarnings("unchecked")
+	public List<ClienteDeParticipante> consultaClienteDeParticipante(int id,String nombre, String rfc)throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<ClienteDeParticipante> lst = null;
+		if(id!=0 && id != -1){
+			consulta.append("where id = ").append(id);
+		}
+		
+		if (nombre != null && !nombre.isEmpty()) {
+			if (consulta.length() > 0) {
+				consulta.append(" and nombre LIKE '%").append(nombre).append("%' ");
+			} else {
+				consulta.append(" where nombre LIKE '%").append(nombre.toUpperCase()).append("%' ");
+			}
+		}
+		
+		if (rfc != null && !rfc.isEmpty()) {
+			if (consulta.length() > 0) {
+				consulta.append(" and rfc LIKE '%").append(rfc).append("%' ");
+			} else {
+				consulta.append(" where rfc LIKE '%").append(rfc.toUpperCase()).append("%' ");	
+			}
+		}
+		
+		consulta.insert(0, " From ClienteDeParticipante ").append(" order by nombre");
+        lst= session.createQuery(consulta.toString()).list(); 
+		return lst;
+		
 	}
 	
 }

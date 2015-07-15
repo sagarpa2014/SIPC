@@ -322,7 +322,56 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success">index</result>
             <result name="input">index</result>
-        </action>        
+        </action>       
+        <!-- CLIENTE DEL PARTICIPANTE -->        
+        <action name="busquedaClienteParticipante" method="busquedaClienteParticipante" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">clienteDelParticipante</result>
+            <result name="input" type="tiles">clienteDelParticipante</result>
+        </action>     
+        <action name="ejecutaBusquedaClienteParticipante" method="ejecutaBusquedaClienteParticipante" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">clienteDelParticipante</result>
+            <result name="input" type="tiles">clienteDelParticipante</result>
+        </action>
+        <action name="registrarClienteParticipante" method="registrarClienteParticipante" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">clienteDelParticipante</result>
+            <result name="input" type="tiles">clienteDelParticipante</result>
+        </action>		
+        <action name="agregarClienteParticipante" method="agregarClienteParticipante" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">datosClienteParticipante</result>
+            <result name="input" type="tiles">datosClienteParticipante</result>
+        </action>
+        <action name="recuperaMunicipioByEstadoClientePar" method="recuperaMunicipioByEstadoClientePar" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/clientesParticipante/municipiosClienteParticipante.jsp</result>
+            <result name="input" >/WEB-INF/paginas/clientesParticipante/municipiosClienteParticipante.jsp</result>
+        </action>
+        <action name="recuperaLocalidadesPorMunicipioClienterPar" method="recuperaLocalidadesPorMunicipioClienterPar" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" >/WEB-INF/paginas/clientesParticipante/localidadesClienteParticipante.jsp</result>
+            <result name="input" >/WEB-INF/paginas/clientesParticipante/localidadesClienteParticipante.jsp</result>
+        </action>
+         <action name="validarRfcClienteParticipante" method="validarRfcClienteParticipante" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/clientesParticipante/respuestaValidaRfc.jsp</result>
+            <result name="input">/WEB-INF/paginas/clientesParticipante/respuestaValidaRfc.jsp</result>
+        </action>     
+        <action name="recuperaSeleccionTipoPersonaFiscalCliente" method="recuperaSeleccionTipoPersonaFiscalCliente" class="mx.gob.comer.sipc.catalogos.action.ClienteDeParticipanteAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success">/WEB-INF/paginas/clientesParticipante/datosFiscales.jsp</result>
+            <result name="input">/WEB-INF/paginas/clientesParticipante/datosFiscales.jsp</result>
+        </action>
         
     </package>
 </struts>

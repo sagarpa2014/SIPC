@@ -115,6 +115,7 @@
 				<li><a href="<s:url value="/catalogos/busquedaBodegas"/>">Bodegas</a></li>
 				<li><a href="<s:url value="/catalogos/busquedaCompradores"/>">Compradores</a></li>
 				<li><a href="<s:url value="/catalogos/busquedaRepLegal"/>">Representantes Legales</a></li>
+				<li><a href="<s:url value="/catalogos/busquedaClienteParticipante"/>">Clientes de Participante</a></li>
 			</ul>
 		</li>
 		<li><a href="#">SQL</a>
@@ -158,7 +159,8 @@
 			<ul>
 				<li><a href="<s:url value="/catalogos/busquedaCompradores"/>">Compradores</a></li>	
 				<li><a href="<s:url value="/catalogos/busquedaAuditores"/>">Auditores</a></li>
-				<li><a href="<s:url value="/catalogos/busquedaBodegas"/>">Bodegas</a></li>		 
+				<li><a href="<s:url value="/catalogos/busquedaBodegas"/>">Bodegas</a></li>	
+				<li><a href="<s:url value="/catalogos/busquedaClienteParticipante"/>">Clientes de Participante</a></li>	 
 			</ul>
 		</li>
 		<li ><a  href="<s:url value="/pagos/busquedaPagosCADevoluciones"/>">Devoluciones</a></li>

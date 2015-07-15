@@ -372,3 +372,65 @@ function validarNumerosValidos(volumen, id, msj){
 		}
 	}
 }
+
+
+
+
+function recuperaMunicipioPorEstado(idEdo, contenedor, direccionURL){
+	idEstado =$('#'+idEdo).val();
+	if(idEstado == -1){
+		return false;
+	}	
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: direccionURL,
+		   data: "idEstado="+idEstado, 
+		   success: function(data){
+				$('#'+contenedor).html(data).ready(function () {
+					$("#"+contenedor).fadeIn('slow');
+				});
+		   }	
+	});//fin ajax
+}
+
+
+function recuperaLocalidadesPorMunicipio(idEdo, idMpo, contenedor, direccionURL){
+	var idEstado = $('#'+idEdo).val();
+	var claveMunicipio = $('#'+idMpo).val();
+	
+	if(idEstado == -1 || idMpo == -1  ){
+		return false;
+	}	
+	
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: direccionURL,
+		   data: "idEstado="+idEstado + "&claveMunicipio="+claveMunicipio, 
+		   success: function(data){
+				$('#'+contenedor).html(data).ready(function () {
+					$("#"+contenedor).fadeIn('slow');
+					
+				});
+		   }	
+	});//fin ajax
+}
+
+function validarRfc(idRFC, contenedor, direccionURL){
+	var rfc = $('#'+idRFC).val();
+	if(rfc == null || rfc == ""  ){
+		return false;
+	}
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: direccionURL,
+		   data: "rfc="+rfc, 
+		   success: function(data){
+				$('#'+contenedor).html(data).ready(function () {
+					$("#"+contenedor).fadeIn('slow');					
+				});
+		   }	
+	});//fin ajax
+}

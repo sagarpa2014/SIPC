@@ -273,9 +273,12 @@
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.ContratosRelacionCompras"/>	
 		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.PrediosProdsContNoExisteBD"/>
 		
-		
+		<!-- Dictamen del Auditor -->
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Pais"/>	
-		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AuditorVolumenSolPago"/>	
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AuditorVolumenSolPago"/>
+		
+		<!-- Cliente de Participante -->
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.ClienteDeParticipante"/>			
  		 		
 	</session-factory>
 </hibernate-configuration>

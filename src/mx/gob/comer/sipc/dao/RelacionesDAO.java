@@ -2938,8 +2938,6 @@ public class RelacionesDAO {
 			
 		return lst; 
 	}
-
-	
 	
 	public List<RelacionComprasTMP> verificaRFCVsCURPProductor(String folioCartaAdhesion)throws  JDBCException{ 
 		List<RelacionComprasTMP> lst =new ArrayList<RelacionComprasTMP>();

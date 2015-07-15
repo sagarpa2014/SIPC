@@ -404,5 +404,13 @@
      <definition name="verReportesCruce" extends="masterTemplateSimple">
 		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/relacionCompras/respuestaGeneracionBitacora.jsp" />
 	</definition>
+	
+	<!-- CLIENTE PARTICIPANTE -->
+	<definition name="clienteDelParticipante" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/clientesParticipante/clienteDelParticipante.jsp" />
+	</definition>
+	<definition name="datosClienteParticipante" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/clientesParticipante/datosClienteParticipante.jsp" />
+	</definition>	
 		
 </tiles-definitions>
