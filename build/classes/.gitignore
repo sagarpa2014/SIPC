@@ -1,1 +1,19 @@
+<<<<<<< HEAD
 /mx
+=======
+/Excel.class
+/Prueba.class
+/catalogos.xml
+/displaytag.properties
+/hibernate.cfg.xml
+/inscripcion.xml
+/log4jconfig.properties
+/mx
+/pagos.xml
+/relaciones.xml
+/reportes.xml
+/seguimiento.xml
+/solicitudPago.xml
+/struts.properties
+/struts.xml
+>>>>>>> a42af8082728c29eec202d0c64ff11cbe962a4f1

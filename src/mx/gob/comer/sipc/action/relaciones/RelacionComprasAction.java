@@ -68,6 +68,7 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagPorTipoCambio;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoMenor;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoNoCorrespondeConPagosV;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrecioPagadoProductor;
+import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoExistenBD;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoPagados;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosNoValidadosDRDE;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PrediosProdsContNoExisteBD;
@@ -79,7 +80,6 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.ProductoresIncosistentes;
 import mx.gob.comer.sipc.vistas.domain.relaciones.RendimientosProcedente;
 import mx.gob.comer.sipc.vistas.domain.relaciones.RfcProductorVsRfcFactura;
 import mx.gob.comer.sipc.vistas.domain.relaciones.VolumenFiniquito;
-import mx.gob.comer.sipc.vistas.domain.relaciones.VolumenNoProcedente;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
@@ -160,7 +160,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<ProductorExisteBD> lstProductorExisteBD;
 	private List<BoletasVsFacturas> lstBoletasVsFacturas;
 	private List<BoletasDuplicadas> lstBoletasDuplicadas;
-	private List<RelacionComprasTMP> lstPrediosNoExistenBD;
+	private List<PrediosNoExistenBD> lstPrediosNoExistenBD;
 	private List<PrediosProdsContNoExisteBD> lstPrediosProdsContNoExistenBD;
 	private List<BoletasFueraDePeriodo> lstBoletasFueraDePeriodo;
 	private List<BoletasFueraDePeriodoPago> lstBoletasFueraDePeriodoPago;
@@ -244,9 +244,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
 	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoNoCorrespondeConPagosV;
 	private List<PrecioPagadoNoCorrespondeConPagosV> lstPrecioPagadoMenorQueAviso;
-	private List<RelacionComprasTMP> lstRfcVsCurpProductor;
-	private List<RelacionComprasTMP> lstRfcProductorVsRfcFactura2;
-	private List<VolumenNoProcedente> lstVolNoProcedenteYApoyEnReg;
+	private List<RelacionComprasTMP> lstRfcProductorVsRfcFacturaSinContrato;
 	
 	
 	public String capturaCargaArchivoRelCompras(){ 
@@ -654,49 +652,42 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		   if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdGrupo().intValue() == 6){//GRUPO 6
 			   if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 6){//CAMPO 6 FOLIO DEL PREDIO (Incluyendo el secuencial)							  
 				  if(valor!=null && !valor.isEmpty()){
-					  if(idPrograma <= 42){
-						  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
-							  AppLogger.info("app","fila: "+contRow+" Columna"+contColumna+" grupo 6 campo 6 el valor es "+valor);
-							  if(valor.contains("C")){
-								  if(valor.indexOf("-")!=-1){ 
-									  rcTmp.setFolioPredioAlterno(valor.substring(0, (valor.lastIndexOf("-"))));
-									}else{
-										 rcTmp.setFolioPredioAlterno(valor);
-									}							 
+					  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
+						  AppLogger.info("app","fila: "+contRow+" Columna"+contColumna+" grupo 6 campo 6 el valor es "+valor);
+						  if(valor.contains("C")){
+							  if(valor.indexOf("-")!=-1){ 
+								  rcTmp.setFolioPredioAlterno(valor.substring(0, (valor.lastIndexOf("-"))));
 								}else{
-									  if(valor.indexOf("-")!=-1){ 
-										  try{
-											  rcTmp.setFolioPredioSec(Integer.parseInt(valor.substring((valor.lastIndexOf("-")+1))));
-										  	  rcTmp.setFolioPredio(valor.substring(0, (valor.lastIndexOf("-"))));
-										  }catch(Exception e){
-											  rcTmp.setFolioPredio("INVALIDO");	
-											  rcTmp.setFolioPredioSec(-1);
-											  rcTmp.setPredioIncorrecto(valor);
-										  }				 
-									  }else{
-										  try{
-											  double vDouble = Double.parseDouble(valor);
-											  Long vLong = (long) vDouble;
-											  rcTmp.setFolioPredio("INVALIDO");	
-											  rcTmp.setFolioPredioSec(-1);
-											  rcTmp.setPredioIncorrecto(vLong.toString());
-										  }catch(Exception e){
-											  rcTmp.setFolioPredio("INVALIDO");	
-											  rcTmp.setFolioPredioSec(-1);  
-											  rcTmp.setPredioIncorrecto(valor);
-										  }	
-									  }
-								}				  
-						  }else{
-							  AppLogger.info("app",lstGruposCamposDetalleRelacionV.get(contColumna).getCampo()+" Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Valor no permitido, se esperaba valor de tipo "+ lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato());
-						  } 
+									 rcTmp.setFolioPredioAlterno(valor);
+								}							 
+							}else{
+								  if(valor.indexOf("-")!=-1){ 
+									  try{
+										  rcTmp.setFolioPredioSec(Integer.parseInt(valor.substring((valor.lastIndexOf("-")+1))));
+									  	  rcTmp.setFolioPredio(valor.substring(0, (valor.lastIndexOf("-"))));
+									  }catch(Exception e){
+										  rcTmp.setFolioPredio("INVALIDO");	
+										  rcTmp.setFolioPredioSec(-1);
+										  rcTmp.setPredioIncorrecto(valor);
+									  }				 
+								  }else{
+									  try{
+										  double vDouble = Double.parseDouble(valor);
+										  Long vLong = (long) vDouble;
+										  rcTmp.setFolioPredio("INVALIDO");	
+										  rcTmp.setFolioPredioSec(-1);
+										  rcTmp.setPredioIncorrecto(vLong.toString());
+									  }catch(Exception e){
+										  rcTmp.setFolioPredio("INVALIDO");	
+										  rcTmp.setFolioPredioSec(-1);  
+										  rcTmp.setPredioIncorrecto(valor);
+									  }	
+								  }
+							}				  
 					  }else{
-						  Long l = Long.valueOf(valor);
-						  System.out.println("l"+l);
-						  System.out.println("l1"+l.toString());
-						  rcTmp.setFolioPredio(valor);				  
+						  AppLogger.info("app",lstGruposCamposDetalleRelacionV.get(contColumna).getCampo()+" Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Valor no permitido, se esperaba valor de tipo "+ lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato());
 					  }
-				  } // end valor diferente de nulo 
+				  }  
 			   }else if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 7){ //folio del productor			
 				  if(valor!=null && !valor.isEmpty()){
 					  long vLong = 0;
@@ -946,15 +937,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							  } 								  
 							 
 					   }
-				   }else if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 70){//"VARIEDAD "
+				   }else if(lstGruposCamposDetalleRelacionV.get(contColumna).getIdCampo().intValue() == 70){ //"VARIEDAD "
 					   if(valor!=null && !valor.isEmpty()){
-							  Double valorD = 0.0;
 							  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
 								  AppLogger.info("app","fila "+(contRow+1)+" Columna"+contColumna+" grupo 9 campo 70 el valor es "+valor);
-								  valorD = Double.parseDouble(valor);								  
-								  rcTmp.setIdVariedad(valorD.intValue());
+								  rcTmp.setVariedad(valor);
 							  }else{
-								  rcTmp.setIdVariedad(-1);
 								  AppLogger.info("app",lstGruposCamposDetalleRelacionV.get(contColumna).getCampo()+" Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Valor no permitido, se esperaba valor de tipo "+ lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato());
 							  } 							  
 					   }
@@ -1183,7 +1171,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 				msj = "No fue posible guardar "+(numRegNoGuardados == 1?"registro":"registros")+" en la base de datos de la hoja"+numeroHoja+", por favor verifique";
 				lstLog.add(msj);
 			}	
-			if((contRow-lstGruposCamposEncabezadoRelacionV.size()) >= 1){
+			if((contRow-lstGruposCamposEncabezadoRelacionV.size()) >1){
 				msj = "Total registros del detalle "+(contRow-lstGruposCamposEncabezadoRelacionV.size())+" de la hoja "+numeroHoja;
 				lstLog.add(msj);
 			}					
@@ -1306,7 +1294,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		//Muestra el periodo inicial y final del complemento del contrato		
 		return SUCCESS;
 	}
-		
+	
+	
 	public String recuperaCamposPorGrupo(int idGrupo){
 		//Recupera el programa a traves de la carta de adhesion
 		cartaAdhesion = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
@@ -1375,50 +1364,34 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = wb.createSheet("PRED EXISTA EN BD");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
-						countColumn = 0;
 						lstPrediosNoExistenBD = rDAO.verificaSiPrediosExistenBD(folioCartaAdhesion, cartaAdhesion.getIdPrograma());
 						if(lstPrediosNoExistenBD.size()>0){//En el listado se guardan los predios que no existen en la base de datos
 							//Guardar en bitacora
 							llenarBitacora(true, l.getIdCriterio());
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Carta Adhesión: "+folioCartaAdhesion);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);    
+							cell = row.createCell(0);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Estado");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Nombre Productor");
-							cell = row.createCell(++countColumn);
+							cell = row.createCell(0);
 							cell.setCellValue("Predio");
-													
-							for(RelacionComprasTMP p: lstPrediosNoExistenBD){
-								countColumn = 0;
+							cell = row.createCell(1);
+							cell.setCellValue("Secuencial");
+							cell = row.createCell(2);
+							cell.setCellValue("Predio Alterno");							
+							for(PrediosNoExistenBD p: lstPrediosNoExistenBD){
 								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getClaveBodega()+";"+p.getNombreEstado()+";"+p.getPaternoProductor()+";"
-										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"
-										+p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+(p.getFolioPredioAlterno()!=null&&!p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"null;"));
+								bd.setMensaje(p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+p.getFolioPredioAlterno());
 								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza el productor como inconsistente
-								rDAO.actualizaPredioIncosistente(p.getIdRelacionComprasTmp(), folioCartaAdhesion);
 								row = sheet.createRow(++countRow);
-								cell = row.createCell(countColumn);
-								cell.setCellValue(p.getClaveBodega()!=null && !p.getClaveBodega().isEmpty()?p.getClaveBodega():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(p.getNombreEstado()!=null && !p.getNombreEstado().isEmpty()?p.getNombreEstado():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue((p.getPaternoProductor()!=null && !p.getPaternoProductor().isEmpty() ? p.getPaternoProductor()+" " :"" )
-										+(p.getMaternoProductor()!=null ? p.getMaternoProductor()+" " :"") 
-										+(p.getNombreProductor()!=null ? p.getNombreProductor() :""));
-								cell = row.createCell(++countColumn);
+								cell = row.createCell(0);
 								cell.setCellValue(p.getFolioPredio()!=null && !p.getFolioPredio().isEmpty()?p.getFolioPredio():"");
-
-							}							
+								cell = row.createCell(1);
+								cell.setCellValue(p.getFolioPredioSec()!=null?p.getFolioPredioSec()+"":"");
+								cell = row.createCell(2);
+								cell.setCellValue(p.getFolioPredioAlterno()!=null && !p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"");
+							}
+							
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
@@ -1558,7 +1531,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(p.getFolioCartaExterna()!=null&&!p.getFolioCartaExterna().isEmpty()?p.getFolioCartaExterna():"null;"));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
-								rDAO.actualizaPredioIncosistente(p.getId(), folioCartaAdhesion);
+								rDAO.actualizaPredioIncosistente(p.getId());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(p.getClaveBodega()!=null ? p.getClaveBodega()+"":"");
@@ -1595,7 +1568,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}						
-					}					
+					}
+					
 					
 				}//end recorrido lstValidacionPorGrupo
 				nombreArchivoLogXls = "Predios.xls";
@@ -2039,12 +2013,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					
 						}
 					}else if(l.getIdCriterio() == 30){
-						sheet = wb.createSheet("RFC CORRESPONDE CURP PROD"); //10.2 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS CURP
+						sheet = wb.createSheet("RFC CORRESPONDE RFC PROD"); //10.1 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS BASE DE DATOS
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn =0;
-						lstRfcVsCurpProductor = rDAO.verificaRFCVsCURPProductor(folioCartaAdhesion);  
-						if(lstRfcVsCurpProductor.size()>0){//En el listado se guardan las facturas duplicadas por productor
+						lstRfcProductorVsRfcFacturaSinContrato = rDAO.verificaRFCProductorVsRFCFacturaSinContrato(folioCartaAdhesion);  
+						if(lstRfcProductorVsRfcFacturaSinContrato.size()>0){//En el listado se guardan las facturas duplicadas por productor
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
@@ -2055,73 +2029,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue("Clave Bodega");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Estado");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("RFC Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("CURP Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Peso Neto ana. (ton) Fac ");
-							for(RelacionComprasTMP r: lstRfcVsCurpProductor){
-								countColumn = 0;
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
-										+r.getNombreProductor()+";"
-									+r.getRfcProductor()+";"+r.getCurpProductor()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza el productor como inconsistente
-								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
-										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(countColumn);
-								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
-								cell = row.createCell(++countColumn);
-								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
-										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
-										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getCurpProductor()!=null && !r.getCurpProductor().isEmpty()?r.getCurpProductor():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
-							}							
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"RFC VS CURP SI CORRESPONDEN AL PRODUCTOR\"";							
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-					
-						}			
-					/*}else if(l.getIdCriterio() == 31){
-						sheet = wb.createSheet("RFC PROD VS RFC COMPRADOR"); //10.1 DIFERENCIA DE RFC DE PRODUCTOR VS RFC FACTURA
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						countColumn =0;
-						lstRfcProductorVsRfcFactura2 = rDAO.validaRFCFacVsFacComprador(folioCartaAdhesion, idPrograma);  
-						if(lstRfcProductorVsRfcFactura2.size()>0){//En el listado se guardan las facturas duplicadas por productor
-							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Estado");
-							if(siAplicaFolioContrato){
-								cell = row.createCell(++countColumn);
-								cell.setCellValue("Folio Contrato");
-							}
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
@@ -2130,25 +2037,21 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue("RFC Factura");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Peso Neto ana. (ton) Fac ");
-							for(RelacionComprasTMP r: lstRfcVsCurpProductor){
+							for(RelacionComprasTMP r: lstRfcProductorVsRfcFacturaSinContrato){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+(siAplicaFolioContrato?r.getFolioContrato()+";":"")+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
+								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
 										+r.getNombreProductor()+";"
 									+r.getRfcProductor()+";"+r.getRfcFacVenta()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
-								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
+								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), null,
 										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");	
-								if(siAplicaFolioContrato){
-									cell = row.createCell(++countColumn);
-									cell.setCellValue(r.getFolioContrato()!=null ? r.getFolioContrato()+"":"");
-								}
+								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
 								cell = row.createCell(++countColumn);
 								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
 										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
@@ -2163,7 +2066,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
-							msj = "La validación es correcta \"RFC PRODUCTOR VS RFC FACTURA SI CORRESPONDEN AL PRODUCTOR\"";							
+							msj = "La validación es correcta \"RFC DE LAS FACTURAS SI CORRESPONDEN AL PRODUCTOR\"";							
 							row = sheet.createRow(countRow);
 							cell = row.createCell(0);
 							cell.setCellValue(msj);
@@ -2171,7 +2074,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 					
-						}	*/		
+						}			
 					}else if(l.getIdCriterio() == 20){
 						sheet = wb.createSheet("RESUMEN DE OBSERVACIONES");
 						sheet = setMargenSheet(sheet);
@@ -2436,89 +2339,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}					
 						//end criterio 25
-					}else if(l.getIdCriterio() == 32){// "VOLUMEN NO PROCEDENTE VARIEDAD"
-						sheet = wb.createSheet("VOL NO PROCEDENTE Y APOY EN REG");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						countColumn = 0;						
-						lstVolNoProcedenteYApoyEnReg = rDAO.validaVolumenNoProcedenteYApoyadoEnReg(folioCartaAdhesion,idPrograma);
-						if(lstVolNoProcedenteYApoyEnReg.size()>0){//En el listado se guardan los volumenes no procedentes
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();		
-							row = sheet.createRow(countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue(folioCartaAdhesion);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue(msj);							
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Estado");
-							//Si aplica "FOLIO CONTRATO" en la configuracion del esquema 
-							if(siAplicaFolioContrato){
-								cell = row.createCell(++countColumn);
-								cell.setCellValue("Folio Contrato");
-							}								
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Variedad");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Volumen Factura");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Volumen Apoyado en Regional");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Volumen no procedente");
-							cell = row.createCell(++countColumn);
-				
-							for(VolumenNoProcedente bod: lstVolNoProcedenteYApoyEnReg){
-								countColumn = 0;
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(bod.getClaveBodega()+";"+bod.getNombreEstado()+";"+(siAplicaFolioContrato?bod.getFolioContrato()+";":"")+bod.getPaternoProductor()+";"+bod.getMaternoProductor()+";"
-										+bod.getNombreProductor()+";"+bod.getIdVariedad()+";"+bod.getVolTotalFacturado()+";"+bod.getVolApoyadoEnRegional()+";"
-										+(bod.getVolNoProcedente()!=null?bod.getVolNoProcedente():"0"));  
-								b.getBitacoraRelcomprasDetalle().add(bd);		
-								//Actualiza el productor como inconsistente
-								rDAO.actualizaVolumenNoProcedente(folioCartaAdhesion, bod.getClaveBodega(), bod.getNombreEstado(), bod.getFolioContrato(),
-										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getVolNoProcedente().toString());	// AHS [LINEA] - 17022015
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(countColumn);
-								cell.setCellValue(bod.getClaveBodega()!=null ? bod.getClaveBodega()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getNombreEstado()!=null ? bod.getNombreEstado()+"":"");
-								if(siAplicaFolioContrato){
-									cell = row.createCell(++countColumn);
-									cell.setCellValue(bod.getFolioContrato()!=null ? bod.getFolioContrato()+"":"");
-								}								
-								cell = row.createCell(++countColumn);
-								cell.setCellValue((bod.getPaternoProductor()!=null && !bod.getPaternoProductor().isEmpty() ? bod.getPaternoProductor()+" " :"" )
-										+(bod.getMaternoProductor()!=null ?bod.getMaternoProductor()+" " :"") 
-										+(bod.getNombreProductor()!=null ?bod.getNombreProductor() :""));
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getIdVariedad()!=null?bod.getIdVariedad()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getVolTotalFacturado()!=null?bod.getVolTotalFacturado()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getVolApoyadoEnRegional()!=null?bod.getVolApoyadoEnRegional()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getVolNoProcedente()!=null?bod.getVolNoProcedente()+"":""); 
-							}				
-							                                                                                          
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"NO HAY VOLUMEN NO PROCEDENTE Y APOYADO EN REGIONAL\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}					
-						//end criterio 25
 					}else if(l.getIdCriterio()== 27){//VOLUMEN DE FINIQUITO
 						sheet = wb.createSheet("VOLUMEN DE FINIQUITO");
 						sheet = setMargenSheet(sheet);
@@ -2689,7 +2509,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							lstBoletasFueraDePeriodo = rDAO.verificaBoletasFueraDePeriodo(folioCartaAdhesion, fechaInicioS, fechaFinS);
 							if(lstBoletasFueraDePeriodo.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-								msj = l.getCriterio()+"/";//new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();
+								msj = l.getCriterio()+new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();
 								row = sheet.createRow(countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
@@ -2990,7 +2810,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						cell = row.createCell(++countColumn);
 						cell.setCellValue("Productor");
 						cell = row.createCell(++countColumn);
-						cell.setCellValue("Folio Fiscal de la Factura");
+						cell.setCellValue("Folio Factura");
 						cell = row.createCell(++countColumn);
 						cell.setCellValue("Peso Neto Ana. (Ton)");
 						cell = row.createCell(++countColumn);
@@ -3449,11 +3269,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							if(camposQueAplica.contains("20,")){
 								cell = row.createCell(++countColumn);
 								cell.setCellValue("IMPORTE TOTAL FACTURADO ($)");
-							}	
-							if(camposQueAplica.contains("70,")){
-								cell = row.createCell(++countColumn);
-								cell.setCellValue("VARIEDAD");
-							}
+							}							
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("P.N.A. TOTAL DE LA FACTURA (TON.)");						
 							for(FacturasCamposRequeridos bo: lstFacturasCamposRequeridos){
@@ -3463,8 +3279,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+bo.getPaternoProductor()+";"+bo.getMaternoProductor()+";"+bo.getNombreProductor()+";"+bo.getFolioFacturaVenta()+";"
 										+(camposQueAplica.contains("16,")?bo.getFechaEmisionFac()+";":"")+(camposQueAplica.contains("17,")?bo.getRfcFacVenta()+";":"")
 										+(camposQueAplica.contains("19,")?bo.getVolSolFacVenta()+";":"")+(camposQueAplica.contains("65,")?bo.getVolTotalFacVenta()+";":"")
-										+(camposQueAplica.contains("20,")?bo.getImpSolFacVenta()+";":"")+(camposQueAplica.contains("70,")?bo.getVariedad()+";":"")
-										+(bo.getVolTotalFacVentaD()!=null?bo.getVolTotalFacVentaD():"0" ));
+										+(camposQueAplica.contains("20,")?bo.getImpSolFacVenta()+";":"")+(bo.getVolTotalFacVentaD()!=null?bo.getVolTotalFacVentaD():"" ));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								actualizarRelacionComprasTMPByFacturasIncosistentes(folioCartaAdhesion, bo.getClaveBodega(),bo.getNombreEstado(),bo.getFolioContrato(), 
 										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getFolioFacturaVenta());
@@ -3503,10 +3318,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								if(camposQueAplica.contains("20,")){
 									cell = row.createCell(++countColumn);
 									cell.setCellValue(bo.getImpSolFacVenta());
-								}
-								if(camposQueAplica.contains("70,")){
-									cell = row.createCell(++countColumn);
-									cell.setCellValue(bo.getVariedad());
 								}
 								cell = row.createCell(++countColumn);
 								cell.setCellValue((bo.getVolTotalFacVentaD()!=null?bo.getVolTotalFacVentaD():"")+"");								
@@ -4146,8 +3957,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Peso Neto Fac (ton)");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Importe Factura");
-							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Cheque");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Total");
@@ -4162,7 +3971,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(f.getClaveBodega()+";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")+
 										f.getPaternoProductor()+";"+f.getMaternoProductor()+";"+f.getNombreProductor()+";"+
-										f.getVolTotalFacVenta()+";"+f.getImpSolFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
+										f.getVolTotalFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
 										f.getImpPrecioTonPagiSinaxc()+";"+(f.getPrecioCalculado()!=null ? f.getPrecioCalculado()+";":0+";")+
 										(f.getPrecioPagadoEnAviso()!=null ? f.getPrecioPagadoEnAviso()+";":0+";"));
 								b.getBitacoraRelcomprasDetalle().add(bd);
@@ -4183,9 +3992,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(f.getMaternoProductor()!=null ? f.getMaternoProductor()+" " :"") 
 										+(f.getNombreProductor()!=null ? f.getNombreProductor() :""));
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImpSolFacVenta()!=null?f.getImpSolFacVenta()+"":"");
+								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");								
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(f.getImpDocPagoSinaxc()!=null?f.getImpDocPagoSinaxc()+"":"");
 								cell = row.createCell(++countColumn);
@@ -4362,7 +4169,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	
 	public String  generarBitacoraRelCompras() {
 		try{
-			int countStatus = 0, countStatusBad = 0;
+			int countStatus = 0;
 			grupoCriterio = grupoCriterioG;
 			cartaAdhesion = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 			programa  = cDAO.consultaPrograma(cartaAdhesion.getIdPrograma()).get(0);
@@ -4408,17 +4215,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						
 						cDAO.guardaObjeto(l);
 						rutaSalida  = "";
-						countStatusBad ++;
-					}else if(l.getStatus() == 1){//todo bien
+						
+					}else if(l.getIdCriterio() == 1){//todo bien
 						countStatus++;
 					}
 				}
 				
-				if(countStatusBad == 0){
-					cuadroSatisfactorio = "No hay nada que generar";
-					lstBitacoraRelComprasPorGrupo  = null;
-					return SUCCESS;
-				}
 				lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
 				if(countStatus == lstBitacoraRelComprasPorGrupo.size()){
 					cuadroSatisfactorio = "No se encontro ninguna incosistencia en el grupo seleccionado";
@@ -4912,13 +4714,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		this.lstBoletasDuplicadas = lstBoletasDuplicadas;
 	}
 
-	
-	public List<RelacionComprasTMP> getLstPrediosNoExistenBD() {
+	public List<PrediosNoExistenBD> getLstPrediosNoExistenBD() {
 		return lstPrediosNoExistenBD;
 	}
 
 	public void setLstPrediosNoExistenBD(
-			List<RelacionComprasTMP> lstPrediosNoExistenBD) {
+			List<PrediosNoExistenBD> lstPrediosNoExistenBD) {
 		this.lstPrediosNoExistenBD = lstPrediosNoExistenBD;
 	}
 
@@ -5516,13 +5317,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		this.lstPrecioPagadoMenorQueAviso = lstPrecioPagadoMenorQueAviso;
 	}
 
-	public List<RelacionComprasTMP> getLstRfcVsCurpProductor() {
-		return lstRfcVsCurpProductor;
+	public List<RelacionComprasTMP> getLstRfcProductorVsRfcFacturaSinContrato() {
+		return lstRfcProductorVsRfcFacturaSinContrato;
 	}
 
-	public void setLstRfcVsCurpProductor(
-			List<RelacionComprasTMP> lstRfcVsCurpProductor) {
-		this.lstRfcVsCurpProductor = lstRfcVsCurpProductor;
+	public void setLstRfcProductorVsRfcFacturaSinContrato(
+			List<RelacionComprasTMP> lstRfcProductorVsRfcFacturaSinContrato) {
+		this.lstRfcProductorVsRfcFacturaSinContrato = lstRfcProductorVsRfcFacturaSinContrato;
 	}
 
 	public boolean isAplicaComplemento() {
@@ -5548,24 +5349,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setFechaFinAuditor(Date fechaFinAuditor) {
 		this.fechaFinAuditor = fechaFinAuditor;
 	}
-
-	public List<RelacionComprasTMP> getLstRfcProductorVsRfcFactura2() {
-		return lstRfcProductorVsRfcFactura2;
-	}
-
-	public void setLstRfcProductorVsRfcFactura2(
-			List<RelacionComprasTMP> lstRfcProductorVsRfcFactura2) {
-		this.lstRfcProductorVsRfcFactura2 = lstRfcProductorVsRfcFactura2;
-	}
-
-	public List<VolumenNoProcedente> getLstVolNoProcedenteYApoyEnReg() {
-		return lstVolNoProcedenteYApoyEnReg;
-	}
-
-	public void setLstVolNoProcedenteYApoyEnReg(
-			List<VolumenNoProcedente> lstVolNoProcedenteYApoyEnReg) {
-		this.lstVolNoProcedenteYApoyEnReg = lstVolNoProcedenteYApoyEnReg;
-	}	
 	
 }
 
