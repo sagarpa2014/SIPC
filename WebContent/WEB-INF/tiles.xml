@@ -412,5 +412,8 @@
 	<definition name="datosClienteParticipante" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/clientesParticipante/datosClienteParticipante.jsp" />
 	</definition>	
-		
+	<!-- RELACION DE VENTAS (ESPECIALISTA) -->
+	<definition name="capRelacionVentas" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/relVentas/capRelacionVentas.jsp" />
+	</definition>		
 </tiles-definitions>

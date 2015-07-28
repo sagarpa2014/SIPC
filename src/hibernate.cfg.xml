@@ -279,6 +279,9 @@
 		
 		<!-- Cliente de Participante -->
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.ClienteDeParticipante"/>			
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.TipoUsoGrano"/>	
+		<mapping class="mx.gob.comer.sipc.vistas.domain.relaciones.RelacionVentas"/>	
+				
  		 		
 	</session-factory>
 </hibernate-configuration>

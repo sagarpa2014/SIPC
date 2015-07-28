@@ -499,7 +499,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			   }
 			   if(contRow < (lstGruposCamposEncabezadoRelacionV.size())){
 				   getValidacionEncabezadoArchivo(valor);
-			   }			   
+			   }		   
 			   
 			   if(contRow >= lstGruposCamposEncabezadoRelacionV.size() && contColumna < lstGruposCamposDetalleRelacionV.size()){
 				   getValidacionDetalle(valor);			   

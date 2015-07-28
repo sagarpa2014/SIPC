@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/mx
-=======
-/Excel.class
-/Prueba.class
+/struts.xml
 /catalogos.xml
 /displaytag.properties
 /hibernate.cfg.xml
@@ -15,5 +11,5 @@
 /seguimiento.xml
 /solicitudPago.xml
 /struts.properties
-/struts.xml
->>>>>>> a42af8082728c29eec202d0c64ff11cbe962a4f1
+/Excel.class
+/Prueba.class

@@ -57,8 +57,9 @@ label.left{ width:80px; display:block; float:left; margin: 0px 0; color:#088a08;
 label.left1{ width:200px; display:block; float:left; }
 label.left2{ width:150px; display:block; float:left; }
 label.left3{ width:300px; display:block; float:left; }
+label.left4{ width:80px; display:block; float:left;}
 .formulario{ display:block; float:left; margin-right:10px; }
-button span{ display:none; }
+button span{ display:none;  }
 /* Tablas */
 table{ border-collapse:collapse; margin: 5px 0;}
 table,th, td { border: 1px solid #DDD;  font-family:Helvetica; font-size: 12px;  }

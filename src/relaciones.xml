@@ -460,8 +460,52 @@
 			<result name="success" type="tiles">verReportesCruce</result>
             <result name="input" type="tiles">verReportesCruce</result>
         </action>
-        
-           
-           
+        <action name="capRelacionVentas" method="capRelacionVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/>         
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+			<result name="success" type="tiles">capRelacionVentas</result>
+            <result name="input" type="tiles">capRelacionVentas</result>
+        </action>    
+        <action name="getTablaRelVentas" method="getTablaRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/tablaCapRelVentas.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/relVentas/tablaCapRelVentas.jsp</result>
+        </action>
+         
+        <action name="consigueDestinoRelVentas" method="consigueDestinoRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/lstDestino.jsp</result>
+            <result name="input" >/WEB-INF/paginas/relaciones/relVentas/lstDestino.jsp</result>
+        </action>
+        <action name="registrarRelVentas" method="registrarRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/repuestaRegistroRelVentas.jsp</result>
+            <result name="input" >/WEB-INF/paginas/relaciones/relVentas/repuestaRegistroRelVentas.jsp</result>
+        </action>
+        <action name="cargaIndRelVentas" method="cargaIndRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/capRelVentasManual.jsp</result>
+            <result name="input" >/WEB-INF/paginas/relaciones/relVentas/capRelVentasManual.jsp</result>
+        </action>
+        <action name="cargaMasivaRelVentas" method="cargaMasivaRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/capRelVentasArchivo.jsp</result>
+            <result name="input" >/WEB-INF/paginas/relaciones/relVentas/capRelVentasArchivo.jsp</result>
+        </action> 
+        <action name="registraArchivoRelVentas" method="registraArchivoRelVentas" class="mx.gob.comer.sipc.action.relaciones.RelacionVentasAction">
+			<interceptor-ref name="chksession"/>        
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/relaciones/relVentas/respuestaRegistroRelVentasArchivo.jsp</result>
+            <result name="input">/WEB-INF/paginas/relaciones/relVentas/respuestaRegistroRelVentasArchivo.jsp</result>
+        </action>     
+         
     </package>
 </struts>

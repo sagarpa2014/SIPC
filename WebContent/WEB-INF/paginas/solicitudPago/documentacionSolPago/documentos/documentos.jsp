@@ -188,8 +188,10 @@
 										</s:if>
 										<s:else>
 											<a href="<s:url value="/solicitudPago/capCertificadoDeposito?folioCartaAdhesion=%{folioCartaAdhesion}"/>" title="Relación de Certificados"><s:property value="%{expediente}"/></a>
-										</s:else>
-										
+										</s:else>										
+									</s:elseif>
+									<s:elseif test="%{idExpediente == 12}"><!-- Relacion  de Ventas -->
+										<a href="<s:url value="/relaciones/capRelacionVentas?folioCartaAdhesion=%{folioCartaAdhesion}&tipoDocumentacion=1&tipoAccion=-1&tipoCargaRelVentas=1 "/>" title="Relación de Ventas"><s:property value="%{expediente}"/></a>
 									</s:elseif>
 									<s:elseif test="%{idExpediente == 34}">
 										<s:if test="%{#session.idPerfil==4}">

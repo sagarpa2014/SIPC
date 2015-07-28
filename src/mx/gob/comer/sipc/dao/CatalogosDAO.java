@@ -511,15 +511,15 @@ public class CatalogosDAO {
 	 *  
 	 */
 	public Object guardaObjeto(Object o)throws JDBCException {
-		try{
+		//try{
 			session.saveOrUpdate(o);
 			session.flush();
 			session.clear();
-		}catch (JDBCException e){
-			e.printStackTrace();
-			transaction.rollback();
-			throw e;
-		}
+		//}catch (JDBCException e){
+		//	e.printStackTrace();
+			//transaction.rollback();
+			//throw e;
+		//}
 		return o;
 	}
 	
@@ -2115,6 +2115,19 @@ public class CatalogosDAO {
         lst= session.createQuery(consulta.toString()).list(); 
 		return lst;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<TipoUsoGrano> consultaTipoUsoGrano(int id) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<TipoUsoGrano> lst=null;
+		if (id != 0 && id != -1){
+			consulta.append("where id= ").append(id);
+		}
+		consulta.insert(0, "From TipoUsoGrano ");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
 	}
 	
 }

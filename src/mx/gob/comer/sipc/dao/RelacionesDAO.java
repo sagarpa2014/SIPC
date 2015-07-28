@@ -5801,5 +5801,61 @@ public class RelacionesDAO {
 			}		
 			return lst;
 		}
-				
+
+
+		
+		
+		public List<RelacionVentasV> consultaRelVentasV(long id, String folioCartaAdhesion)throws  JDBCException{
+			List<RelacionVentasV> lst = new ArrayList<RelacionVentasV>();
+			StringBuilder consulta= new StringBuilder();	
+			
+			if (id != 0 && id != -1){
+				consulta.append("where id=").append(id);
+			}		
+						
+			if (folioCartaAdhesion !=  null && !folioCartaAdhesion.isEmpty()){
+				if(consulta.length()>0){
+					consulta.append(" and folio_carta_adhesion ='").append(folioCartaAdhesion).append("'");
+				}else{
+					consulta.append("where folio_carta_adhesion ='").append(folioCartaAdhesion).append("'");
+				}
+			}
+			
+			consulta.insert(0, "select  * from relacion_ventas_v ");
+			SQLQuery query = session.createSQLQuery(consulta.toString());
+			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+			List<?> data = query.list();			
+			for(Object object : data){
+				Map<?, ?> row = (Map<?, ?>)object;
+				RelacionVentasV b = new RelacionVentasV();
+				Integer idRelVentas  = (Integer) row.get("id");
+				b.setId(idRelVentas.longValue());
+				b.setCliente((String) row.get("nombre_cliente"));
+				b.setDireccionCliente((String) row.get("direccion_cliente"));
+				b.setFolioCartaAdhesion((String) row.get("folio_carta_adhesion"));
+				b.setFolioFactura((String) row.get("folio_factura"));
+				BigDecimal valor = (BigDecimal) row.get("volumen");
+			    b.setVolumen(valor!=null ? valor.doubleValue():0.0);
+			    Date fecha = (Date) row.get("fecha");
+			    b.setFecha(fecha!=null ? fecha:null);
+				b.setDestino((String) row.get("destino"));
+				b.setDesUsoGrano((String) row.get("uso_grano"));
+		        lst.add(b);	
+			}		
+			return lst;
+		}
+
+		@SuppressWarnings("unchecked")
+		public List<RelacionVentas> consultaRelacionVenta(long id)throws JDBCException{
+			StringBuilder consulta= new StringBuilder();
+			List<RelacionVentas> lst = null;
+			
+			if (id != 0 && id != -1){
+				consulta.append("where id=").append(id);
+			}
+			consulta.insert(0, "From RelacionVentas ").append(" ORDER BY idCliente");
+			lst= session.createQuery(consulta.toString()).list();
+			
+			return lst;
+		}
 }
