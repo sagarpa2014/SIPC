@@ -1,5 +1,7 @@
 package mx.gob.comer.sipc.vistas.domain.relaciones;
 
+import javax.persistence.Column;
+
 
 
 @SuppressWarnings("rawtypes")
@@ -11,6 +13,8 @@ public class BoletasCamposRequeridos implements Comparable{
 	private String paternoProductor;
 	private String maternoProductor;
 	private String nombreProductor;
+	private String curpProductor;
+	private String rfcProductor;	
 	private String boletaTicketBascula;
 	private String FechaEntrada;
 	private String Volumen;
@@ -54,6 +58,19 @@ public class BoletasCamposRequeridos implements Comparable{
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
 	}
 	public String getBoletaTicketBascula() {
 		return boletaTicketBascula;

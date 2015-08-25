@@ -11,6 +11,8 @@ public class FacturasCamposRequeridos implements Comparable{
 	private String paternoProductor;
 	private String maternoProductor;
 	private String nombreProductor;
+	private String curpProductor;
+	private String rfcProductor;
 	private String folioFacturaVenta;
 	private String fechaEmisionFac;
 	private String rfcFacVenta;
@@ -59,8 +61,19 @@ public class FacturasCamposRequeridos implements Comparable{
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}	
+	public String getCurpProductor() {
+		return curpProductor;
 	}
-	
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
+	}
 	public String getFolioFacturaVenta() {
 		return folioFacturaVenta;
 	}

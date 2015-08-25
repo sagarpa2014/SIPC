@@ -1,6 +1,6 @@
 package mx.gob.comer.sipc.vistas.domain.relaciones;
 
-public class ReporteRelacionCompras implements Comparable{
+public class ReporteRelacionCompras implements Comparable<Object>{
 
 	protected String claveBodega;	
 	protected String nombreEstado;
@@ -8,6 +8,8 @@ public class ReporteRelacionCompras implements Comparable{
 	protected String paternoProductor;
 	protected String maternoProductor;
 	protected String nombreProductor;
+	protected String curpProductor;
+	protected String rfcProductor;
 	
 	public String getClaveBodega() {
 		return claveBodega;
@@ -44,8 +46,20 @@ public class ReporteRelacionCompras implements Comparable{
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
-	}
+	}	
 	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
+	}
 	@Override
 	
 	public int compareTo(Object o) {

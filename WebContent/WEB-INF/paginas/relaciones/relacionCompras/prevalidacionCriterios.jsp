@@ -55,7 +55,7 @@
 	</s:if>
 	
 	<s:if test="%{lstRfcVsCurpProductor.size() > 0}"> <!--Que el rfc factura corresponda al rfc productor -->
-		<span class="requerido">LOS RFC VS CURP DEL PRODUCTOR NO CORRESPONDEN</span><br>
+		<span class="requerido">LOS CURP/RFC NO SE ENCUENTRAN PAGADOS EN REGIONAL</span><br>
 	</s:if>
 	<s:if test="%{lstFacturaFueraPeriodo.size() > 0}"> <!--Factura fuera del periodo del Auditor -->
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
@@ -66,14 +66,14 @@
 	<s:if test="%{lstFacturaFueraPeriodoPago.size() > 0}"> <!--Factura fuera del periodo del pago-->
 		<span class="requerido">LAS FACTURAS SE ENCUENTRAN FUERA DEL PERIODO DE PAGO</span><br>
 	</s:if>
-	<s:if test="%{lstChequeFueraPeriodoAuditor.size() > 0}"> <!--Cheques fuera del periodo del Auditor (solo aplica AXC) -->
-		<span class="requerido">LOS CHEQUES SE ENCUENTRAN FUERA DEL PERIODO DEL AUDITOR <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
+	<s:if test="%{lstChequeFueraPeriodoAuditor.size() > 0}"> <!--Pagos fuera del periodo del Auditor (solo aplica AXC) -->
+		<span class="requerido">LOS PAGOS SE ENCUENTRAN FUERA DEL PERIODO DEL AUDITOR <s:text name="fecha1"><s:param value="%{fechaInicioAuditor}"/></s:text>-<s:text name="fecha1"><s:param value="%{fechaFinAuditor}"/></s:text></span><br>
 	</s:if>
-	<s:if test="%{lstChequeFueraPeriodoContrato.size() > 0}"> <!--Cheques fuera del periodo de pago (solo aplica AXC)"-->
-		<span class="requerido">LOS CHEQUES SE ENCUENTRAN FUERA DEL PERIODO DE PAGO</span><br>
+	<s:if test="%{lstChequeFueraPeriodoContrato.size() > 0}"> <!--Pagos fuera del periodo de pago (solo aplica AXC)"-->
+		<span class="requerido">LOS PAGOS SE ENCUENTRAN FUERA DEL PERIODO DE PAGO</span><br>
 	</s:if>
-	<s:if test="%{lstChequesDuplicadoBancoPartipante.size() > 0}"> <!--No se repitan cheques-banco por empresa"-->
-		<span class="requerido">LOS CHEQUES SE ENCUENTRAN DUPLICADOS PARA EL BANCO EMPRESA</span><br>
+	<s:if test="%{lstChequesDuplicadoBancoPartipante.size() > 0}"> <!--No se repitan pagos-banco por empresa"-->
+		<span class="requerido">LOS PAGOS SE ENCUENTRAN DUPLICADOS PARA EL BANCO EMPRESA</span><br>
 	</s:if>
 	<s:if test="%{lstFacturasVsPago.size() > 0}"> <!--No se repitan cheques-banco por empresa"-->
 		<span class="requerido">MONTOS PAGADOS MENORES A LAS FACTURAS EMITIDAS</span><br>

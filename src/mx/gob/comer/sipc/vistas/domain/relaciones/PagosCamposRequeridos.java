@@ -11,6 +11,8 @@ public class PagosCamposRequeridos implements Comparable{
 	private String paternoProductor;
 	private String maternoProductor;
 	private String nombreProductor;
+	private String curpProductor;
+	private String rfcProductor;
 	private String tipoDdocPago;
 	private String folioDocPago;
 	private String impDocPagoSinaxc;
@@ -61,6 +63,19 @@ public class PagosCamposRequeridos implements Comparable{
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
 	}	
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
+	}
 	
 	public String getTipoDdocPago() {
 		return tipoDdocPago;

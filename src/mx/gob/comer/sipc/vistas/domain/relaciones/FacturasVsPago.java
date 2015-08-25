@@ -22,6 +22,10 @@ public class FacturasVsPago implements Comparable{
 	private String maternoProductor;
 	@Column(name =  "nombre_productor")
 	private String nombreProductor;
+	@Column(name =  "curp_productor")
+	private String curpProductor;
+	@Column(name =  "rfc_productor")
+	private String rfcProductor;
 	@Column(name =  "imp_sol_fac_venta")
 	private Double impSolFacVenta;
 	@Column(name =  "imp_total_pago_sinaxc")
@@ -76,6 +80,19 @@ public class FacturasVsPago implements Comparable{
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
 	}
 	
 	public Double getImpSolFacVenta() {
