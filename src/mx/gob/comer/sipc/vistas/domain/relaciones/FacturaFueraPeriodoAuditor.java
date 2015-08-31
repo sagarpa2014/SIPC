@@ -24,6 +24,10 @@ public class FacturaFueraPeriodoAuditor implements Comparable {
 	private String maternoProductor;
 	@Column(name =  "nombre_productor")
 	private String nombreProductor;	
+	@Column(name =  "curp_productor")
+	private String curpProductor;
+	@Column(name =  "rfc_productor")
+	private String rfcProductor;
 	@Column(name =  "folio_factura_venta")
 	private String folioFacturaVenta;
 	@Column(name =  "fecha_emision_fac")
@@ -62,6 +66,19 @@ public class FacturaFueraPeriodoAuditor implements Comparable {
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
 	}
 	public String getClaveBodega() {
 		return claveBodega;

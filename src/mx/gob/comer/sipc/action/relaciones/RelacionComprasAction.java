@@ -43,6 +43,7 @@ import mx.gob.comer.sipc.oficios.pdf.CruceRelComprasError;
 import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.AsignacionCAaEspecialistaV;
+import mx.gob.comer.sipc.vistas.domain.AuditorSolicitudPagoV;
 import mx.gob.comer.sipc.vistas.domain.ComprasDatosParticipanteV;
 import mx.gob.comer.sipc.vistas.domain.GruposCamposRelacionV;
 import mx.gob.comer.sipc.vistas.domain.PersonalizacionRelacionesProgramaV;
@@ -247,6 +248,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<RelacionComprasTMP> lstRfcVsCurpProductor;
 	private List<RelacionComprasTMP> lstRfcProductorVsRfcFactura2;
 	private List<VolumenNoProcedente> lstVolNoProcedenteYApoyEnReg;
+	private  String criteriosByPrograma;
 	
 	
 	public String capturaCargaArchivoRelCompras(){ 
@@ -1278,14 +1280,19 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 
 	public String recuperaCriterioAplicarPeriodo(){
 		if(pideTipoPeriodo == 3){
-			//Recupera el periodo del dictamen del auditor a través de la carta de adhesion		
-			List<DocumentacionSPCartaAdhesion> lstDocumentacionSP = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 7);
-			if(lstDocumentacionSP.size()>0){
-				if(lstDocumentacionSP.get(0).getPeriodoInicialAuditor() !=null && lstDocumentacionSP.get(0).getPeriodoFinalAuditor() != null){
-					fechaInicioAuditor = lstDocumentacionSP.get(0).getPeriodoInicialAuditor();
-					fechaFinAuditor = lstDocumentacionSP.get(0).getPeriodoFinalAuditor();
-				}
+			//Recupera el periodo del dictamen del auditor a través de la carta de adhesion					
+			List<AuditorSolicitudPagoV> lstAuditorSolPagoV = spDAO.consultaAuditorSolPagoV(folioCartaAdhesion, -1, -1);
+			if(lstAuditorSolPagoV.size() > 0){
+				fechaInicioAuditor = lstAuditorSolPagoV.get(0).getFechaInicio();
+				fechaFinAuditor = lstAuditorSolPagoV.get(0).getFechaFin();
 			}
+//			List<DocumentacionSPCartaAdhesion> lstDocumentacionSP = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 7);
+//			if(lstDocumentacionSP.size()>0){
+//				if(lstDocumentacionSP.get(0).getPeriodoInicialAuditor() !=null && lstDocumentacionSP.get(0).getPeriodoFinalAuditor() != null){
+//					fechaInicioAuditor = lstDocumentacionSP.get(0).getPeriodoInicialAuditor();
+//					fechaFinAuditor = lstDocumentacionSP.get(0).getPeriodoFinalAuditor();
+//				}
+//			}
 		}
 		
 		return SUCCESS;
@@ -1331,7 +1338,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		String fechaFinS = "", fechaFinComS = "";
 
 		try{
-			rutaCartaAdhesion = getRecuperaRutaCarta();	
+			rutaCartaAdhesion = getRecuperaRutaCarta();			
 			//inicializarArchivoLog();
 			//verifica que exista información en la tabla de relacion_compras_tmp
 			if(rDAO.consultaRelacionComprasTMP(folioCartaAdhesion).size()==0){
@@ -1344,6 +1351,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			//Si existe antes un error en la validacion borrar registro de la bitacora
 			List<PersonalizacionRelacionesProgramaV> lstPersonalizacionRelacionesProgramaV = rDAO.consultaPersonalizacionRelacionesProgramaV(0, 1, null, null, null, null, idPrograma);
 			idPerRel =  lstPersonalizacionRelacionesProgramaV.get(0).getIdPerRel();		
+			lstValidacionPorGrupo = rDAO.recuperaCatCriteriosValidacionByGurpoPrograma(idPerRel,null,null);
+			for(CatCriteriosValidacion l: lstValidacionPorGrupo){
+				criteriosByPrograma += l.getIdCriterio()+",";
+			}
 			
 			boolean siAplicaFolioContrato = false;
 			//Verifica que en la personalización se haya configurado el campo "FOLIO CONTRATO"
@@ -1403,6 +1414,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue("CURP/RFC");			
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Predio");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Observación");
 													
 							for(RelacionComprasTMP p: lstPrediosNoExistenBD){
 								countColumn = 0;
@@ -1410,10 +1423,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								bd.setMensaje(p.getClaveBodega()+";"+p.getNombreEstado()+";"+p.getPaternoProductor()+";"
 										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"
 										+p.getCurpProductor()+";"+p.getRfcProductor()+";"
-										+p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+(p.getFolioPredioAlterno()!=null&&!p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"null;"));
+										+p.getFolioPredio()+";"
+										+p.getBancoSinaxc());
 								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza el productor como inconsistente
-								rDAO.actualizaPredioIncosistente(p.getIdRelacionComprasTmp(), folioCartaAdhesion);
+								//Actualiza el productor como inconsistente campo precio_no_pagado
+								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+										p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false, false, false, false, true);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(p.getClaveBodega()!=null && !p.getClaveBodega().isEmpty()?p.getClaveBodega():"");
@@ -1427,6 +1442,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(p.getCurpProductor()!=null ?p.getCurpProductor():p.getRfcProductor());	
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getFolioPredio()!=null && !p.getFolioPredio().isEmpty()?p.getFolioPredio():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getBancoSinaxc());
 							}							
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
@@ -1525,7 +1542,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}
 					} else if(l.getIdCriterio()== 26){//PREDIO/PRODUCTOR/CONTRATO EXISTA EN BASE DE DATOS
-						sheet = wb.createSheet("PRED-PROD-CON EXISTA BD");
+						sheet = wb.createSheet("PRED-PROD-CON EXISTA BD"); // 7.3 DIFERENCIAS PREDIOS/PRODUCTOR/CONTRATO CON LOS CONTRATOS REGISTRADOS
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
@@ -1894,7 +1911,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					}					
 				}
 				for(CatCriteriosValidacion l:lstValidacionPorGrupo){
-					if(l.getIdCriterio()== 7){//EXISTA POR UNIDAD DE PRODUCCIÓN AL MENOS UN REGISTRO DE BOLETA, FACTURA, PREDIO Y PAGO
+					if(l.getIdCriterio()== 7){//7.2 FALTA DE INFORMACIÓN DE AL MENOS UN REGISTRO EN BOLETA, FACTURA, PREDIO Y PAGO
 						sheet = wb.createSheet("PROD INCOSISTENTES");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
@@ -2002,6 +2019,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
+							cell.setCellValue("CURP/RFC");
+							cell = row.createCell(++countColumn);
 							cell.setCellValue("RFC Productor");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("RFC Factura");
@@ -2011,12 +2030,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+(siAplicaFolioContrato?r.getFolioContrato()+";":"")+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
-										+r.getNombreProductor()+";"
+										+r.getNombreProductor()+";"+r.getCurpProductor()+";"
 									+r.getRfcProductor()+";"+r.getRfcFacVenta()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
-										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
+										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), r.getCurpProductor(), r.getRfcProductor(), false, false, true, false);	
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
@@ -2030,6 +2049,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
 										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
 										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getCurpProductor()!=null ?r.getCurpProductor():r.getRfcProductor());
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
 								cell = row.createCell(++countColumn);
@@ -2050,69 +2071,69 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					
 						}
-					}else if(l.getIdCriterio() == 30){
-						sheet = wb.createSheet("RFC CORRESPONDE CURP PROD"); //10.2 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS CURP
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						countColumn =0;
-						lstRfcVsCurpProductor = rDAO.verificaRFCVsCURPProductor(folioCartaAdhesion);  
-						if(lstRfcVsCurpProductor.size()>0){//En el listado se guardan las facturas duplicadas por productor
-							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Estado");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("RFC Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("CURP Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Peso Neto ana. (ton) Fac ");
-							for(RelacionComprasTMP r: lstRfcVsCurpProductor){
-								countColumn = 0;
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
-										+r.getNombreProductor()+";"
-									+r.getRfcProductor()+";"+r.getCurpProductor()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza el productor como inconsistente
-								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
-										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(countColumn);
-								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
-								cell = row.createCell(++countColumn);
-								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
-										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
-										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getCurpProductor()!=null && !r.getCurpProductor().isEmpty()?r.getCurpProductor():"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
-							}							
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"RFC VS CURP SI CORRESPONDEN AL PRODUCTOR\"";							
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-					
-						}			
+					}else if(l.getIdCriterio() == 30){ 
+//						sheet = wb.createSheet("RFC CORRESPONDE CURP PROD"); //10.2 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS CURP
+//						sheet = setMargenSheet(sheet);
+//						countRow = 0;
+//						countColumn =0;
+//						lstRfcVsCurpProductor = rDAO.verificaRFCVsCURPProductor(folioCartaAdhesion);  
+//						if(lstRfcVsCurpProductor.size()>0){//En el listado se guardan las facturas duplicadas por productor
+//							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
+//							msj = l.getCriterio();
+//							row = sheet.createRow(countRow);
+//							cell = row.createCell(countColumn);
+//							cell.setCellValue(msj);
+//							row = sheet.createRow(++countRow);
+//							cell = row.createCell(countColumn);
+//							cell.setCellValue("Clave Bodega");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Estado");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Productor");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("RFC Productor");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("CURP Productor");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Peso Neto ana. (ton) Fac ");
+//							for(RelacionComprasTMP r: lstRfcVsCurpProductor){
+//								countColumn = 0;
+//								bd = new BitacoraRelcomprasDetalle();
+//								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
+//										+r.getNombreProductor()+";"
+//									+r.getRfcProductor()+";"+r.getCurpProductor()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
+//								b.getBitacoraRelcomprasDetalle().add(bd);
+//								//Actualiza el productor como inconsistente
+//								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
+//										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
+//								row = sheet.createRow(++countRow);
+//								cell = row.createCell(countColumn);
+//								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
+//										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
+//										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(r.getCurpProductor()!=null && !r.getCurpProductor().isEmpty()?r.getCurpProductor():"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
+//							}							
+//							b.setMensaje(msj);
+//							cDAO.guardaObjeto(b);
+//						}else{
+//							msj = "La validación es correcta \"RFC VS CURP SI CORRESPONDEN AL PRODUCTOR\"";							
+//							row = sheet.createRow(countRow);
+//							cell = row.createCell(0);
+//							cell.setCellValue(msj);
+//							llenarBitacora(false, l.getIdCriterio());
+//							b.setMensaje(msj);
+//							cDAO.guardaObjeto(b);
+//					
+//						}			
 					/*}else if(l.getIdCriterio() == 31){
 						sheet = wb.createSheet("RFC PROD VS RFC COMPRADOR"); //10.1 DIFERENCIA DE RFC DE PRODUCTOR VS RFC FACTURA
 						sheet = setMargenSheet(sheet);
@@ -2220,20 +2241,25 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Importe Pagos");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Valor no procedente");
+							cell.setCellValue("Volumen no procedente");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Diferencia entre volumen");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Diferencia entre importe");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Diferencia entre RFC");
+							
+							if(criteriosByPrograma.contains("1,")){
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Precio no Pagado");
+							}
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Volumen Observado");
 							double valorMaximo = 0;
 							for(BoletasFacturasPagosIncosistentes bod: lstBoletasFacturasPagosIncosistentes){
 								countColumn = 0;
 								Double array [] =  {bod.getVolBolTicket(), bod.getVolTotalFacVenta(), 
-										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(), bod.getDiferenciaEntreRFC() };
+										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(), bod.getDiferenciaEntreRFC(), bod.getPredioNoPagado() };
 								valorMaximo = calcularMaximo(array);
 								
 								bd = new BitacoraRelcomprasDetalle();
@@ -2243,7 +2269,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+bod.getCurpProductor()+";"+bod.getRfcProductor()+";"
 										+bod.getVolTotalFacturado()+";"+bod.getVolBolTicket()+";"+bod.getVolTotalFacVenta()+";"+bod.getVolEnpagos()+";"
 										+(bod.getVolumenNoProcedente()!=null?bod.getVolumenNoProcedente()+";":";")+bod.getDiferenciaEntreVolumen()+";"
-										+(bod.getDiferenciaEntreImportes()!=null ?bod.getDiferenciaEntreImportes()+";":"0;")+(bod.getDiferenciaEntreRFC()!=null?bod.getDiferenciaEntreRFC()+";":"0;")+valorMaximo);
+										+(bod.getDiferenciaEntreImportes()!=null ?bod.getDiferenciaEntreImportes()+";":"0;")
+										+(bod.getDiferenciaEntreRFC()!=null?bod.getDiferenciaEntreRFC()+";":"0;")
+										+(bod.getPredioNoPagado()!=null?bod.getPredioNoPagado()+";":"0;")
+										+valorMaximo);
 								b.getBitacoraRelcomprasDetalle().add(bd);															
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
@@ -2275,7 +2304,11 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(bod.getDiferenciaEntreImportes()!=null?bod.getDiferenciaEntreImportes()+"":"");
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(bod.getDiferenciaEntreRFC()!=null?bod.getDiferenciaEntreRFC()+"":"");
+								cell.setCellValue(bod.getDiferenciaEntreRFC()!=null?bod.getDiferenciaEntreRFC()+"":"");								
+								if(criteriosByPrograma.contains("1")){ //Precio no pagado
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(bod.getPredioNoPagado()!=null?bod.getPredioNoPagado()+"":"");										
+								}
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(valorMaximo);
 							}					
@@ -2403,6 +2436,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
+							cell.setCellValue("CURP/RFC");
+							cell = row.createCell(++countColumn);
 							cell.setCellValue("Total Facturado");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Rendimiento maximo aceptable");
@@ -2414,12 +2449,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(bod.getClaveBodega()+";"+bod.getNombreEstado()+";"+(siAplicaFolioContrato?bod.getFolioContrato()+";":"")+bod.getPaternoProductor()+";"+bod.getMaternoProductor()+";"
-										+bod.getNombreProductor()+";"+bod.getVolTotalFacturado()+";"+bod.getRendimientoMaximoAceptable()+";"
+										+bod.getNombreProductor()+";"+bod.getCurpProductor()+";"+bod.getRfcProductor()+";"
+										+bod.getVolTotalFacturado()+";"+bod.getRendimientoMaximoAceptable()+";"
 										+(bod.getVolNoProcedente()!=null?bod.getVolNoProcedente():"0"));  // AHS [LINEA] - 17022015
 								b.getBitacoraRelcomprasDetalle().add(bd);		
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaVolumenNoProcedente(folioCartaAdhesion, bod.getClaveBodega(), bod.getNombreEstado(), bod.getFolioContrato(),
-										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getVolNoProcedente());	// AHS [LINEA] - 17022015
+										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getCurpProductor(), bod.getRfcProductor(), bod.getVolNoProcedente());	// AHS [LINEA] - 17022015
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bod.getClaveBodega()!=null ? bod.getClaveBodega()+"":"");
@@ -2433,6 +2469,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue((bod.getPaternoProductor()!=null && !bod.getPaternoProductor().isEmpty() ? bod.getPaternoProductor()+" " :"" )
 										+(bod.getMaternoProductor()!=null ?bod.getMaternoProductor()+" " :"") 
 										+(bod.getNombreProductor()!=null ?bod.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(bod.getCurpProductor()!=null ?bod.getCurpProductor():bod.getRfcProductor());
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(bod.getVolTotalFacturado()!=null?bod.getVolTotalFacturado()+"":"");
 								cell = row.createCell(++countColumn);
@@ -2503,7 +2541,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);		
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaVolumenNoProcedente(folioCartaAdhesion, bod.getClaveBodega(), bod.getNombreEstado(), bod.getFolioContrato(),
-										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getVolNoProcedente().toString());	// AHS [LINEA] - 17022015
+										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getCurpProductor(), bod.getRfcProductor(), bod.getVolNoProcedente().toString());	// AHS [LINEA] - 17022015
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bod.getClaveBodega()!=null ? bod.getClaveBodega()+"":"");
@@ -2668,7 +2706,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+bod.getBoletaTicketBascula()+";"+bod.getVolBolTicket()+";"+bod.getFechaEntradaBoleta());
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								actualizarRelacionComprasTMPByBoletasIncosistentes(folioCartaAdhesion, bod.getClaveBodega(),bod.getNombreEstado(),bod.getFolioContrato(), 
-										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(), bod.getBoletaTicketBascula());
+										bod.getPaternoProductor(), bod.getMaternoProductor(), bod.getNombreProductor(),bod.getCurpProductor(),bod.getRfcProductor(), bod.getBoletaTicketBascula());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bod.getClaveBodega()!=null ? bod.getClaveBodega()+"":"");
@@ -2750,7 +2788,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 												+(bfp.getVolBolTicket()!=null?bfp.getVolBolTicket():"-1"));
 									b.getBitacoraRelcomprasDetalle().add(bd);
 									actualizarRelacionComprasTMPByBoletasIncosistentes(folioCartaAdhesion, bfp.getClaveBodega(),bfp.getNombreEstado(),bfp.getFolioContrato(), 
-											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getBoletaTicketBascula());
+											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(),bfp.getCurpProductor(),bfp.getRfcProductor(), bfp.getBoletaTicketBascula());
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(bfp.getClaveBodega()!=null ? bfp.getClaveBodega()+"":"");
@@ -2814,57 +2852,64 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							if(lstBoletasFueraDePeriodoPago.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 								msj = l.getCriterio();
+								int countColumn =0;
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue("Clave Bodega");
-								cell = row.createCell(1);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Estado");
-								cell = row.createCell(2);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Contrato");
-								cell = row.createCell(3);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Productor");
-								cell = row.createCell(4);
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("CURP/RFC");								
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Boleta");
-								cell = row.createCell(5);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Periodo Inicio");
-								cell = row.createCell(6);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Periodo Termino");
-								cell = row.createCell(7);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha Entrada");
-								cell = row.createCell(8);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Peso Neto Ana. (Ton)");
 								for(BoletasFueraDePeriodoPago bfp: lstBoletasFueraDePeriodoPago){
+									countColumn = 0;
 									bd = new BitacoraRelcomprasDetalle();
 									bd.setMensaje(bfp.getClaveBodega()+";"+bfp.getNombreEstado()+";"+(siAplicaFolioContrato ? bfp.getFolioContrato()+";":"")
 												+bfp.getPaternoProductor()+";"+bfp.getMaternoProductor()+";"+bfp.getNombreProductor()+";"
+												+bfp.getCurpProductor()+";"+bfp.getRfcProductor()+";"
 												+bfp.getBoletaTicketBascula()+";"+bfp.getPeriodoInicialPago()+";"+bfp.getPeriodoFinalPago()+";"
 												+new SimpleDateFormat("yyyy-MM-dd").format(bfp.getFechaEntradaBoleta()).toString()+";"+bfp.getVolBolTicket());
 									b.getBitacoraRelcomprasDetalle().add(bd);
 									actualizarRelacionComprasTMPByBoletasIncosistentes(folioCartaAdhesion, bfp.getClaveBodega(),bfp.getNombreEstado(),bfp.getFolioContrato(), 
-											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getBoletaTicketBascula());
+											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getCurpProductor(), bfp.getRfcProductor(), bfp.getBoletaTicketBascula());
 									row = sheet.createRow(++countRow);
-									cell = row.createCell(0);
+									cell = row.createCell(countColumn);
 									cell.setCellValue(bfp.getClaveBodega()!=null ? bfp.getClaveBodega()+"":"");
-									cell = row.createCell(1);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getNombreEstado()!=null ? bfp.getNombreEstado()+"":"");
-									cell = row.createCell(2);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getFolioContrato()!=null ? bfp.getFolioContrato()+"":"");
-									cell = row.createCell(3);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue((bfp.getPaternoProductor()!=null && !bfp.getPaternoProductor().isEmpty() ? bfp.getPaternoProductor()+" " :"" )
 											+(bfp.getMaternoProductor()!=null ?bfp.getMaternoProductor()+" " :"") 
 											+(bfp.getNombreProductor()!=null ?bfp.getNombreProductor() :""));
-									cell = row.createCell(4);
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(bfp.getCurpProductor()!=null ?bfp.getCurpProductor():bfp.getRfcProductor());
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getBoletaTicketBascula()!=null && !bfp.getBoletaTicketBascula().isEmpty()?bfp.getBoletaTicketBascula():"");									
-									cell = row.createCell(5);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getPeriodoInicialPago()!=null?bfp.getPeriodoInicialPago()+"":"");
-									cell = row.createCell(6);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getPeriodoFinalPago()!=null?bfp.getPeriodoFinalPago()+"":"");
-									cell = row.createCell(7);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getFechaEntradaBoleta()!=null?bfp.getFechaEntradaBoleta()+"":"");
-									cell = row.createCell(8);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getVolBolTicket()!=null?bfp.getVolBolTicket()+"":"");
 									
 								}						
@@ -2932,7 +2977,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(camposQueAplica.contains("63,")?bo.getVolumen()+";":"")+(bo.getVolBolTicket()!=null?bo.getVolBolTicket():"0"));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								actualizarRelacionComprasTMPByBoletasIncosistentes(folioCartaAdhesion, bo.getClaveBodega(),bo.getNombreEstado(),bo.getFolioContrato(), 
-										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getBoletaTicketBascula());
+										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getCurpProductor(), bo.getRfcProductor(), bo.getBoletaTicketBascula());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bo.getClaveBodega()!=null ? bo.getClaveBodega()+"":"");
@@ -3028,6 +3073,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						cell = row.createCell(++countColumn);
 						cell.setCellValue("Productor");
 						cell = row.createCell(++countColumn);
+						cell.setCellValue("CURP/RFC");
+						cell = row.createCell(++countColumn);
 						cell.setCellValue("Folio Fiscal de la Factura");
 						cell = row.createCell(++countColumn);
 						cell.setCellValue("Peso Neto Ana. (Ton)");
@@ -3037,12 +3084,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							countColumn = 0;
 							bd = new BitacoraRelcomprasDetalle();
 							bd.setMensaje(pf.getClaveBodega()+";"+pf.getNombreEstado()+";"+(siAplicaFolioContrato ? pf.getFolioContrato()+";":"")+
-									pf.getPaternoProductor()+";"+pf.getMaternoProductor()+";"+pf.getNombreProductor()+";"+pf.getFolioFacturaVenta()+";"+
-									pf.getVolTotalFacVenta()+";"+
+									pf.getPaternoProductor()+";"+pf.getMaternoProductor()+";"+pf.getNombreProductor()+";"
+									+pf.getCurpProductor()+";"+pf.getRfcProductor()+";"+pf.getFolioFacturaVenta()+";"
+									+pf.getVolTotalFacVenta()+";"+
 									(pf.getFechaEmisionFac() != null ? new SimpleDateFormat("yyyy-MM-dd").format(pf.getFechaEmisionFac()).toString():"-"));
 							b.getBitacoraRelcomprasDetalle().add(bd);
 							actualizarRelacionComprasTMPByFacturasIncosistentes(folioCartaAdhesion, pf.getClaveBodega(),pf.getNombreEstado(),pf.getFolioContrato(), 
-									pf.getPaternoProductor(), pf.getMaternoProductor(), pf.getNombreProductor(), pf.getFolioFacturaVenta());
+									pf.getPaternoProductor(), pf.getMaternoProductor(), pf.getNombreProductor(),pf.getCurpProductor(), pf.getRfcProductor(),  pf.getFolioFacturaVenta());
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(pf.getClaveBodega()!=null ? pf.getClaveBodega()+"":"");
@@ -3056,6 +3104,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue((pf.getPaternoProductor()!=null && !pf.getPaternoProductor().isEmpty() ? pf.getPaternoProductor()+" " :"" )
 									+(pf.getMaternoProductor()!=null ? pf.getMaternoProductor()+" " :"") 
 									+(pf.getNombreProductor()!=null ? pf.getNombreProductor() :""));
+							cell = row.createCell(++countColumn);
+							cell.setCellValue(pf.getCurpProductor()!=null ?pf.getCurpProductor():pf.getRfcProductor());
 							cell = row.createCell(++countColumn);
 							cell.setCellValue(pf.getFolioFacturaVenta()!=null && !pf.getFolioFacturaVenta().isEmpty()?pf.getFolioFacturaVenta():"");
 							cell = row.createCell(++countColumn);
@@ -3103,6 +3153,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
+							cell.setCellValue("CURP/RFC");
+							cell = row.createCell(++countColumn);
 							cell.setCellValue("Volumen Boletas");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Volumen Facturas");
@@ -3114,13 +3166,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								difVolumenFacMayorBoleta = bf.getVolTotalFacVenta()- bf.getVolBolTicket();
 								bd.setMensaje(bf.getClaveBodega()+";"+bf.getNombreEstado()+";"+(siAplicaFolioContrato?bf.getFolioContrato()+";":"")+
 										bf.getPaternoProductor()+";"+bf.getMaternoProductor()+";"+bf.getNombreProductor()+";"
+										+bf.getCurpProductor()+";"+bf.getRfcProductor()+";"
 								+bf.getVolBolTicket()+";"+(bf.getVolTotalFacVenta()!=null?bf.getVolTotalFacVenta()+";":"0;")+TextUtil.formateaNumeroComoVolumenSinComas(difVolumenFacMayorBoleta));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, bf.getClaveBodega(), bf.getNombreEstado(), bf.getFolioContrato(),
-										bf.getPaternoProductor(), bf.getMaternoProductor(), bf.getNombreProductor(), true, false);
-								
-							
+										bf.getPaternoProductor(), bf.getMaternoProductor(), bf.getNombreProductor(), bf.getCurpProductor(), bf.getRfcProductor(), true, false);
+															
 								//Actualiza campo dif_volumen_fac_mayor por la diferencia de factura mayor a la boleta
 								rDAO.actualizaDiferenciaVolumenXFacturaMayor(folioCartaAdhesion, bf.getClaveBodega(), bf.getNombreEstado(), bf.getFolioContrato(),
 										bf.getPaternoProductor(), bf.getMaternoProductor(), bf.getNombreProductor(), difVolumenFacMayorBoleta);	
@@ -3137,6 +3189,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue((bf.getPaternoProductor()!=null && !bf.getPaternoProductor().isEmpty() ? bf.getPaternoProductor()+" " :"" )
 										+(bf.getMaternoProductor()!=null ?bf.getMaternoProductor()+" " :"") 
 										+(bf.getNombreProductor()!=null ?bf.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(bf.getCurpProductor()!=null ?bf.getCurpProductor():bf.getRfcProductor());								
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(bf.getVolBolTicket()!=null ? bf.getVolBolTicket()+"":"");
 								cell = row.createCell(++countColumn);
@@ -3199,6 +3253,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell = row.createCell(++countColumn);
 								cell.setCellValue("Productor");
 								cell = row.createCell(++countColumn);
+								cell.setCellValue("CURP/RFC");
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Factura");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha Emisión");
@@ -3208,11 +3264,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									countColumn = 0;
 									bd = new BitacoraRelcomprasDetalle();
 									bd.setMensaje(f.getClaveBodega() + ";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")
-											+ f.getPaternoProductor() + ";"+ f.getMaternoProductor() + ";"+ f.getNombreProductor() + ";"								
+											+ f.getPaternoProductor() + ";"+ f.getMaternoProductor() + ";"+ f.getNombreProductor() + ";"	
+											+ f.getCurpProductor()+";"+f.getRfcProductor()+";"
 											+ f.getFolioFacturaVenta()+";"+(f.getFechaEmisionFac()!=null?new SimpleDateFormat("yyyy-MM-dd").format(f.getFechaEmisionFac())+";":"")+f.getVolTotalFacVenta());
 									b.getBitacoraRelcomprasDetalle().add(bd);
 									actualizarRelacionComprasTMPByFacturasIncosistentes(folioCartaAdhesion, f.getClaveBodega(),f.getNombreEstado(),f.getFolioContrato(), 
-											f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getFolioFacturaVenta());
+											f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(),f.getRfcProductor(), f.getFolioFacturaVenta());
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
@@ -3225,9 +3282,11 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									cell = row.createCell(++countColumn);
 									cell.setCellValue((f.getPaternoProductor()!=null && !f.getPaternoProductor().isEmpty() ? f.getPaternoProductor()+" " :"" )
 											+(f.getMaternoProductor()!=null ?f.getMaternoProductor()+" " :"") 
-											+(f.getNombreProductor()!=null ?f.getNombreProductor() :""));
+											+(f.getNombreProductor()!=null ?f.getNombreProductor() :""));									
 									cell = row.createCell(++countColumn);
-									cell.setCellValue(f.getFolioFacturaVenta()!=null ? f.getFolioFacturaVenta()+"":"");
+									cell.setCellValue(f.getCurpProductor() != null ?f.getCurpProductor():f.getRfcProductor());
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(f.getFolioFacturaVenta() != null ? f.getFolioFacturaVenta()+"":"");
 									cell = row.createCell(++countColumn);
 									cell.setCellValue(f.getFechaEmisionFac()!=null ? f.getFechaEmisionFac()+"":"");		
 									cell = row.createCell(++countColumn);
@@ -3285,59 +3344,64 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							if(lstFacturaFueraPeriodoPago.size()>0){//En el listado se guardan las facturas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 								msj = l.getCriterio();
+								int countColumn =0;
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue("Clave Bodega");
-								cell = row.createCell(1);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Estado");
-								cell = row.createCell(2);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Contrato");
-								cell = row.createCell(3);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Productor");
-								cell = row.createCell(4);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Factura");
-								cell = row.createCell(5);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Periodo Inicio");
-								cell = row.createCell(6);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Periodo Termino");
-								cell = row.createCell(7);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha Emisión");
-								cell = row.createCell(8);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Peso Neto Ana. (Ton)");
 								for(FacturaFueraPeriodoPago bfp: lstFacturaFueraPeriodoPago){
+									countColumn = 0;
 									bd = new BitacoraRelcomprasDetalle();
 									bd.setMensaje(bfp.getClaveBodega()+";"+bfp.getNombreEstado()+";"+(siAplicaFolioContrato ? bfp.getFolioContrato()+";":"")
 												+bfp.getPaternoProductor()+";"+bfp.getMaternoProductor()+";"+bfp.getNombreProductor()+";"
+												+bfp.getCurpProductor()+";"+bfp.getRfcProductor()+";"
 												+bfp.getFolioFacturaVenta()+";"
 												+(bfp.getPeriodoInicialPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoInicialPago()).toString():"")+";"
 												+(bfp.getPeriodoFinalPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoFinalPago()).toString():"")+";"
 												+new SimpleDateFormat("yyyy-MM-dd").format(bfp.getFechaEmisionFac()).toString()+";"+bfp.getVolTotalFacVenta());
 									b.getBitacoraRelcomprasDetalle().add(bd);									
 									actualizarRelacionComprasTMPByFacturasIncosistentes(folioCartaAdhesion, bfp.getClaveBodega(),bfp.getNombreEstado(),bfp.getFolioContrato(), 
-											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getFolioFacturaVenta());
+											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getCurpProductor(), bfp.getRfcProductor(), bfp.getFolioFacturaVenta());
 									row = sheet.createRow(++countRow);
-									cell = row.createCell(0);
+									cell = row.createCell(countColumn);
 									cell.setCellValue(bfp.getClaveBodega()!=null ? bfp.getClaveBodega()+"":"");
-									cell = row.createCell(1);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getNombreEstado()!=null ? bfp.getNombreEstado()+"":"");
-									cell = row.createCell(2);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getFolioContrato()!=null ? bfp.getFolioContrato()+"":"");
-									cell = row.createCell(3);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue((bfp.getPaternoProductor()!=null && !bfp.getPaternoProductor().isEmpty() ? bfp.getPaternoProductor()+" " :"" )
 											+(bfp.getMaternoProductor()!=null ?bfp.getMaternoProductor()+" " :"") 
 											+(bfp.getNombreProductor()!=null ?bfp.getNombreProductor() :""));
-									cell = row.createCell(4);
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(bfp.getCurpProductor()!=null ?bfp.getCurpProductor():bfp.getRfcProductor());
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getFolioFacturaVenta()!=null && !bfp.getFolioFacturaVenta().isEmpty()?bfp.getFolioFacturaVenta():"");									
-									cell = row.createCell(5);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getPeriodoInicialPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoInicialPago()).toString()+"":"");
-									cell = row.createCell(6);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getPeriodoFinalPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoFinalPago()).toString()+"":"");
-									cell = row.createCell(7);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getFechaEmisionFac()!=null?bfp.getFechaEmisionFac()+"":"");
-									cell = row.createCell(8);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getVolTotalFacVenta()!=null?bfp.getVolTotalFacVenta()+"":"");
 									
 								}						
@@ -3380,6 +3444,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
+							cell.setCellValue("CURP/RFC");
+							cell = row.createCell(++countColumn);
 							cell.setCellValue("P.N.A. total de la factura (ton.) por contrato");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Precio pactado por tonelada (dlls)");
@@ -3394,6 +3460,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje( c.getClaveBodega()+";"+c.getNombreEstado()+";"+(siAplicaFolioContrato ? c.getFolioContrato()+";":"")
 										+c.getPaternoProductor()+";"+c.getMaternoProductor()+";"+c.getNombreProductor()+";"
+										+c.getCurpProductor()+";"+c.getRfcProductor()+";"
 										+(c.getVolTotalFacVenta()!=null?c.getVolTotalFacVenta()+";":";0")
 										+(c.getPrecioPactadoPorTonelada()!=null?c.getPrecioPactadoPorTonelada()+";":";0")
 										+(c.getImpSolFacVenta()!=null?c.getImpSolFacVenta()+";":";0")
@@ -3402,7 +3469,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);								
 								//Actualiza el productor en campo factura_inconsistente como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(),
-										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), false, false, false, true);
+										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getCurpProductor(), c.getRfcProductor(), false, false, false, true);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
@@ -3416,6 +3483,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue((c.getPaternoProductor()!=null && !c.getPaternoProductor().isEmpty() ? c.getPaternoProductor()+" " :"" )
 										+(c.getMaternoProductor()!=null ? c.getMaternoProductor()+" " :"") 
 										+(c.getNombreProductor()!=null ? c.getNombreProductor() :""));								
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getCurpProductor()!=null ?c.getCurpProductor():c.getRfcProductor());
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(c.getVolTotalFacVenta()!=null?c.getVolTotalFacVenta()+"":"");
 								cell = row.createCell(++countColumn);
@@ -3508,7 +3577,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(bo.getVolTotalFacVentaD()!=null?bo.getVolTotalFacVentaD():"0" ));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								actualizarRelacionComprasTMPByFacturasIncosistentes(folioCartaAdhesion, bo.getClaveBodega(),bo.getNombreEstado(),bo.getFolioContrato(), 
-										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getFolioFacturaVenta());
+										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getCurpProductor(), bo.getRfcProductor(), bo.getFolioFacturaVenta());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bo.getClaveBodega()!=null ? bo.getClaveBodega()+"":"");
@@ -3634,7 +3703,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+ c.getBancoSinaxc()+";"+(c.getVolTotalFacVenta()!=null?c.getVolTotalFacVenta():"-1"));
 								b.getBitacoraRelcomprasDetalle().add(bd);								
 								actualizarRelacionComprasTMPByPagosDuplicados(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(), 
-										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getFolioDocPago(), c.getBancoSinaxc());								
+										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(),  c.getCurpProductor(), c.getRfcProductor(), c.getFolioDocPago(), c.getBancoSinaxc());								
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
@@ -3733,7 +3802,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 											+ c.getVolTotalFacVenta()+";"+(c.getImpTotalPagoSinaxc()!=null?c.getImpTotalPagoSinaxc():"-"));
 									b.getBitacoraRelcomprasDetalle().add(bd);									
 									actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(), 
-											c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getFolioDocPago());									
+											c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getCurpProductor(), c.getRfcProductor(), c.getFolioDocPago());									
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
@@ -3816,29 +3885,32 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							if(lstChequeFueraPeriodoContrato.size()>0){//En el listado se guardan las boletas que estan fuera del periodo seleccionado
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 								msj = l.getCriterio();
+								int countColumn =0;
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
 								cell.setCellValue("Clave Bodega");
-								cell = row.createCell(1);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Estado");
-								cell = row.createCell(2);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Contrato");
-								cell = row.createCell(3);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Productor");
-								cell = row.createCell(4);
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("CURP/RFC");
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha Inicial");
-								cell = row.createCell(5);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha Final");
-								cell = row.createCell(6);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Documento");
-								cell = row.createCell(7);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Banco");
-								cell = row.createCell(8);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Fecha de Cheque");
-								cell = row.createCell(9);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("P.N.A. Total de la Factura (ton)");
 //								cell = row.createCell(10);
 //								cell.setCellValue("Poliza Cheque");
@@ -3847,6 +3919,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									bd = new BitacoraRelcomprasDetalle();
 									bd.setMensaje(bfp.getClaveBodega()+";"+bfp.getNombreEstado()+";"+bfp.getFolioContrato()+";"
 												+bfp.getPaternoProductor()+";"+bfp.getMaternoProductor()+";"+bfp.getNombreProductor()+";"
+												+bfp.getCurpProductor()+";"+bfp.getRfcProductor()+";"
 												+(bfp.getPeriodoInicialPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoInicialPago()).toString():"")+";"
 												+(bfp.getPeriodoFinalPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoFinalPago()).toString():"")+";"
 												+bfp.getFolioDocPago()+";"+bfp.getBancoSinaxc()+";"
@@ -3854,7 +3927,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 												+bfp.getVolTotalFacVenta()+";"+bfp.getImpTotalPagoSinaxc());
 									b.getBitacoraRelcomprasDetalle().add(bd);
 									actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, bfp.getClaveBodega(), bfp.getNombreEstado(), bfp.getFolioContrato(), 
-											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getFolioDocPago());		
+											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getCurpProductor(), bfp.getRfcProductor(), bfp.getFolioDocPago());		
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(bfp.getClaveBodega()!=null ? bfp.getClaveBodega()+"":"");
@@ -3866,6 +3939,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									cell.setCellValue((bfp.getPaternoProductor()!=null && !bfp.getPaternoProductor().isEmpty() ? bfp.getPaternoProductor()+" " :"" )
 											+(bfp.getMaternoProductor()!=null ?bfp.getMaternoProductor()+" " :"") 
 											+(bfp.getNombreProductor()!=null ?bfp.getNombreProductor() :""));
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(bfp.getCurpProductor()!=null ?bfp.getCurpProductor():bfp.getRfcProductor());
 									cell = row.createCell(++countColumn);
 									cell.setCellValue(bfp.getPeriodoInicialPago()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getPeriodoInicialPago()).toString()+"":"");
 									cell = row.createCell(++countColumn);
@@ -3937,7 +4012,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
-										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), false, true);								
+										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(), f.getRfcProductor(),false, true);								
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
@@ -3970,84 +4045,88 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}						
 					}else if(l.getIdCriterio() == 19){//"11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS"
-						sheet = wb.createSheet("PRECIO PAGADO CORRES PAGOS");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						countColumn = 0;
-						lstPrecioPagadoNoCorrespondeConPagosV = rDAO.consultaPrecioPagadoNoCorrespondeConPagosV(folioCartaAdhesion); 
-						if(lstPrecioPagadoNoCorrespondeConPagosV.size() > 0){//"11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS" 
-							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Estado");
-							if(siAplicaFolioContrato){
-								cell = row.createCell(++countColumn);
-								cell.setCellValue("Folio Contrato");
-							}
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Productor");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Peso Neto Fac (ton)");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Importe Cheque");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Importe Total");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Precio en Rel de Compras");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Precio Calculado");														
-							for(PrecioPagadoNoCorrespondeConPagosV f: lstPrecioPagadoNoCorrespondeConPagosV){
-								countColumn = 0;
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(f.getClaveBodega()+";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")+
-										f.getPaternoProductor()+";"+f.getMaternoProductor()+";"+f.getNombreProductor()+";"+
-										f.getVolTotalFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
-										f.getImpPrecioTonPagiSinaxc()+";"+(f.getPrecioCalculado()!=null ? f.getPrecioCalculado():0));
-								b.getBitacoraRelcomprasDetalle().add(bd);								
-								//Actualiza los pagos del productor como inconsistente
-								rDAO.actualizaPagosInconsistente(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
-										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), true);
-							 	row = sheet.createRow(++countRow);
-								cell = row.createCell(countColumn);
-								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getNombreEstado()!=null ? f.getNombreEstado()+"":"");
-								if(siAplicaFolioContrato){
-									cell = row.createCell(++countColumn);
-									cell.setCellValue(f.getFolioContrato()!=null ? f.getFolioContrato()+"":"");
-								}
-								cell = row.createCell(++countColumn);
-								cell.setCellValue((f.getPaternoProductor()!=null && !f.getPaternoProductor().isEmpty() ? f.getPaternoProductor()+" " :"" )
-										+(f.getMaternoProductor()!=null ? f.getMaternoProductor()+" " :"") 
-										+(f.getNombreProductor()!=null ? f.getNombreProductor() :""));
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");								
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImpDocPagoSinaxc()!=null?f.getImpDocPagoSinaxc()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImpTotalPagoSinaxc()!=null?f.getImpTotalPagoSinaxc()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getImpPrecioTonPagiSinaxc()!=null?f.getImpPrecioTonPagiSinaxc()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(f.getPrecioCalculado()!=null?f.getPrecioCalculado()+"":"");
-							}							
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}else{ 
-							msj = "La validación es correcta \"PRECIO PAGADO CORRESPONDE CON PAGOS\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}
+//						sheet = wb.createSheet("PRECIO PAGADO CORRES PAGOS");
+//						sheet = setMargenSheet(sheet);
+//						countRow = 0;
+//						countColumn = 0;
+//						lstPrecioPagadoNoCorrespondeConPagosV = rDAO.consultaPrecioPagadoNoCorrespondeConPagosV(folioCartaAdhesion); 
+//						if(lstPrecioPagadoNoCorrespondeConPagosV.size() > 0){//"11.1 PRECIO PAGADO NO CORRESPONDE CON PAGOS" 
+//							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
+//							msj = l.getCriterio();
+//							row = sheet.createRow(countRow);
+//							cell = row.createCell(countColumn);
+//							cell.setCellValue(msj);
+//							row = sheet.createRow(++countRow);
+//							cell = row.createCell(countColumn);
+//							cell.setCellValue("Clave Bodega");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Estado");
+//							if(siAplicaFolioContrato){
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue("Folio Contrato");
+//							}
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Productor");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("CURP/RFC");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Peso Neto Fac (ton)");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Importe Cheque");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Importe Total");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Precio en Rel de Compras");
+//							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Precio Calculado");														
+//							for(PrecioPagadoNoCorrespondeConPagosV f: lstPrecioPagadoNoCorrespondeConPagosV){
+//								countColumn = 0;
+//								bd = new BitacoraRelcomprasDetalle();
+//								bd.setMensaje(f.getClaveBodega()+";"+f.getNombreEstado()+";"+(siAplicaFolioContrato?f.getFolioContrato()+";":"")+
+//										f.getPaternoProductor()+";"+f.getMaternoProductor()+";"+f.getNombreProductor()+";"+
+//										f.getVolTotalFacVenta()+";"+f.getImpDocPagoSinaxc()+";"+f.getImpTotalPagoSinaxc()+";"+
+//										f.getImpPrecioTonPagiSinaxc()+";"+(f.getPrecioCalculado()!=null ? f.getPrecioCalculado():0));
+//								b.getBitacoraRelcomprasDetalle().add(bd);								
+//								//Actualiza los pagos del productor como inconsistente
+//								rDAO.actualizaPagosInconsistente(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
+//										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(), f.getRfcProductor(), true);
+//							 	row = sheet.createRow(++countRow);
+//								cell = row.createCell(countColumn);
+//								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getNombreEstado()!=null ? f.getNombreEstado()+"":"");
+//								if(siAplicaFolioContrato){
+//									cell = row.createCell(++countColumn);
+//									cell.setCellValue(f.getFolioContrato()!=null ? f.getFolioContrato()+"":"");
+//								}
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue((f.getPaternoProductor()!=null && !f.getPaternoProductor().isEmpty() ? f.getPaternoProductor()+" " :"" )
+//										+(f.getMaternoProductor()!=null ? f.getMaternoProductor()+" " :"") 
+//										+(f.getNombreProductor()!=null ? f.getNombreProductor() :""));
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getCurpProductor()!=null ?f.getCurpProductor():f.getRfcProductor());
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getVolTotalFacVenta()!=null?f.getVolTotalFacVenta()+"":"");								
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getImpDocPagoSinaxc()!=null?f.getImpDocPagoSinaxc()+"":"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getImpTotalPagoSinaxc()!=null?f.getImpTotalPagoSinaxc()+"":"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getImpPrecioTonPagiSinaxc()!=null?f.getImpPrecioTonPagiSinaxc()+"":"");
+//								cell = row.createCell(++countColumn);
+//								cell.setCellValue(f.getPrecioCalculado()!=null?f.getPrecioCalculado()+"":"");
+//							}							
+//							b.setMensaje(msj);
+//							cDAO.guardaObjeto(b);
+//						}else{ 
+//							msj = "La validación es correcta \"PRECIO PAGADO CORRESPONDE CON PAGOS\"";
+//							row = sheet.createRow(countRow);
+//							cell = row.createCell(0);
+//							cell.setCellValue(msj);
+//							llenarBitacora(false, l.getIdCriterio());
+//							b.setMensaje(msj);
+//							cDAO.guardaObjeto(b);
+//						}
 					}else if(l.getIdCriterio() == 24){// "VALORES REQUERIDOS EN CAMPOS DE PAGOS"
 						sheet = wb.createSheet("PAGOS VAL NULOS");
 						sheet = setMargenSheet(sheet);
@@ -4116,7 +4195,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(camposQueAplica.contains("66,")?bo.getImpDocPagoSinaxc()+";":"")+(camposQueAplica.contains("68,")?bo.getImpPrecioTonPagoSinaxc()+";":";")+bo.getImpTotalPagoSinaxcD());								
 								b.getBitacoraRelcomprasDetalle().add(bd);	
 								actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, bo.getClaveBodega(),bo.getNombreEstado(),bo.getFolioContrato(), 
-										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getFolioDocPago());
+										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getCurpProductor(), bo.getRfcProductor(), bo.getFolioDocPago());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bo.getClaveBodega()!=null ? bo.getClaveBodega()+"":"");
@@ -4231,7 +4310,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza los pagos del productor como inconsistente
 								rDAO.actualizaPagosInconsistente(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
-										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), true);
+										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(), f.getRfcProductor(), true);
 							 	row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
@@ -4280,10 +4359,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 				FileOutputStream out = new FileOutputStream(new File(rutaCartaAdhesion+nombreArchivoLogXls));
 			    wb.write(out);
 			    out.close();
-			}// end grupo pagos
-																
-			
-			
+			}// end grupo pagos													
 			
 		}catch (JDBCException e){
 			e.printStackTrace();
@@ -4303,10 +4379,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private void actualizarRelacionComprasTMPByBoletasIncosistentes(String folioCartaAdhesion, String claveBodega, 
 										String nombreEstado, String folioContrato, 
 										String paternoProductor, String maternoProductor, 
-										String nombreProductor, String boletaTicketBascula) {
+										String nombreProductor, String curpProductor, String rfcProductor, String boletaTicketBascula) {
 
 		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
-				paternoProductor, maternoProductor, nombreProductor,boletaTicketBascula );
+				paternoProductor, maternoProductor, nombreProductor, curpProductor,  rfcProductor, boletaTicketBascula );
 		
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getBoletaIncosistente()!=null){
@@ -4330,9 +4406,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private void actualizarRelacionComprasTMPByFacturasIncosistentes(String folioCartaAdhesion, String claveBodega, 
 									String nombreEstado, String folioContrato, 
 									String paternoProductor, String maternoProductor, 
-									String nombreProductor, String folioFacturaVenta) {
+									String nombreProductor, String curpProductor, String rfcProductor, String folioFacturaVenta) {
 		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
-				paternoProductor, maternoProductor, nombreProductor,null, folioFacturaVenta, null, null);
+				paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, folioFacturaVenta, null, null);
 		
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getFacturaInconsistente()!=null){
@@ -4356,8 +4432,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private void actualizarRelacionComprasTMPByPagosIncosistentes(String folioCartaAdhesion, String claveBodega, 
 			String nombreEstado, String folioContrato, 
 			String paternoProductor, String maternoProductor, 
-			String nombreProductor, String folioDocumento) {
-		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor,null, null,folioDocumento, null);	
+			String nombreProductor, String curpProductor, String rfcProductor, String folioDocumento) {
+		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor, null, null,folioDocumento, null);	
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getPagoInconsistente()!=null){
 				if(r.getPagoInconsistente()){
@@ -4379,8 +4455,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private void actualizarRelacionComprasTMPByPagosDuplicados(String folioCartaAdhesion, String claveBodega, 
 			String nombreEstado, String folioContrato, 
 			String paternoProductor, String maternoProductor, 
-			String nombreProductor, String folioDocumento, String banco) {
-		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor,null, null,folioDocumento, banco);	
+			String nombreProductor, String curpProductor, String rfcProductor,  String folioDocumento, String banco) {
+		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, null,folioDocumento, banco);	
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getPagoInconsistente()!=null){
 				if(r.getPagoInconsistente()){
@@ -4434,6 +4510,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			comprador = cDAO.consultaComprador(cartaAdhesion.getIdComprador()).get(0);
 			List<PersonalizacionRelacionesProgramaV> lstPersonalizacionRelacionesProgramaV = rDAO.consultaPersonalizacionRelacionesProgramaV(0, 1, null, null, null, null, programa.getIdPrograma());
 			idPerRel =  lstPersonalizacionRelacionesProgramaV.get(0).getIdPerRel();
+			
+			lstValidacionPorGrupo = rDAO.recuperaCatCriteriosValidacionByGurpoPrograma(idPerRel,null,null);
+			for(CatCriteriosValidacion l: lstValidacionPorGrupo){
+				criteriosByPrograma += l.getIdCriterio()+",";
+			}
+			
 			//Consigue los criterios correspondiente al grupo seleccionado
 			//lstValidacionPorGrupo = rDAO.recuperaCatCriteriosValidacionByGurpoPrograma(idPerRel, grupoCriterio);
 			//String  s = integraCriteriosByGrupo(lstValidacionPorGrupo);
@@ -5631,6 +5713,14 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setLstVolNoProcedenteYApoyEnReg(
 			List<VolumenNoProcedente> lstVolNoProcedenteYApoyEnReg) {
 		this.lstVolNoProcedenteYApoyEnReg = lstVolNoProcedenteYApoyEnReg;
+	}
+
+	public String getCriteriosByPrograma() {
+		return criteriosByPrograma;
+	}
+
+	public void setCriteriosByPrograma(String criteriosByPrograma) {
+		this.criteriosByPrograma = criteriosByPrograma;
 	}	
 
 	

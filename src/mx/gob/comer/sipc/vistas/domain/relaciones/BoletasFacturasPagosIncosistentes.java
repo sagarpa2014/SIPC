@@ -10,6 +10,7 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 	private Double diferenciaEntreVolumen;
 	private Double diferenciaEntreImportes;
 	private Double diferenciaEntreRFC;
+	private Double predioNoPagado;	
 	private Double volumenObservado;
 	
 	public Double getVolTotalFacturado() {
@@ -83,9 +84,13 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 	public void setVolumenObservado(Double volumenObservado) {
 		this.volumenObservado = volumenObservado;
 	}
-	
-	
-	
-	
+
+	public Double getPredioNoPagado() {
+		return predioNoPagado;
+	}
+
+	public void setPredioNoPagado(Double predioNoPagado) {
+		this.predioNoPagado = predioNoPagado;
+	}
 	
 }

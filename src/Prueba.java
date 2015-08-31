@@ -2,6 +2,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 
 
@@ -27,6 +28,11 @@ public class Prueba {
 			 
 			 System.out.println(fecha2);
 			
+			 
+			 String o = TextUtil.formateaNumeroComoVolumen(24.8);
+			 
+			 System.out.println("oooo "+o);
+			 
 			 
 		}
 }

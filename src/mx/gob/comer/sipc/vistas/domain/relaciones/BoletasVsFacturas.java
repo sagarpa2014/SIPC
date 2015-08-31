@@ -23,6 +23,10 @@ public class BoletasVsFacturas implements Comparable  {
 	private String maternoProductor;
 	@Column(name =  "nombre_productor")
 	private String nombreProductor;
+	@Column(name =  "curp_productor")
+	private String curpProductor;
+	@Column(name =  "rfc_productor")
+	private String rfcProductor;
 	@Column(name =  "vol_bol_ticket")
 	private Double volBolTicket;
 	@Column(name =  "vol_total_fac_venta")
@@ -74,6 +78,19 @@ public class BoletasVsFacturas implements Comparable  {
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
 	}
 	public Double getVolBolTicket() {
 		return volBolTicket;

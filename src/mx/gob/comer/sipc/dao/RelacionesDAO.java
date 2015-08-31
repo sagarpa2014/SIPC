@@ -2475,17 +2475,17 @@ public class RelacionesDAO {
 	}
 	
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion)throws  JDBCException{
-		return consultaRelacionComprasTMP(folioCartaAdhesion, null, null, null, null, null, null, null, null, null, null);
+		return consultaRelacionComprasTMP(folioCartaAdhesion, null, null, null, null, null, null,null, null, null, null, null, null);
 	}
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion, String claveBodega, String estado, String folioContrato,
-			String paterno, String materno, String nombre, String boleta)throws  JDBCException{
+			String paterno, String materno, String nombre, String curpProductor, String rfcProductor, String boleta)throws  JDBCException{
 		return consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, estado, folioContrato,
-				 paterno,  materno,  nombre,  boleta,  null, null, null);
+				 paterno,  materno,  nombre, curpProductor, rfcProductor,  boleta, null, null, null);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<RelacionComprasTMP> consultaRelacionComprasTMP(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-			String paternoProductor, String maternoProductor, String nombreProductor, String boleta, String factura, String pago, String banco)throws  JDBCException{
+			String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, String boleta, String factura, String pago, String banco)throws  JDBCException{
 		List<RelacionComprasTMP> lst = null;
 		StringBuilder consulta= new StringBuilder();
 		if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
@@ -2534,6 +2534,20 @@ public class RelacionesDAO {
 				consulta.append(" and nombreProductor='").append(nombreProductor).append("'");
 			}else{
 				consulta.append("where nombreProductor='").append(nombreProductor).append("'");
+			}
+		}
+		if (curpProductor != null && !curpProductor.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and curpProductor='").append(curpProductor).append("'");
+			}else{
+				consulta.append("where curpProductor='").append(curpProductor).append("'");
+			}
+		}
+		if (rfcProductor != null && !rfcProductor.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and rfcProductor='").append(rfcProductor).append("'");
+			}else{
+				consulta.append("where rfcProductor='").append(rfcProductor).append("'");
 			}
 		}
 		if (boleta != null && !boleta.isEmpty()){
@@ -2841,7 +2855,7 @@ public class RelacionesDAO {
 	public List<BoletasDuplicadas> verificaBoletaDuplicadasEnRelComprasTmp(String folioCartaAdhesion)throws  JDBCException{
 		List<BoletasDuplicadas> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor,c.boleta_ticket_bascula, c.vol_bol_ticket, c.fecha_entrada_boleta  ")
+		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor, c.boleta_ticket_bascula, c.vol_bol_ticket, c.fecha_entrada_boleta  ")
 				.append("FROM relacion_compras_tmp c, ")
 				.append("(select clave_bodega,  boleta_ticket_bascula  ")
 				.append(" from relacion_compras_tmp ")
@@ -2880,10 +2894,10 @@ public class RelacionesDAO {
 	public List<BoletasVsFacturas> verificaBoletaVsFacturas(String folioCartaAdhesion)throws  JDBCException{
 		List<BoletasVsFacturas> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado,folio_contrato, paterno_productor, materno_productor, nombre_productor, sum(vol_bol_ticket) as vol_bol_ticket, sum( vol_total_fac_venta) as vol_total_fac_venta, 0 as diferencia_volumen  ")
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado,folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor,sum(vol_bol_ticket) as vol_bol_ticket, sum( vol_total_fac_venta) as vol_total_fac_venta, 0 as diferencia_volumen  ")
 				.append("FROM relacion_compras_tmp ")
 				.append("WHERE folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ")
+				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor ")
 				.append("HAVING (sum(vol_bol_ticket) < sum( vol_total_fac_venta) ) ")
 				.append("ORDER BY  paterno_productor, materno_productor, nombre_productor");				
 		lst= session.createSQLQuery(consulta.toString()).addEntity(BoletasVsFacturas.class).list();
@@ -2895,7 +2909,7 @@ public class RelacionesDAO {
 	public List<ProductorFactura> verificaFacturaDuplicadasEnRelComprasTmp(String folioCartaAdhesion)throws  JDBCException{
 		List<ProductorFactura> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.folio_factura_venta, c.vol_total_fac_venta, c.fecha_emision_fac ")
+		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor, c.folio_factura_venta, c.vol_total_fac_venta, c.fecha_emision_fac ")
 				.append("FROM relacion_compras_tmp c, ")
 				.append(" (select  folio_factura_venta ")
 				.append(" from relacion_compras_tmp ")
@@ -2905,7 +2919,7 @@ public class RelacionesDAO {
 				.append(" and c.folio_factura_venta is not null ")
 				.append("and c.folio_factura_venta = v.folio_factura_venta ")
 				.append("UNION ")
-				.append("SELECT ('B'||row_number() OVER ()) AS id, clave_bodega, nombre_estado, folio_contrato,  paterno_productor, materno_productor, nombre_productor,  folio_factura_venta, vol_total_fac_venta, fecha_emision_fac  ")
+				.append("SELECT ('B'||row_number() OVER ()) AS id, clave_bodega, nombre_estado, folio_contrato,  paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_factura_venta, vol_total_fac_venta, fecha_emision_fac  ")
 				.append("FROM relacion_compras_tmp r ")
 				.append("WHERE folio_factura_venta is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("AND exists (select 1 from productor_facturas_v where r.productor = folio_productor and r.folio_factura_venta = folio_fac) ")
@@ -2921,7 +2935,7 @@ public class RelacionesDAO {
 	public List<RfcProductorVsRfcFactura> verificaRFCProductorVsRFCFactura(String folioCartaAdhesion, int idPrograma)throws  JDBCException{ // AHS 29012015
 		List<RfcProductorVsRfcFactura> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc rfc_productor, r.rfc_fac_venta , ") // AHS 29012015
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, p.rfc rfc_productor, r.rfc_fac_venta , ") // AHS 29012015
 				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado " )
 				.append(" and  r.folio_contrato = r1.folio_contrato and COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X' )")
 				.append(" and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  ) as vol_total_fac_venta ")
@@ -2930,7 +2944,7 @@ public class RelacionesDAO {
 				.append("WHERE r.rfc_fac_venta is not null ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") // AHS 29012015
 				.append("and p.productor = r.productor ").append("and p.rfc <> r.rfc_fac_venta ") // AHS 29012015
 				.append(" AND EXISTS (select distinct 1 from predios_relaciones pr where pr.productor = p.productor and pr.id_programa = ").append(idPrograma).append( ")") // AHS 29012015
-				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, p.rfc, r.rfc_fac_venta ");		
+				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, curp_productor, p.rfc, r.rfc_fac_venta ");		
 		
 		System.out.println("Consulta RFC "+consulta.toString());
 		
@@ -3016,27 +3030,57 @@ public class RelacionesDAO {
 	public List<RelacionComprasTMP> verificaSiPrediosExistenBD(String folioCartaAdhesion, int idPrograma)throws JDBCException{
 		List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("select distinct clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_predio, id_relacion_compras_tmp AS id ")
-		.append("from relacion_compras_tmp  r ")
-		.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("and  folio_predio is not null ")
-		.append("and not exists ")
-			.append("(select 1 ")
-			.append("from predios_relaciones p ")
-			.append("where p.predio = r.folio_predio ")
-			.append(" and p.id_programa =").append(idPrograma).append(" and r.curp_productor = p.curp ) ")
-		.append("order by  clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor,folio_predio ");
 		
-			
-		System.out.println("Predios existan en bd "+consulta.toString());
+		consulta.append("select pc.clave_bodega, pc.nombre_estado, pc.folio_contrato,  pc.folio_carta_adhesion, pc.id_programa, pc.paterno_productor, pc.materno_productor, pc.nombre_productor, pc.curp_productor, pc.rfc_productor, pc.predio, 'FALTA PREDIO' as leyenda ")
+				.append("from  ")
+				.append("(select distinct r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado,r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_contrato, r.id_programa, r.curp_productor, r.rfc_productor, p.predio ")
+				.append("from relacion_compras_tmp  r, predios_relaciones p ")
+				.append("WHERE r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+				.append("and  r.folio_predio is not null ")
+				.append("and  r.id_programa =").append(idPrograma) 
+				.append("and COALESCE(r.curp_productor,r.rfc_productor) = COALESCE(p.curp, p.rfc) ")
+				.append("and  r.id_programa = p.id_programa) pc ")
+				.append("where not exists ")
+				.append("(select 1 from relacion_compras_tmp  r1 ") 
+				.append("where r1.folio_carta_adhesion = pc.folio_carta_adhesion ")
+				.append("and r1.clave_bodega = pc.clave_bodega ")
+				.append("and r1.nombre_estado = pc.nombre_estado ")
+				.append("and coalesce(r1.folio_contrato,'X') = coalesce(pc.folio_contrato,'X') ")
+				.append("and r1.folio_predio is not null ")
+			    .append("and r1.id_programa = pc.id_programa ") 
+			    .append("and r1.folio_predio = pc.predio ")
+			    .append("and COALESCE(r1.curp_productor,r1.rfc_productor) = COALESCE(pc.curp_productor, pc.rfc_productor) ) ")
+//			    .append("order by pc.folio_carta_adhesion, pc.id_programa, pc.curp_productor, pc.rfc_productor, pc.predio ")
+			    .append("UNION ")
+			    .append("select clave_bodega, nombre_estado, folio_contrato,  folio_carta_adhesion, id_programa, ")
+				.append("paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_predio  as predio, 'PRED NO ASOC A PROD' as leyenda ")
+				.append("from relacion_compras_tmp ")
+				.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+				.append("and id_programa =").append(idPrograma)
+				.append("and folio_predio is not null ")
+				.append("and (COALESCE(curp_productor,'X'),COALESCE(rfc_productor,'X')) in ") 
+				.append("(select distinct COALESCE(r1.curp_productor,'X'),COALESCE(r1.rfc_productor,'X') ")
+				.append("from relacion_compras_tmp  r1 ")
+				.append("WHERE r1.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+				.append("and r1.id_programa =").append(idPrograma)
+				.append("and r1.folio_predio is not null ") 
+				.append("and not exists ")
+				.append("(select 1 ")
+				.append("from predios_relaciones pr ")
+				.append("where pr.id_programa = ").append(idPrograma)
+				.append("and COALESCE(pr.curp, pr.rfc) = COALESCE(r1.curp_productor,r1.rfc_productor))) ")
+				.append("order by 4, 5, 9, 10, 11 ");
+		
+		System.out.println("Predios que no estan pagados "+consulta.toString());
+		
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
 		for(Object object : data){
 			Map<?, ?> row = (Map<?, ?>)object;
 			RelacionComprasTMP b = new RelacionComprasTMP();
-			Integer id  = (Integer) row.get("id");
-			b.setIdRelacionComprasTmp(id.longValue());
+//			Integer id  = (Integer) row.get("id");
+//			b.setIdRelacionComprasTmp(id.longValue());
 			b.setClaveBodega((String) row.get("clave_bodega"));
 		    b.setNombreEstado((String) row.get("nombre_estado"));
 		    b.setPaternoProductor((String) row.get("paterno_productor"));
@@ -3044,7 +3088,8 @@ public class RelacionesDAO {
 		    b.setNombreProductor((String) row.get("nombre_productor"));
 		    b.setCurpProductor((String) row.get("curp_productor"));
 		    b.setRfcProductor((String) row.get("rfc_productor"));
-		    b.setFolioPredio((String) row.get("folio_predio"));
+		    b.setFolioPredio((String) row.get("predio"));
+		    b.setBancoSinaxc((String) row.get("leyenda"));
 		    lst.add(b);
 		}
 
@@ -3133,6 +3178,7 @@ public class RelacionesDAO {
 		.append("group by  r.clave_bodega,  r.nombre_estado,  r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.boleta_ticket_bascula, r.fecha_entrada_boleta, r.vol_bol_ticket,  c.periodo_inicial_pago, c.periodo_final_pago ")
 		.append("having to_number(TO_CHAR(r.fecha_entrada_boleta,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')")
 		.append("order by clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor");	
+		System.out.println("Boletas Fuera de Periodo Contrato sin adendum: "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(BoletasFueraDePeriodoPago.class).list();
 		return lst;		
 	}	
@@ -3141,13 +3187,14 @@ public class RelacionesDAO {
 	public List<BoletasFueraDePeriodoPago> verificaBoletasFueraDePeriodoContratoAdendum(String folioCartaAdhesion)throws JDBCException{
 		List<BoletasFueraDePeriodoPago> lst = new ArrayList<BoletasFueraDePeriodoPago>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id,  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,  r.boleta_ticket_bascula,  r.fecha_entrada_boleta, r.vol_bol_ticket, r.periodo_inicial_contrato, r.periodo_final_contrato ")
+		consulta.append("SELECT row_number() OVER () AS id,  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.boleta_ticket_bascula,  r.fecha_entrada_boleta, r.vol_bol_ticket, r.periodo_inicial_contrato, r.periodo_final_contrato ")
 		.append("from relacion_compras_tmp r ")
 		.append("WHERE r.boleta_ticket_bascula is not null and r.folio_contrato is not null ")
 		.append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.boleta_ticket_bascula, r.fecha_entrada_boleta, r.vol_bol_ticket,  r.periodo_inicial_contrato, r.periodo_final_contrato  ")
+		.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.boleta_ticket_bascula, r.fecha_entrada_boleta, r.vol_bol_ticket,  r.periodo_inicial_contrato, r.periodo_final_contrato  ")
 		.append("having to_number(TO_CHAR(r.fecha_entrada_boleta,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
-		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");	
+		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");
+		System.out.println("BoletasFuera de Per x contrato Aplica Adendum: "+consulta.toString());
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
@@ -3177,13 +3224,15 @@ public class RelacionesDAO {
 	public List<FacturaFueraPeriodoAuditor> verificaFacturaFueraDePeriodo(String folioCartaAdhesion, String fechaInicio, String fechaFin)throws JDBCException{
 		List<FacturaFueraPeriodoAuditor> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
 		.append("from relacion_compras_tmp ")
 		.append("WHERE folio_factura_venta is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		.append("and (TO_CHAR(fecha_emision_fac,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
-		.append("group by clave_bodega,  nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor,  folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		.append("group by clave_bodega,  nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor,  curp_productor, rfc_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
 		.append("order by clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturaFueraPeriodoAuditor.class).list();
+		
+		System.out.println("Fac fuera de periodo sin complemento 1 o 3: "+consulta.toString());
 		
 		return lst;
 	}
@@ -3192,15 +3241,16 @@ public class RelacionesDAO {
 	public List<FacturaFueraPeriodoAuditor> verificaFacturaFueraDePeriodoAudLinComplemento(String folioCartaAdhesion, String fechaInicio, String fechaFin, String fechaInicioCom, String fechaFinCom )throws JDBCException{
 		List<FacturaFueraPeriodoAuditor> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		consulta.append("SELECT row_number() OVER () AS id, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
 		.append("from relacion_compras_tmp ")
 		.append("WHERE folio_factura_venta is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		//.append("and (TO_CHAR(fecha_emision_fac,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
-		.append("group by clave_bodega,  nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor,  folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
+		.append("group by clave_bodega,  nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor, curp_productor, rfc_productor, folio_factura_venta, fecha_emision_fac, vol_total_fac_venta ")
 		.append("HAVING (to_number(TO_CHAR(fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 		.append("AND (to_number(TO_CHAR(fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicioCom).append("','99999999') and to_number('").append(fechaFinCom).append("','99999999'))")		
 		.append("order by clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturaFueraPeriodoAuditor.class).list();
+		System.out.println("Fac Fuera de periodo 1 o 3 complemento "+consulta.toString());
 		
 		return lst;
 	}
@@ -3210,12 +3260,13 @@ public class RelacionesDAO {
 	public List<FacturaFueraPeriodoPago> verificaFacturaFueraDePeriodoContrato(String folioCartaAdhesion)throws JDBCException{
 		List<FacturaFueraPeriodoPago> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_factura_venta,  r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_factura_venta,  r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ")
 		.append("from relacion_compras_tmp r, contratos_relacion_compras c ")
 		.append("WHERE r.folio_factura_venta is not null and r.folio_contrato is not null and r.folio_contrato = c.folio_contrato ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("group by  r.clave_bodega,  r.nombre_estado,r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_factura_venta, r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ")
+		.append("group by  r.clave_bodega,  r.nombre_estado,r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_factura_venta, r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ")
 		.append("having to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')")
-		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
+		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");		
+		System.out.println("Fac Fuera de Periodo Contrato-SinComplemento "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturaFueraPeriodoPago.class).list();		
 		return lst;
 	}
@@ -3225,7 +3276,7 @@ public class RelacionesDAO {
 		List<FacturaFueraPeriodoPago> lst = new ArrayList<FacturaFueraPeriodoPago>();
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, ")
-			.append("r.nombre_productor, r.folio_factura_venta,  r.fecha_emision_fac, r.vol_total_fac_venta, ")
+			.append("r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_factura_venta,  r.fecha_emision_fac, r.vol_total_fac_venta, ")
 			.append("CASE WHEN to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') > to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999') ") 
 			.append("AND  to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') < to_number('").append(fechaInicio).append("','99999999')  THEN ")
 			.append("c.periodo_inicial_pago ")
@@ -3244,7 +3295,7 @@ public class RelacionesDAO {
 			.append("END periodo_final_contrato ")
 			.append("from relacion_compras_tmp r, contratos_relacion_compras c ")
 			.append("WHERE r.folio_factura_venta is not null and r.folio_contrato is not null and r.folio_contrato = c.folio_contrato and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("group by  r.clave_bodega,  r.nombre_estado,r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_factura_venta, r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ") 
+			.append("group by  r.clave_bodega,  r.nombre_estado,r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,r.curp_productor, r.rfc_productor, r.folio_factura_venta, r.fecha_emision_fac, r.vol_total_fac_venta, c.periodo_inicial_pago, c.periodo_final_pago ") 
 			.append("having (to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')) ")
 			.append("AND (to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 			.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
@@ -3263,6 +3314,8 @@ public class RelacionesDAO {
 			b.setPaternoProductor((String) row.get("paterno_productor"));
 			b.setMaternoProductor((String) row.get("materno_productor"));
 			b.setNombreProductor((String) row.get("nombre_productor"));
+			b.setCurpProductor((String) row.get("curp_productor"));
+			b.setRfcProductor((String) row.get("rfc_productor"));
 			b.setFolioFacturaVenta((String) row.get("folio_factura_venta"));
 			b.setFechaEmisionFac((Date) row.get("fecha_emision_fac"));
 			BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
@@ -3416,18 +3469,18 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoPagoAdendum(String folioCartaAdhesion)throws JDBCException{
 		List<ChequeFueraPeriodoContrato> lst = new ArrayList<ChequeFueraPeriodoContrato>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato, ")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato, ")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta ")
 		.append("from relacion_compras_tmp r ")
 		.append("WHERE r.folio_doc_pago is not null   ")
 		.append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("group by r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato ")
+		.append("group by r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato ")
 		.append("having to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
 		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");	
 		SQLQuery query = session.createSQLQuery(consulta.toString());
-		System.out.println("Pagos Fuera de periodo "+consulta.toString());
+		System.out.println("Pagos Fuera de periodo Adendum "+consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
 		for(Object object : data){
@@ -3439,6 +3492,8 @@ public class RelacionesDAO {
 			b.setPaternoProductor((String) row.get("paterno_productor"));
 			b.setMaternoProductor((String) row.get("materno_productor"));
 			b.setNombreProductor((String) row.get("nombre_productor"));
+			b.setCurpProductor((String) row.get("curp_productor"));
+			b.setRfcProductor((String) row.get("rfc_productor"));
 			b.setFolioDocPago((String) row.get("folio_doc_pago"));
 			b.setBancoSinaxc((String) row.get("banco_sinaxc"));
 			b.setFechaDocPagoSinaxc((Date) row.get("fecha_doc_pago_sinaxc"));
@@ -3460,16 +3515,18 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoContrato(String folioCartaAdhesion)throws JDBCException{
 		List<ChequeFueraPeriodoContrato> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago, ")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago, ")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_"
 				+ "carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta ")
 		.append("from relacion_compras_tmp r, contratos_relacion_compras c ")
 		.append("WHERE folio_doc_pago is not null  and r.folio_contrato is not null and r.folio_contrato = c.folio_contrato ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("group by folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago ")
+		.append("group by folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago ")
 		.append("having to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')")
 		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor ");
+		
+		System.out.println("Pagos Fuera Per sin Complemento "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoContrato.class).list();
 		AppLogger.info("app", "query---> "+consulta.toString());
 		
@@ -3480,7 +3537,7 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoContratoComplemento(String folioCartaAdhesion, String fechaInicio,String fechaFin)throws JDBCException{
 		List<ChequeFueraPeriodoContrato> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta, ")
@@ -3502,12 +3559,14 @@ public class RelacionesDAO {
 		.append("END periodo_final_contrato ")
 		.append("from relacion_compras_tmp r, contratos_relacion_compras c ")
 		.append("WHERE folio_doc_pago is not null  and r.folio_contrato is not null and r.folio_contrato = c.folio_contrato ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("GROUP BY folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago ")
+		.append("GROUP BY folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago ")
 		.append("HAVING to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')")
 		.append("AND (to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor ");
+		
+		System.out.println("Pago fuera Per Contrato Complemento "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoContrato.class).list();
-		AppLogger.info("app", "query---> "+consulta.toString());
+		
 		
 		return lst;
 	}
@@ -3516,7 +3575,7 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoContratoAdendumComplemento(String folioCartaAdhesion, String fechaInicio, String fechaFin)throws JDBCException{
 		List<ChequeFueraPeriodoContrato> lst = new ArrayList<ChequeFueraPeriodoContrato>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, ")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, ")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta, ")
@@ -3538,7 +3597,7 @@ public class RelacionesDAO {
 		.append("from relacion_compras_tmp r ")
 		.append("WHERE r.folio_doc_pago is not null   ")
 		.append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("GROUP BY r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato ")
+		.append("GROUP BY r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc, r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc,  r.periodo_inicial_contrato, r.periodo_final_contrato ")
 		.append("HAVING to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
 		.append("AND (to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 		.append("ORDER BY clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");
@@ -3556,6 +3615,8 @@ public class RelacionesDAO {
 			b.setPaternoProductor((String) row.get("paterno_productor"));
 			b.setMaternoProductor((String) row.get("materno_productor"));
 			b.setNombreProductor((String) row.get("nombre_productor"));
+			b.setCurpProductor((String) row.get("curp_productor"));
+			b.setRfcProductor((String) row.get("rfc_productor"));
 			b.setFolioDocPago((String) row.get("folio_doc_pago"));
 			b.setBancoSinaxc((String) row.get("banco_sinaxc"));
 			b.setFechaDocPagoSinaxc((Date) row.get("fecha_doc_pago_sinaxc"));
@@ -3860,6 +3921,7 @@ public class RelacionesDAO {
 		consulta.append("select * ")		
 		.append(" from  precio_pagado_no_corresponde_con_pagos_v ")
 		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and abs((COALESCE(imp_precio_ton_pago_sinaxc,0) - COALESCE(precio_calculado,0)))>1.00  ");
+		System.out.println("Precio no corresponde con pagos "+consulta.toString());
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		
@@ -3875,6 +3937,8 @@ public class RelacionesDAO {
 			r.setPaternoProductor((String) row.get("paterno_productor"));
 			r.setMaternoProductor((String) row.get("materno_productor"));
 			r.setNombreProductor((String) row.get("nombre_productor"));
+			r.setCurpProductor((String) row.get("curp_productor"));
+			r.setRfcProductor((String) row.get("rfc_productor"));
 			valor = (BigDecimal) row.get("vol_total_fac_venta");
 			r.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
 			valor = (BigDecimal) row.get("imp_doc_pago_sinaxc");
@@ -4259,14 +4323,14 @@ public class RelacionesDAO {
 		        b.setBoletaTicketBascula((String) row.get("boleta_ticket_bascula"));
 		        if(camposQueAplica.contains("12,")){
 		        	if((Date) row.get("fecha_entrada_boleta")==null){
-		        		b.setFechaEntrada("VALOR REQUERIDO");
+		        		b.setFechaEntrada("REQUERIDO");
 		        	}else{
 		        		b.setFechaEntrada(null);
 		        	}
 		        }		        
 		        if(camposQueAplica.contains("63,")){
 		        	if((BigDecimal) row.get("vol_bol_ticket")==null){
-		        		b.setVolumen("VALOR REQUERIDO");
+		        		b.setVolumen("REQUERIDO");
 		        	}else{
 		        		b.setVolumen(null);
 		        	}
@@ -4355,42 +4419,42 @@ public class RelacionesDAO {
 		        b.setFolioFacturaVenta((String) row.get("folio_factura_venta"));
 		        if(camposQueAplica.contains("16,")){
 		        	if((Date) row.get("fecha_emision_fac")==null){
-		        		b.setFechaEmisionFac("VALOR REQUERIDO");
+		        		b.setFechaEmisionFac("REQUERIDO");
 		        	}else{
 		        		b.setFechaEmisionFac(null);
 		        	}
 		        }		        
 		        if(camposQueAplica.contains("17,")){
 		        	if((String) row.get("rfc_fac_venta")==null){
-		        		b.setRfcFacVenta("VALOR REQUERIDO");
+		        		b.setRfcFacVenta("REQUERIDO");
 		        	}else{
 		        		b.setRfcFacVenta(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("19,")){
 		        	if((BigDecimal) row.get("vol_sol_fac_venta")==null){
-		        		b.setVolSolFacVenta("VALOR REQUERIDO");
+		        		b.setVolSolFacVenta("REQUERIDO");
 		        	}else{
 		        		b.setVolSolFacVenta(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("65,")){
 		        	if((BigDecimal) row.get("vol_total_fac_venta")==null){
-		        		b.setVolTotalFacVenta("VALOR REQUERIDO");
+		        		b.setVolTotalFacVenta("REQUERIDO");
 		        	}else{
 		        		b.setVolTotalFacVenta(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("20,")){
 		        	if((BigDecimal) row.get("imp_sol_fac_venta")==null){
-		        		b.setImpSolFacVenta("VALOR REQUERIDO");
+		        		b.setImpSolFacVenta("REQUERIDO");
 		        	}else{
 		        		b.setImpSolFacVenta(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("70,")){
 		        	if((Integer) row.get("id_variedad")==null){
-		        		b.setVariedad("VALOR REQUERIDO");
+		        		b.setVariedad("REQUERIDO");
 		        	}else{
 		        		b.setVariedad(null);
 		        	}
@@ -4493,21 +4557,21 @@ public class RelacionesDAO {
 		        
 		        if(camposQueAplica.contains("67,")){
 		        	if((BigDecimal) row.get("imp_total_pago_sinaxc")==null){
-		        		b.setImpTotalPagoSinaxc("VALOR REQUERIDO");
+		        		b.setImpTotalPagoSinaxc("REQUERIDO");
 		        	}else{
 		        		b.setImpTotalPagoSinaxc(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("27,")){
 		        	if((String) row.get("tipo_doc_pago")==null){
-		        		b.setTipoDdocPago("VALOR REQUERIDO");
+		        		b.setTipoDdocPago("REQUERIDO");
 		        	}else{
 		        		b.setTipoDdocPago(null);
 		        	}
 		        }	
 		        if(camposQueAplica.contains("16,")){
 		        	if((Date) row.get("fecha_doc_pago_sinaxc")==null){
-		        		b.setFechaDocPagoSinaxc("VALOR REQUERIDO");
+		        		b.setFechaDocPagoSinaxc("REQUERIDO");
 		        	}else{
 		        		b.setFechaDocPagoSinaxc(null);
 		        	}
@@ -4515,28 +4579,28 @@ public class RelacionesDAO {
 		        
 		        if(camposQueAplica.contains("29,")){
 		        	if((String) row.get("banco_sinaxc")==null){
-		        		b.setBancoSinaxc("VALOR REQUERIDO");
+		        		b.setBancoSinaxc("REQUERIDO");
 		        	}else{
 		        		b.setBancoSinaxc(null);
 		        	}
 		        }	
 		        if(camposQueAplica.contains("66,")){
 		        	if((BigDecimal) row.get("imp_doc_pago_sinaxc")==null){
-		        		b.setImpDocPagoSinaxc("VALOR REQUERIDO");
+		        		b.setImpDocPagoSinaxc("REQUERIDO");
 		        	}else{
 		        		b.setImpDocPagoSinaxc(null);
 		        	}
 		        }
 		        if(camposQueAplica.contains("68,")){
 		        	if((BigDecimal) row.get("imp_precio_ton_pago_sinaxc")==null){
-		        		b.setImpPrecioTonPagoSinaxc("VALOR REQUERIDO");
+		        		b.setImpPrecioTonPagoSinaxc("REQUERIDO");
 		        	}else{ 
 		        		b.setImpPrecioTonPagoSinaxc(null);
 		        	}
 		        }
 		        
 		        if((BigDecimal) row.get("imp_total_pago_sinaxc")==null){
-	        		b.setImpTotalPagoSinaxc("VALOR REQUERIDO");
+	        		b.setImpTotalPagoSinaxc("REQUERIDO");
 	        		
 	        	}else{
 	        		b.setImpTotalPagoSinaxc(null);
@@ -4798,6 +4862,7 @@ public class RelacionesDAO {
 			.append("and  r61.pagos_menores_facturas = true and r.folio_carta_adhesion = r61.folio_carta_adhesion")
 			.append(") ")
 			.append(") as  pagos_menores_facturas, ")
+			
 			.append("(select COALESCE(sum(r6.vol_total_fac_venta),0) ")
 			.append("from relacion_compras_tmp r6 ")
 			.append("where r.clave_bodega = r6.clave_bodega ") 
@@ -4823,7 +4888,34 @@ public class RelacionesDAO {
 			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
 			.append("and  r61.rfc_inconsistente = true ")
 			.append(") ")
-			.append(") as  diferencia_entre_rfc, ")		
+			.append(") as  diferencia_entre_rfc, ")
+			.append("(select COALESCE(sum(r6.vol_total_fac_venta),0) ")
+			.append("from relacion_compras_tmp r6 ")
+			.append("where r.clave_bodega = r6.clave_bodega ") 
+			.append("and  r.nombre_estado = r6.nombre_estado ")
+			.append("and  r.estado_acopio = r6.estado_acopio  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
+			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
+//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  EXISTS ( ")
+			.append("select 1 ")
+			.append("from relacion_compras_tmp r61 ")
+			.append("where r.clave_bodega = r61.clave_bodega ") 
+			.append("and  r.nombre_estado = r61.nombre_estado ")
+			.append("and  r.estado_acopio = r61.estado_acopio  ")
+			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
+			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
+//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and  r61.predio_no_pagado = true ")
+			.append(") ")
+			.append(") as  predio_no_pagado, ")
+			
 			.append("(select  COALESCE(max(r7.volumen_no_procedente),0) ")
 			.append("from relacion_compras_tmp r7 ")
 			.append("where r.clave_bodega = r7.clave_bodega ") 
@@ -4838,7 +4930,7 @@ public class RelacionesDAO {
 			.append(") as  volumen_no_procedente ")
 			.append("from relacion_compras_tmp  r  ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and (boleta_incosistente = true or factura_inconsistente = true or pago_inconsistente = true or facturas_mayores_boletas = true or pagos_menores_facturas = true or rfc_inconsistente = true or COALESCE(r.volumen_no_procedente,0) > 0 )")
+			.append("and (boleta_incosistente = true or factura_inconsistente = true or pago_inconsistente = true or facturas_mayores_boletas = true or pagos_menores_facturas = true or rfc_inconsistente = true  or predio_no_pagado = true or COALESCE(r.volumen_no_procedente,0) > 0 )")
 			.append("group by folio_carta_adhesion, clave_bodega,  nombre_estado, r.estado_acopio, folio_contrato, r.rfc_productor, paterno_productor, materno_productor, nombre_productor, curp_productor");
 			
 			System.out.println("Query Resumen observaciones "+consulta.toString());
@@ -4873,6 +4965,8 @@ public class RelacionesDAO {
 		        b.setDiferenciaEntreImportes(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("diferencia_entre_rfc");
 		        b.setDiferenciaEntreRFC(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("predio_no_pagado");
+		        b.setPredioNoPagado(valor!=null ? valor.doubleValue():0.0);
 		        lst.add(b);	
 			}
 			
@@ -4927,6 +5021,7 @@ public class RelacionesDAO {
 				
 				if(predioInconsistente){
 					set.append(" predio_inconsistente = null,");
+					set.append(" precio_no_pagado = null,");
 					
 				}
 				
@@ -4953,14 +5048,21 @@ public class RelacionesDAO {
 		
 		
 		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac)throws JDBCException {
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean facMayBol, boolean pagMenFac)throws JDBCException {
 			return  actualizaFacMayBolOPagMenFac(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
-					paternoProductor, maternoProductor, nombreProductor, facMayBol, pagMenFac,  false, false);
+					paternoProductor, maternoProductor, curpProductor, rfcProductor,nombreProductor, facMayBol, pagMenFac,  false, false);
+		}
+		
+		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente, boolean facIncXTipoCambio)throws JDBCException {
+			return  actualizaFacMayBolOPagMenFac(folioCartaAdhesion,  claveBodega, nombreEstado, folioContrato,
+					 paternoProductor, maternoProductor, nombreProductor, curpProductor,  rfcProductor,  facMayBol,  pagMenFac, rfcInconsistente,  facIncXTipoCambio, false);
 		}
 		public int actualizaFacMayBolOPagMenFac(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente, boolean facIncXTipoCambio)throws JDBCException {
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean facMayBol, boolean pagMenFac, boolean rfcInconsistente, boolean facIncXTipoCambio, boolean predioNoPagado)throws JDBCException {
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
+			//Actualiza incosistencias por unidad de produccion
 			try{
 				StringBuilder set  = new StringBuilder();
 				if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
@@ -5007,7 +5109,9 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where paterno_productor is null");
 					}
-				}
+				}			
+				
+				
 				if (maternoProductor != null && !maternoProductor.isEmpty()){
 					if(where.length()>0){
 						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
@@ -5028,6 +5132,35 @@ public class RelacionesDAO {
 						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
 					}
 				}
+				
+				if(curpProductor != null && !curpProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and curp_productor ='").append(curpProductor).append("' ");
+					}else{
+						where.append(" where curp_productor ='").append(curpProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and curp_productor is null");
+					}else{
+						where.append(" where curp_productor is null");
+					}
+					if(rfcProductor != null && !rfcProductor.isEmpty()){
+						if(where.length()>0){
+							where.append(" and rfc_productor ='").append(rfcProductor).append("' ");
+						}else{
+							where.append(" where rfc_productor ='").append(rfcProductor).append("' ");
+						}
+					}else{
+						if(where.length()>0){
+							where.append(" and rfc_productor is null");
+						}else{
+							where.append(" where rfc_productor is null");
+						}
+					}
+					
+				}
+				
 				set.append("set " );
 				if(facMayBol){
 					set.append(" facturas_mayores_boletas = true,");
@@ -5040,8 +5173,10 @@ public class RelacionesDAO {
 				}
 				if(facIncXTipoCambio){
 					set.append(" factura_inconsistente = true,");
+				}					
+				if(predioNoPagado){
+					set.append(" predio_no_pagado = true,");
 				}
-								
 				set.deleteCharAt(set.length()-1);
 				StringBuilder hql = new StringBuilder()			
 				.append("UPDATE  relacion_compras_tmp  ").append(set.toString()).append(where.toString());
@@ -5055,7 +5190,7 @@ public class RelacionesDAO {
 		}
 		
 		public int actualizaPagosInconsistente(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, boolean pagos)throws JDBCException {
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean pagos)throws JDBCException {
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
@@ -5123,6 +5258,21 @@ public class RelacionesDAO {
 						where.append(" and nombre_productor ='").append(nombreProductor).append("' ");
 					}else{
 						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
+					}
+				}
+				
+				if (curpProductor != null && !curpProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and curp_productor ='").append(curpProductor).append("' ");
+					}else{
+						where.append(" where curp_productor ='").append(curpProductor).append("' ");
+					}
+				}
+				if (rfcProductor != null && !rfcProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and rfc_productor ='").append(rfcProductor).append("' ");
+					}else{
+						where.append(" where rfc_productor ='").append(rfcProductor).append("' ");
 					}
 				}
 				set.append("set " );				
@@ -5244,7 +5394,7 @@ public class RelacionesDAO {
 		
 		
 		public int actualizaVolumenNoProcedente(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-				String paternoProductor, String maternoProductor, String nombreProductor, String volumenNoProcedente)throws JDBCException {	// AHS [LINEA] - 17022015
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, String volumenNoProcedente)throws JDBCException {	// AHS [LINEA] - 17022015
 			int elementosActuializados = 0;
 			StringBuilder where = new StringBuilder();
 			try{
@@ -5308,6 +5458,34 @@ public class RelacionesDAO {
 					}else{
 						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
 					}
+				}
+				
+				if(curpProductor != null && !curpProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and curp_productor ='").append(curpProductor).append("' ");
+					}else{
+						where.append(" where curp_productor ='").append(curpProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and curp_productor is null");
+					}else{
+						where.append(" where curp_productor is null");
+					}
+					if(rfcProductor != null && !rfcProductor.isEmpty()){
+						if(where.length()>0){
+							where.append(" and rfc_productor ='").append(rfcProductor).append("' ");
+						}else{
+							where.append(" where rfc_productor ='").append(rfcProductor).append("' ");
+						}
+					}else{
+						if(where.length()>0){
+							where.append(" and rfc_productor is null");
+						}else{
+							where.append(" where rfc_productor is null");
+						}
+					}
+					
 				}
 				
 				
@@ -5481,7 +5659,7 @@ public class RelacionesDAO {
 		public List<RendimientosProcedente> consultaRendimientosProcedente(String folioCartaAdhesion, int idPrograma)throws  JDBCException{
 			List<RendimientosProcedente> lst = new ArrayList<RendimientosProcedente>();
 			StringBuilder consulta= new StringBuilder();	
-			consulta.append("select  r.clave_bodega,  r.nombre_estado, r.estado_acopio, r.folio_contrato, r.rfc_productor, r.paterno_productor, r.materno_productor, r.nombre_productor, ")
+			consulta.append("select  r.clave_bodega,  r.nombre_estado, r.estado_acopio, r.folio_contrato, r.rfc_productor, curp_productor, r.paterno_productor, r.materno_productor, r.nombre_productor, ")
 			.append("vol_total_fac_venta, rendimiento_maximo, volumen_no_procedente ")
 			.append("from volumen_no_procedente_v r ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
@@ -5499,7 +5677,8 @@ public class RelacionesDAO {
 		        b.setNombreEstado((String) row.get("nombre_estado"));
 		        b.setPaternoProductor((String) row.get("paterno_productor"));
 		        b.setMaternoProductor((String) row.get("materno_productor"));
-		        b.setNombreProductor((String) row.get("nombre_productor"));
+		        b.setCurpProductor((String) row.get("curp_productor"));
+		        b.setRfcProductor((String) row.get("rfc_productor"));
 		        BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
 		        b.setVolTotalFacturado(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("rendimiento_maximo"); 
@@ -5702,15 +5881,16 @@ public class RelacionesDAO {
 		public List<PrecioPagPorTipoCambio> consultaPrecioPagPorTipoCambio(String folioCartaAdhesion)throws  JDBCException{
 			List<PrecioPagPorTipoCambio> lst = new ArrayList<PrecioPagPorTipoCambio>();
 			StringBuilder consulta= new StringBuilder();	
-			consulta.append("select r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor,v1.vol_total_fac_venta, v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
+			consulta.append("select r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, v1.vol_total_fac_venta, v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
 			.append("from contrato_tipo_cambio_v v1, relacion_compras_tmp r ")
 			.append("where r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-			.append("and r.folio_contrato = v1.folio_contrato ")
+			.append("and COALESCE(r.folio_contrato,'X') = COALESCE(v1.folio_contrato,'X') ")
 			.append("and COALESCE(r.clave_bodega,'X') = COALESCE(v1.clave_bodega,'X') ") // AHS 26062015			
 			.append("and coalesce(r.paterno_productor,'X') = coalesce(v1.paterno_productor,'X') ")
 			.append("and coalesce(r.materno_productor,'X') =  coalesce(v1.materno_productor,'X')  and coalesce(r.nombre_productor ,'X') = coalesce(v1.nombre_productor,'X') ")
+			.append("and coalesce(r.curp_productor,'X') =  coalesce(v1.curp_productor,'X')  and coalesce(r.rfc_productor ,'X') = coalesce(v1.rfc_productor,'X') ")
 			.append("and diferecia_importe_pagado > 1.00 ")
-			.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, v1.vol_total_fac_venta,v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
+			.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor,v1.vol_total_fac_venta,v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
 			.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
 			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
@@ -5727,6 +5907,8 @@ public class RelacionesDAO {
 				b.setPaternoProductor((String) row.get("paterno_productor"));
 				b.setMaternoProductor((String) row.get("materno_productor"));
 				b.setNombreProductor((String) row.get("nombre_productor"));
+				b.setCurpProductor((String) row.get("curp_productor"));
+				b.setRfcProductor((String) row.get("rfc_productor"));
 				BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
 				b.setVolTotalFacVenta(valor.doubleValue());
 				valor = (BigDecimal) row.get("precio_pactado_por_tonelada");

@@ -98,7 +98,7 @@ public class TextUtil {
 	}
 	public static String formateaNumeroComoVolumen(Double cantidad){
 		Locale.setDefault(Locale.ENGLISH);
-		return new DecimalFormat("###,###,###,##0.###").format(cantidad);
+		return new DecimalFormat("###,###,###,##0.000").format(cantidad);
 	}	
 // AHS [LINEA] - 17022015	
 	public static String formateaNumeroComoVolumenSeisDec(double cantidad){
