@@ -25,12 +25,12 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	private String maternoProductor;
 	@Column(name =  "nombre_productor")
 	private String nombreProductor;
+	@Column(name =  "curp_productor")
+	private String curpProductor;
+	@Column(name =  "rfc_productor")
+	private String rfcProductor;
 	@Column(name =  "folio_predio")
 	private String folioPredio;
-	@Column(name =  "folio_predio_sec")
-	private Integer folioPredioSec;
-	@Column(name =  "folio_predio_alterno")
-	private String folioPredioAlterno;	
 	@Column(name =  "folio_carta_externa")
 	private String folioCartaExterna;	
 	
@@ -82,6 +82,19 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	}
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}	
+	
+	public String getCurpProductor() {
+		return curpProductor;
+	}
+	public void setCurpProductor(String curpProductor) {
+		this.curpProductor = curpProductor;
+	}
+	public String getRfcProductor() {
+		return rfcProductor;
+	}
+	public void setRfcProductor(String rfcProductor) {
+		this.rfcProductor = rfcProductor;
 	}
 	public String getFolioPredio() {
 		return folioPredio;
@@ -89,18 +102,6 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	public void setFolioPredio(String folioPredio) {
 		this.folioPredio = folioPredio;
 	}
-	public Integer getFolioPredioSec() {
-		return folioPredioSec;
-	}
-	public void setFolioPredioSec(Integer folioPredioSec) {
-		this.folioPredioSec = folioPredioSec;
-	}
-	public String getFolioPredioAlterno() {
-		return folioPredioAlterno;
-	}
-	public void setFolioPredioAlterno(String folioPredioAlterno) {
-		this.folioPredioAlterno = folioPredioAlterno;
-	}	
 	
 	public String getFolioCartaExterna() {
 		return folioCartaExterna;
@@ -116,23 +117,23 @@ public class PrediosProdsContNoExisteBD implements Comparable {
 	    		if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){
 		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
 		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
-		            		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
-		            			if(this.productor.compareToIgnoreCase(obj.productor) == 0) {		            			
-				            	    if(this.folioPredio.compareToIgnoreCase(obj.folioPredio) == 0) { 
-				            	    	if(this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString()) == 0){
-				            	    		return this.folioPredioAlterno.compareToIgnoreCase(obj.folioPredioAlterno);     
-				            	    	}else{
-				            	    		return this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString());
-				            	    	}             
-				            	    }else{
-				            	    	return this.folioPredio.compareToIgnoreCase(obj.folioPredio); 
-				            	    }
-		            			}else{
-		            				return this.productor.compareTo(obj.productor);
-		            			}           	    
-		            		}else{
+//		            		if(this.nombreProductor.compareToIgnoreCase(obj.nombreProductor) == 0) {
+//		            			if(this.productor.compareToIgnoreCase(obj.productor) == 0) {		            			
+////				            	    if(this.folioPredio.compareToIgnoreCase(obj.folioPredio) == 0) { 
+////				            	    	if(this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString()) == 0){
+////				            	    		return this.folioPredioAlterno.compareToIgnoreCase(obj.folioPredioAlterno);     
+////				            	    	}else{
+////				            	    		return this.folioPredioSec.toString().compareTo(obj.folioPredioSec.toString());
+////				            	    	}             
+////				            	    }else{
+//				            	    	return this.folioPredio.compareToIgnoreCase(obj.folioPredio); 
+////				            	    }
+//		            			}else{
+//		            				return this.productor.compareTo(obj.productor);
+//		            			}           	    
+//		            		}else{
 		            			return this.nombreProductor.compareTo(obj.nombreProductor);
-		            		}	            	    
+//		            		}	            	    
 		            	}else{
 		            		return this.maternoProductor.compareTo(obj.maternoProductor);
 		            	}	                 

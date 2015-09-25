@@ -111,5 +111,12 @@
 	<s:if test="%{lstVolNoProcedenteYApoyEnReg.size() > 0}"> <!--VOLUMEN NO PROCEDENTE POR APOYO EN LA REGIONAL"-->
 		<span class="requerido">VOLUMEN NO PROCEDENTE</span><br>
 	</s:if>	
+	<s:if test="%{lstFGlobalVsFIndividual.size() > 0}"> <!--5.5 DIFERENCIA DE VOLUMEN FACTURA GLOBAL VS FACTURAS INDIVIDUALES"-->
+		<span class="requerido">DIFERENCIA DE VOLUMEN FACTURA GLOBAL VS FACTURAS INDIVIDUALES</span><br>
+	</s:if>
+	<s:if test="%{lstPagMenorCompBases.size() > 0}"> <!--9.1 PAGO MENOR DE LA COMPENSACIÓN DE BASES"-->
+		<span class="requerido">PAGO MENOR DE LA COMPENSACIÓN DE BASES</span><br>
+	</s:if>
+	
 </fieldset>
 <s:include value="incluyeLogXls.jsp"/>

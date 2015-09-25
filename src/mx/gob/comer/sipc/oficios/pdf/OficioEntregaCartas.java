@@ -176,7 +176,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		addEmptyLine(1);
 		StringBuilder texto = new StringBuilder();
 		texto.append("Al respecto, anexo al presente envío a Usted, para la atención correspondiente, original de las Cartas de Adhesión ")
-			 .append("firmadas por las partes que en ellas intervienen de los participantes que acontinuación se indican.");
+			 .append("firmadas por las partes que en ellas intervienen y que acontinuación se indican.");
 		parrafo = new Paragraph(texto.toString(), TIMESROMAN12);
 		parrafo.setAlignment(Element.ALIGN_JUSTIFIED);
 		parrafo.setLeading(1,1);
@@ -226,6 +226,8 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		addEmptyLine(1);
 		parrafo = new Paragraph("Sin más por el momento reciba un cordial saludo.", TIMESROMAN12);
 		document.add(parrafo);	
+		
+		addEmptyLine(2);
 	}
 
 	private void getCuerpo() throws DocumentException{

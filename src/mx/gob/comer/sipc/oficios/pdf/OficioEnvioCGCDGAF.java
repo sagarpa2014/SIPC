@@ -190,7 +190,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 //		parrafo.setAlignment(Element.ALIGN_CENTER);
 //		document.add(parrafo);
 		
-		addEmptyLine(2);
+		addEmptyLine(1);
 /*		
 		if(ata.getIdPrograma() == 31){
 			addEmptyLine(1);

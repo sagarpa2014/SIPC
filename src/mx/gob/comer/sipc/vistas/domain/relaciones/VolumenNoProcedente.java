@@ -7,6 +7,7 @@ public class VolumenNoProcedente extends ReporteRelacionCompras {
 	private Double volApoyadoEnRegional;
 	private Double volNoProcedente;	
 	private Integer idVariedad;
+	private Double volNoProcedenteTotal;	
 	
 	public Double getVolTotalFacturado() {
 		return volTotalFacturado;
@@ -39,8 +40,13 @@ public class VolumenNoProcedente extends ReporteRelacionCompras {
 	public void setIdVariedad(Integer idVariedad) {
 		this.idVariedad = idVariedad;
 	}
-	
 
-	
+	public Double getVolNoProcedenteTotal() {
+		return volNoProcedenteTotal;
+	}
+
+	public void setVolNoProcedenteTotal(Double volNoProcedenteTotal) {
+		this.volNoProcedenteTotal = volNoProcedenteTotal;
+	}
 	
 }

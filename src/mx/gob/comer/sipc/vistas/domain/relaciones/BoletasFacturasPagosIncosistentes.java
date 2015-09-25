@@ -10,6 +10,7 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 	private Double diferenciaEntreVolumen;
 	private Double diferenciaEntreImportes;
 	private Double diferenciaEntreRFC;
+	private Double difFacGlobalIndividual;
 	private Double predioNoPagado;	
 	private Double volumenObservado;
 	
@@ -71,6 +72,15 @@ public class BoletasFacturasPagosIncosistentes extends ReporteRelacionCompras {
 	
 	public Double getDiferenciaEntreRFC() {
 		return diferenciaEntreRFC;
+	}	
+	
+
+	public Double getDifFacGlobalIndividual() {
+		return difFacGlobalIndividual;
+	}
+
+	public void setDifFacGlobalIndividual(Double difFacGlobalIndividual) {
+		this.difFacGlobalIndividual = difFacGlobalIndividual;
 	}
 
 	public void setDiferenciaEntreRFC(Double diferenciaEntreRFC) {

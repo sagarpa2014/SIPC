@@ -140,6 +140,8 @@ public class RelacionComprasTMP  implements Comparable{
 	private Double difVolumenFacMayor;
 	@Column(name =  "variedad")
 	private String variedad;
+	@Column(name =  "dif_volumen_fglobal_vs_find")
+	private Double difVolumenFglobalVSFind;
 		
 	public RelacionComprasTMP() {
 		super();
@@ -564,22 +566,35 @@ public class RelacionComprasTMP  implements Comparable{
 	public void setVariedad(String variedad) {
 		this.variedad = variedad;
 	}
+	
+
+	public Double getDifVolumenFglobalVSFind() {
+		return difVolumenFglobalVSFind;
+	}
+
+	public void setDifVolumenFglobalVSFind(Double difVolumenFglobalVSFind) {
+		this.difVolumenFglobalVSFind = difVolumenFglobalVSFind;
+	}
 
 	@Override
 	public int compareTo(Object o) {
 		RelacionComprasTMP obj= (RelacionComprasTMP) o;     
 	    if(this.claveBodega.compareToIgnoreCase(obj.claveBodega) == 0) { 
 	    	if(this.nombreEstado.compareToIgnoreCase(obj.nombreEstado) == 0){
-	    		if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){
-		    		if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
-		            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
-		            		  return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
-		            	}else{
-		            		return this.maternoProductor.compareTo(obj.maternoProductor);
-		            	}	                 
-		            } else { 
-		                return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor); 
-		            }
+	    		if((this.folioContrato==null?"":this.folioContrato).compareToIgnoreCase(obj.folioContrato==null?"":obj.folioContrato) == 0){	    			
+	    			if((this.numeroFacGlobal==null?"":this.numeroFacGlobal).compareToIgnoreCase(obj.numeroFacGlobal==null?"":obj.numeroFacGlobal) == 0){
+	    				if(this.paternoProductor.compareToIgnoreCase(obj.paternoProductor) == 0) {
+			            	if(this.maternoProductor.compareToIgnoreCase(obj.maternoProductor) == 0) {
+			            		  return this.nombreProductor.compareToIgnoreCase(obj.nombreProductor); 
+			            	}else{
+			            		return this.maternoProductor.compareTo(obj.maternoProductor);
+			            	}	                 
+			            } else { 
+			                return this.paternoProductor.compareToIgnoreCase(obj.paternoProductor); 
+			            }
+	    			}else{
+	    				return this.numeroFacGlobal.compareToIgnoreCase(obj.folioContrato);
+	    			}		    		
 		    	}else{
 		    		return this.folioContrato.compareToIgnoreCase(obj.folioContrato);
 		    	} 
