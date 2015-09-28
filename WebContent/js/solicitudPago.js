@@ -1424,14 +1424,15 @@ function chkCamposPagoCartaAdhesion(){
 	var volumenApoyar = 0.0, importeApoyar = 0.0, etapa = 0, totalVolumen = 0, totalImporte = 0;
 	var volumenAut = 0.0, importeAut = 0.0;
 	var i = 0;
+	var numRegistroDetallePago = $('#numRegistroDetallePago').val();	
 	if(idPerfil == 6){
 		var solicitudesAtendidas = $('#solicitudesAtendidas').val();
 		var productoresBeneficiados = $('#productoresBeneficiados').val();
 		//Habilita los campos de volumen debido a que se ha seleccionado la fianza
 		if(($('#tieneFianza')).is(":checked")){
-			var numRegistroDetallePago = $('#numRegistroDetallePago').val();
 			for(i=1; i<=numRegistroDetallePago; i++){
 				$('#volumenApoyar'+i).removeAttr('disabled');
+				$('#cuotaApoyo'+i).removeAttr('disabled');
 			}		
 		}
 			
@@ -1515,6 +1516,11 @@ function chkCamposPagoCartaAdhesion(){
 				
 			}
 		} else if (criterioPago==3){
+			var j=0;
+
+			for(j=1; j<=numRegistroDetallePago; j++){
+				$('#cuotaApoyo'+j).removeAttr('disabled');
+			}					
 			volumenApoyar = $('#volumenApoyar'+i).val();
 			etapa = $('#etapa'+i).val();
 			if ((volumenApoyar != null && volumenApoyar != "") || (etapa != null && etapa!=-1)){
@@ -2201,17 +2207,21 @@ function habilitaPorcentaje(){
 }
 
 
-function setVolumenByProcentaje(){
+function setVolumenByProcentaje(fianza){
 	var idPrograma = $('#idPrograma').val(); 
 	var porcentajeFianza = $('#porcentajeFianza').val(); 
-	var folioCartaAdhesion = $('#folioCartaAdhesion').val(); 
+	var folioCartaAdhesion = $('#folioCartaAdhesion').val();
+
+//alert('fianza: '+fianza);
+	
 	$.ajax({
 		   async: false,
 		   type: "POST",
 		   url: "colocarVolumenEnPorcentaje",
 		   data: "idPrograma="+idPrograma+
 		   		"&porcentajeFianza="+porcentajeFianza+
-		   		"&folioCartaAdhesion="+folioCartaAdhesion,
+		   		"&folioCartaAdhesion="+folioCartaAdhesion+
+		   		"&fianza="+fianza,
 		   success: function(data){
 				$('#contenedorDetallePagos').html(data).ready(function () {
 					$("#contenedorDetallePagos").fadeIn('slow');
@@ -2302,4 +2312,29 @@ function consigueDestinoAuditorSolPago (numCampo){
 		}
 	}); //termina ajax
 	
+}
+
+function obtenCuotaEtapa(tipoOpcion, indice){
+
+	var idPrograma = $('#idPrograma').val();	
+//alert("tipoOpcion: "+tipoOpcion+" - indice: "+indice+" - idPrograma: "+idPrograma);
+	if(tipoOpcion == -1 ){
+		$('#dialogo_1').html('Seleccione una Etapa');
+		abrirDialogo();
+		return false;
+	}
+
+	$.ajax({
+		async: false,
+		type: "POST",
+		url: "obtenCuotaEtapa", 
+		data: "idPrograma="+idPrograma+
+			"&etapa="+tipoOpcion,
+		success: function(data){
+			var $response=$(data);
+			var cuotaApoyo = $response.filter('#cuotaApoyo').text();
+//alert("cuotaApoyo: "+cuotaApoyo);					
+			$('#cuotaApoyo'+indice).val(cuotaApoyo);
+		}
+	});//fin ajax
 }

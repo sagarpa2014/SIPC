@@ -29,6 +29,7 @@ import mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionEspecialistaV;
 import mx.gob.comer.sipc.vistas.domain.AuditorSolicitudPagoV;
 import mx.gob.comer.sipc.vistas.domain.CartasPrimerPagoV;
 import mx.gob.comer.sipc.vistas.domain.DocumentacionSPCartaAdhesionV;
+import mx.gob.comer.sipc.vistas.domain.EtapaIniEsquemaV;
 import mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 import mx.gob.comer.sipc.vistas.domain.PrgEspecialistaNumCartasV;
@@ -1269,4 +1270,31 @@ public class SolicitudPagoDAO {
 		return elementosBorrados;
 	}	
 
+	@SuppressWarnings("unchecked")
+	public List<EtapaIniEsquemaV> consultaEtapasCuotasIniEsquema(int idPrograma, String etapa)throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<EtapaIniEsquemaV> lst = null;
+		if(idPrograma != 0 && idPrograma != -1){
+			if(consulta.length()>0){
+				consulta.append(" and idPrograma=").append(idPrograma);
+			}else{
+				consulta.append("where idPrograma=").append(idPrograma);
+			}
+		}
+
+		if(etapa != null && !etapa.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append("and etapa ='").append(etapa).append("'");
+			}else{
+				consulta.append("where etapa ='").append(etapa).append("'");
+			}
+		}
+
+		consulta.insert(0, "From EtapaIniEsquemaV ");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+		
+	}
+	
 }//End clase

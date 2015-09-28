@@ -103,7 +103,7 @@
 		        </div>
 		        <div class="izquierdaOculta">
 		         	<label class="left1"><span class="norequerido">*</span>Porcentaje %</label>
-		            <s:textfield  id="porcentajeFianza" name="porcentajeFianza" maxlength="5" size="3"  value="%{}" onchange="setVolumenByProcentaje();"/>
+		            <s:textfield  id="porcentajeFianza" name="porcentajeFianza" maxlength="5" size="3"  value="%{}" onchange="setVolumenByProcentaje('%{fianza}');"/>
 		        </div>
 			</s:if>
 			

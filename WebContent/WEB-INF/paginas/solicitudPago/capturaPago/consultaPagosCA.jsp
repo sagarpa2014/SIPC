@@ -89,9 +89,9 @@
 						<th class="clean">Volumen Apoyado</th>
 						<th class="clean">Importe Apoyado</th>
 						<th class="clean">Cuota Apoyo</th>
-						<s:if test="criterioPago==3">
-							<th class="clean">Etapa</th>
-						</s:if>
+<%-- 						<s:if test="criterioPago==3"> --%>
+<!-- 							<th class="clean">Etapa</th> -->
+<%-- 						</s:if> --%>
 					</s:if>
 					<s:else>
 						<th class="clean">Importe Apoyado</th>
@@ -122,11 +122,11 @@
 							<td align="CENTER">
 								$<s:textfield disabled="true" id="cuotaApoyo%{#itStatus.count}" name="cuotasApoyo" maxlength="15" size="10" cssClass="cantidad" value="%{getText('importe',{(#resultado.importe/#resultado.volumen)})}"/>
 							</td>
-							<s:if test="idCriterioPago==3">
-								<td align="CENTER">
-									<s:textfield disabled="true" maxlength="5" size="5" value="%{#resultado.etapa}"/>
-								</td>
-							</s:if>
+<%-- 							<s:if test="idCriterioPago==3"> --%>
+<!-- 								<td align="CENTER"> -->
+<%-- 									<s:textfield disabled="true" maxlength="5" size="5" value="%{#resultado.etapa}"/> --%>
+<!-- 								</td> -->
+<%-- 							</s:if> --%>
 						</s:if>
 						<s:else>
 							<td align="CENTER">

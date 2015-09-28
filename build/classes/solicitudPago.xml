@@ -543,6 +543,13 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="input" type="tiles">listarCartaAdhesion</result>
             <result name="success" type="tiles">listarCartaAdhesion</result>
-        </action>       
+        </action>
+
+        <action name="obtenCuotaEtapa" method="obtenCuotaEtapa" class="mx.gob.comer.sipc.action.solicitudpago.CapturaPagosCartaAdhesionAction">
+			<interceptor-ref name="chksession"/>        
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/solicitudPago/capturaPago/obtenCuotaEtapa.jsp</result>
+            <result name="input">/WEB-INF/paginas/solicitudPago/capturaPago/obtenCuotaEtapa.jsp</result>
+        </action> 
     </package>
 </struts>

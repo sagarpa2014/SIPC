@@ -45,6 +45,7 @@ import mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.CartaAdhesionEtapaVolImpV;
 import mx.gob.comer.sipc.vistas.domain.CartasPrimerPagoV;
 import mx.gob.comer.sipc.vistas.domain.DocumentacionSPCartaAdhesionV;
+import mx.gob.comer.sipc.vistas.domain.EtapaIniEsquemaV;
 import mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV;
 import mx.gob.comer.sipc.vistas.domain.PagosCartasAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.PagosDetalleCAV;
@@ -124,7 +125,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	private Map<Integer,String> capVolumen;
 	private Map<Integer,String> capImporte;
 	private Map<Integer,String> capEtapa;
-	private Double[] cuotasApoyo;
+	private Map<Integer,Double> cuotasApoyo;
 	private Double[] volumenesAut;
 	private Double[] importesAut;
 	private String atentaNotaNum;
@@ -168,6 +169,10 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	private Double volumenCertificados;
 	private Double volumenConstancias;
 	
+	private List<EtapaIniEsquemaV> lstEtapasCuotaIniEsquema;
+	private String etapa;
+	private Double cuotaApoyo;
+
 	@SessionTarget
 	Session sessionTarget;
 	
@@ -230,6 +235,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 				idEspecialista = (Integer) session.get("idEspecialista");
 			}
 			lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
+			lstEtapasCuotaIniEsquema = spDAO.consultaEtapasCuotasIniEsquema(lstDetallePagosCAEspecialistaV.get(0).getIdPrograma(), null);
 			if(registrar == 0){//NUEVO REGISTRO EDITAR = 0
 				lstPagosDetalleCAV = new ArrayList<PagosDetalleCAV>();
 				for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
@@ -239,7 +245,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
 									l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
 									l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
-									l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0));	
+									l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(), 0.0, l.getEtapa()));	
 				}
 				
 			}else{//Edicion REGISTRAR = 1
@@ -256,7 +262,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											l1.getVolumenApoyado(), l1.getImporteApoyado(), l1.getIdPrograma(), l1.getPrograma(),
 											l1.getClabe(), l1.getIdEspecialista(),l1.getIdCriterioPago(), l1.getCriterioPago(), 
 											l1.getSolicitudesAtendidas(), l1.getProductoresBeneficiados(), l1.getIdComprador(), l1.getNombreComprador(),
-											l1.getDescEstatus(), l1.getDescFianza(), l1.getIdAsiganacionCA(), l1.getVolumen()));							
+											l1.getDescEstatus(), l1.getDescFianza(), l1.getIdAsiganacionCA(), l1.getVolumen(), l1.getEtapa()));							
 							encontro = true;
 							break;
 						}
@@ -268,7 +274,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 										l.getVolumenApoyado(), l.getImporteApoyado(), l.getIdPrograma(), l.getPrograma(),
 										l.getClabe(), l.getIdEspecialista(),l.getIdCriterioPago(), l.getCriterioPago(), 
 										l.getSolicitudesAtendidas(), l.getProductoresBeneficiados(), l.getIdComprador(), l.getComprador(),
-										l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0));
+										l.getDescEstatus(), l.getDescFianza(), l.getIdAsiganacionCA(),0.0, l.getEtapa()));
 					}					
 					
 				}
@@ -435,61 +441,141 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									}
 								}
 							}//	 end	while(it.hasNext()	
-						} else if (criterioPago==2){	
-							Set<Integer> idsCapImporte = capImporte.keySet();
-							Iterator<Integer> it = idsCapImporte.iterator();
-							while(it.hasNext()){
-								Integer idCapImporte = it.next();
-								String item = capEtapa.get(idCapImporte);
-								if(item!=null && !item.trim().isEmpty()){
-									if(item=="I"){
-										importeEtapaI += Double.parseDouble(capImporte.get(idCapImporte));
-									} else if(item=="II"){
-										importeEtapaII += Double.parseDouble(capImporte.get(idCapImporte));
-									} else if(item=="III"){
-										importeEtapaIII += Double.parseDouble(capImporte.get(idCapImporte));
-									} else if(item=="IV"){
-										importeEtapaIV += Double.parseDouble(capImporte.get(idCapImporte));
-									}									
-								}
+					} else if (criterioPago==2){	
+						Set<Integer> idsCapImporte = capImporte.keySet();
+						Iterator<Integer> it = idsCapImporte.iterator();
+						while(it.hasNext()){
+							Integer idCapImporte = it.next();
+							String item = capEtapa.get(idCapImporte);
+							if(item!=null && !item.trim().isEmpty()){
+								if(item=="I"){
+									importeEtapaI += Double.parseDouble(capImporte.get(idCapImporte));
+								} else if(item=="II"){
+									importeEtapaII += Double.parseDouble(capImporte.get(idCapImporte));
+								} else if(item=="III"){
+									importeEtapaIII += Double.parseDouble(capImporte.get(idCapImporte));
+								} else if(item=="IV"){
+									importeEtapaIV += Double.parseDouble(capImporte.get(idCapImporte));
+								}									
 							}
-							if(importeEtapaI>0){
-								lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 1);
-								lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 1);
-								if ((importeEtapaI+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
-									errorSistema = 1;
-									addActionError("El importe a apoyar: "+importeEtapaI+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa I de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
-									return SUCCESS;
-								}
-							} 
-							if(importeEtapaII>0){
-								lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 2);
-								lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 2);
-								if ((importeEtapaII+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
-									errorSistema = 1;
-									addActionError("El importe a apoyar: "+importeEtapaII+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa II de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
-									return SUCCESS;
-								}
-							} 
-							if(importeEtapaIII>0){
-								lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 3);
-								lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 3);
-								if ((importeEtapaIII+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
-									errorSistema = 1;
-									addActionError("El importe a apoyar: "+importeEtapaIII+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa III de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
-									return SUCCESS;
-								}
-							} 
-							if(importeEtapaIV>0){
-								lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 4);
-								lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 4);
-								if ((importeEtapaIV+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
-									errorSistema = 1;
-									addActionError("El importe a apoyar: "+importeEtapaIV+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa IV de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
-									return SUCCESS;
-								}
+						}
+						if(importeEtapaI>0){
+							lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 1);
+							lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 1);
+							if ((importeEtapaI+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
+								errorSistema = 1;
+								addActionError("El importe a apoyar: "+importeEtapaI+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa I de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
+								return SUCCESS;
 							}
-						} else if (criterioPago==3){
+						} 
+						if(importeEtapaII>0){
+							lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 2);
+							lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 2);
+							if ((importeEtapaII+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
+								errorSistema = 1;
+								addActionError("El importe a apoyar: "+importeEtapaII+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa II de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
+								return SUCCESS;
+							}
+						} 
+						if(importeEtapaIII>0){
+							lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 3);
+							lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 3);
+							if ((importeEtapaIII+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
+								errorSistema = 1;
+								addActionError("El importe a apoyar: "+importeEtapaIII+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa III de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
+								return SUCCESS;
+							}
+						} 
+						if(importeEtapaIV>0){
+							lstEtapaIniEsquema = spDAO.consultaEtapasIniEsquema(lstDocumentacionSPCartaAdhesion.get(0).getIdPrograma(), 4);
+							lstCartaAdhesionEtapaVolImpV = pDAO.consultaVolImpCartaAdhesionEtapa(folioCartaAdhesion, 4);
+							if ((importeEtapaIV+lstCartaAdhesionEtapaVolImpV.get(0).getImporte())>lstEtapaIniEsquema.get(0).getMonto()){
+								errorSistema = 1;
+								addActionError("El importe a apoyar: "+importeEtapaIV+" más el importe apoyado: "+lstCartaAdhesionEtapaVolImpV.get(0).getImporte()+" en la etapa IV de la carta de adhesión no puede ser mayor al importe autorizado: "+lstEtapaIniEsquema.get(0).getMonto()+" para la etapa y esquema de apoyos, por favor verifique");
+								return SUCCESS;
+							}
+						}
+					} else if (criterioPago==3){
+						Set<Integer> idsCapVolumen = capVolumen.keySet();
+						Iterator<Integer> it = idsCapVolumen.iterator();
+						while(it.hasNext()){
+							Integer idCapVolumen = it.next();
+							String item = capVolumen.get(idCapVolumen);
+							if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
+								for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+									//if(registrar == 0){
+										if (lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+											if(lstPagosDetalleCAV.get(i).getBodega()==null||lstPagosDetalleCAV.get(i).getBodega().isEmpty()){
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getIdEstado(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad(),null);
+												if (pca.size()>0){
+													if(registrar == 0){
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													}else{
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstPagosDetalleCAV.get(i).getVolumen();
+													}												
+												} else {
+													totalVolApoEdoCulVarCA = 0.0;
+												}
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+											} else {
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getIdEstado(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad(), lstPagosDetalleCAV.get(i).getBodega());
+												if (pca.size()>0){
+													if(registrar == 0){
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen();
+													}else{
+														totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstPagosDetalleCAV.get(i).getVolumen();	
+													}												
+												} else {
+													totalVolApoEdoCulVarCA = 0.0;
+												}
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getBodega(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstPagosDetalleCAV.get(i).getBodega(), lstPagosDetalleCAV.get(i).getIdCultivo(), lstPagosDetalleCAV.get(i).getIdVariedad());
+											}											
+											volumenAutEdoCulVarCA = lstPagosDetalleCAV.get(i).getVolumenAutorizado();
+											vEstadoAux = lstPagosDetalleCAV.get(i).getEstado();
+											vCultivoAux = lstPagosDetalleCAV.get(i).getCultivo();
+											vVariedadAux = lstPagosDetalleCAV.get(i).getVariedad();
+											vBodegaAux = lstPagosDetalleCAV.get(i).getBodega();
+											break;
+											}									
+								}//end lstPagosDetalleCAV
+									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+									//System.out.println("suma antes "+suma);
+									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+									//System.out.println(suma);
+									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
+										if (suma > (volumenCertificados+volumenConstancias)){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}										
+									}
+									if (suma > volumenAutEdoCulVarCA){
+										errorSistema = 1;
+										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+														   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+														   " de la carta de adhesión para el estado: "+vEstadoAux+
+														   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+										} else {
+											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+													   " de la carta de adhesión para el estado: "+vEstadoAux+
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+										}
+										return SUCCESS;
+									}
+								}
+							}//	 end	while(it.hasNext()	
 						}
 		
 		                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -725,7 +811,102 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			p.setEtapa(etapaPago);
 			p.setImporte(totalImporte);
 			p.setUsuarioCreacion((Integer) session.get("idUsuario"));
-		}		
+		} else if (criterioPago==3){
+			Set<Integer> idsCapVolumen = capVolumen.keySet();
+			Iterator<Integer> it = idsCapVolumen.iterator();
+			while(it.hasNext()){
+				Integer idCapVolumen = it.next();
+				String item = capVolumen.get(idCapVolumen);
+				Double item2 = cuotasApoyo.get(idCapVolumen);
+				String etapaCap = capEtapa.get(idCapVolumen);
+				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
+					for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+							if (lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+								vVolAutorizadoCarta = lstPagosDetalleCAV.get(i).getVolumenAutorizado(); 
+								vEstadoAux = lstPagosDetalleCAV.get(i).getIdEstado();
+								vCultivoAux = lstPagosDetalleCAV.get(i).getIdCultivo();
+								vVariedadAux = lstPagosDetalleCAV.get(i).getIdVariedad();
+								vBodegaAux = lstPagosDetalleCAV.get(i).getBodega();
+								//vCuotaAux = lstPagosDetalleCAV.get(i).getCuota();
+								vCuotaAux = item2;
+								break;
+							}						
+					}
+					if(registrar == 0){
+						 pd = new PagosDetalle();
+					}else{
+						lstPagos = pDAO.consultaPagosDetalle(0, idPago,idCapVolumen);
+						if(lstPagos.size()>0){
+							pd = pDAO.consultaPagosDetalle(0, idPago,idCapVolumen).get(0);
+						}else{
+							//Recupera los datos de la asignacion
+							AsignacionCartasAdhesionEspecialistaV asignacion = spDAO.verCartaAdhesionAsignadasPagos(null, -1, null, idCapVolumen.longValue()).get(0);
+							vVolAutorizadoCarta = asignacion.getVolumen(); 
+							vEstadoAux = asignacion.getIdEstado();
+							vCultivoAux = asignacion.getIdCultivo();
+							vVariedadAux = asignacion.getIdVariedad();
+							vBodegaAux = asignacion.getBodega();
+							//vCuotaAux = asignacion.getCuota();
+							vCuotaAux = item2;
+							p.setPagosDetalle(new HashSet<PagosDetalle>());
+							pd = new PagosDetalle();
+							pd.setIdPago(idPago.intValue());
+							
+						}					
+					}
+					
+					pd.setIdEstado(vEstadoAux);
+					pd.setIdCultivo(vCultivoAux);
+					pd.setIdVariedad(vVariedadAux);
+					pd.setBodega(vBodegaAux);	
+					pd.setIdAsiganacionCA(idCapVolumen.longValue());
+					pd.setEtapa(etapaCap);
+					if(tieneFianza){						
+						double volumenPorcentaje = Double.parseDouble(nf1.format((vVolAutorizadoCarta * porcentajeFianza/100)));
+						pd.setVolumen(volumenPorcentaje);
+						importeAux = Double.parseDouble(nf.format((volumenPorcentaje)*vCuotaAux));
+						pd.setImporte(importeAux);
+						totalImporte += importeAux;
+						totalVolumen += volumenPorcentaje;
+					}else{
+						pd.setVolumen(Double.parseDouble(item));
+						importeAux = (Double.parseDouble(item)*vCuotaAux);
+						importeAux = (Double.parseDouble(nf.format(importeAux)));
+						pd.setImporte(importeAux);
+						totalImporte +=importeAux;
+						totalVolumen += Double.parseDouble(item);
+					}					
+					pd.setCuota(vCuotaAux);
+					if(registrar== 0){
+						p.getPagosDetalle().add(pd);
+					}else{
+						if(lstPagos.size()>0){
+							cDAO.guardaObjeto(pd);
+						}else{
+							p.getPagosDetalle().add(pd);
+						}
+						
+					}				
+				}else{//Item es igual a nulo
+					if(registrar !=0){
+						for (int i = 0; i < lstPagosDetalleCAV.size(); i++) {
+							if(lstPagosDetalleCAV.get(i).getIdAsiganacionCA().intValue() == idCapVolumen){
+								//Borrar el registro del detalle 
+								pd = pDAO.consultaPagosDetalle(0, idPago, idCapVolumen).get(0);
+								cDAO.borrarObjeto(pd);							
+							}
+						}
+					}		
+				}
+			}			
+			p.setVolumen(totalVolumen);
+			p.setImporte(totalImporte);
+			if(registrar == 0){
+				p.setUsuarioCreacion((Integer) session.get("idUsuario"));
+			}else{
+				p.setUsuarioModificacion((Integer) session.get("idUsuario"));
+			}
+		}
 		idPago = ((Pagos)cDAO.guardaObjeto(p)).getIdPago();
 	}
 
@@ -1066,7 +1247,84 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 								}
 							}
 						} else if (criterioPago==3){
-							
+							Set<Integer> idsCapVolumen = capVolumen.keySet();
+							Iterator<Integer> it = idsCapVolumen.iterator();
+							while(it.hasNext()){
+								Integer idCapVolumen = it.next();
+								String item = capVolumen.get(idCapVolumen);
+								if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
+									for (int i = 0; i < lstEditDetallePagosCAEspecialistaV.size(); i++) {
+										if (lstEditDetallePagosCAEspecialistaV.get(i).getIdPagoDetalle() == idCapVolumen){
+											if(lstEditDetallePagosCAEspecialistaV.get(i).getBodega()==null||lstEditDetallePagosCAEspecialistaV.get(i).getBodega().isEmpty()){
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad(), null);
+												System.out.println("carta"+pca.get(0).getFolioCartaAdhesion());
+												//lstEditDetallePagosCAEspecialistaV = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), 0);
+												if (pca.size()>0){
+													totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstEditDetallePagosCAEspecialistaV.get(i).getVolumen();
+												} else {
+													totalVolApoEdoCulVarCA = 0.0;
+												}	
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+											} else {												
+												List<PagosCartasAdhesionV> pca = pDAO.consultaPagosEdoCulVarCA(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad(), lstEditDetallePagosCAEspecialistaV.get(i).getBodega());
+												//lstEditDetallePagosCAEspecialistaV = pDAO.consultaPagosDetalleCAV(folioCartaAdhesion, idPago, lstDetallePagosCAEspecialistaV.get(i).getIdEstado(), lstDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstDetallePagosCAEspecialistaV.get(i).getIdVariedad(), 0);
+												if (pca.size()>0){
+													totalVolApoEdoCulVarCA = pca.get(0).getVolumen()-lstEditDetallePagosCAEspecialistaV.get(i).getVolumen();
+												} else {
+													totalVolApoEdoCulVarCA = 0.0;
+												}	
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getBodega(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, lstEditDetallePagosCAEspecialistaV.get(i).getBodega(), lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo(), lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad());												
+											}
+											
+											volumenAutEdoCulVarCA = lstEditDetallePagosCAEspecialistaV.get(i).getVolumenAutorizado();
+											vEstadoAux = lstEditDetallePagosCAEspecialistaV.get(i).getEstado();
+											vCultivoAux = lstEditDetallePagosCAEspecialistaV.get(i).getCultivo();
+											vVariedadAux = lstEditDetallePagosCAEspecialistaV.get(i).getVariedad();
+											vBodegaAux = lstEditDetallePagosCAEspecialistaV.get(i).getBodega();
+											break;
+										}
+									}
+									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+									//System.out.println("suma antes "+suma);
+									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+									//System.out.println(suma);
+									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
+										if (suma > (volumenCertificados+volumenConstancias)){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}
+									}
+
+									if (suma >volumenAutEdoCulVarCA){
+										errorSistema = 1;
+										if(vBodegaAux==null||vBodegaAux.isEmpty()){
+											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+													   " de la carta de adhesión para el estado: "+vEstadoAux+
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+										} else {
+											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+													   " de la carta de adhesión para el estado: "+vEstadoAux+
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");										
+										}
+										return SUCCESS;
+									}
+									
+								}
+								totalVolApoEdoCulVarCA = 0.0;
+							}//		while(it.hasNext()
 						}
 		
 		                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -1261,7 +1519,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	    nf.setGroupingUsed(false);
 	    Double importeAux = 0.0;
 		if (criterioPago==1){
-			//List<PagosDetalle> pd = pDAO.consultaPagosDetalle(0, idPago);
 			Set<Integer> idsCapVolumen = capVolumen.keySet();
 			Iterator<Integer> it = idsCapVolumen.iterator();
 			while(it.hasNext()){
@@ -1332,6 +1589,46 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			}
 			p.setVolumen(totalVolumen);
 			p.setEtapa(etapaPago);
+			p.setImporte(totalImporte);
+			p.setUsuarioModificacion((Integer) session.get("idUsuario"));
+		} else if (criterioPago==3){
+			Set<Integer> idsCapVolumen = capVolumen.keySet();
+			Iterator<Integer> it = idsCapVolumen.iterator();
+			while(it.hasNext()){
+				Integer idCapVolumen = it.next();
+				String item = capVolumen.get(idCapVolumen);
+				Double item2 = cuotasApoyo.get(idCapVolumen);
+				String etapaCap = capEtapa.get(idCapVolumen);				
+				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
+					for (int i = 0; i < lstEditDetallePagosCAEspecialistaV.size(); i++) {
+						if (lstEditDetallePagosCAEspecialistaV.get(i).getIdPagoDetalle() == idCapVolumen){
+							vEstadoAux = lstEditDetallePagosCAEspecialistaV.get(i).getIdEstado();
+							vCultivoAux = lstEditDetallePagosCAEspecialistaV.get(i).getIdCultivo();
+							vVariedadAux = lstEditDetallePagosCAEspecialistaV.get(i).getIdVariedad();
+							vBodegaAux = lstEditDetallePagosCAEspecialistaV.get(i).getBodega();
+							vCuotaAux = lstEditDetallePagosCAEspecialistaV.get(i).getCuota();
+							vCuotaAux = item2;
+							break;
+						}
+					}
+					PagosDetalle pd = pDAO.consultaPagosDetalle(idCapVolumen, idPago, -1).get(0);
+					pd.setIdEstado(vEstadoAux);
+					pd.setIdCultivo(vCultivoAux);
+					pd.setIdVariedad(vVariedadAux);
+					pd.setBodega(vBodegaAux);
+					pd.setEtapa(etapaCap);
+					pd.setVolumen(Double.parseDouble(item));
+					importeAux = (Double.parseDouble(item)*vCuotaAux);
+					importeAux = (Double.parseDouble(nf.format(importeAux)));
+					System.out.println("importeAux resgistrado"+importeAux);
+					pd.setImporte(importeAux);
+					pd.setCuota(vCuotaAux);
+					cDAO.guardaObjeto(pd);
+					totalImporte += importeAux;
+					totalVolumen += Double.parseDouble(item);
+				}				
+			}						
+			p.setVolumen(totalVolumen);
 			p.setImporte(totalImporte);
 			p.setUsuarioModificacion((Integer) session.get("idUsuario"));
 		}
@@ -1465,6 +1762,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			while(it.hasNext()){
 				Integer idCapVolumen = it.next();
 				String item = capVolumen.get(idCapVolumen);
+				Double item2 = cuotasApoyo.get(idCapVolumen);
 				if(item!=null && !item.trim().isEmpty() && Double.parseDouble(item)>0){
 					pagoVistaPrevia = new AsignacionCartasAdhesionEspecialistaV();
 					pagoVistaPreviaAux = new AsignacionCartasAdhesionEspecialistaV();
@@ -1481,9 +1779,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 					pagoVistaPreviaAux.setIdVariedad(pagoVistaPrevia.getIdVariedad());
 					pagoVistaPreviaAux.setVariedad(pagoVistaPrevia.getVariedad());
 					pagoVistaPreviaAux.setBodega(pagoVistaPrevia.getBodega());
-					pagoVistaPreviaAux.setCuota(pagoVistaPrevia.getCuota());
+					pagoVistaPreviaAux.setCuota(item2);
 					pagoVistaPreviaAux.setVolumen(Double.parseDouble(item));
-					pagoVistaPreviaAux.setImporte((Double.parseDouble(item)*pagoVistaPrevia.getCuota()));
+					pagoVistaPreviaAux.setImporte((Double.parseDouble(item)*item2));
 					pagoVistaPreviaAux.setEstatus(pagoVistaPrevia.getEstatus());
 					pagoVistaPreviaAux.setFianza(pagoVistaPrevia.getFianza());
 					pagoVistaPreviaAux.setClabe(pagoVistaPrevia.getClabe());
@@ -1555,6 +1853,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		 nf1.setGroupingUsed(false);
 		lstPagosDetalleCAV=  new ArrayList<PagosDetalleCAV>();
 		lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(0, folioCartaAdhesion);
+		lstEtapasCuotaIniEsquema = spDAO.consultaEtapasCuotasIniEsquema(lstDetallePagosCAEspecialistaV.get(0).getIdPrograma(), null);
 		for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
 			
 			double volumenPorcentaje = Double.parseDouble(nf1.format((l.getVolumen() * porcentajeFianza/100)));
@@ -1646,6 +1945,22 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	}
 	
 
+	public String obtenCuotaEtapa(){
+		try{
+			//Recupera Datos Productores
+			cuotaApoyo = spDAO.consultaEtapasCuotasIniEsquema(idPrograma, etapa).get(0).getMonto();
+		}catch(JDBCException e) {
+			e.printStackTrace();
+			AppLogger.error("errores","Ocurrio un error JDBC en obtenCuotaEtapa debido a: "+e.getCause());
+			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
+		} catch(Exception e) {
+			e.printStackTrace();
+			AppLogger.error("errores","Ocurrio un error en obtenCuotaEtapa debido a: "+e.getMessage());
+			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
+		}		
+		return SUCCESS;
+	}
+	
 	public InscripcionDAO getiDAO() {
 		return iDAO;
 	}
@@ -1967,14 +2282,6 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 
 	public void setImportesAut(Double[] importesAut) {
 		this.importesAut = importesAut;
-	}
-
-	public Double[] getCuotasApoyo() {
-		return cuotasApoyo;
-	}
-
-	public void setCuotasApoyo(Double[] cuotasApoyo) {
-		this.cuotasApoyo = cuotasApoyo;
 	}
 
 	public List<EtapaIniEsquema> getLstEtapaIniEsquema() {
@@ -2369,5 +2676,37 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 
 	public void setLstPagosDetalleCAV(List<PagosDetalleCAV> lstPagosDetalleCAV) {
 		this.lstPagosDetalleCAV = lstPagosDetalleCAV;
-	}	
+	}
+
+	public List<EtapaIniEsquemaV> getLstEtapasCuotaIniEsquema() {
+		return lstEtapasCuotaIniEsquema;
+	}
+
+	public void setLstEtapasCuotaIniEsquema(List<EtapaIniEsquemaV> lstEtapasCuotaIniEsquema) {
+		this.lstEtapasCuotaIniEsquema = lstEtapasCuotaIniEsquema;
+	}
+
+	public String getEtapa() {
+		return etapa;
+	}
+
+	public void setEtapa(String etapa) {
+		this.etapa = etapa;
+	}
+
+	public Double getCuotaApoyo() {
+		return cuotaApoyo;
+	}
+
+	public void setCuotaApoyo(Double cuotaApoyo) {
+		this.cuotaApoyo = cuotaApoyo;
+	}
+
+	public Map<Integer, Double> getCuotasApoyo() {
+		return cuotasApoyo;
+	}
+
+	public void setCuotasApoyo(Map<Integer, Double> cuotasApoyo) {
+		this.cuotasApoyo = cuotasApoyo;
+	}
 }
