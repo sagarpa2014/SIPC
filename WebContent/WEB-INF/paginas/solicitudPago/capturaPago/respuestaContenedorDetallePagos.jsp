@@ -56,22 +56,23 @@
 					</s:else>
 				</td>
 				<td>
-					<s:if test="%{fianza!=null}">
+				
+<%-- 					<s:if test='%{fianza=="NO"}'>						 --%>
 						<s:if test="%{volumen != null && volumen != 0}"> 
-							<s:textfield disabled="true" id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{getText('volumenSinComas',{volumen})}"  />
-						</s:if>
-						<s:else>
-							<s:textfield disabled="true" id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{}" />
-						</s:else>					
-					</s:if>
-					<s:else>
-						<s:if test="%{volumen != null && volumen != 0}"> 
-							<s:textfield id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{getText('volumenSinComas',{volumen})}"  />
+							<s:textfield  id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{getText('volumenSinComas',{volumen})}"  />
 						</s:if>
 						<s:else>
 							<s:textfield id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{}" />
 						</s:else>					
-					</s:else>
+<%-- 					</s:if> --%>
+<%-- 					<s:else> --%>
+<%-- 						<s:if test="%{volumen != null && volumen != 0}">  --%>
+<%-- 							<s:textfield id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{getText('volumenSinComas',{volumen})}"  /> --%>
+<%-- 						</s:if> --%>
+<%-- 						<s:else> --%>
+<%-- 							<s:textfield  id="volumenApoyar%{#itStatus.count}" name="capVolumen[%{idAsiganacionCA}]" maxlength="20" size="15"  cssClass="cantidad" value="%{}" /> --%>
+<%-- 						</s:else>					 --%>
+<%-- 					</s:else> --%>
 				</td>
 				<s:if test="idCriterioPago==3">
 					<td class="cEtapa">

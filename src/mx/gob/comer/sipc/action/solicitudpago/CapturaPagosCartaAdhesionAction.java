@@ -237,6 +237,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
 			lstEtapasCuotaIniEsquema = spDAO.consultaEtapasCuotasIniEsquema(lstDetallePagosCAEspecialistaV.get(0).getIdPrograma(), null);
 			if(registrar == 0){//NUEVO REGISTRO EDITAR = 0
+				fianza = "NO";
 				lstPagosDetalleCAV = new ArrayList<PagosDetalleCAV>();
 				for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
 					lstPagosDetalleCAV.add(

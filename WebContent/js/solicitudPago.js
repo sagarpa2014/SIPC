@@ -2210,18 +2210,15 @@ function habilitaPorcentaje(){
 function setVolumenByProcentaje(fianza){
 	var idPrograma = $('#idPrograma').val(); 
 	var porcentajeFianza = $('#porcentajeFianza').val(); 
-	var folioCartaAdhesion = $('#folioCartaAdhesion').val();
-
-//alert('fianza: '+fianza);
-	
+	var folioCartaAdhesion = $('#folioCartaAdhesion').val();	
 	$.ajax({
 		   async: false,
 		   type: "POST",
 		   url: "colocarVolumenEnPorcentaje",
 		   data: "idPrograma="+idPrograma+
 		   		"&porcentajeFianza="+porcentajeFianza+
-		   		"&folioCartaAdhesion="+folioCartaAdhesion+
-		   		"&fianza="+fianza,
+		   		"&folioCartaAdhesion="+folioCartaAdhesion,
+//		   		"&fianza="+fianza,
 		   success: function(data){
 				$('#contenedorDetallePagos').html(data).ready(function () {
 					$("#contenedorDetallePagos").fadeIn('slow');
