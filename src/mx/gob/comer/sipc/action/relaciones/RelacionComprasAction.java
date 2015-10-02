@@ -1498,7 +1498,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+p.getFolioPredio()+";"
 										+p.getBancoSinaxc());
 								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza el productor como inconsistente campo precio_no_pagado
+								//Actualiza el productor como inconsistente campo predio_no_pagado
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
 										p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false, false, false, false, true);
 								row = sheet.createRow(++countRow);
