@@ -190,7 +190,7 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 //		parrafo.setAlignment(Element.ALIGN_CENTER);
 //		document.add(parrafo);
 		
-		addEmptyLine(1);
+		addEmptyLine(2);
 /*		
 		if(ata.getIdPrograma() == 31){
 			addEmptyLine(1);
@@ -242,10 +242,10 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		celda =	createCell(parrafo, 0, 2, 1);
 		piePagina.addCell(celda);
 		//addEmptyLine(1);
-		parrafo = new Paragraph("C.c.e.p.", TIMESROMAN08);
-		celda =	createCell(parrafo, 0, 2, 1);
-		piePagina.addCell(celda);
-		parrafo = new Paragraph();
+//		parrafo = new Paragraph("C.c.e.p.", TIMESROMAN08);
+//		celda =	createCell(parrafo, 0, 2, 1);
+//		piePagina.addCell(celda);
+//		parrafo = new Paragraph();
 		//ccpe1
 		
 //		parrafo.add(new Chunk(ata.getCcep1().getIniProfesion()+" "+ata.getCcep1().getNombre()+" "+ata.getCcep1().getPaterno()+" "+
@@ -255,10 +255,10 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 //		parrafo.add(new Chunk((ata.getCcep1().getCorreo()!=null && !ata.getCcep1().getCorreo().isEmpty())?ata.getCcep1().getCorreo()+"\n":"\n", TIMESROMAN07));
 
 		//ccpe2
-		parrafo.add(new Chunk(ata.getCcep2().getIniProfesion()+" "+ata.getCcep2().getNombre()+" "+ata.getCcep2().getPaterno()+" "+
-				(ata.getCcep2().getMaterno()!=null && !ata.getCcep2().getMaterno().isEmpty()?ata.getCcep2().getMaterno():"")+
-				".- "+ata.getCcep2().getPuesto()+".- ", TIMESROMAN08));
-		parrafo.add(new Chunk((ata.getCcep2().getCorreo()!=null && !ata.getCcep2().getCorreo().isEmpty())?ata.getCcep2().getCorreo()+"\n":"\n", TIMESROMAN07));
+//		parrafo.add(new Chunk(ata.getCcep2().getIniProfesion()+" "+ata.getCcep2().getNombre()+" "+ata.getCcep2().getPaterno()+" "+
+//				(ata.getCcep2().getMaterno()!=null && !ata.getCcep2().getMaterno().isEmpty()?ata.getCcep2().getMaterno():"")+
+//				".- "+ata.getCcep2().getPuesto()+".- ", TIMESROMAN08));
+//		parrafo.add(new Chunk((ata.getCcep2().getCorreo()!=null && !ata.getCcep2().getCorreo().isEmpty())?ata.getCcep2().getCorreo()+"\n":"\n", TIMESROMAN07));
 /*		
 		//ccpe3
 		parrafo.add(new Chunk(ata.getCcep3().getIniProfesion()+" "+ata.getCcep3().getNombre()+" "+ata.getCcep3().getPaterno()+" "+
@@ -266,8 +266,9 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 				".- "+ata.getCcep3().getPuesto()+".- ", TIMESROMAN08));
 		parrafo.add(new Chunk((ata.getCcep3().getCorreo()!=null && !ata.getCcep3().getCorreo().isEmpty())?ata.getCcep3().getCorreo()+"\n":"\n", TIMESROMAN07));
 */		
-		celda =	createCell(parrafo, 0, 2, 1);
-		piePagina.addCell(celda);
+		//System.out.println("Parrafo "+parrafo);
+		//celda =	createCell(parrafo, 0, 2, 1);
+		//piePagina.addCell(celda);
 		
 		StringBuilder ubicacion = new StringBuilder();
 		ubicacion.append("Av. Municipio Libre 377, Col. Santa Cruz Atoyac, Del. Benito Juárez  México, DF 03310\n");
