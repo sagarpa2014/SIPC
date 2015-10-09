@@ -1691,7 +1691,15 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				}	
 			
 				crearColumna("S-2-"+ l.getPaternoProductor()+" "+l.getMaternoProductor()+" "+l.getNombreProductor(),"DET");
-				crearColumna("S-2-"+ (l.getCurpProductor()!=null && !l.getCurpProductor().isEmpty()?l.getCurpProductor():l.getRfcProductor()),"DET");
+				
+				//crearColumna("S-2-"+ (l.getCurpProductor()!=null && !l.getCurpProductor().isEmpty()?l.getCurpProductor():l.getRfcProductor()),"DET");
+				
+				parrafo =  new Paragraph((l.getCurpProductor()!=null?l.getCurpProductor():l.getRfcProductor()), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 2, 1);
+				t.addCell(cell);
+				
+				
 				crearColumna("V-3-"+l.getVolTotalFacturado()+";"+"V-3-"+l.getVolBolTicket()+";"+"V-3-"+l.getVolTotalFacVenta()+";"+"V-3-"+l.getVolEnpagos()+";"
 						+"V-3-"+l.getVolumenNoProcedente()+";"+"V-3-"+l.getDiferenciaEntreVolumen()+";"+"V-3-"+l.getDiferenciaEntreImportes()+";V-3-"+l.getDiferenciaEntreRFC()+";", "DET");
 				
@@ -1699,7 +1707,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					crearColumna("V-3-"+l.getPredioNoPagado()+";", "DET");						
 				}
 				
-				if(rca.getCriteriosByPrograma().contains( ",19,")){
+				if(rca.getCriteriosByPrograma().contains( ",19,")){//Diferencia de facturas globales VS individuales
 					crearColumna("V-3-"+l.getDifFacGlobalIndividual()+";", "DET");						
 				}				
 				crearColumna("V-3-"+l.getVolumenObservado()+";", "DET");

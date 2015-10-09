@@ -2327,8 +2327,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							for(BoletasFacturasPagosIncosistentes bod: lstBoletasFacturasPagosIncosistentes){
 								countColumn = 0;
 								Double array [] =  {bod.getVolBolTicket(), bod.getVolTotalFacVenta(), 
-										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(), bod.getDiferenciaEntreRFC(), bod.getPredioNoPagado() };
+										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(),
+										bod.getDiferenciaEntreRFC(), bod.getPredioNoPagado(), (criteriosByPrograma.contains(",19,")?bod.getDifFacGlobalIndividual():0)};
 								valorMaximo = calcularMaximo(array);
+								
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(bod.getClaveBodega()+";"+bod.getNombreEstado()+";"+(siAplicaFolioContrato?bod.getFolioContrato()+";":"")+bod.getPaternoProductor()+";"+bod.getMaternoProductor()+";"
 										+bod.getNombreProductor()+";"
@@ -5067,6 +5069,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private  double calcularMaximo(Double array [] ) {
 		double valorMax = 0;
 		for(int i = 0; i < array.length; i++) {
+			
 			if(array[i] > valorMax){
 				valorMax = array[i];
 			}
