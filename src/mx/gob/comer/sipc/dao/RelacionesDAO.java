@@ -2855,58 +2855,42 @@ public class RelacionesDAO {
 	public List<BoletasDuplicadas> verificaBoletaDuplicadasEnRelComprasTmp(String folioCartaAdhesion)throws  JDBCException{
 		List<BoletasDuplicadas> lst = new ArrayList<BoletasDuplicadas>();
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor, c.boleta_ticket_bascula, c.vol_bol_ticket, c.fecha_entrada_boleta  ")
-				.append("FROM relacion_compras_tmp c, ")
-				.append("(select clave_bodega,  boleta_ticket_bascula  ")
-				.append(" from relacion_compras_tmp ")
-				.append("  where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-				.append(" group by clave_bodega, boleta_ticket_bascula ")
-				.append(" HAVING (COUNT(boleta_ticket_bascula) > 1)) v ")
-				.append("WHERE c.boleta_ticket_bascula is not null")
-				.append(" and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-				.append(" and c.clave_bodega= v.clave_bodega  and c.boleta_ticket_bascula = v.boleta_ticket_bascula ")				
-				.append("UNION ")
-				.append("SELECT ('B'||row_number() OVER ()) AS id,  clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, boleta_ticket_bascula, vol_bol_ticket, fecha_entrada_boleta  ")
-				.append("FROM relacion_compras_tmp r ")
-				.append("WHERE boleta_ticket_bascula is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-				.append("AND exists (SELECT 1 FROM compras_bodega_ticket_v where r.clave_bodega = clave_bodega and r.boleta_ticket_bascula = boleta_ticket_bascula) ")
-				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, boleta_ticket_bascula, vol_bol_ticket, fecha_entrada_boleta ")
-				.append("ORDER BY clave_bodega, nombre_estado, folio_contrato, boleta_ticket_bascula, paterno_productor, materno_productor, nombre_productor ");
-
-//		consulta.append("SELECT v.ciclo, c.clave_bodega,  nombre_estado, c.folio_contrato, ")
-//				.append("c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor,c.boleta_ticket_bascula, ")
-//				.append("c.vol_bol_ticket, c.fecha_entrada_boleta  ")
+//		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor, c.boleta_ticket_bascula, c.vol_bol_ticket, c.fecha_entrada_boleta  ")
 //				.append("FROM relacion_compras_tmp c, ")
-//				.append("(select p1.ciclo_validacion as ciclo, r1.clave_bodega,  r1.boleta_ticket_bascula ")   
-//				.append("from relacion_compras_tmp r1, programas p1   ")
-//				.append("where r1.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
-//				.append("and p1.id_programa = r1.id_programa ")
-//				.append("group by p1.ciclo_validacion, r1.clave_bodega, r1.boleta_ticket_bascula ")  
-//				.append("HAVING (COUNT(r1.boleta_ticket_bascula) > 1)) v  ")
-//				.append("WHERE c.boleta_ticket_bascula is not null ")
-//				.append("and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")  
-//				.append("and c.clave_bodega= v.clave_bodega  ")
-//				.append("and c.boleta_ticket_bascula = v.boleta_ticket_bascula ") 
+//				.append("(select clave_bodega,  boleta_ticket_bascula  ")
+//				.append(" from relacion_compras_tmp ")
+//				.append("  where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//				.append(" group by clave_bodega, boleta_ticket_bascula ")
+//				.append(" HAVING (COUNT(boleta_ticket_bascula) > 1)) v ")
+//				.append("WHERE c.boleta_ticket_bascula is not null")
+//				.append(" and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//				.append(" and c.clave_bodega= v.clave_bodega  and c.boleta_ticket_bascula = v.boleta_ticket_bascula ")				
 //				.append("UNION ")
-//				.append("SELECT v.ciclo, c.clave_bodega,  nombre_estado, c.folio_contrato, ")
-//				.append("c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor,c.boleta_ticket_bascula, ")
-//				.append("c.vol_bol_ticket, c.fecha_entrada_boleta  ")
-//				.append("FROM relacion_compras_tmp c, ")
-//				.append("(SELECT p.ciclo_validacion as ciclo, r.clave_bodega, r.boleta_ticket_bascula ")
-//				.append("FROM relacion_compras_tmp r, programas p ")
-//				.append("WHERE r.boleta_ticket_bascula is not null ")
-//				.append("and p.ciclo_validacion is not null ")
-//				.append("and p.id_programa = r.id_programa ")
-//				.append("and p.ciclo_validacion = (select distinct p1.ciclo_validacion from relacion_compras_tmp r1, programas p1  ")
-//				.append("where r1.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
-//				.append("and p1.id_programa = r1.id_programa) ")
-//				.append("group by p.ciclo_validacion, r.clave_bodega, r.boleta_ticket_bascula  ")
-//				.append("HAVING (COUNT(r.boleta_ticket_bascula) > 1)) v  ")
-//				.append("WHERE c.boleta_ticket_bascula is not null ")
-//				.append("and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")   
-//				.append("and c.clave_bodega= v.clave_bodega  ")
-//				.append("and c.boleta_ticket_bascula = v.boleta_ticket_bascula ");				
-		
+//				.append("SELECT ('B'||row_number() OVER ()) AS id,  clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, boleta_ticket_bascula, vol_bol_ticket, fecha_entrada_boleta  ")
+//				.append("FROM relacion_compras_tmp r ")
+//				.append("WHERE boleta_ticket_bascula is not null").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+//				.append("AND exists (SELECT 1 FROM compras_bodega_ticket_v where r.clave_bodega = clave_bodega and r.boleta_ticket_bascula = boleta_ticket_bascula) ")
+//				.append("GROUP BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, boleta_ticket_bascula, vol_bol_ticket, fecha_entrada_boleta ")
+//				.append("ORDER BY clave_bodega, nombre_estado, folio_contrato, boleta_ticket_bascula, paterno_productor, materno_productor, nombre_productor ");
+
+			consulta.append("SELECT v.ciclo, c.clave_bodega,  nombre_estado, c.folio_contrato, ")
+				.append("c.paterno_productor, c.materno_productor, c.nombre_productor, c.curp_productor, c.rfc_productor,c.boleta_ticket_bascula, ")
+				.append("c.vol_bol_ticket, c.fecha_entrada_boleta  ")
+				.append("FROM relacion_compras_tmp c, ")
+				.append("(SELECT p.ciclo_validacion as ciclo, r.clave_bodega, r.boleta_ticket_bascula ")
+				.append("FROM relacion_compras_tmp r, programas p ")
+				.append("WHERE r.boleta_ticket_bascula is not null ")
+				.append("and p.ciclo_validacion is not null ")
+				.append("and p.id_programa = r.id_programa ")
+				.append("and p.ciclo_validacion = (select distinct p1.ciclo_validacion from relacion_compras_tmp r1, programas p1  ")
+				.append("where r1.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+				.append("and p1.id_programa = r1.id_programa) ")
+				.append("group by p.ciclo_validacion, r.clave_bodega, r.boleta_ticket_bascula  ")
+				.append("HAVING (COUNT(r.boleta_ticket_bascula) > 1)) v  ")
+				.append("WHERE c.boleta_ticket_bascula is not null ")
+				.append("and c.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")   
+				.append("and c.clave_bodega= v.clave_bodega  ")
+				.append("and c.boleta_ticket_bascula = v.boleta_ticket_bascula ");		
 		System.out.println("bOLETAS DUPLICADAS "+consulta.toString());
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -2928,25 +2912,8 @@ public class RelacionesDAO {
 			b.setFechaEntradaBoleta((Date) row.get("fecha_entrada_boleta"));			
 			lst.add(b);			
 		}
-	
 		
-		//lst= session.createSQLQuery(consulta.toString()).addEntity(BoletasDuplicadas.class).list();
-		
-		
-		
-		
-		
-		
-		
-//		select c.clave_bodega, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, c.boleta_ticket_bascula, c.vol_bol_ticket, c.fecha_entrada_boleta
-//		from relacion_compras_tmp c, 
-//		(select clave_bodega,  boleta_ticket_bascula 
-//		from relacion_compras_tmp  
-//		group by clave_bodega, boleta_ticket_bascula
-//		HAVING (COUNT(boleta_ticket_bascula) > 1)) v
-//		where c.clave_bodega= v.clave_bodega  
-//		and c.boleta_ticket_bascula = v.boleta_ticket_bascula 
-		
+		//lst= session.createSQLQuery(consulta.toString()).addEntity(BoletasDuplicadas.class).list();		
 		return lst;
 	}
 	
@@ -3154,7 +3121,7 @@ public class RelacionesDAO {
 				.append("WHERE r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("and  r.folio_predio is not null ")
 				.append("and  r.id_programa =").append(idPrograma) 
-				.append("and COALESCE(r.curp_productor,r.rfc_productor) = COALESCE(p.curp, p.rfc) ")
+				.append(" and COALESCE(r.curp_productor,r.rfc_productor) = COALESCE(p.curp, p.rfc) ")
 				.append("and  r.id_programa = p.id_programa and r.rfc_comprador = p.rfc_comprador) pc ")
 				.append("where not exists ")
 				.append("(select 1 from relacion_compras_tmp  r1 ") 
@@ -5157,7 +5124,7 @@ public class RelacionesDAO {
 				
 				if(predioInconsistente){
 					set.append(" predio_inconsistente = null,");
-					set.append(" precio_no_pagado = null,");
+					set.append(" predio_no_pagado = null,");
 					
 				}
 				

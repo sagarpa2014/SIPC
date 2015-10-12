@@ -4586,8 +4586,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										String nombreEstado, String folioContrato, 
 										String paternoProductor, String maternoProductor, 
 										String nombreProductor, String curpProductor, String rfcProductor, String boletaTicketBascula) {
-		System.out.println("Rfc "+rfcProductor);
-
 		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
 				paternoProductor, maternoProductor, nombreProductor, curpProductor,  rfcProductor, boletaTicketBascula );
 		

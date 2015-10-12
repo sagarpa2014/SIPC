@@ -1932,20 +1932,20 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				t.addCell(cell);
 				parrafo =  new Paragraph(l.getBoletaTicketBascula(), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
-				cell =createCell(parrafo, 0, 2, 1);
+				cell =createCell(parrafo, 0, 3, 1);
 				t.addCell(cell);
 				
 				if(rca.getCamposQueAplica().contains("12")){
 					parrafo =  new Paragraph(l.getFechaEntrada(), TIMESROMAN08);
 					cell = new PdfPCell(parrafo);
-					cell =createCell(parrafo, 0, 2, 1);
+					cell =createCell(parrafo, 0, 3, 1);
 					t.addCell(cell);
 				}
 				
 				if(rca.getCamposQueAplica().contains("63")){
 					parrafo =  new Paragraph(l.getVolumen(), TIMESROMAN08);
 					cell = new PdfPCell(parrafo);
-					cell =createCell(parrafo, 0, 2, 1);
+					cell =createCell(parrafo, 0, 3, 1);
 					t.addCell(cell);
 				}
 				claveBodegaTmp = l.getClaveBodega();
