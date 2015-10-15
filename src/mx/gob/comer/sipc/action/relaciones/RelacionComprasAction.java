@@ -261,7 +261,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			cartaAdhesion = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 		}
 		//En este metodo recupera los datos del programa
-		try {
+		try{
 			rutaCartaAdhesion = getRecuperaRutaCarta();
 		}catch (JDBCException e) {
 		e.printStackTrace();
@@ -1423,7 +1423,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			
 			lstGruposCamposDetalleRelacionV = rDAO.consultaGruposCampostV(0, 0, idPerRel, 0, 0, "DET");
 			for(GruposCamposRelacionV g: lstGruposCamposDetalleRelacionV){
-				aplicaCampoDetalle += g.getCampo();
+				aplicaCampoDetalle += g.getIdCampo()+",";
 			}
 			
 			System.out.println("aplicaCampoDetalle "+aplicaCampoDetalle);
@@ -3125,11 +3125,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					sheet = wb.createSheet("FACTURAS DUPLICADAS");
 					sheet = setMargenSheet(sheet);
 					countRow = 0;
-					countColumn = 0;					
+					countColumn = 0;	
+					
 					if(aplicaCampoDetalle.contains(",70,")){
-						lstProductorFactura = rDAO.verificaFacturaDuplicadasEnRelComprasTmp(folioCartaAdhesion);
-					}else{
 						lstProductorFactura = rDAO.verificaFacturaDuplicadasVariedadEnRelComprasTmp(folioCartaAdhesion);
+					}else{
+						lstProductorFactura = rDAO.verificaFacturaDuplicadasEnRelComprasTmp(folioCartaAdhesion);
 					}
 					
 					if(lstProductorFactura.size()>0){//En el listado se guardan las facturas duplicadas por productor
@@ -4034,7 +4035,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}
-						}else{//Periodo por contrato
+						}else{//Periodo CONTRATO AXC 
 							if(aplicaAdendum){
 //								if(aplicaAdendum ){
 									//Actualizar periodo en la tabla de relacion de compras

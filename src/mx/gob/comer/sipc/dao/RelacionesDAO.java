@@ -3106,7 +3106,7 @@ public class RelacionesDAO {
 				.append("HAVING coalesce(sum(imp_total_pago_sinaxc),0) < coalesce(sum(imp_sol_fac_venta),0) and (COALESCE(sum(imp_sol_fac_venta),0) - COALESCE(sum(imp_total_pago_sinaxc),0)) > 1.00 ")
 				.append("ORDER BY clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor");				
 		lst= session.createSQLQuery(consulta.toString()).addEntity(FacturasVsPago.class).list();
-		System.out.println("Query pagos vs facturas: "+consulta.toString());
+		System.out.println("IMPORTE FACTURADO MAYOR AL IMPORTE PAGADO: "+consulta.toString());
 		return lst;
 	}	
 	
@@ -3246,6 +3246,9 @@ public class RelacionesDAO {
 		.append("and (TO_CHAR(fecha_entrada_boleta,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
 		.append("group by clave_bodega, estado_acopio, nombre_estado, folio_contrato, nombre_productor, paterno_productor, materno_productor,  curp_productor, rfc_productor, boleta_ticket_bascula, fecha_entrada_boleta, vol_bol_ticket ")
 		.append("order by clave_bodega, nombre_estado, paterno_productor, materno_productor, nombre_productor");	
+		
+		System.out.println("BOLETAS FUERA DE PERIODO 1:LINEAMIENTO; 3: DICTAMEN AUDITOR "+consulta.toString());
+		
 		lst= session.createSQLQuery(consulta.toString()).addEntity(BoletasFueraDePeriodo.class).list();
 		return lst;
 	}
@@ -3423,7 +3426,9 @@ public class RelacionesDAO {
 		.append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_factura_venta, r.fecha_emision_fac, r.vol_total_fac_venta,  r.periodo_inicial_contrato, r.periodo_final_contrato  ")
 		.append("having to_number(TO_CHAR(r.fecha_emision_fac,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
-		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");	
+		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");
+		
+		System.out.println("FAC FUERA DE PERIODO 2 CONTRATO AXC ADENDUM "+consulta.toString());
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
@@ -3521,7 +3526,7 @@ public class RelacionesDAO {
 		.append("and (TO_CHAR(fecha_doc_pago_sinaxc,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
 		.append("group by  folio_carta_adhesion, clave_bodega,  nombre_estado,  folio_contrato, nombre_productor, paterno_productor, materno_productor, curp_productor, rfc_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc ")
 		.append("order by clave_bodega,  nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
-		System.out.println("Cheques Fuera Periodo sin Complemento "+consulta.toString());
+		System.out.println("Cheques Fuera Periodo  1 : LINEAMIENTO;  3: DICTAMEN AUDITOR  SIN COMPLEMENTO "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoAuditor.class).list();
 		
 		return lst;
@@ -3532,19 +3537,19 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoAuditor> verificaChequeFueraDePeriodoAudLinComplemento(String folioCartaAdhesion, String fechaInicio, String fechaFin, String fechaInicioC, String fechaFinC)throws JDBCException{
 		List<ChequeFueraPeriodoAuditor> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, folio_carta_adhesion, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc, ")
+		consulta.append("SELECT row_number() OVER () AS id, folio_carta_adhesion, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc, ")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta ")
 		.append("from relacion_compras_tmp r ")
 		.append("WHERE folio_doc_pago is not null  ").append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		//.append("and (TO_CHAR(fecha_doc_pago_sinaxc,'YYYY-MM-DD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("'")
-		.append("group by  folio_carta_adhesion, clave_bodega,  nombre_estado,  folio_contrato, nombre_productor, paterno_productor, materno_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc ")
+		.append("group by  folio_carta_adhesion, clave_bodega,  nombre_estado,  folio_contrato, nombre_productor, paterno_productor, materno_productor, curp_productor, rfc_productor, folio_doc_pago, banco_sinaxc, fecha_doc_pago_sinaxc, imp_total_pago_sinaxc ")
 		.append("HAVING (TO_CHAR(fecha_doc_pago_sinaxc,'YYYYMMDD')) not between '").append(fechaInicio).append("'").append(" and '").append(fechaFin).append("' ")
 		.append("AND (TO_CHAR(fecha_doc_pago_sinaxc,'YYYYMMDD')) not between '").append(fechaInicioC).append("'").append(" and '").append(fechaFinC).append("'")		
 		.append("order by clave_bodega,  nombre_estado, folio_contrato, paterno_productor, materno_productor, nombre_productor ");
 		
-		System.out.println("Cheque fuera de periodo 1 o 3 complemento"+consulta.toString());
+		System.out.println("Cheque fuera de periodo 1 : LINEAMIENTO;  3: DICTAMEN AUDITOR CON COMPLEMENTO"+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoAuditor.class).list();
 		
 		
@@ -3567,7 +3572,7 @@ public class RelacionesDAO {
 		.append("having to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
 		.append("order by clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");	
 		SQLQuery query = session.createSQLQuery(consulta.toString());
-		System.out.println("Pagos Fuera de periodo Adendum "+consulta.toString());
+		System.out.println("Pagos Fuera de periodo CONTRATO AXC ADENDUM "+consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();
 		for(Object object : data){
@@ -3613,7 +3618,7 @@ public class RelacionesDAO {
 		.append("having to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999')")
 		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor ");
 		
-		System.out.println("Pagos Fuera Per sin Complemento "+consulta.toString());
+		System.out.println("PAGO FUERA DE PERIODO CONTRATO AXC  "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoContrato.class).list();
 		AppLogger.info("app", "query---> "+consulta.toString());
 		
@@ -3624,7 +3629,7 @@ public class RelacionesDAO {
 	public List<ChequeFueraPeriodoContrato> verificaChequeFueraDePeriodoContratoComplemento(String folioCartaAdhesion, String fechaInicio,String fechaFin)throws JDBCException{
 		List<ChequeFueraPeriodoContrato> lst = null;
 		StringBuilder consulta= new StringBuilder();
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc")
+		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, ")
 		.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp rt where  rt.clave_bodega = r.clave_bodega and coalesce(rt.folio_contrato,'') = coalesce(r.folio_contrato,'') and ")
 		.append("rt.nombre_productor = r.nombre_productor and coalesce(rt.paterno_productor, '') = coalesce(r.paterno_productor, '')")
 		.append(" and coalesce(rt.materno_productor,'') = coalesce(r.materno_productor,'') and rt.folio_carta_adhesion  = r.folio_carta_adhesion ) as vol_total_fac_venta, ")
@@ -3635,7 +3640,7 @@ public class RelacionesDAO {
 		.append("WHEN to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') < to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') THEN ") 
 		.append("c.periodo_inicial_pago ")
 		.append("ELSE NULL ")
-		.append("END periodo_inicial_contrato, ")
+		.append("END periodo_inicial_pago, ")
 		.append("CASE WHEN to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') > to_number(TO_CHAR(c.periodo_final_pago,'YYYYMMDD'),'99999999') ") 
 		.append("AND  to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') < to_number('").append(fechaInicio).append("','99999999')  THEN ")
 		.append("c.periodo_final_pago ")
@@ -3643,7 +3648,7 @@ public class RelacionesDAO {
 		.append("WHEN to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') < to_number(TO_CHAR(c.periodo_inicial_pago,'YYYYMMDD'),'99999999') THEN ") 
 		.append("c.periodo_final_pago ")
 		.append("ELSE NULL ")
-		.append("END periodo_final_contrato ")
+		.append("END periodo_final_pago ")
 		.append("from relacion_compras_tmp r, contratos_relacion_compras c ")
 		.append("WHERE folio_doc_pago is not null  and r.folio_contrato is not null and r.folio_contrato = c.folio_contrato ").append(" and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 		.append("GROUP BY folio_carta_adhesion, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, r.folio_doc_pago, r.banco_sinaxc,  r.fecha_doc_pago_sinaxc, r.imp_total_pago_sinaxc, c.periodo_inicial_pago, c.periodo_final_pago ")
@@ -3651,7 +3656,7 @@ public class RelacionesDAO {
 		.append("AND (to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 		.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor ");
 		
-		System.out.println("Pago fuera Per Contrato Complemento "+consulta.toString());
+		System.out.println("Pago fuera Per Contrato CONTRATO AXC COMPLEMENTO "+consulta.toString());
 		lst= session.createSQLQuery(consulta.toString()).addEntity(ChequeFueraPeriodoContrato.class).list();
 		
 		
@@ -3688,7 +3693,7 @@ public class RelacionesDAO {
 		.append("HAVING to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number(TO_CHAR(r.periodo_inicial_contrato,'YYYYMMDD'),'99999999') and to_number(TO_CHAR(r.periodo_final_contrato,'YYYYMMDD'),'99999999')")
 		.append("AND (to_number(TO_CHAR(r.fecha_doc_pago_sinaxc,'YYYYMMDD'),'99999999') not between to_number('").append(fechaInicio).append("','99999999') and to_number('").append(fechaFin).append("','99999999')) ")
 		.append("ORDER BY clave_bodega, nombre_estado, r.folio_contrato, paterno_productor, materno_productor, nombre_productor");
-		System.out.println("Pago Fuera Periodo Adendum Complemento "+consulta.toString());
+		System.out.println("Pago Fuera Periodo CONTRATO AXC ADENDUM COMPLEMENTO "+consulta.toString());
 		
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -3728,7 +3733,7 @@ public class RelacionesDAO {
 		StringBuilder consulta= new StringBuilder();
 		consulta.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, c.nombre_productor, ")
 			.append("c.curp_productor, c.rfc_productor, c.folio_doc_pago, c.banco_sinaxc, ")
-			.append("(select sum(vol_total_fac_venta) from relacion_compras_tmp r1 where r1.folio_carta_adhesion = c.folio_carta_adhesion and r1.clave_bodega = c.clave_bodega ")
+			.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 where r1.folio_carta_adhesion = c.folio_carta_adhesion and r1.clave_bodega = c.clave_bodega ")
 			.append("and r1.nombre_estado = c.nombre_estado and coalesce(c.folio_contrato,'X') = coalesce(r1.folio_contrato,'X') ")
 //			.append("and coalesce(r1.paterno_productor,'X') = coalesce(c.paterno_productor,'X') and  coalesce(r1.materno_productor,'X') = coalesce(c.materno_productor,'X') ")
 //			.append("and coalesce(r1.nombre_productor,'X') = coalesce(c.nombre_productor,'X')) as vol_total_fac_venta ")
@@ -4054,7 +4059,7 @@ public class RelacionesDAO {
 
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);		
-		System.out.println("Precio pagado menor al aviso "+consulta.toString());
+		System.out.println("PRECIO PAGADO MENOR AL AVISO "+consulta.toString());
 		List<?> data = query.list();
 		for(Object object : data){
 			Map<?, ?> row = (Map<?, ?>)object;
@@ -4728,6 +4733,7 @@ public class RelacionesDAO {
 					          +"order by folio_contrato";
 			
 			lst= session.createSQLQuery(consulta.toString()).addEntity(ContratosRelacionCompras.class).list();
+			
 			
 			return lst;
 		}
@@ -6170,10 +6176,7 @@ public class RelacionesDAO {
 						
 		        lst.add(b);	
 			}		
-			return lst;
-
-			
-			
+			return lst;		
 		}
 		
 		

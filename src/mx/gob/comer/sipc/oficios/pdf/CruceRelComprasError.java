@@ -1663,7 +1663,15 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							totalVolPorBodega6 = 0;						
 							totalVolPorBodega7 = 0;						
 							totalVolPorBodega8 = 0;	
-							totalVolPorBodega9 = 0; 
+							totalVolPorBodega9 = 0;
+							// AHS CAMBIO 13102015
+							totalVolPorBodegaTotalObs = 0;
+							if(reporteAplica.contains( ",1,")){
+								totalVolPorBodegaPredioNoPag = 0;
+							}
+							if(reporteAplica.contains(",19,")){
+								totalVolPorBodegaDifFacGlobal = 0;
+							}							
 						}
 					}
 				}				
