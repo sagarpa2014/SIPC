@@ -581,10 +581,10 @@ public class PagosDAO {
 
 	public List<PagosCartasAdhesionV> consultaPagosEdoCulVarCA(String folioCartaAdhesion, Integer idEstado, Integer idCultivo, Integer idVariedad, String bodega) throws JDBCException {
 		
-		return consultaPagosEdoCulVarCA( folioCartaAdhesion,  idEstado,  idCultivo,  idVariedad,  bodega, null);
+		return consultaPagosEdoCulVarCA( folioCartaAdhesion,  idEstado,  idCultivo,  idVariedad,  bodega, null, null);
 	}
 	@SuppressWarnings("unchecked")
-	public List<PagosCartasAdhesionV> consultaPagosEdoCulVarCA(String folioCartaAdhesion, Integer idEstado, Integer idCultivo, Integer idVariedad, String bodega, Double cuota) throws JDBCException {
+	public List<PagosCartasAdhesionV> consultaPagosEdoCulVarCA(String folioCartaAdhesion, Integer idEstado, Integer idCultivo, Integer idVariedad, String bodega, Double cuota, String etapa) throws JDBCException {
 		
 		StringBuilder consulta= new StringBuilder();
 		List<PagosCartasAdhesionV> lstConsultaPagos=null;
@@ -626,6 +626,14 @@ public class PagosDAO {
 				consulta.append(" and bodega='").append(bodega).append("'");
 			}else{
 				consulta.append("where bodega='").append(bodega).append("'");
+			}
+		}
+		
+		if (etapa!= null && !etapa.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and etapa='").append(etapa).append("'");
+			}else{
+				consulta.append("where etapa='").append(etapa).append("'");
 			}
 		}
 		consulta.insert(0, "From PagosCartasAdhesionV ").append(" ORDER BY folioCartaAdhesion, idEstado, idCultivo, idVariedad, bodega ");

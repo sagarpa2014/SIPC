@@ -5940,6 +5940,7 @@ public class RelacionesDAO {
 			.append("group by b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")  			
 			.append("order by b.clave_bodega, r.folio_contrato "); 
 
+			System.out.println("VOLUMEN CUMPLIDO "+consulta.toString());
 			
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -6443,6 +6444,7 @@ public class RelacionesDAO {
 		consulta.append("SELECT *  FROM pago_menor_comp_base_v ")
 				.append("WHERE folio_carta_adhesion  = '").append(folioCartaAdhesion).append("' ")
 				.append("and (pago_menor_cuota > 1.00 or pago_menor > 1.00)");		
+		System.out.println("PAGO MENOR DE LA COMPENSACION DE BASES "+consulta.toString());
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<?> data = query.list();

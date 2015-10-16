@@ -21,6 +21,7 @@ public class PagosCartasAdhesionV {
 	private Double volumen;
 	private Double importe;
 	private Double cuota;
+	private String etapa;
 	
 	@Id
 	@Column(name = "id")
@@ -114,6 +115,16 @@ public class PagosCartasAdhesionV {
 	
 	public void setCuota(Double cuota) {
 		this.cuota = cuota;
+	}
+	
+	@Column(name = "etapa")
+	public String getEtapa() {
+		return etapa;
+	}
+	public void setEtapa(String etapa) {
+		this.etapa = etapa;
 	}	
+	
+	
   
 }
