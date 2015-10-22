@@ -802,7 +802,8 @@ public class CompradoresAction extends ActionSupport implements SessionAware{
 			comprador = cDAO.consultaComprador(idComprador, null, "","").get(0);
 			if (comprador.getEstatus() == 1){
 				comprador.setEstatus(0);
-				comprador.setMotivoInhabilitado(motivo+". "+comprador.getMotivoInhabilitado());
+				comprador.setMotivoInhabilitado(motivo+". "
+				+(comprador.getMotivoInhabilitado()!=null && !comprador.getMotivoInhabilitado().isEmpty()?comprador.getMotivoInhabilitado():"") );
 			}else if (comprador.getEstatus() == 0){
 				comprador.setEstatus(1);
 			}

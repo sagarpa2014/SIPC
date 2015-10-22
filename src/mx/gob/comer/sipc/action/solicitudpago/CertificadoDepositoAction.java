@@ -323,8 +323,7 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 	
 	public boolean leerDocCerDeposito() throws JDBCException, Exception{
 		try{
-
-			boolean error = false;
+			boolean error = false, fechaExpInvalida = false, fechaVigInvalida = false;
 			int almacen = 0;
 			int registrosGuardados = 0;
 			int registrosNoGuadados = 0;
@@ -355,6 +354,8 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 			while(rowIterator.hasNext()) {
 				CertificadosDeposito cd = new CertificadosDeposito();
 				error = false;
+				fechaExpInvalida  = false;
+				fechaVigInvalida  = false;
 				Row row = rowIterator.next(); 
 				Iterator<Cell> cellIterator = row.cellIterator();
 				if (contFilas >= 1){
@@ -363,12 +364,12 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 						String valorChar = "";
 						Double valorNum = 0.0;
 						Date valorDate = null;
+						
 						Cell cell = cellIterator.next();
 						System.out.println("cell "+cell);
 						System.out.println("index"+cell.getColumnIndex()+1);
 						
-						if (contColumnas <=8 ){
-							
+						if (contColumnas <=8 ){						
 							switch(cell.getCellType()) {
 							
 							case Cell.CELL_TYPE_STRING: //handle string columns
@@ -422,13 +423,14 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 								if (valorDate != null){
 									fechaExpedicion = valorDate;
 									System.out.println(fechaExpedicion);
-
 								}else{
 									String fechaExp = valorChar.trim();
-									System.out.println(fechaExp);
-									SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-									fechaExpedicion = formatter.parse(fechaExp);
-									System.out.println(fechaExpedicion);
+									try{
+										SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+										fechaExpedicion = formatter.parse(fechaExp);
+									}catch(Exception e){
+										fechaExpInvalida = true;
+									}									
 								}
 								break;
 							case 4: // Columna FECHA FIN VIGENCIA
@@ -437,10 +439,12 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 									System.out.println(fechaVigencia);
 								}else{
 									String fechaVig = valorChar.trim();
-									System.out.println(fechaVig);
-									SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-									fechaVigencia = formatter.parse(fechaVig);
-									System.out.println(fechaVigencia);
+									try{
+										SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+										fechaVigencia = formatter.parse(fechaVig);
+									}catch(Exception e){
+										fechaVigInvalida = true;
+									}								
 								}
 								break;
 							case 5: // Columna CULTIVO
@@ -498,6 +502,12 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 					}else if(!(spDAO.consultaVariedad(folioCartaAdhesion, variedad).size()>0)){
 						error= true;
 						addActionError("La variedad "+variedad+" en la fila "+(contFilas+1)+" no corresponde al del Participante, favor de verificarlo");
+					}else if(fechaExpInvalida){
+						error= true;
+						addActionError("La fecha de expedición es invalida en la fila "+(contFilas+1));
+					}else if(fechaVigInvalida){
+						error= true;
+						addActionError("La fecha de vigencia es invalida en la fila "+(contFilas+1));
 					}else if (almacen != 0 && folio != null){
 						lstCertificadosDeposito = spDAO.consultaCertificadosDeposito("", almacen, "", folio);
 						if((lstCertificadosDeposito.size()>0)){
@@ -508,7 +518,7 @@ public class CertificadoDepositoAction extends ActionSupport implements SessionA
 					
 					if (error){
 						registrosNoGuadados += 1;
-						addActionError("No se guardo el registro de la fila "+(contFilas+1));
+						//addActionError("No se guardo el registro de la fila "+(contFilas+1));
 					}else{
 						registrosGuardados += 1; 
 						cd.setIdAlmacenadora(almacen);
