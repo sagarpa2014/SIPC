@@ -92,10 +92,10 @@ public class SolicitudPagoDAO {
 	}
 	
 	public List<ExpedientesProgramasV> consultaExpedientesProgramasV(long idExpedientePrograma, int idPrograma, String tipo) throws JDBCException {
-		return consultaExpedientesProgramasV(idExpedientePrograma, idPrograma, tipo, null);
+		return consultaExpedientesProgramasV(idExpedientePrograma, idPrograma, tipo, null, null);
 	}
 	@SuppressWarnings("unchecked")
-	public List<ExpedientesProgramasV> consultaExpedientesProgramasV(long idExpedientePrograma, int idPrograma, String tipo, Boolean opcional) throws JDBCException {
+	public List<ExpedientesProgramasV> consultaExpedientesProgramasV(long idExpedientePrograma, int idPrograma, String tipo, Boolean opcional, String idExpedientes) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<ExpedientesProgramasV> lst=null;
 		if (idExpedientePrograma != 0 && idExpedientePrograma != -1){
@@ -124,8 +124,17 @@ public class SolicitudPagoDAO {
 				consulta.append(" where opcional=").append(opcional);
 			}			
 		}
-		consulta.insert(0, "From ExpedientesProgramasV ").append(" order by ").append(" prioridadExpediente");
 		
+		if(idExpedientes!=null && !idExpedientes.isEmpty()){
+			if(consulta.length()>0){
+				consulta.append(" and idExpediente in (").append(idExpedientes).append(")");
+			}else{
+				consulta.append(" where idExpediente in (").append(idExpedientes).append(")");
+			}
+		}	
+		
+		consulta.insert(0, "From ExpedientesProgramasV ").append(" order by ").append(" prioridadExpediente");
+		System.out.println("Queruy"+consulta.toString());
 		lst= session.createQuery(consulta.toString()).list();	
 		return lst;
 	}

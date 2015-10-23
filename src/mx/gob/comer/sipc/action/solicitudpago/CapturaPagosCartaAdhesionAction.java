@@ -171,7 +171,8 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 	
 	private List<EtapaIniEsquemaV> lstEtapasCuotaIniEsquema;
 	private String etapa;
-	private Double cuotaApoyo;
+	private Double cuotaApoyo;	
+	private List<ExpedientesProgramasV> lstExpedienteProgramaDoc;
 
 	@SessionTarget
 	Session sessionTarget;
@@ -361,6 +362,9 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 					}
 					
 					fianza = lstPagosDetalleCAV.get(0).getDescFianza();
+					
+					lstExpedienteProgramaDoc = spDAO.consultaExpedientesProgramasV(0,idPrograma,"'DSP','DSPYF'", null, "10,34");
+					System.out.println("certificado, constancia "+lstExpedienteProgramaDoc.size());					
 					if (criterioPago==1){
 						Set<Integer> idsCapVolumen = capVolumen.keySet();
 						Iterator<Integer> it = idsCapVolumen.iterator();
@@ -410,20 +414,24 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									//System.out.println("suma antes "+suma);
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
 									//System.out.println(suma);
-									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
-										if (suma > (volumenCertificados+volumenConstancias)){
-											errorSistema = 1;
-											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-											} else {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA										
+										//Verifica que se haya configurado el certificado o la constancia
+										if(lstExpedienteProgramaDoc.size() > 0){
+											if (suma > (volumenCertificados+volumenConstancias)){
+												errorSistema = 1;
+												if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+																   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+												} else {
+													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+																   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+												}
+												return SUCCESS;												
 											}
-											return SUCCESS;												
-										}										
+										}
+																				
 									}
 									if (suma > volumenAutEdoCulVarCA){
 										errorSistema = 1;
@@ -545,19 +553,23 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
 									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
 									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
-										if (suma > (volumenCertificados+volumenConstancias)){
-											errorSistema = 1;
-											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
-											} else {
-												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
+										//Verifica que se haya configurado el certificado o la constancia
+										if(lstExpedienteProgramaDoc.size() > 0){
+											if (suma > (volumenCertificados+volumenConstancias)){
+												errorSistema = 1;
+												if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+																   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
+												} else {
+													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+																   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
+												}
+												return SUCCESS;												
 											}
-											return SUCCESS;												
-										}										
+										}
+																				
 									}
 									if (suma > volumenAutEdoCulVarCA){
 										errorSistema = 1;
