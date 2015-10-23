@@ -94,10 +94,10 @@
 			 			<s:if test='#session.idPerfil==1 || #session.idPerfil==10'>
 				 			<display:column title="Regresar Estatus"  headerClass="sortable">
 			 					<s:if test='#attr.r.estatus==1'>	
-									<s:select id="estatusId%{#itStatus.count}" name="estatusPagosId" onchange="" headerKey="-1" headerValue="-- Seleccione una opción --"	list="#{'7':'GENERADO', '9':'REGISTRADO', '8':'RECHAZADO'}"  value="" />
+									<s:select id="estatusId%{#itStatus.count}" name="estatusPagosId[%{#attr.r.idPago}]" onchange="" headerKey="-1" headerValue="-- Seleccione una opción --"	list="#{'7':'GENERADO', '9':'REGISTRADO', '8':'RECHAZADO'}"  value="" />
 								</s:if>
 								<s:elseif test='#attr.r.estatus==9'> 
-									<s:select id="estatusId%{#itStatus.count}" name="estatusPagosId" onchange="" headerKey="-1" headerValue="-- Seleccione una opción --"	list="#{'7':'GENERADO', '8':'RECHAZADO'}"  value="" />
+									<s:select id="estatusId%{#itStatus.count}" name="estatusPagosId[%{#attr.r.idPago}]" onchange="" headerKey="-1" headerValue="-- Seleccione una opción --"	list="#{'7':'GENERADO', '8':'RECHAZADO'}"  value="" />
 								</s:elseif>
 								<s:hidden id="p%{#attr.r.idPago}" name="idPagos" value="%{#attr.r.idPago}"/>
 				 			</display:column>

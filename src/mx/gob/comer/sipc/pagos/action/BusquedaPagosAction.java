@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jxl.Workbook;
 import jxl.format.Alignment;
@@ -16,7 +18,6 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-
 import mx.gob.comer.sipc.dao.CatalogosDAO;
 import mx.gob.comer.sipc.dao.PagosDAO;
 import mx.gob.comer.sipc.dao.UtileriasDAO;
@@ -78,7 +79,8 @@ public class BusquedaPagosAction extends ActionSupport implements SessionAware, 
 	
 	private OficioPagos oficioPagos;
 	private List<Pagos> lstPagosOficio;
-	private Integer[] estatusPagosId;
+	//private Integer[] estatusPagosId;
+	private Map<Integer,Integer> estatusPagosId;
 	private Integer[] idPagos;
 	private Pagos pagos;
 	
@@ -403,15 +405,32 @@ public class BusquedaPagosAction extends ActionSupport implements SessionAware, 
 	public String regresarEstatus()throws JDBCException, Exception{
 		try {
 			System.out.println("estatusPagosId");
-			if(estatusPagosId != null){
-				for(int i=0; i<idPagos.length; i++){
-					if(estatusPagosId[i].intValue() == 7 ||estatusPagosId[i].intValue() == 8 || estatusPagosId[i].intValue() == 9){ 					
+			Set<Integer> estatusPagosIdIt = estatusPagosId.keySet();
+			Iterator<Integer> it =  estatusPagosIdIt.iterator();
+			while(it.hasNext()){
+				Integer idPagoAux = it.next();
+				Integer estatus = estatusPagosId.get(idPagoAux);
+				
+				if(estatus != null && estatus != -1){
+					if(estatus == 7 || estatus == 8 || estatus == 9){ 					
 						//Actualizar estatus en pago
-						pagos = pDAO.consultaPagos(idPagos[i]).get(0);
-						pagos.setEstatus(estatusPagosId[i]);
+						pagos = pDAO.consultaPagos(idPagoAux).get(0);
+						pagos.setEstatus(estatus);
 						cDAO.guardaObjeto(pagos);
+					}					
+				}
+/*				
+				if(estatusPagosId != null){
+					for(int i=0; i<idPagos.length; i++){
+						if(estatusPagosId[i].intValue() == 7 ||estatusPagosId[i].intValue() == 8 || estatusPagosId[i].intValue() == 9){ 					
+							//Actualizar estatus en pago
+							pagos = pDAO.consultaPagos(idPagos[i]).get(0);
+							pagos.setEstatus(estatusPagosId[i]);
+							cDAO.guardaObjeto(pagos);
+						}
 					}
 				}
+*/				
 			}
 			estatusId = 1;
 			realizarBusqueda();
@@ -616,12 +635,15 @@ public class BusquedaPagosAction extends ActionSupport implements SessionAware, 
 	public void setLstPagosOficio(List<Pagos> lstPagosOficio) {
 		this.lstPagosOficio = lstPagosOficio;
 	}
+/*
 	public Integer[] getEstatusPagosId() {
 		return estatusPagosId;
 	}
 	public void setEstatusPagosId(Integer[] estatusPagosId) {
 		this.estatusPagosId = estatusPagosId;
 	}
+*/
+	
 	public Integer[] getIdPagos() {
 		return idPagos;
 	}
@@ -629,4 +651,10 @@ public class BusquedaPagosAction extends ActionSupport implements SessionAware, 
 		this.idPagos = idPagos;
 	}	
 	
+	public Map<Integer, Integer> getEstatusPagosId() {
+		return estatusPagosId;
+	}
+	public void setEstatusPagosId(Map<Integer, Integer> estatusPagosId) {
+		this.estatusPagosId = estatusPagosId;
+	}
 }
