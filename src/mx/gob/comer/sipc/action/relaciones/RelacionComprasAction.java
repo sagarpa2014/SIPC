@@ -4626,10 +4626,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			}
 		}
 		if(!bandera){
-			relacionComprasTMP = lstRCTemp.get(0);
-			//Actualizar el registro a factura_inconsistente = true
-			relacionComprasTMP.setFacturaInconsistente(true);
-			cDAO.guardaObjeto(relacionComprasTMP);
+			if(lstRCTemp.size()>0){	
+				relacionComprasTMP = lstRCTemp.get(0);
+				//Actualizar el registro a factura_inconsistente = true
+				relacionComprasTMP.setFacturaInconsistente(true);
+				cDAO.guardaObjeto(relacionComprasTMP);
+			}
 		}	
 		
 		bandera = false;

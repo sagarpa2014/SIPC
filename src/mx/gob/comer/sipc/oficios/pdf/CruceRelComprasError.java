@@ -1619,7 +1619,19 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaDifFacGlobal+",v;");
 							}							
 							totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaTotalObs+",v;");
-							colocarTotales(totalesBodega.toString(),  w.length);				
+							colocarTotales(totalesBodega.toString(),  w.length);
+							
+							totalVolPorContrato = 0;
+							totalVolPorContrato1 = 0;
+							totalVolPorContrato2 = 0;
+							totalVolPorContrato3 = 0;
+							totalVolPorContrato4 = 0;
+							totalVolPorContrato5 = 0;
+							totalVolPorContrato6 = 0;
+							totalVolPorContrato7 = 0;
+							totalVolPorContrato8 = 0;							
+							totalVolPorContraTotalObs = 0;
+							
 							totalVolPorBodega = 0;						
 							totalVolPorBodega1 = 0;						
 							totalVolPorBodega2 = 0;						
@@ -1628,8 +1640,11 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							totalVolPorBodega5 = 0;						
 							totalVolPorBodega6 = 0;						
 							totalVolPorBodega7 = 0;						
-							totalVolPorBodega8 = 0;	
+							totalVolPorBodega8 = 0;								
 							totalVolPorBodegaTotalObs = 0;
+							
+							
+							
 							if(reporteAplica.contains( ",1,")){
 								totalVolPorBodegaPredioNoPag = 0;
 							}

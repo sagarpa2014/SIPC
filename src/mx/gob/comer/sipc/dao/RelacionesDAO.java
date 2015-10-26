@@ -2976,7 +2976,7 @@ public class RelacionesDAO {
 				.append("WHERE c.folio_factura_venta is not null and folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
 				.append("and c.folio_factura_venta = v.folio_factura_venta and c.id_variedad = v.id_variedad ") 
 				.append("UNION ")
-				.append("SELECT ('A'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, ")
+				.append("SELECT ('B'||row_number() OVER ()) AS id, c.clave_bodega,  nombre_estado, c.folio_contrato, c.paterno_productor, c.materno_productor, ")
 				.append("c.nombre_productor, c.curp_productor, c.rfc_productor,c.folio_factura_venta, ")
 				.append("c.vol_total_fac_venta, c.fecha_emision_fac, c.id_variedad ")
 				.append("FROM relacion_compras_tmp c, ")
