@@ -5,7 +5,8 @@ import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 public class PagMenorCompBases extends RelacionComprasTMP{
 	
 	private Double cuota;
-	private Double pagoMenorCuota;
+	private Double compBaseMenorTotal;
+	private Double pagoMenorCuota;	
 	private Double pagoMenor;
 		
 	public Double getCuota() {
@@ -13,6 +14,13 @@ public class PagMenorCompBases extends RelacionComprasTMP{
 	}
 	public void setCuota(Double cuota) {
 		this.cuota = cuota;
+	}
+		
+	public Double getCompBaseMenorTotal() {
+		return compBaseMenorTotal;
+	}
+	public void setCompBaseMenorTotal(Double compBaseMenorTotal) {
+		this.compBaseMenorTotal = compBaseMenorTotal;
 	}
 	public Double getPagoMenorCuota() {
 		return pagoMenorCuota;

@@ -1477,8 +1477,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
+//							cell.setCellValue("Clave Bodega");
+//							cell = row.createCell(++countColumn);
 							cell.setCellValue("Estado");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Nombre Productor");
@@ -1503,8 +1503,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false, false, false, false, true);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
-								cell.setCellValue(p.getClaveBodega()!=null && !p.getClaveBodega().isEmpty()?p.getClaveBodega():"");
-								cell = row.createCell(++countColumn);
+//								cell.setCellValue(p.getClaveBodega()!=null && !p.getClaveBodega().isEmpty()?p.getClaveBodega():"");
+//								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getNombreEstado()!=null && !p.getNombreEstado().isEmpty()?p.getNombreEstado():"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue((p.getPaternoProductor()!=null && !p.getPaternoProductor().isEmpty() ? p.getPaternoProductor()+" " :"" )
@@ -4501,7 +4501,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Cuota");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Dif Pago Menor Cuota");	
+							cell.setCellValue("Dif Pago Menor Cuota (Ton)");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Comp Base Menor Total");			
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Dif Pago Menor");	
 							for(PagMenorCompBases f: lstPagMenorCompBases){
@@ -4513,6 +4515,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										f.getVolTotalFacVenta()+";"+f.getImpSolFacVenta()+";"+f.getImpCompTonAXC()+";"+f.getImpTotalPagoSinaxc()+";"+
 										(f.getCuota()!=null ? f.getCuota()+";":0+";")+
 										(f.getPagoMenorCuota()!=null ? f.getPagoMenorCuota()+";":0+";")+
+										(f.getCompBaseMenorTotal()!=null ? f.getCompBaseMenorTotal()+";":0+";")+
 										(f.getPagoMenor()!=null ? f.getPagoMenor()+";":0+";"));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
@@ -4545,6 +4548,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(f.getCuota()!=null?f.getCuota()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(f.getPagoMenorCuota()!=null?f.getPagoMenorCuota()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(f.getCompBaseMenorTotal()!=null?f.getCompBaseMenorTotal()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(f.getPagoMenor()!=null?f.getPagoMenor()+"":"");
 							}							

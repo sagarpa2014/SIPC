@@ -3114,9 +3114,9 @@ public class RelacionesDAO {
 		List<RelacionComprasTMP> lst = new ArrayList<RelacionComprasTMP>();
 		StringBuilder consulta= new StringBuilder();
 		
-		consulta.append("select pc.clave_bodega, pc.nombre_estado, pc.folio_contrato,  pc.folio_carta_adhesion, pc.id_programa, pc.paterno_productor, pc.materno_productor, pc.nombre_productor, pc.curp_productor, pc.rfc_productor, pc.predio, 'FALTA PREDIO' as leyenda ")
+		consulta.append("select '' as clave_bodega, pc.nombre_estado, pc.folio_contrato,  pc.folio_carta_adhesion, pc.id_programa, pc.paterno_productor, pc.materno_productor, pc.nombre_productor, pc.curp_productor, pc.rfc_productor, pc.predio, 'FALTA PREDIO' as leyenda ")
 				.append("from  ")
-				.append("(select distinct r.folio_carta_adhesion, r.clave_bodega, r.nombre_estado,r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_contrato, r.id_programa, r.curp_productor, r.rfc_productor, p.predio, p.rfc_comprador  ")
+				.append("(select distinct r.folio_carta_adhesion,  r.nombre_estado,r.paterno_productor, r.materno_productor, r.nombre_productor, r.folio_contrato, r.id_programa, r.curp_productor, r.rfc_productor, p.predio, p.rfc_comprador  ")
 				.append("from relacion_compras_tmp  r, predios_relaciones p ")
 				.append("WHERE r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 				.append("and  r.folio_predio is not null ")
@@ -3126,7 +3126,7 @@ public class RelacionesDAO {
 				.append("where not exists ")
 				.append("(select 1 from relacion_compras_tmp  r1 ") 
 				.append("where r1.folio_carta_adhesion = pc.folio_carta_adhesion ")
-				.append("and r1.clave_bodega = pc.clave_bodega ")
+				//.append("and r1.clave_bodega = pc.clave_bodega ")
 				.append("and r1.nombre_estado = pc.nombre_estado ")
 				.append("and coalesce(r1.folio_contrato,'X') = coalesce(pc.folio_contrato,'X') ")
 				.append("and r1.folio_predio is not null ")
@@ -6468,7 +6468,10 @@ public class RelacionesDAO {
 	public List<PagMenorCompBases> pagoMenorCompBases(String folioCartaAdhesion)throws JDBCException{
 		List<PagMenorCompBases> lst = new ArrayList<PagMenorCompBases>();
 		StringBuilder consulta= new StringBuilder();		
-		consulta.append("SELECT *  FROM pago_menor_comp_base_v ")
+		consulta.append("SELECT folio_carta_adhesion, clave_bodega, nombre_estado, folio_contrato, paterno_productor, materno_productor, curp_productor,    ")
+				.append("rfc_productor, vol_total_fac_venta, imp_sol_fac_venta, imp_comp_ton_axc, imp_total_pago_sinaxc, cuota,pago_menor_cuota,  ")
+				.append("CASE when pago_menor_cuota > 1.00 then (pago_menor_cuota * vol_total_fac_venta) end as comp_base_menor_total, pago_menor ")				
+				.append("FROM pago_menor_comp_base_v ")
 				.append("WHERE folio_carta_adhesion  = '").append(folioCartaAdhesion).append("' ")
 				.append("and (pago_menor_cuota > 1.00 or pago_menor > 1.00)");		
 		System.out.println("PAGO MENOR DE LA COMPENSACION DE BASES "+consulta.toString());
@@ -6498,6 +6501,10 @@ public class RelacionesDAO {
 		    b.setCuota(valor!=null ? valor.doubleValue():null);
 		    valor = (BigDecimal) row.get("pago_menor_cuota");
 		    b.setPagoMenorCuota(valor!=null ? valor.doubleValue():null);
+		    
+		    valor = (BigDecimal) row.get("comp_base_menor_total");
+		    b.setCompBaseMenorTotal(valor!=null ? valor.doubleValue():null);
+		    
 		    valor = (BigDecimal) row.get("pago_menor");
 		    b.setPagoMenor(valor!=null ? valor.doubleValue():null);
 		    lst.add(b);
