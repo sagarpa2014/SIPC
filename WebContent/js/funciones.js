@@ -16,8 +16,15 @@ function chkCamposLogin(){
  		$('#dialogo_1').html('Capture el usuario');
  		abrirDialogo();
 		return false;	
- 	}else{
- 		
+ 	}else{ 		
+ 		if (nombreUsuario.indexOf('REQUEST') !== -1 
+ 				|| nombreUsuario.indexOf('request') !== -1
+ 				|| nombreUsuario.indexOf('RESPONSE') !== -1
+ 				|| nombreUsuario.indexOf('response') !== -1){
+ 				$('#nombreUsuario').val(null);
+ 				$('#password').val(null);
+ 				return false;
+ 			} 	
  	}
 	if(password == null || password == ""){
  		$('#dialogo_1').html('Capture la contraseña');
