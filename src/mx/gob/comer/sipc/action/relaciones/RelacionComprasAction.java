@@ -1445,14 +1445,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 				String s = integraCriteriosByGrupo(lstValidacionPorGrupo);
 				
 				lstBitacoraRelCompras = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, s, "0,1", true);
-				if(lstBitacoraRelCompras.size()>0){
-					//Actualiza campo predio incosistente en la tabla relacion_compras_tmp
-					rDAO.actualizaCamposIconsistentes(folioCartaAdhesion, false, false, true, false);
+				if(lstBitacoraRelCompras.size()>0){					
+				
 					addActionError("Los criterio para el grupo '"+grupoCriterio+"' ya se encuentra validado y se generó bitacora definitiva, por favor verifique ");
 					return SUCCESS;
 				}						
 				lstBitacoraRelCompras = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, s.toString(), "0,1");
-				if(lstBitacoraRelCompras.size() > 0){					
+				if(lstBitacoraRelCompras.size() > 0){	
+					//Actualiza campo predio incosistente en la tabla relacion_compras_tmp
+					rDAO.actualizaCamposIconsistentes(folioCartaAdhesion, false, false, true, false);
 					//Borra el registro de la bitacora
 					for(BitacoraRelcompras b: lstBitacoraRelCompras){
 						cDAO.borrarObjeto(b);
