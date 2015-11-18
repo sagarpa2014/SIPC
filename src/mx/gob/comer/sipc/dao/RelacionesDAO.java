@@ -5928,7 +5928,7 @@ public class RelacionesDAO {
 			consulta.append("select distinct clave_bodega, nombre_estado, folio_contrato, productor, paterno_productor, materno_productor, nombre_productor, curp_productor, rfc_productor, folio_predio, ")
 				.append("folio_predio_sec, null AS folio_predio_alterno, id_relacion_compras_tmp AS id,  ")
 				.append("(select folio_carta_adhesion from relacion_compras_tmp where folio_contrato = r.folio_contrato and rfc_productor = r.rfc_productor and folio_predio = r.folio_predio ")  
-				.append("and folio_predio_sec = r.folio_predio_sec and folio_carta_adhesion != r.folio_carta_adhesion limit 1 ) folio_carta_externa  ")
+				.append("and folio_carta_adhesion != r.folio_carta_adhesion limit 1 ) folio_carta_externa  ")
 				.append("from relacion_compras_tmp  r ")
 				.append("WHERE  folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
 				.append(" and  folio_predio is not null ")  
@@ -6107,7 +6107,7 @@ public class RelacionesDAO {
 				b.setRfcProductor((String) row.get("rfc_productor"));
 				b.setFolioFacturaVenta((String) row.get("folio_factura_venta"));
 				BigDecimal valor = (BigDecimal) row.get("vol_total_fac_venta");
-				b.setVolTotalFacVenta(valor.doubleValue());
+				b.setVolTotalFacVenta(valor!=null ? valor.doubleValue():null);
 				b.setFechaEmisionFac((Date) row.get("fecha_emision_fac"));
 				valor = (BigDecimal) row.get("precio_fac_mxp_ton");
 				b.setPrecioFacMxpTon(valor!=null ? valor.doubleValue():null);				

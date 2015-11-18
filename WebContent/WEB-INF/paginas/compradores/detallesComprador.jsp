@@ -92,7 +92,11 @@
 		</s:else>
 		<div>
 			<label class="left1">Fecha de Inscripci&oacute;n al RFC:</label>
-			<font class="arial12bold"><s:property value="%{getText('fecha1',{compradoresV.fechaInscripcionRFC})}"/></font>
+			<s:if test="%{compradoresV.fechaInscripcionRFC != null}">
+				<font class="arial12bold">
+					<s:property value="%{getText('fecha1',{compradoresV.fechaInscripcionRFC})}"/>
+				</font>
+			</s:if>
 		</div>	
 		<div>
 			<label class="left1">Folio SURI:</label>

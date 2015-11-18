@@ -49,7 +49,7 @@
 			<div class="clear"></div>
 		</s:if>
 		<div>
-			<label class="left1">Telefono (Lada):</label>
+			<label class="left1"><span class="requerido">*</span>Telefono (Lada):</label>
 			<s:textfield name="telefono" maxlength="50" size="30" id="telefono" value="%{telefono}"/>
 		</div>
 		<div class="clear"></div>
@@ -61,7 +61,7 @@
 		</s:if>
 		<div class="clear"></div>
 		<div>
-			<label class="left1">Correo El&eacute;tronico:</label>
+			<label class="left1"><span class="requerido">*</span>Correo El&eacute;tronico:</label>
 			<s:textfield name="correoElectronico" maxlength="100" size="50" id="correoElectronico" value="%{correoElectronico}"/>
 		</div>
 		<div class="clear"></div>
@@ -69,28 +69,28 @@
 	<fieldset>
 		<legend>DOMICILIO DEL SOLICITANTE</legend>
 		<div>
-			<label class="left1">Tipo Asentamiento Humano:</label>
+			<label class="left1"><span class="requerido">*</span>Tipo Asentamiento Humano:</label>
 			<s:select id="tipoAsentHumano" name="tipoAsentHumano" list="lstTiposAsentamiento" listKey="tipoAsentHumano" listValue="%{descripcion}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0"  value="%{tipoAsentHumano}"/>
 		</div>
 		<div class="clear"></div>
 		<div>
-			<label class="left1">Nombre Asentamiento Humano:</label>
+			<label class="left1"><span class="requerido">*</span>Nombre Asentamiento Humano:</label>
 			<s:textfield name="nombreAsentHumano" maxlength="200" size="100" id="nombreAsentHumano" value="%{nombreAsentHumano}"/>
 		</div>
 		<div class="clear"></div>
 		<div>
-			<label class="left1">Tipo Vialidad:</label>
+			<label class="left1"><span class="requerido">*</span>Tipo Vialidad:</label>
 			<s:select id="tipoVialidad" name="tipoVialidad" list="lstTiposVialidad" listKey="tipoVialidad" listValue="%{descripcion}" headerKey="-1" headerValue="-- Seleccione una opción --" tabindex="0"  value="%{tipoVialidad}"/>
 		</div>
 		<div class="clear"></div>
 		<div>
-			<label class="left1">Nombre Vialidad:</label>
+			<label class="left1"><span class="requerido">*</span>Nombre Vialidad:</label>
 			<s:textfield name="nombreVialidad" maxlength="200" size="100" id="nombreVialidad" value="%{nombreVialidad}"/>
 		</div>
 		<div class="clear"></div>
 		<div class="izquierda">
 			<s:if test='#session.idPerfil==1'>
-				<label class="left1">N&uacute;mero  :</label>
+				<label class="left1"><span class="requerido">*</span>N&uacute;mero  :</label>
 				<s:textfield name="numExterior" maxlength="30" size="10" id="numExterior" value="%{numExterior}"/>
 			</s:if>
 			<s:else>
@@ -117,7 +117,7 @@
 		<div class="clear"></div>
 		<div>
 			<s:if test='#session.idPerfil==1'>
-				<label class="left1">C&oacute;digo Postal:</label>
+				<label class="left1"><span class="requerido">*</span>C&oacute;digo Postal:</label>
 				<s:textfield name="codigoPostal" maxlength="9" size="10" id="codigoPostal" value="%{codigoPostal}"/>
 			</s:if>
 			<s:else>

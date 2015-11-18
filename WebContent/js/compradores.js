@@ -134,6 +134,7 @@ function chkCamposComprador(){
 	var idPerfil = $('#idPerfil').val();
 	var rfc = $('#rfcc').val();
 	var errorRfc = $('#errorRfc').val();
+	var patron = "";
 	if(rfc == "" || rfc == null){
 		$('#dialogo_1').html('Escriba el RFC del Comprador');
 	   	abrirDialogo();
@@ -181,7 +182,7 @@ function chkCamposComprador(){
 		}
 	}
 	
-	if (idPerfil!=12){
+	//if (idPerfil!=12){
 		var fechaNacimiento = $('#fechaNacimiento').val();
 		if(fechaNacimiento == "" || fechaNacimiento == null){
 			if (personaFiscal==1){
@@ -200,16 +201,62 @@ function chkCamposComprador(){
 				return false;
 			}
 		}
+	//}		
+	//Valida que el telefono sea requerido
+	var telefono = $('#telefono').val();		
+	if(telefono == "" || telefono == null){
+		$('#dialogo_1').html('Escriba el telefono del Comprador');
+		abrirDialogo();
+		return false;
 	}
 	
-	if(idPerfil!=1){
+	var correo = $('#correoElectronico').val();	
+	if(correo == "" || correo == null){
+		$('#dialogo_1').html('Escriba el correco electrónico del Comprador');
+		abrirDialogo();
+		return false;
+	}	
+			
+	correo = correo.replace(/\s+$/, "");
+	patron=/^[a-zA-Z0-9]+([\._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9]+([\._-]?[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/;
+	if (!correo.match(patron)) {
+		$('#dialogo_1').html('La dirección de correo es incorrecta');
+		  abrirDialogo();
+		return false;
+	}	
+	var tipoAsentHumano = $('#tipoAsentHumano').val();	
+	if(tipoAsentHumano ==-1){
+		$('#dialogo_1').html('Seleccione el tipo de asentamiento humano');
+		abrirDialogo();
+	 	return false;
+	}
+	var nombreAsentHumano = $('#nombreAsentHumano').val();
+	if(nombreAsentHumano == "" || nombreAsentHumano == null){
+		$('#dialogo_1').html('Escriba el nombre de asentamiento humano');
+		abrirDialogo();
+		return false;
+	}		
+	var tipoVialidad = $('#tipoVialidad').val();	
+	if(tipoVialidad ==-1){
+		$('#dialogo_1').html('Seleccione el tipo de vialidad');
+		abrirDialogo();
+	 	return false;
+	}
+	var nombreVialidad = $('#nombreVialidad').val();		
+	if(nombreVialidad == "" || nombreVialidad == null){
+		$('#dialogo_1').html('Escriba el nombre de vialidad ');
+		abrirDialogo();
+		return false;
+	}
+	
+	//if(idPerfil!=1){
 		var numExterior = $('#numExterior').val();
 		if((numExterior == null || numExterior == "")){
 			$('#dialogo_1').html('Escriba el numero exterior del Comprador');
 			abrirDialogo();
 		 	return false;
 		}
-	}
+	//}
 	
 
 	var numeroExt2 = $('#numeroExt2').val();

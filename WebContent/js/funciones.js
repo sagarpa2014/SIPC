@@ -20,7 +20,10 @@ function chkCamposLogin(){
  		if (nombreUsuario.indexOf('REQUEST') !== -1 
  				|| nombreUsuario.indexOf('request') !== -1
  				|| nombreUsuario.indexOf('RESPONSE') !== -1
- 				|| nombreUsuario.indexOf('response') !== -1){
+ 				|| nombreUsuario.indexOf('response') !== -1
+ 				|| nombreUsuario.indexOf('userinput') !== -1
+ 				|| nombreUsuario.indexOf("['userinput'];") !== -1){
+ 			
  				$('#nombreUsuario').val(null);
  				$('#password').val(null);
  				return false;
