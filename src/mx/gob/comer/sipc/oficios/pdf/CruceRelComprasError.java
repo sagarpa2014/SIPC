@@ -2525,10 +2525,14 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				crearColumna("S-1-"+(l.getNombreVendedor()!=null?l.getNombreVendedor():""),"DET");
 				crearColumna("I-3-"+l.getPrecioPactadoPorTonelada()+";", "DET");
 				crearColumna("V-3-"+l.getVolumen()+";", "DET");
+				crearColumna("V-3-"+l.getVolTotalFacVenta()+";", "DET");
+				crearColumna("V-3-"+l.getDifVolumenFiniquito()+";", "DET");
 				granTotalVol += (l.getPrecioPactadoPorTonelada() != null ? l.getPrecioPactadoPorTonelada():0);						
 				granTotalVol1 += (l.getVolumen() != null ? l.getVolumen():0);						
+				granTotalVol2 += (l.getVolTotalFacVenta() != null ? l.getVolTotalFacVenta():0);						
+				granTotalVol3 += (l.getDifVolumenFiniquito() != null ? l.getDifVolumenFiniquito():0);						
 			}							
-			colocarTotales("4,TOTAL;5,"+granTotalVol+",i;6,"+granTotalVol1+",v;",  w.length);
+			colocarTotales("4,TOTAL;5,"+granTotalVol+",i;6,"+granTotalVol1+",v;"+"7,"+granTotalVol2+",v;"+"8,"+granTotalVol3+",v;",  w.length);
 			//end criterio = 27
 		}else if(rca.getIdCriterio() == 28){//"11.2 PRECIO MENOR AL ESTABLECIDO EN AVISO"
 			contBitacoraDet = 1;
@@ -3514,6 +3518,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					p.setPrecioPactadoPorTonelada(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					++columna;
 					p.setVolumen(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					++columna;
+					p.setVolTotalFacVenta(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					++columna;
+					p.setDifVolumenFiniquito(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					lstVolumenCumplido.add(p);
 				}else if(rca.getIdCriterio() == 28){
 					columna = 0;
@@ -3895,10 +3903,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}
 		}else if(rca.getIdCriterio() == 27){//VOLUMEN DE FINIQUITO
 			if(siAplicaFolioContrato){
-				float[] x1 = {10,10,30,30,10,10}; // %
+				float[] x1 = {10,10,20,20,10,10,10,10}; // %
 				w = x1;
 			}else{
-				float[] x1 = {10,30,30,15,15}; // %
+				float[] x1 = {10,25,25,10,10,10,10}; // %
 				w = x1;
 			}
 		}else if(rca.getIdCriterio() == 28){//PRECIO MENOR AL ESTABLECIDO EN AVISO
@@ -4570,9 +4578,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}
 		}else if(rca.getIdCriterio() == 27){
 			if(siAplicaFolioContrato){	
-				crearColumna("S-1-BODEGA;S-1-FOLIO CONTRATO;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN", "DET");
+				crearColumna("S-1-BODEGA;S-1-FOLIO CONTRATO;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN;S-1-VOLUMEN FACTURADO;S-1-DIF VOLUMEN FINIQUITO", "DET");
 			}else{
-				crearColumna("S-1-BODEGA;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN", "DET");
+				crearColumna("S-1-BODEGA;S-1-COMPRADOR;S-1-VENDEDOR;S-1-PRECIO PACTADO POR TON (DLLS);S-1-VOLUMEN;S-1-VOLUMEN FACTURADO;S-1-DIF VOLUMEN FINIQUITO", "DET");
 			}
 		}else if(rca.getIdCriterio() == 28){//PRECIO MENOR AL ESTABLECIDO EN AVISO			
 			if(siAplicaFolioContrato){	

@@ -5946,7 +5946,7 @@ public class RelacionesDAO {
 			return lst;
 		}
 		
-		public List<VolumenFiniquito> consultaVolumenCumplido(String folioCartaAdhesion)throws  JDBCException{
+		public List<VolumenFiniquito> consultaVolumenCumplido(String rfcComprador)throws  JDBCException{
 			List<VolumenFiniquito> lst = new ArrayList<VolumenFiniquito>();
 			StringBuilder consulta= new StringBuilder();
 			//Antes solo bodegas de la relacion de compras
@@ -5956,16 +5956,26 @@ public class RelacionesDAO {
 //			.append("group by r.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")			
 //			.append("order by r.clave_bodega, r.folio_contrato"); // AHS CAMBIO 29062015
 //			
-			//Ahora todas las bodegas y contratos de la empresa
-			
-			
-			consulta.append("select b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")
-			.append("from relacion_compras_tmp r, bodegas_contratos b, contratos_relacion_compras c ")
-			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and ") 
-			.append("r.rfc_comprador = b.rfc_comprador  and b.folio_contrato = r.folio_contrato and ") 
-			.append("c.folio_contrato = r.folio_contrato ") 
-			.append("group by b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")  			
-			.append("order by b.clave_bodega, r.folio_contrato "); 
+			//Ahora todas las bodegas y contratos de la empresa	
+//			consulta.append("select b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")
+//			.append("from relacion_compras_tmp r, bodegas_contratos b, contratos_relacion_compras c ")
+//			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and ") 
+//			.append("r.rfc_comprador = b.rfc_comprador  and b.folio_contrato = r.folio_contrato and ") 
+//			.append("c.folio_contrato = r.folio_contrato ") 
+//			.append("group by b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")  			
+//			.append("order by b.clave_bodega, r.folio_contrato "); 
+
+			consulta.append(" select v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen, coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta,  ")
+					.append("case when coalesce(sum(r.vol_total_fac_venta),0) >  v.volumen then  coalesce(sum(r.vol_total_fac_venta),0)- v.volumen else 0 end as dif_volumen_finiquito ")
+					.append("FROM  ")
+					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen  ") 
+					.append("from bodegas_contratos b, contratos_relacion_compras c  ")
+					.append("where b.rfc_comprador = '").append(rfcComprador).append("' ")
+					.append("and b.folio_contrato = c.folio_contrato ")
+					.append("group by b.rfc_comprador, b.clave_bodega, b.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ) v ")
+					.append("left join relacion_compras_tmp r On r.folio_contrato =  v.folio_contrato and v.clave_bodega =  r.clave_bodega and r.rfc_comprador  = v.rfc_comprador ") 
+					.append("group by  v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen  ")
+					.append("order by   v.folio_contrato, v.clave_bodega ");
 
 			System.out.println("VOLUMEN CUMPLIDO "+consulta.toString());
 			
@@ -5981,7 +5991,11 @@ public class RelacionesDAO {
 		        b.setNombreComprador((String) row.get("nombre_comprador"));
 		        b.setNombreVendedor((String) row.get("nombre_vendedor"));
 		        BigDecimal valor = (BigDecimal) row.get("volumen");
-		        b.setVolumen(valor!=null ? valor.doubleValue():0.0);	
+		        b.setVolumen(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("vol_total_fac_venta");
+		        b.setVolTotalFacVenta(valor!=null ? valor.doubleValue():0.0);
+		        valor = (BigDecimal) row.get("dif_volumen_finiquito");
+		        b.setDifVolumenFiniquito(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
 		        b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():0.0);		        
 		        lst.add(b);	
@@ -6088,7 +6102,8 @@ public class RelacionesDAO {
 //		    .append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total > 1.00");
 			
 			consulta.append("SELECT * FROM dif_precio_pactado_contrato_v ")
-					 .append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >1.00");
+					 .append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_x_fac >1.00");
+					//.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >1.00");
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			System.out.println("Tipo cambio "+consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);

@@ -12,6 +12,8 @@ public class VolumenFiniquito implements Comparable{
 	private String nombreVendedor;
 	private Double precioPactadoPorTonelada;
 	private Double volumen;
+	private Double volTotalFacVenta;
+	private Double difVolumenFiniquito;
 	
 
 	
@@ -53,6 +55,20 @@ public class VolumenFiniquito implements Comparable{
 	}
 	public void setVolumen(Double volumen) {
 		this.volumen = volumen;
+	}	
+	
+	public Double getVolTotalFacVenta() {
+		return volTotalFacVenta;
+	}
+	
+	public void setVolTotalFacVenta(Double volTotalFacVenta) {
+		this.volTotalFacVenta = volTotalFacVenta;
+	}
+	public Double getDifVolumenFiniquito() {
+		return difVolumenFiniquito;
+	}
+	public void setDifVolumenFiniquito(Double difVolumenFiniquito) {
+		this.difVolumenFiniquito = difVolumenFiniquito;
 	}
 	@Override
 	public int compareTo(Object o) {

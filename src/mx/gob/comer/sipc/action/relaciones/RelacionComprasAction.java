@@ -148,6 +148,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<RelacionComprasTMP>  lstRCTemp;
 	private String nombreComprador;
 	private String nombrePrograma;
+	private String rfcComprador;
 	@SessionTarget
 	Session sessionTarget;
 	
@@ -2658,7 +2659,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
-						lstVolumenCumplido = rDAO.consultaVolumenCumplido(folioCartaAdhesion);
+						lstVolumenCumplido = rDAO.consultaVolumenCumplido(rfcComprador);
 						if(lstVolumenCumplido.size()>0){//En el listado se guardan el volumen no cumplido
 							//Guardar en bitacora
 							llenarBitacora(true, l.getIdCriterio());							
@@ -2680,12 +2681,17 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Precio Pactado por Ton (Dlls)");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Volumen");								
+							cell.setCellValue("Volumen");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Volumen Facturado");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Dif Volumen Finiquito");
 							for(VolumenFiniquito p: lstVolumenCumplido){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(p.getClaveBodega()+";"+(siAplicaFolioContrato?p.getFolioContrato()+";":"")+p.getNombreComprador()+";"+p.getNombreVendedor()+";"
-										+(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+";":0+";")+(p.getVolumen()!=null?p.getVolumen():0));								
+										+(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+";":0+";")+(p.getVolumen()!=null?p.getVolumen()+";":0)
+										+(p.getVolTotalFacVenta()!=null?p.getVolTotalFacVenta()+";":0)+(p.getDifVolumenFiniquito()!=null?p.getDifVolumenFiniquito()+";":0));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
@@ -2702,6 +2708,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getVolumen()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getVolumen())+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getVolTotalFacVenta())+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getDifVolumenFiniquito()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getDifVolumenFiniquito())+"":"");
 							}							
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
@@ -5067,6 +5077,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		programa = cDAO.consultaPrograma(acaaev.getIdPrograma()).get(0);
 		idPrograma = programa.getIdPrograma();
 		idComprador= acaaev.getIdComprador();
+		rfcComprador = acaaev.getRfcComprador();
 		nomRutaCartaAdhesion = folioCartaAdhesion.replaceAll("-", "");
 		String ruta = programa.getRutaDocumentos()+"SolicitudPago/"+acaaev.getIdOficioCASP()+"/"+nomRutaCartaAdhesion+"/";
 		Utilerias.crearDirectorio(ruta);
