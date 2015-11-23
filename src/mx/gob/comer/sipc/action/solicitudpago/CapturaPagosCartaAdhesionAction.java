@@ -410,46 +410,63 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											break;
 											}									
 								}//end lstPagosDetalleCAV
-									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
-									//System.out.println("suma antes "+suma);
-									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
-									//System.out.println(suma);
-									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA										
-										//Verifica que se haya configurado el certificado o la constancia
-										if(lstExpedienteProgramaDoc.size() > 0){
-											if (suma > (volumenCertificados+volumenConstancias)){
-												errorSistema = 1;
-												if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-																   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-												} else {
-													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-																   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
-												}
-												return SUCCESS;												
+								if(volumenCertificados==null && volumenConstancias==null){
+									lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
+									for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+										if(l.getIdAsiganacionCA()==idCapVolumen){
+											if(l.getBodega()==null||l.getBodega().isEmpty()){
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, l.getIdCultivo(), l.getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, l.getIdCultivo(), l.getIdVariedad());																								
+											} else {
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, l.getBodega(), l.getIdCultivo(), l.getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, l.getBodega(), l.getIdCultivo(), l.getIdVariedad());												
 											}
+											volumenAutEdoCulVarCA = l.getVolumen();
+											break;
 										}
-																				
-									}
-									if (suma > volumenAutEdoCulVarCA){
-										errorSistema = 1;
-										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-														   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
-														   " de la carta de adhesión para el estado: "+vEstadoAux+
-														   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
-										} else {
-											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
-													   " de la carta de adhesión para el estado: "+vEstadoAux+
-													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
-										}
-										return SUCCESS;
 									}
 								}
-							}//	 end	while(it.hasNext()	
+								
+								Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+								//System.out.println("suma antes "+suma);
+								suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+								//System.out.println(suma);
+								if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA										
+									//Verifica que se haya configurado el certificado o la constancia
+									if(lstExpedienteProgramaDoc.size() > 0){
+										if (suma > (volumenCertificados+volumenConstancias)){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}
+									}
+																			
+								}
+								if (suma > volumenAutEdoCulVarCA){
+									errorSistema = 1;
+									if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+										addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+													   " de la carta de adhesión para el estado: "+vEstadoAux+
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+", por favor verifique");
+									} else {
+										addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+												   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+												   " de la carta de adhesión para el estado: "+vEstadoAux+
+												   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+", por favor verifique");											
+									}
+									return SUCCESS;
+								}
+							}
+						}//	 end	while(it.hasNext()	
 					} else if (criterioPago==2){	
 						Set<Integer> idsCapImporte = capImporte.keySet();
 						Iterator<Integer> it = idsCapImporte.iterator();
@@ -548,95 +565,111 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 											vVariedadAux = lstPagosDetalleCAV.get(i).getVariedad();
 											vBodegaAux = lstPagosDetalleCAV.get(i).getBodega();
 											break;
-											}									
+										}
 								}//end lstPagosDetalleCAV
-									Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
-									suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
-									if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
-										//Verifica que se haya configurado el certificado o la constancia
-										if(lstExpedienteProgramaDoc.size() > 0){
-											if (suma > (volumenCertificados+volumenConstancias)){
-												errorSistema = 1;
-												if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-																   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
-												} else {
-													addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-																   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
-																   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
-												}
-												return SUCCESS;												
+								if(volumenCertificados==null && volumenConstancias==null){
+									lstDetallePagosCAEspecialistaV = spDAO.verCartaAdhesionAsignadasPagos(idEspecialista, folioCartaAdhesion);
+									for(AsignacionCartasAdhesionEspecialistaV l:lstDetallePagosCAEspecialistaV){
+										if(l.getIdAsiganacionCA()==idCapVolumen){
+											if(l.getBodega()==null||l.getBodega().isEmpty()){
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, null, l.getIdCultivo(), l.getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, null, l.getIdCultivo(), l.getIdVariedad());																								
+											} else {												
+												volumenCertificados = spDAO.getSumaCertificadoDepositoByFolioCABodegaCultVar(folioCartaAdhesion, l.getBodega(), l.getIdCultivo(), l.getIdVariedad());
+												volumenConstancias = spDAO.getgetSumaConstanciasAlmacenamientoByFolioCABodegaCultVar(folioCartaAdhesion, l.getBodega(), l.getIdCultivo(), l.getIdVariedad());
 											}
+											volumenAutEdoCulVarCA = l.getVolumen();
+											break;
 										}
-																				
-									}
-									if (suma > volumenAutEdoCulVarCA){
-										errorSistema = 1;
-										if(vBodegaAux==null||vBodegaAux.isEmpty()) {
-											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-														   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
-														   " de la carta de adhesión para el estado: "+vEstadoAux+
-														   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
-										} else {
-											addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
-													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
-													   " de la carta de adhesión para el estado: "+vEstadoAux+
-													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
-										}
-										return SUCCESS;
 									}
 								}
-							}//	 end	while(it.hasNext()	
-						}
+								Double suma = Double.parseDouble(item)+totalVolApoEdoCulVarCA;
+								suma =Double.parseDouble(TextUtil.formateaNumeroComoVolumenSinComas(suma));
+								if(!tieneFianza){ // APLICA VALIDACION CONTRA VOLUMEN DE CERTIFICADOS Y/O CONSTANCIAS DE ALMACENAMIENTO SI SE TIENE FIANZA
+									//Verifica que se haya configurado el certificado o la constancia
+									if(lstExpedienteProgramaDoc.size() > 0){
+										if (suma > (volumenCertificados+volumenConstancias)){
+											errorSistema = 1;
+											if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
+											} else {
+												addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+															   " no puede ser mayor al volumen en Certificados de Depósito  y/o Constancias: "+(volumenCertificados+volumenConstancias)+
+															   " de la carta de adhesión para el cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
+											}
+											return SUCCESS;												
+										}
+									}
+																			
+								}
+								if (suma > volumenAutEdoCulVarCA){
+									errorSistema = 1;
+									if(vBodegaAux==null||vBodegaAux.isEmpty()) {
+										addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+													   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+													   " de la carta de adhesión para el estado: "+vEstadoAux+
+													   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" para la etapa: "+etapa+", por favor verifique");
+									} else {
+										addActionError("El volumen a apoyar: "+item+" más el volumen apoyado: "+totalVolApoEdoCulVarCA+
+												   " no puede ser mayor al volumen autorizado: "+volumenAutEdoCulVarCA+
+												   " de la carta de adhesión para el estado: "+vEstadoAux+
+												   " cultivo: "+vCultivoAux+" variedad: "+vVariedadAux+" bodega: "+vBodegaAux+" para la etapa: "+etapa+", por favor verifique");											
+									}
+									return SUCCESS;
+								}
+							}
+						}//	 end	while(it.hasNext()	
+					}
 		
-		                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
-		                Date fechaActualConvert = dateFormat.parse(fechaAtentaNota); 
-		                           
-		                fechaActual = " a "+new SimpleDateFormat("dd").format(fechaActualConvert).toString()+" de "
-		                                   + TextUtil.consigueMes(Integer.parseInt(new SimpleDateFormat("MM").format(fechaActualConvert).toString()))+" de "
-		                                   + new SimpleDateFormat("yyyy").format(fechaActualConvert).toString();
-						//Recupera el destinatario
-						lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", false, false,false);
-						if(lstPersonal.size()>0){
-							destinatario = lstPersonal.get(0);
-							dest.append(lstPersonal.get(0).getNombre()).append(" ")
-										.append(lstPersonal.get(0).getPaterno())
-										.append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
-							destinatario.setNombre(dest.toString().toUpperCase());
-							destinatario.setPuesto(destinatario.getPuesto().toUpperCase());
-						}
-						
-						//Recupera el emisor
-						lstEspecialista = cDAO.consultaEspecialista(idEspecialista);
-						if(lstEspecialista.size()>0){
-							emisor = lstEspecialista.get(0);
-							emisor.setNombre(emisor.getNombre().toUpperCase());
-							emisor.setPuesto(emisor.getPuesto().toUpperCase());
-						}
-						//Recupera la leyenda del oficio
-						leyendaOficio = cDAO.consultaParametros("LEYENDA_OFICIO");
-						
-						guardarPagos();
-						generarAtentaNotaPago();
-						PagosV pv = new PagosV();
-						pv = pDAO.consultaPagosV(idPago).get(0);
-								
-						log = "Se le informa que se capturó un pago del Programa: "+pv.getNombrePgrCorto().toUpperCase()+" - Comprador: "+pv.getNombreComprador().toUpperCase()
-							   + " - Carta: "+pv.getNoCarta()+ " - clabe:"+ pv.getClabe()
-							   +" - importe: $"+ TextUtil.formateaNumeroComoCantidad(pv.getImporte())+ (pv.getVolumen()!=null ? " - volumen:"+ TextUtil.formateaNumeroComoVolumen(pv.getVolumen()):"")+
-							   (pv.getEtapa()!=null ? " - Etapa: "+pv.getEtapa():"" );
-						cDAO.guardaObjeto(new Bitacora((Integer) session.get("idUsuario"), 3, new Date(),log));
-						/*Enviar aviso de la captura de pago*/
-						EnvioMensajes mensajes = new EnvioMensajes(sessionTarget);
-						mensajes.enviarMensaje((Integer) session.get("idUsuario"), 3, log, "Aviso");
-						detallePagosCartaAdhesion();
-						msjOk = "Se agrego correctamente el pago";
-					} else {
-						errorSistema = 1;
-						addActionError("La vigencia del documento Anexo 32D ("+fechaVigenciaLimitePago.toString()+") no es válida para el registro del pago ("+new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString()+") o el anexo 32D esta en estatus de observación, por favor verifique");
-						return SUCCESS;
-					}			
+	                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
+	                Date fechaActualConvert = dateFormat.parse(fechaAtentaNota); 
+	                           
+	                fechaActual = " a "+new SimpleDateFormat("dd").format(fechaActualConvert).toString()+" de "
+	                                   + TextUtil.consigueMes(Integer.parseInt(new SimpleDateFormat("MM").format(fechaActualConvert).toString()))+" de "
+	                                   + new SimpleDateFormat("yyyy").format(fechaActualConvert).toString();
+					//Recupera el destinatario
+					lstPersonal = cDAO.consultaPersonal(0, "Director de Pagos de Apoyos a la Comercialización", false, false,false);
+					if(lstPersonal.size()>0){
+						destinatario = lstPersonal.get(0);
+						dest.append(lstPersonal.get(0).getNombre()).append(" ")
+									.append(lstPersonal.get(0).getPaterno())
+									.append(lstPersonal.get(0).getMaterno()!=null && !lstPersonal.get(0).getMaterno().isEmpty()? " "+lstPersonal.get(0).getMaterno():"");
+						destinatario.setNombre(dest.toString().toUpperCase());
+						destinatario.setPuesto(destinatario.getPuesto().toUpperCase());
+					}
+					
+					//Recupera el emisor
+					lstEspecialista = cDAO.consultaEspecialista(idEspecialista);
+					if(lstEspecialista.size()>0){
+						emisor = lstEspecialista.get(0);
+						emisor.setNombre(emisor.getNombre().toUpperCase());
+						emisor.setPuesto(emisor.getPuesto().toUpperCase());
+					}
+					//Recupera la leyenda del oficio
+					leyendaOficio = cDAO.consultaParametros("LEYENDA_OFICIO");
+					
+					guardarPagos();
+					generarAtentaNotaPago();
+					PagosV pv = new PagosV();
+					pv = pDAO.consultaPagosV(idPago).get(0);
+							
+					log = "Se le informa que se capturó un pago del Programa: "+pv.getNombrePgrCorto().toUpperCase()+" - Comprador: "+pv.getNombreComprador().toUpperCase()
+						   + " - Carta: "+pv.getNoCarta()+ " - clabe:"+ pv.getClabe()
+						   +" - importe: $"+ TextUtil.formateaNumeroComoCantidad(pv.getImporte())+ (pv.getVolumen()!=null ? " - volumen:"+ TextUtil.formateaNumeroComoVolumen(pv.getVolumen()):"")+
+						   (pv.getEtapa()!=null ? " - Etapa: "+pv.getEtapa():"" );
+					cDAO.guardaObjeto(new Bitacora((Integer) session.get("idUsuario"), 3, new Date(),log));
+					/*Enviar aviso de la captura de pago*/
+					EnvioMensajes mensajes = new EnvioMensajes(sessionTarget);
+					mensajes.enviarMensaje((Integer) session.get("idUsuario"), 3, log, "Aviso");
+					detallePagosCartaAdhesion();
+					msjOk = "Se agrego correctamente el pago";
+				} else {
+					errorSistema = 1;
+					addActionError("La vigencia del documento Anexo 32D ("+fechaVigenciaLimitePago.toString()+") no es válida para el registro del pago ("+new SimpleDateFormat("dd/MM/yyyy").format(new Date()).toString()+") o el anexo 32D esta en estatus de observación, por favor verifique");
+					return SUCCESS;
+				}			
 			} else {
 				errorSistema = 1;
 				addActionError("El comprador esta en estatus Inhabilitado por lo que no procede el registro del pago, por favor verifique");

@@ -25,7 +25,8 @@ public class AsignacionCAaEspecialistaV {
 	private String estatusCartaAdhesion;
 	private String fianza;
 	private Integer criterioPago;
-	private Integer idComprador;
+	private Integer idComprador;	
+	private String rfcComprador;
 	private String nombreComprador;
 	private String clabe;
 	private int ed;
@@ -170,7 +171,14 @@ public class AsignacionCAaEspecialistaV {
 	public void setIdComprador(Integer idComprador) {
 		this.idComprador = idComprador;
 	}
-	
+		
+	@Column(name = "rfc_comprador")
+	public String getRfcComprador() {
+		return rfcComprador;
+	}
+	public void setRfcComprador(String rfcComprador) {
+		this.rfcComprador = rfcComprador;
+	}
 	@Column(name = "comprador")
 	public String getNombreComprador() {
 		return nombreComprador;
