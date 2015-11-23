@@ -4172,8 +4172,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							}
 						}						
 						
-					}else if(l.getIdCriterio() == 18){//"IMPORTE FACTURADO MAYOR AL IMPORTE PAGADO."
-						sheet = wb.createSheet("MONTOS PAG MENORES FACTURAS");
+					}else if(l.getIdCriterio() == 18){// 9 "IMPORTE FACTURADO MAYOR AL IMPORTE PAGADO."
+						sheet = wb.createSheet("IMP FAC MAYOR IMP PAG ");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;	
