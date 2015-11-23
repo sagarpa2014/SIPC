@@ -2539,6 +2539,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			Collections.sort(lstPrecioPagadoMenorQueAviso);
 			for(PrecioPagadoNoCorrespondeConPagosV  l: lstPrecioPagadoMenorQueAviso){
 				configTotales = new String [2];
+				
 				if(siAplicaFolioContrato){
 					//configTotales[0] = "3,TOTAL CON;5,"+totalVolPorContrato+",v"+";6,"+totalVolPorContrato1+",i"+";7,"+totalVolPorContrato2+",i"+";8,"+totalVolPorContrato3+",i"+";9,"+totalVolPorContrato4+",i;10,"+totalVolPorContrato5+",i";
 					//configTotales[1] = "3,TOTAL BOD;5,"+totalVolPorBodega+",v"+";6,"+totalVolPorBodega1+",i"+";7,"+totalVolPorBodega2+",i"+";8,"+totalVolPorBodega3+",i"+";9,"+totalVolPorBodega4+",i;10,"+totalVolPorBodega5+",i";	

@@ -4054,8 +4054,9 @@ public class RelacionesDAO {
 		consulta.append("select * ")		
 		.append(" from  precio_pagado_no_corresponde_con_pagos_v ")
 		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-		.append("and (precio_calculado < precio_pagado_en_aviso ")
-		.append("or imp_doc_pago_sinaxc <> imp_sol_fac_venta )");
+		.append("and ((precio_calculado < (precio_pagado_en_aviso - 1.00)) ")
+		//.append("or imp_doc_pago_sinaxc <> imp_sol_fac_venta )");
+		.append("or imp_doc_pago_sinaxc <> imp_total_pago_sinaxc )");
 
 		SQLQuery query = session.createSQLQuery(consulta.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);		
