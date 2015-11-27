@@ -2021,7 +2021,31 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+p.getFolioPredio()+";"+p.getPredioAlterno()+";"+p.getNumeroBoletas()+";"
 										+p.getNumeroFacturas()+";"+p.getNumeroPagos());								
 								b.getBitacoraRelcomprasDetalle().add(bd);
-								//Actualiza predio como inconsistente								
+								//ACTUALIZA LOS DIFERENTES CONCEPTOS SIEMPRE Y CUANDO NO TENGA ALGUNO DE ELLOS								
+								//Actualiza predio como inconsistente derivado de reporte ((1)7.4)
+								if(p.getFolioPredio().intValue() == 0){		
+									if(criteriosByPrograma.contains(",1,")){
+										rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+												p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false, false, false, false, true);
+									}									
+								}
+								if(p.getNumeroFacturas().intValue() == 0){
+									//Actualiza boletas incosistentes = true a todo el productor									
+									rDAO.actualizaByProductoresInconsistentes(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+											p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), true,false,false);																		
+								}
+								
+								if(p.getNumeroBoletas().intValue() == 0){
+									//Actualiza boletas incosistentes = true a todo el productor									
+									rDAO.actualizaByProductoresInconsistentes(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+											p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false,true,false);																		
+								}
+								
+								if(p.getNumeroPagos().intValue() == 0){
+									//Actualiza boletas incosistentes = true a todo el productor									
+									rDAO.actualizaByProductoresInconsistentes(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+											p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false,false,true);																		
+								}					
 								
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);

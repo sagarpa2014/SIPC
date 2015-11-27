@@ -5326,6 +5326,135 @@ public class RelacionesDAO {
 			return elementosActuializados;
 		}
 		
+		
+		public int actualizaByProductoresInconsistentes(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
+				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean facturas, boolean boletas, boolean pagos)throws JDBCException {
+			int elementosActuializados = 0;
+			StringBuilder where = new StringBuilder();
+			//Actualiza incosistencias por unidad de produccion
+			try{
+				StringBuilder set  = new StringBuilder();
+				if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
+					where.append(" where folio_carta_adhesion ='").append(folioCartaAdhesion).append("' ");
+				}
+				
+				if (claveBodega != null && !claveBodega.isEmpty()){
+					if(where.length()>0){
+						where.append(" and clave_bodega ='").append(claveBodega).append("' ");
+					}else{
+						where.append(" where clave_bodega ='").append(claveBodega).append("' ");
+					}
+				}
+				
+				if (nombreEstado != null && !nombreEstado.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_estado ='").append(nombreEstado).append("' ");
+					}else{
+						where.append(" where nombre_estado ='").append(nombreEstado).append("' ");
+					}
+				}	
+				if (folioContrato != null && !folioContrato.isEmpty()){
+					if(where.length()>0){
+						where.append(" and folio_contrato ='").append(folioContrato).append("' ");
+					}else{
+						where.append(" where folio_contrato ='").append(folioContrato).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and folio_contrato is null ");
+					}else{
+						where.append(" where folio_contrato is null ");
+					}
+				}
+				if (paternoProductor != null && !paternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and paterno_productor ='").append(paternoProductor).append("' ");
+					}else{
+						where.append(" where paterno_productor ='").append(paternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and paterno_productor is null ");
+					}else{
+						where.append(" where paterno_productor is null");
+					}
+				}			
+				
+				
+				if (maternoProductor != null && !maternoProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and materno_productor ='").append(maternoProductor).append("' ");
+					}else{
+						where.append(" where materno_productor ='").append(maternoProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and materno_productor is null ");
+					}else{
+						where.append(" where materno_productor is null");
+					}
+				}
+				if (nombreProductor != null && !nombreProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and nombre_productor ='").append(nombreProductor).append("' ");
+					}else{
+						where.append(" where nombre_productor ='").append(nombreProductor).append("' ");
+					}
+				}
+				
+				if(curpProductor != null && !curpProductor.isEmpty()){
+					if(where.length()>0){
+						where.append(" and curp_productor ='").append(curpProductor).append("' ");
+					}else{
+						where.append(" where curp_productor ='").append(curpProductor).append("' ");
+					}
+				}else{
+					if(where.length()>0){
+						where.append(" and curp_productor is null");
+					}else{
+						where.append(" where curp_productor is null");
+					}
+					if(rfcProductor != null && !rfcProductor.isEmpty()){
+						if(where.length()>0){
+							where.append(" and rfc_productor ='").append(rfcProductor).append("' ");
+						}else{
+							where.append(" where rfc_productor ='").append(rfcProductor).append("' ");
+						}
+					}else{
+						if(where.length()>0){
+							where.append(" and rfc_productor is null");
+						}else{
+							where.append(" where rfc_productor is null");
+						}
+					}
+					
+				}
+				
+				set.append("set " );
+				if(facturas){
+					set.append(" factura_inconsistente = true,");
+				}				
+				if(boletas){
+					set.append(" boleta_incosistente = true,");
+				}
+				if(pagos){
+					set.append(" pago_inconsistente = true,");
+				}
+								
+				
+				set.deleteCharAt(set.length()-1);
+				StringBuilder hql = new StringBuilder()			
+				.append("UPDATE  relacion_compras_tmp  ").append(set.toString()).append(where.toString());
+				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
+				
+			}catch (JDBCException e){
+				transaction.rollback();
+				throw e;
+			}	
+			return elementosActuializados;
+		}
+		
+		
 		public int actualizaPagosInconsistente(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
 				String paternoProductor, String maternoProductor, String nombreProductor, String curpProductor, String rfcProductor, boolean pagos)throws JDBCException {
 			int elementosActuializados = 0;
@@ -6103,8 +6232,8 @@ public class RelacionesDAO {
 //		    .append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total > 1.00");
 			
 			consulta.append("SELECT * FROM dif_precio_pactado_contrato_v ")
-					 .append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_x_fac >1.00");
-					//.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >1.00");
+					 //.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_x_fac >1.00");
+					.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >1.00");
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			System.out.println("Tipo cambio "+consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
