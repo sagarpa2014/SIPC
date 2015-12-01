@@ -255,6 +255,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private String aplicaCampoDetalle;
 	private List<RelacionComprasTMP> lstFGlobalVsFIndividual;
 	private List<PagMenorCompBases> lstPagMenorCompBases;
+	private List<Bodegas> lstBodegas;
+	private List<Estado> lstEdo;
 	
 	public String capturaCargaArchivoRelCompras(){ 
 		//Verifica que no exista la relacion en la base de datos
@@ -524,10 +526,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						   errorInternoArchivo = true;
 						   errorLecturaArchivo = true;
 					   }else{
-						   //if( !claveBodegaTmp.equals(valor)){
+//						   if( !claveBodegaTmp.equals(valor)){
 							   //verificar en bd si la clave de la bodega existe en SIPC
 							   //Recupera valor de la clave de la bodega
-							   List<Bodegas> lstBodegas = cDAO.consultaBodegas(valor);
+						   		if( !claveBodegaTmp.equals(valor)){
+						   			lstBodegas = cDAO.consultaBodegas(valor);
+						   		}						   
+							   
 							   if(lstBodegas.size() > 0){
 								   claveBodega = lstBodegas.get(0).getClaveBodega();
 								   claveBodegaCorrecta = true;
@@ -544,7 +549,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								   //break; 
 								   								   
 							   }
-							//}
+//							}
 						   rcTmp.setClaveBodega(claveBodega);
 						   claveBodegaTmp = valor;
 						  
@@ -564,7 +569,11 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						   crearCeldaenLogXls();
 					   }else{					  
 						   //verificar en bd si el estado existe en SIPC
-						   List<Estado> lstEdo = cDAO.consultaEstado(0, valor,0);
+						   
+						   if(!nomEstadoTmp.equals(valor)){
+							   lstEdo = cDAO.consultaEstado(0, valor,0);  
+						   }
+						   
 						   nombreEstado = valor;
 						   if(lstEdo.size() > 0){
 							   idEstado = lstEdo.get(0).getIdEstado();
@@ -572,11 +581,14 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						   }else{
 							   msj = "Fila: "+contRow+". No se encontro el estado "+valor;
 							   bd = new BitacoraRelcomprasDetalle();
+							   
 							   bd.setMensaje(msj);
 							   b.getBitacoraRelcomprasDetalle().add(bd);
 							   errorInternoArchivo = true;
 							   errorLecturaArchivo = true;
-							   crearCeldaenLogXls();								   
+							   crearCeldaenLogXls();	
+							   nomEstadoTmp = valor; 
+							   
 						   }
 						
 //						   idEstado = 99;
@@ -1473,7 +1485,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
-							cell.setCellValue("Carta Adhesión: "+folioCartaAdhesion);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);    
 							cell.setCellValue(msj);
@@ -1522,99 +1534,18 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"LOS PREDIOS SI EXISTEN EN LA BASE DE DATOS DE ASERCA\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}						
-					}else if(l.getIdCriterio()== 2){//PREDIO SE ENCUENTRE VALIDADO POR LA DR/DE
-						sheet = wb.createSheet("PREDIO VAL");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						lstPrediosNoValidadosDRDE = rDAO.verificaPrediosNoValidadosDRDE(folioCartaAdhesion, idPrograma);
-						if(lstPrediosNoValidadosDRDE.size()>0){ //En el listado se guardan los predios que no estan validados por la DR/DE
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Predio");
-							cell = row.createCell(1);
-							cell.setCellValue("Secuencial");
-							cell = row.createCell(2);
-							cell.setCellValue("Predio Alterno");
-							for(PrediosNoValidadosDRDE p: lstPrediosNoValidadosDRDE){
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+p.getFolioPredioAlterno());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
-								cell.setCellValue(p.getFolioPredio()!=null && !p.getFolioPredio().isEmpty()?p.getFolioPredio():"");
-								cell = row.createCell(1);
-								cell.setCellValue(p.getFolioPredioSec()!=null?p.getFolioPredio():"");
-								cell = row.createCell(2);
-								cell.setCellValue(p.getFolioPredioAlterno()!=null && !p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"");
-							}
-							
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"LOS PREDIOS SE ENCUENTRAN VALIDADOS\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}
-					}else if(l.getIdCriterio()== 3){//PREDIOS ESTEN PAGADOS
-						sheet = wb.createSheet("PREDIOS PAG");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						lstPrediosNoPagados = rDAO.verificaPrediosNoPagados(folioCartaAdhesion, idPrograma);
-						if(lstPrediosNoPagados.size()>0){ //En el listado se guardan los predios que no estan pagados
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Predio");
-							cell = row.createCell(1);
-							cell.setCellValue("Secuencial");
-							cell = row.createCell(2);
-							cell.setCellValue("Predio Alterno");
-							for(PrediosNoPagados p: lstPrediosNoPagados){
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getFolioPredio()+";"+p.getFolioPredioSec()+";"+p.getFolioPredioAlterno());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
-								cell.setCellValue(p.getFolioPredio()!=null && !p.getFolioPredio().isEmpty()?p.getFolioPredio():"");
-								cell = row.createCell(1);
-								cell.setCellValue(p.getFolioPredioSec()!=null?p.getFolioPredio():"");
-								cell = row.createCell(2);
-								cell.setCellValue(p.getFolioPredioAlterno()!=null && !p.getFolioPredioAlterno().isEmpty()?p.getFolioPredioAlterno():"");
-							}				
-							b.setMensaje(msj);							
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"LOS PREDIOS SE ENCUENTRAN PAGADOS\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}
 					} else if(l.getIdCriterio()== 26){
 						sheet = wb.createSheet("PRED-PROD-CON EXISTA BD"); // 7.3 DIFERENCIAS PREDIOS/PRODUCTOR/CONTRATO CON LOS CONTRATOS REGISTRADOS
 						sheet = setMargenSheet(sheet);
@@ -1626,7 +1557,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio());							
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
@@ -1679,9 +1613,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"LOS PREDIOS/PRODUCTORES/CONTRATOS SI EXISTEN EN LA BASE DE DATOS DE ASERCA\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -1694,268 +1632,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 				FileOutputStream out = new FileOutputStream(new File(rutaCartaAdhesion+nombreArchivoLogXls));
 			    wb.write(out);
 			    out.close();	
-			}else if(grupoCriterio.equals("Productor")){
-				lstValidacionPorGrupo = rDAO.recuperaCatCriteriosValidacionByGurpoPrograma(idPerRel, grupoCriterio);
-				String s = integraCriteriosByGrupo(lstValidacionPorGrupo);
-				lstBitacoraRelCompras = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, s, "0,1", true);
-				if(lstBitacoraRelCompras.size()>0){
-					addActionError("Los criterio para el grupo '"+grupoCriterio+"' ya se encuentra validado y se genero bitacora definitiva, por favor verifique ");
-					return SUCCESS;
-				}						
-				lstBitacoraRelCompras = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, s.toString(), "0,1");
-				if(lstBitacoraRelCompras.size() > 0){					
-					//Borra el registro de la bitacora
-					for(BitacoraRelcompras b: lstBitacoraRelCompras){
-						cDAO.borrarObjeto(b);
-					}
-					
-				}			
-				for(CatCriteriosValidacion l:lstValidacionPorGrupo){
-					if(l.getIdCriterio()== 4){//PRODUCTOR EXISTA EN BASE DE DATOS"
-						sheet = wb.createSheet("PROD EXISTA EN BD");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						lstProductorExisteBD = rDAO.verificaSiexisteProductor(folioCartaAdhesion, idPrograma); // AHS 29012015
-						if(lstProductorExisteBD.size()>0){ //En el listado se guardan los productores que no existen en la base de datos
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Folio Productor");
-							cell = row.createCell(1);
-							cell.setCellValue("Productor");
-							cell = row.createCell(2);
-							cell.setCellValue("CURP");
-							cell = row.createCell(3);
-							cell.setCellValue("RFC");
-							for(ProductorExisteBD p: lstProductorExisteBD){
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getFolioProductor()+";"+p.getPaternoProductor()+";"
-										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"+p.getCurpProductor()+";"+p.getRfcProductor());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
-								cell.setCellValue(p.getFolioProductor()!=null ? p.getFolioProductor()+"":"");
-								cell = row.createCell(1);
-								cell.setCellValue(p.getPaternoProductor() != null ? p.getPaternoProductor()+" ": ""
-										+ p.getMaternoProductor() != null ? p.getMaternoProductor()+" ":""
-										+ p.getNombreProductor() != null ? p.getNombreProductor():"");
-								cell = row.createCell(2);
-								cell.setCellValue(p.getCurpProductor()!=null && !p.getCurpProductor().isEmpty()?p.getCurpProductor():"");
-								cell = row.createCell(3);
-								cell.setCellValue(p.getRfcProductor()!=null && !p.getRfcProductor().isEmpty()?p.getRfcProductor():"");
-							}					
-							
-							b.setMensaje(msj);
-							//crearCeldaenLogXls();
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							cDAO.guardaObjeto(b);
-						}			
-					}else if(l.getIdCriterio()== 5){//PRODUCTORES ESTÉN ASOCIADOS A PREDIOS VALIDADOS"
-						sheet = wb.createSheet("PROD PRE VAL");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						lstProductorPredioValidado = rDAO.verificaProductorAsociadoPredioValidado(folioCartaAdhesion, idPrograma);
-						if(lstProductorPredioValidado.size()>0){ //En el listado se guardan los productores que no existen en la base de datos
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Folio Productor");
-							cell = row.createCell(1);
-							cell.setCellValue("Productor");
-							cell = row.createCell(2);
-							cell.setCellValue("CURP");
-							cell = row.createCell(3);
-							cell.setCellValue("RFC");
-							for(ProductorPredioValidado p: lstProductorPredioValidado){
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getFolioProductor()+";"+p.getPaternoProductor()+";"
-										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"+p.getCurpProductor()+";"+p.getRfcProductor());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
-								cell.setCellValue(p.getFolioProductor()!=null ? p.getFolioProductor()+"":"");
-								cell = row.createCell(1);
-								cell.setCellValue(p.getPaternoProductor() != null ? p.getPaternoProductor()+" ": ""
-										+ p.getMaternoProductor() != null ? p.getMaternoProductor()+" ":""
-										+ p.getNombreProductor() != null ? p.getNombreProductor():"");
-								cell = row.createCell(2);
-								cell.setCellValue(p.getCurpProductor()!=null && !p.getCurpProductor().isEmpty()?p.getCurpProductor():"");
-								cell = row.createCell(3);
-								cell.setCellValue(p.getRfcProductor()!=null && !p.getRfcProductor().isEmpty()?p.getRfcProductor():"");
-							}					
-							
-							b.setMensaje(msj);
-							//crearCeldaenLogXls();
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"LOS PRODUCTORES SE ENCUENTRAN ASOCIADOS A UN PREDIO VALIDADO\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}							
-					}else if(l.getIdCriterio()== 6){//PRODUCTORES ESTÉN ASOCIADOS A PREDIOS PAGADOS
-						sheet = wb.createSheet("PROD PRE PAG");
-						sheet = setMargenSheet(sheet);
-						countRow = 0;
-						lstProductorPredioPagado = rDAO.verificaProductorAsociadoPredioPagado(folioCartaAdhesion, idPrograma);
-						if(lstProductorPredioPagado.size()>0){ //En el listado se guardan los productores que no existen en la base de datos
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = l.getCriterio();
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Folio Productor");
-							cell = row.createCell(1);
-							cell.setCellValue("Productor");
-							cell = row.createCell(2);
-							cell.setCellValue("CURP");
-							cell = row.createCell(3);
-							cell.setCellValue("RFC");
-							for(ProductorPredioPagado p: lstProductorPredioPagado){
-								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje(p.getFolioProductor()+";"+p.getPaternoProductor()+";"
-										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"+p.getCurpProductor()+";"+p.getRfcProductor());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-								row = sheet.createRow(++countRow);
-								cell = row.createCell(0);
-								cell.setCellValue(p.getFolioProductor()!=null ? p.getFolioProductor()+"":"");
-								cell = row.createCell(1);
-								cell.setCellValue(p.getPaternoProductor() != null ? p.getPaternoProductor()+" ": ""
-										+ p.getMaternoProductor() != null ? p.getMaternoProductor()+" ":""
-										+ p.getNombreProductor() != null ? p.getNombreProductor():"");
-								cell = row.createCell(2);
-								cell.setCellValue(p.getCurpProductor()!=null && !p.getCurpProductor().isEmpty()?p.getCurpProductor():"");
-								cell = row.createCell(3);
-								cell.setCellValue(p.getRfcProductor()!=null && !p.getRfcProductor().isEmpty()?p.getRfcProductor():"");
-							}					
-							
-							b.setMensaje(msj);
-							//crearCeldaenLogXls();
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta \"TODOS LOS PRODUCTORES SE ENCUENTRAN ASOCIADOS A UN PREDIO PAGADO\"";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							llenarBitacora(false, l.getIdCriterio());
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
-						}
-					}else if(l.getIdCriterio()== 14){//VALIDAR QUE SEA MISMO FOLIO, RFC, VOLUMEN, IMPORTE AL REGISTRADO EN BDD
-						//De acuerdo a los campos seleccionados, se validaran vs la base de aserca
-						/*int folioFacturaVenta = 0, fechaEmisionFac = 0, rfcFacVenta = 0, volSolFacVenta = 0, volTotalFacVenta = 0, impSolFacVenta = 0, variedad = 0, cultivo = 0;
-						for(int i=0; i< camposFactura.length; i++){
-							if(camposFactura[i]==15){//folioFacturaVenta
-								folioFacturaVenta = 1;
-							}else if(camposFactura[i]==16){//Fecha factura
-								fechaEmisionFac = 1;
-							}else if(camposFactura[i]==17){//Rfc factura
-								rfcFacVenta = 1;
-							}else if(camposFactura[i]==19){//P.N.A. SOLICITADO PARA APOYO (TON.)
-								volSolFacVenta = 1;
-							}else if(camposFactura[i]==65){//P.N.A. TOTAL DE LA FACTURA (TON.)
-								volTotalFacVenta = 1;
-							}else if(camposFactura[i]==20){//IMPORTE TOTAL FACTURADO ($)
-								impSolFacVenta = 1;
-							}else if(camposFactura[i]==70){//VARIEDAD
-								impSolFacVenta = 1;
-							}else if(camposFactura[i]==71){//CULTIVO
-								impSolFacVenta = 1;
-							}
-						}
-						//Recupera campos de la configuracion de la relacion para las facturas
-						recuperaCamposFactura(9);
-						lstFacturasIgualesFacAserca = rDAO.consultaFacIgualesFacAserca(folioCartaAdhesion, folioFacturaVenta, fechaEmisionFac,  rfcFacVenta,  volTotalFacVenta,  volSolFacVenta,  impSolFacVenta,  variedad,  cultivo, lstGruposCamposDetalleRelacionV);
-						if(lstFacturasIgualesFacAserca.size()>0){//En el listado se guardan los predios que no existen en la base de datos
-							//Guardar en bitacora
-							llenarBitacora(true, l.getIdCriterio());
-							msj = "LOS DATOS DE LAS FACTURAS NO CORRESPONDEN A LAS QUE SE ENCUENTRAN REGISTRADAS EN LA BASE DE DATOS DE ASERCA";
-							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
-							cell.setCellValue(msj);
-							row = sheet.createRow(++countRow);
-							cell = row.createCell(0);
-							cell.setCellValue("Folio Productor");
-							cell = row.createCell(1);
-							cell.setCellValue("Productor");
-							cell = row.createCell(2);
-							cell.setCellValue("RFC Productor");
-							cell = row.createCell(3);
-							cell.setCellValue("RFC Comprador ");
-							for(FacturasIgualesFacAserca p: lstFacturasIgualesFacAserca){
-								StringBuilder bdMsj = new StringBuilder();	
-								bd = new BitacoraRelcomprasDetalle();
-								bdMsj.append(p.getFolioProductor()).append(";")
-								.append(p.getPaternoProductor()).append(";")
-								.append(p.getMaternoProductor()).append(";")
-								.append(p.getNombreProductor()).append(";")
-								.append(p.getRfcProductor()).append(";")
-								.append(p.getRfcComprador()).append(";");
-								for(GruposCamposRelacionV g: lstGruposCamposDetalleRelacionV){
-									if(g.getIdCampo()==15){//folioFacturaVenta
-										bdMsj.append(p.getFolioFacturaVenta()).append(";");
-									}else if(g.getIdCampo()==16){//Fecha factura
-										bdMsj.append(p.getFechaEmisionFac()).append(";");
-									}else if(g.getIdCampo()==17){//Rfc factura
-										bdMsj.append(p.getRfcFacVenta()).append(";");
-									}else if(g.getIdCampo()==19){//P.N.A. SOLICITADO PARA APOYO (TON.)
-										bdMsj.append(p.getVolSolFacVenta()).append(";");
-									}else if(g.getIdCampo()==65){//P.N.A. TOTAL DE LA FACTURA (TON.)
-										bdMsj.append(p.getVolTotalFacVenta()).append(";");
-									}else if(g.getIdCampo()==20){//IMPORTE TOTAL FACTURADO ($)
-										bdMsj.append(p.getImpSolFacVenta()).append(";");
-									}else if(g.getIdCampo()==70){//VARIEDAD
-										bdMsj.append(p.getVariedad()).append(";");
-									}else if(g.getIdCampo()==71){//CULTIVO
-										bdMsj.append(p.getCultivo()).append(";");
-									}
-								}	
-								
-								bdMsj.deleteCharAt(bdMsj.length()-1);
-								bd.setMensaje(bdMsj.toString());
-								b.getBitacoraRelcomprasDetalle().add(bd);
-							}
-							
-							b.setMensaje(msj);
-							crearCeldaenLogXls();
-							cDAO.guardaObjeto(b);
-						}else{
-							msj = "La validación es correcta";
-							crearCeldaenLogXls();
-							llenarBitacora(false, l.getIdCriterio());
-							cDAO.guardaObjeto(b);
-						}
-			*/
-					}//end criterio 14
-				}//end recorrido lstValidacionPorGrupo PRODUCTOR
-				nombreArchivoLogXls = "Productor.xls";
-				nombreArchivoLogCargaXls = "LogCargaArchivo.xls"; //Log del archivo excel  // AHS 29012015
-				FileOutputStream out = new FileOutputStream(new File(rutaCartaAdhesion+nombreArchivoLogXls));
-			    wb.write(out);
-			    out.close();	
-				//End grupo productor
 			}else if(grupoCriterio.equals("General")){
 				//Recupera todos los criterios relacionados al grupo configurados en la personalizacion
 				lstValidacionPorGrupo = rDAO.recuperaCatCriteriosValidacionByGurpoPrograma(idPerRel, grupoCriterio);
@@ -1987,6 +1663,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio());
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -2077,9 +1756,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
-							msj = "La validación es correcta \"LOS PRODUCTORES NO PRESENTAN INCOSISTENCIAS\"";
+							countColumn = 0;
+							msj = "La validación es correcta \"LOS PRODUCTORES NO PRESENTAN INCOSISTENCIAS\"";							
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2095,6 +1778,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -2152,9 +1838,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							//crearCeldaenLogXls();
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"RFC DE LAS FACTURAS SI CORRESPONDEN AL PRODUCTOR\"";							
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2307,6 +1997,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							msj = l.getCriterio();		
 							row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);							
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
@@ -2416,9 +2109,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							//crearCeldaenLogXls();
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"NO HAY INCONSISTENCIAS DE BOLETAS EN LOS PRODUCTORES\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2434,6 +2131,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							msj = l.getCriterio();
 					    	countColumn =0;
 					    	row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -2500,9 +2200,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);					
 						}else{
+							countColumn = 0;
 							msj = "NO SE ENCONTRARON REGISTROS PARA EL REPORTE GENERAL ";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2521,6 +2225,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							msj = l.getCriterio();		
 							row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);							
 							cell.setCellValue(msj);							
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
@@ -2581,9 +2288,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"NO HAY VOLUMEN NO PROCEDENTE\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2602,7 +2313,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							msj = l.getCriterio();		
 							row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
-							cell.setCellValue(folioCartaAdhesion);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);							
@@ -2669,9 +2380,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0; 
 							msj = "La validación es correcta \"NO HAY VOLUMEN NO PROCEDENTE Y APOYADO EN REGIONAL\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2689,7 +2404,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio());							
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
@@ -2740,9 +2458,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "No se encontraron registros en \"VOLUMEN NO CUMPLIDO\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2784,6 +2506,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio());
 							msj = l.getCriterio();		
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);							
 							row = sheet.createRow(++countRow);
@@ -2842,8 +2567,12 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}else{
 							msj = "La validación es correcta \"NO HAY DUPLICADOS EN LAS BOLETAS\"";
+							countColumn = 0;
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -2864,6 +2593,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 								msj = l.getCriterio()+"/";//new SimpleDateFormat("dd/MM/yyyy").format(fechaInicioAuditor).toString()+ " - "+ new SimpleDateFormat("dd/MM/yyyy").format(fechaFinAuditor).toString();
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -2923,9 +2655,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}else{
+								countColumn = 0;
 								msj = "La validación es correcta \"BOLETAS SE ENCUENTRAN DENTRO DEL PERIODO DE ACOPIO\"";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
@@ -2962,6 +2698,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								msj = l.getCriterio();
 								int countColumn =0;
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -3024,9 +2763,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}else{
+								countColumn = 0; 
 								msj = "La validación es correcta \"BOLETAS SE ENCUENTRAN DENTRO DEL PERIODO DEL CONTRATO\"";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
@@ -3048,6 +2791,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					    	countColumn =0;
 					    	row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);							
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
@@ -3119,9 +2865,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					    	
 					    }else{
+					    	countColumn = 0;
 							msj = "La validación es correcta \"NO SE ENCONTRARON VALORES NULOS EN LOS CAMPOS REQUERIDOS DE LAS BOLETAS\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);							
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -3172,6 +2922,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 						msj = l.getCriterio();
 						row = sheet.createRow(countRow);
+						cell = row.createCell(countColumn);
+						cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+						row = sheet.createRow(++countRow);
 						cell = row.createCell(countColumn);
 						cell.setCellValue(msj);
 						row = sheet.createRow(++countRow);
@@ -3232,9 +2985,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						
 
 					}else{
+						countColumn = 0;
 						msj = "La validación es correcta \"NO HAY FACTURAS DUPLICADAS\"";
 						row = sheet.createRow(countRow);
-						cell = row.createCell(0);
+						cell = row.createCell(countColumn);						
+						cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+						row = sheet.createRow(++countRow);
+						cell = row.createCell(countColumn);
 						cell.setCellValue(msj);
 						llenarBitacora(false, l.getIdCriterio());
 						b.setMensaje(msj);
@@ -3253,6 +3010,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio());
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -3316,9 +3076,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							//crearCeldaenLogXls();
 							cDAO.guardaObjeto(b);
 						}else{
+							countColumn = 0;
 							msj = "La validación es correcta \"EL MONTO DE LAS BOLETAS SI ES MAYOR AL MONTO FACTURADO";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -3352,6 +3116,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								}
 								
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -3411,9 +3178,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 																
 								
 							}else{
+								countColumn = 0;
 								msj = "La validación es correcta \"LAS FACTURAS SE ENCUENTRAN DENTRO DEL PERIODO";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
@@ -3460,6 +3231,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								msj = l.getCriterio();
 								int countColumn =0;
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -3526,14 +3300,17 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							}else{
 								msj = "La validación es correcta \"FACTURAS SE ENCUENTRAN DENTRO DEL PERIODO DEL CONTRATO\"";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}
 						}						
-					}else if(l.getIdCriterio() == 15){// //PRECIO PAGADO AL PRODUCTOR DEBERÁ SER IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA						
+					}else if(l.getIdCriterio() == 15){// //5.4 PRECIO PAGADO AL PRODUCTOR DEBERÁ SER IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA						
 						sheet = wb.createSheet("PRECIO PAGADO POR TIPO CAMBIO");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
@@ -3544,6 +3321,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);							
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -3646,7 +3426,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						}else{ 
 							msj = "La validación es correcta \"EL PRECIO PAGADO AL PRODUCTOR ES IGUAL AL TIPO DE CAMBIO DE LA  FECHA  DE LA FACTURA\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());							
 							b.setMensaje(msj);
@@ -3664,6 +3447,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -3729,9 +3515,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{ 
+							countColumn = 0;
 							msj = "La validación es correcta \"FACTURA GLOBAL SON IGUAL A FACTURA INDIVIDUAL\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -3749,6 +3539,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					    	msj = l.getCriterio();
 					    	int countColumn =0;
 					    	row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -3854,9 +3647,14 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					    	
 					    }else{
+					    	countColumn = 0;
 							msj = "La validación es correcta \"NO SE ENCONTRARON VALORES NULOS EN LOS CAMPOS REQUERIDOS DE LAS FACTURAS\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -3899,6 +3697,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -3958,7 +3759,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						}else{ 
 							msj = "La validación es correcta \"LOS CHEQUES NO PRESENTAN DUPLICIDAD\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());							
 							b.setMensaje(msj);
@@ -3992,6 +3796,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								}
 								
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);								
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -4064,7 +3871,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							}else{ 
 								msj = "La validación es correcta \"LOS PAGOS SE ENCUENTRAN DENTRO DEL PERIODO DEL AUDITOR\"";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);								
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
@@ -4114,6 +3924,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								msj = l.getCriterio();
 								int countColumn =0;
 								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);								
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								row = sheet.createRow(++countRow);
@@ -4186,9 +3999,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.setMensaje(msj);
 								cDAO.guardaObjeto(b);
 							}else{
+								countColumn = 0;
 								msj = "La validación es correcta \"PAGOS SE ENCUENTRAN DENTRO DEL PERIODO DEL CONTRATO\"";
 								row = sheet.createRow(countRow);
-								cell = row.createCell(0);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
 								cell.setCellValue(msj);
 								llenarBitacora(false, l.getIdCriterio());
 								b.setMensaje(msj);
@@ -4207,6 +4024,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);							
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -4266,9 +4086,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{ 
+							countColumn = 0;
 							msj = "La validación es correcta \"LOS MONTOS PAGADOS SON MAYORES A LAS FACTURAS EMITIDAS\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -4287,6 +4111,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					    	msj = l.getCriterio();
 					    	int countColumn =0;
 					    	row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -4398,10 +4225,14 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					    	
 					    }else{
+					    	countColumn = 0;
 							msj = "La validación es correcta \"NO SE ENCONTRARON VALORES NULOS EN LOS CAMPOS REQUERIDOS DE LOS PAGOS\"";
 							//crearCeldaenLogXls();
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);	
 							llenarBitacora(false, l.getIdCriterio());
 							cDAO.guardaObjeto(b);
@@ -4417,6 +4248,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -4492,9 +4326,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{ 
+							countColumn = 0;
 							msj = "La validación es correcta \"PRECIO PAGADO ES MENOR AL ESTABLECIDO EN AVISO\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
@@ -4510,6 +4348,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							row = sheet.createRow(++countRow);
@@ -4591,9 +4432,13 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}else{ 
+							countColumn = 0;
 							msj = "La validación es correcta \"PRECIO PAGADO ES MENOR AL ESTABLECIDO EN AVISO\"";
 							row = sheet.createRow(countRow);
-							cell = row.createCell(0);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
