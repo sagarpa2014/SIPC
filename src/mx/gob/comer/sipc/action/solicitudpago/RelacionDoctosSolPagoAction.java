@@ -476,12 +476,9 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 			archivoRelacionCompras = lstBitacoraRelcompras.get(0).getRutaArchivo()+lstBitacoraRelcompras.get(0).getNombreArchivo();
 		}		
 		//Indica si hay reporte de cruces
-		lstBitacoraRelcompras  = rDAO.consultaBitacoraRelcomprasDif99(folioCartaAdhesion, null, true);
-		//lstBitacoraRelcompras =  rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
-		if(lstBitacoraRelcompras.size()>0){
+		if(rDAO.consultaBitacoraRelacionHCO(folioCartaAdhesion).size() > 0){
 			reporteCruce = true;
 		}
-
 		
 	}
 

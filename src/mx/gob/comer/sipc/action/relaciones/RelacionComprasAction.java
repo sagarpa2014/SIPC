@@ -4854,8 +4854,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	}
 	
 	public String verReportesCruce() {
-		//lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcomprasHCO(folioCartaAdhesion);
-		lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
+//		lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcomprasHCO(folioCartaAdhesion);
+		lstBitacoraRelComprasPorGrupo = rDAO.consultaReportesCruces(folioCartaAdhesion);
 		return SUCCESS;
 	}
 	

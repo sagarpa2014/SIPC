@@ -2701,45 +2701,31 @@ public class RelacionesDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<BitacoraRelcompras> consultaBitacoraRelcomprasDif99(String folioCartaAdhesion, String status, Boolean contieneArchivo)throws  JDBCException{		
-		List<BitacoraRelcompras> lst = null;
-		StringBuilder consulta= new StringBuilder();
-		if (folioCartaAdhesion != null && !folioCartaAdhesion.isEmpty()){
-			consulta.append("where folioCartaAdhesion = '").append(folioCartaAdhesion).append("'");
+	public List<BitacoraRelcompras> consultaReportesCruces(String folioCartaAdhesion)throws  JDBCException{		
+		List<BitacoraRelcompras> lst = new ArrayList<BitacoraRelcompras>();
+		StringBuilder consulta= new StringBuilder();	
+		
+		consulta.append("select fecha_registro_hco, ruta_archivo, nombre_archivo, criterio ")
+		.append("from bitacora_relcompras_hco b, cat_criterios_validacion c ")  
+		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
+		.append("and  b.id_criterio = c.id_criterio ")
+		.append("and nombre_archivo is not null and status = 0 ")
+		.append("order by to_number(to_char(fecha_registro_hco, 'YYYYMMDD'), '99999999') desc, numero_validacion ");
+		
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			BitacoraRelcompras b = new BitacoraRelcompras();
+			b.setRutaArchivo((String) row.get("ruta_archivo"));	
+			b.setNombreArchivo((String) row.get("nombre_archivo"));
+			b.setFechaRegistro((Date) row.get("fecha_registro_hco"));
+			b.setMensaje((String) row.get("criterio"));
+	        lst.add(b);	
 		}		
-		
-		if(consulta.length()>0){
-			consulta.append(" and idCriterio <> 99 ");
-		}else{
-			consulta.append("where idCriterio <> 99 ");
-		}			
-		
-		if (status != null &&  !status.isEmpty() ){
-			if(consulta.length()>0){
-				consulta.append(" and status in (").append(status).append(")");
-			}else{
-				consulta.append("where status in (").append(status).append(")");
-			}
-		}
-		
-		if(contieneArchivo!= null){
-			if(contieneArchivo){
-				if(consulta.length()>0){
-					consulta.append(" and nombreArchivo is not null");
-				}else{
-					consulta.append("where nombreArchivo is not null");
-				}
-			}else{
-				if(consulta.length()>0){
-					consulta.append(" and nombreArchivo is null");
-				}else{
-					consulta.append("where nombreArchivo is null");
-				}
-			}
-		}
-		consulta.insert(0, "From BitacoraRelcompras ");
-		lst= session.createQuery(consulta.toString()).list();
-		return lst;
+		return lst;		
 	}
 
 	
