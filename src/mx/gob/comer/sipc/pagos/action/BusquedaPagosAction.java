@@ -211,9 +211,9 @@ public class BusquedaPagosAction extends ActionSupport implements SessionAware, 
 			}
 			/**recupera datos a través de los criterios de busqueda seleccionado por el usuario**/
 			if (idEspecialista!=0){				
-				lstPagosV = pDAO.consultaPagosV(-1, idPrograma, idComprador, fechaInicioS, fechaFinS, estatusId.toString(), -1, idEspecialista, noCarta);
+				lstPagosV = pDAO.consultaPagosV(-1, idPrograma, idComprador, fechaInicioS, fechaFinS, (estatusId==null?null:estatusId.toString()), -1, idEspecialista, noCarta);
 			} else {
-				lstPagosV = pDAO.consultaPagosV(-1, idPrograma, idComprador, fechaInicioS, fechaFinS, estatusId.toString(), noCarta);
+				lstPagosV = pDAO.consultaPagosV(-1, idPrograma, idComprador, fechaInicioS, fechaFinS, (estatusId==null?null:estatusId.toString()), noCarta);
 			}
 			programa = cDAO.consultaPrograma(idPrograma).get(0);
 			//criterioPago = programa.getCriterioPago();

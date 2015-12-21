@@ -4614,7 +4614,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			//String  s = integraCriteriosByGrupo(lstValidacionPorGrupo);
 			
 			//Verifica que exista una prevalidacion previa del criterio seleccionado
-			lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, null, "0,1", false);
+			lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion, null, "0", false);
 			rutaImagen = context.getRealPath("/images/logoSagarpa.png");					
 			rutaMarcaAgua = context.getRealPath("/images/sagarpaMarcaAgua.PNG");
 			String rutaCarta =  getRecuperaRutaCarta();
@@ -4654,16 +4654,19 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					}
 				}
 				
-				if(countStatusBad == 0){
-					cuadroSatisfactorio = "No hay nada que generar";
-					lstBitacoraRelComprasPorGrupo  = null;
-					return SUCCESS;
-				}
-				lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
-				if(countStatus == lstBitacoraRelComprasPorGrupo.size()){
-					cuadroSatisfactorio = "No se encontro ninguna incosistencia en el grupo seleccionado";
-					return SUCCESS;
-				}
+				//1812
+//				if(countStatusBad == 0){
+//					cuadroSatisfactorio = "No hay nada que generar";
+//					lstBitacoraRelComprasPorGrupo  = null;
+//					return SUCCESS;
+//				}
+				
+				//1812
+				//lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
+				//if(countStatus == lstBitacoraRelComprasPorGrupo.size()){
+					//cuadroSatisfactorio = "No se encontro ninguna incosistencia en el grupo seleccionado";
+				//	return SUCCESS;
+			//	}
 
 				//Guardar Historicos en bitacora				
 				//guardar la bitacora del ultimo archivo cargado, en caso de haber
@@ -4678,7 +4681,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 
 				}			
 			}else{
-				addActionError("No hay nada que generar");
+				cuadroSatisfactorio = "No hay nada que generar";
+				lstBitacoraRelComprasPorGrupo  = null;
+				return SUCCESS;
 			}
 			
 				
