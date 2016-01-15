@@ -398,8 +398,7 @@ function chkCamposDocumentacion(){
 		}
 	}	
 	
-	if(alcanceDocumentacion=="true"){
-		
+	if(alcanceDocumentacion=="true"){		
 		var checados = 0;
 		$('.ck:enabled').each(function() {
 			 if($(this).is(":checked")) {
@@ -457,7 +456,7 @@ function chkCamposDocumentacion(){
 			return false;
 		}
 		
-	}
+	}// end alcanceDocumentacion
 	
 	
 	if((estatusCA == 3 && capObsExpediente.length == 0 && habilitarOficioObs=="false" && doctosSinObservacion=="false" )
@@ -671,21 +670,21 @@ function chkCamposDocumentacion(){
 //									return false;
 //								}
 					   			/*Valida que el Periodo Inicio sea menor o igual al Periodo Termino del Dictamen del Auditor*/
-					   			dia = fechaPeriodoInicialAuditor.substring(0,2);
-					   			mes = fechaPeriodoInicialAuditor.substring(3,5);
-					   			anio = fechaPeriodoInicialAuditor.substring(6,10); 
-					   			fechaPeriodoInicialAuditorTmp = anio+""+""+mes+""+dia;
-
-					   			dia = fechaPeriodoFinalAuditor.substring(0,2);
-					   			mes = fechaPeriodoFinalAuditor.substring(3,5);
-					   			anio = fechaPeriodoFinalAuditor.substring(6,10); 
-					   			fechaPeriodoFinalAuditorTmp = anio+""+""+mes+""+dia;
-
-					   			if(parseInt(fechaPeriodoFinalAuditorTmp) < parseInt(fechaPeriodoInicialAuditorTmp)){
-					   				$('#dialogo_1').html('El Periodo Termino es menor al Periodo Inicio del Dictamen del Auditor, por favor verifique');
-					   				abrirDialogo();
-					   				return false;
-					   			} 								
+//					   			dia = fechaPeriodoInicialAuditor.substring(0,2);
+//					   			mes = fechaPeriodoInicialAuditor.substring(3,5);
+//					   			anio = fechaPeriodoInicialAuditor.substring(6,10); 
+//					   			fechaPeriodoInicialAuditorTmp = anio+""+""+mes+""+dia;
+//
+//					   			dia = fechaPeriodoFinalAuditor.substring(0,2);
+//					   			mes = fechaPeriodoFinalAuditor.substring(3,5);
+//					   			anio = fechaPeriodoFinalAuditor.substring(6,10); 
+//					   			fechaPeriodoFinalAuditorTmp = anio+""+""+mes+""+dia;
+//
+//					   			if(parseInt(fechaPeriodoFinalAuditorTmp) < parseInt(fechaPeriodoInicialAuditorTmp)){
+//					   				$('#dialogo_1').html('El Periodo Termino es menor al Periodo Inicio del Dictamen del Auditor, por favor verifique');
+//					   				abrirDialogo();
+//					   				return false;
+//					   			} 								
 							}// end Expediente == 7
 // CAPTURA DE PERIODOS DE DICTAMEN DEL AUDITOR - FIN
 
@@ -799,15 +798,14 @@ function chkCamposDocumentacion(){
 				dia = fechaAcuseOBS.substring(0,2);
 				mes = fechaAcuseOBS.substring(3,5);
 				anio = fechaAcuseOBS.substring(6,10);
-				fechaAcuseOBSTemp = anio+""+""+mes+""+dia;
+				fechaAcuseOBSTemp = anio+""+""+mes+""+dia;				
 				if(parseInt(fechaAcuseOBSTemp) < fechaDocOBSTemp){
 					$('#dialogo_1').html('La fecha del acuse de observación no debe ser menor a la fecha del documento');
 					abrirDialogo();
 					return false;
 				}
 			}
-		}	
-		
+		}		
 		var idExpedientesObservados = $('#idExpedientesObservados').val(); 
 		var idExpObArray = idExpedientesObservados.split(',');
 		for(i=0; i< idExpObArray.length; i++){
@@ -822,7 +820,7 @@ function chkCamposDocumentacion(){
 						abrirDialogo();
 						return false;
 					}else{
-						if(idExpObArray[i]!=8 && idExpObArray[i] !=9 ){
+						if(idExpObArray[i]!=8 && idExpObArray[i] !=9  && idExpObArray[i] !=5 ){
 							$('#dialogo_1').html('Seleccione el archivo de '+expediente);
 							abrirDialogo();
 							return false;
@@ -859,6 +857,8 @@ function chkCamposDocumentacion(){
 	
 		}//End for
 		/******OFICIO DE RESPUESTA********/
+		
+		
 		if ($('#docResp').length){
 			var docResp = $('#docResp').val();
 			if(docResp == null || docResp == ""){
@@ -905,10 +905,11 @@ function chkCamposDocumentacion(){
 				}
 			}
 		}// end ($('#docResp').length)
+		
 		$("#fechaDocOBS").removeAttr('disabled');
 		$("#fechaAcuseOBS").removeAttr('disabled');
 	}//end estatusCA==4
-	
+		
 	$("#capObsExpediente9").removeAttr('disabled');
 	
 	var dia =0;

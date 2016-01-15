@@ -1,4 +1,4 @@
-package mx.gob.comer.sipc.action.solicitudpago;
+ package mx.gob.comer.sipc.action.solicitudpago;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import mx.gob.comer.sipc.domain.InicializacionEsquema;
 import mx.gob.comer.sipc.domain.Programa;
 import mx.gob.comer.sipc.domain.catalogos.Especialista;
 import mx.gob.comer.sipc.domain.catalogos.EstatusCartaAdhesion;
+import mx.gob.comer.sipc.domain.transaccionales.Anexo32D;
 import mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras;
 import mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.DocumentacionSPCartaAdhesion;
@@ -226,6 +227,10 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	private boolean reporteCruce;
 	private List<BitacoraRelcompras> lstBitacoraRelcompras;
 	private String especialista;
+	private Anexo32D anexo32d;
+	private List<Anexo32D> lstAnexo32D;
+	
+	
 	/***METODOS**/
 	public String listarPrograma(){
 		try{
@@ -410,13 +415,24 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 				}else if(band34){
 					setCertDepositoOAlmacenamiento(2);
 				}					 
-			}	
+			}
+			//Verifica que el anexo 32 D ya haya sido cargado
+//			if(lstAnexo32D == null){
+				lstAnexo32D = spDAO.getMaxFechaAnexo32D(folioCartaAdhesion);
+				if(lstAnexo32D.size() > 0){
+					anexo32d = lstAnexo32D.get(0);
+					anexo32DyaCapturado = true;
+				}
+//			}			
+			
+						
+			
 			if(alcanceDocumentacion){
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 			}else if(estatusCA == 3){
 				llenarListaExpedientesProgramas();
 			}else if(estatusCA == 4 || estatusCA ==5 || estatusCA == 9){
-				verificarArchivoRelComprasYReporteCruce();								
+				verificarArchivoRelComprasYReporteCruce();						
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 				//recupera el oficio de observaciones
 				lstOficioObsSolicitudPago = spDAO.consultaOficioObsSolicitudPago(folioCartaAdhesion);
@@ -507,7 +523,10 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 					for(DocumentacionSPCartaAdhesion e: lstExpedientesObservados){
 						sb.append(e.getIdExpediente()).append(",");
 					}
-					idExpedientesObservados = sb.deleteCharAt(sb.length()-1).toString();
+					if(sb.length()>0){
+						idExpedientesObservados = sb.deleteCharAt(sb.length()-1).toString();
+					}
+					
 				}
 				
 				//Verifica que el anexo haya sido capturado en la fianza
@@ -761,6 +780,17 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 			}else if(habilitaAccionSP==2){
 				habilitarOficioObs = true;
 				doctosSinObservacion=false;				
+			}
+			
+			if(doctosSinObservacion == true || habilitarOficioObs == true ){
+				//Validar que el anexo haya sido cargado en el modulo de carga de anexo 32 D
+				lstAnexo32D = spDAO.getMaxFechaAnexo32D(folioCartaAdhesion);
+				if(lstAnexo32D.size() == 0){
+					errorSistema = 1;
+					addActionError("Debe cargar el anexo 32D, antes de marcar 'TRAMITAR OFICIO DE OBSERVACIONES Y PAGO' o 'TRAMITAR PAGO SIN OBSERVACIONES' ");
+					return SUCCESS;
+				}
+				
 			}
 			rutaCartaAdhesion = getRecuperaRutaCarta();			
 			File f1 = null, f2=null; 
@@ -1065,9 +1095,8 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 							}
 						}
 						
-					}else if(estatusCA == 4){
-						
-						if(idPrograma < 41 || (idPrograma >= 41 && epv.getIdExpediente() != 8 && epv.getIdExpediente() != 9)){
+					}else if(estatusCA == 4){						
+						if(idPrograma < 41 || (idPrograma >= 41 && epv.getIdExpediente() != 8 && epv.getIdExpediente() != 9 && epv.getIdExpediente() != 5 )){ 
 							if(siCargoDocto){
 								DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente()).get(0);
 								nombreArchivo = recuperaNomArchivoYCargaArchivo(epv.getIdExpediente(), rutaCartaAdhesion, false, true);
@@ -1096,7 +1125,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 									cDAO.guardaObjeto(odsp);	
 								}
 								documento = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(documento);
-							}
+							}							
 						}else {							
 							if(!band){						
 								DocumentacionSPCartaAdhesion documento = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente()).get(0);
@@ -1144,6 +1173,11 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 							docSPCA.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
 							docSPCA = (DocumentacionSPCartaAdhesion) cDAO.guardaObjeto(docSPCA);
 						}			
+						
+						if(epv.getIdExpediente() == 5){ //Cambios 12-01-2016
+							//Verifica si existe cargado el anexo 32 D
+							
+						}
 					}else if(estatusCA == 3 && capObsExpediente != null && habilitarOficioObs && !doctosSinObservacion){//marcar observacion con oficio de observaciones
 						if(siCargoDocto){	
 							setDocumentacionSPCartaAdhesion(epv.getIdExpediente(), band);
@@ -1203,6 +1237,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 						lstDoctos = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, epv.getIdExpediente());
 						if(lstDoctos.size()>0){
 							docSPCA = lstDoctos.get(0);
+							System.out.println("expediente "+epv.getIdExpediente());
 							verificaEstadoDocumento(epv.getIdExpediente(), band, -1,  false, docSPCA.getRutaConstancias() ); //band siempre es false
 						}else{
 							//Nuevo registro en documentacion
@@ -1351,8 +1386,58 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 							}
 						}						
 					}
-				}//End idExpediente
-			}// end for	
+				}//End idExpediente !=2
+			}// end FOR
+			//Verifica que se hayan insertado los expedientes  5 Anexo 32 D, 8 Relacion de Compras y 9 reporte de cruce, esto debido 
+			//a la eliminacion de carga de archivo, sobre todo cuando nunca es observado cualquiera de los documentos, considerando que 
+			//estos documentos siempre son forzosos.
+			//ANEXO 32D
+			 List<DocumentacionSPCartaAdhesion> lst = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 5);
+			if(lst.size() > 0){
+				docSPCA = lst.get(0);
+			}else{
+				docSPCA = new DocumentacionSPCartaAdhesion();
+				docSPCA.setFolioCartaAdhesion(folioCartaAdhesion);
+				docSPCA.setFechaDocumento(fechaDocEntDoctos);
+				docSPCA.setFechaAcuse(fechaAcuseEntDoctos);
+				docSPCA.setIdExpediente(5);
+				cDAO.guardaObjeto(docSPCA);
+			}		
+			
+			if(lstAnexo32D == null){
+				lstAnexo32D = spDAO.getMaxFechaAnexo32D(folioCartaAdhesion);
+				if(lstAnexo32D.size() > 0){
+					anexo32d = lstAnexo32D.get(0);
+					System.out.println("primer anexo "+anexo32d.getFechaAnexo32d());
+					docSPCA.setFechaExpedicionAnexo(anexo32d.getFechaAnexo32d());
+					cDAO.guardaObjeto(docSPCA);
+				}
+				
+			}
+			
+			
+			//8 RELACION DE COMPRAS
+			lst = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 8);
+			if(lst.size() == 0){
+				docSPCA = new DocumentacionSPCartaAdhesion();
+				docSPCA.setFolioCartaAdhesion(folioCartaAdhesion);
+				docSPCA.setIdExpediente(8);
+				docSPCA.setFechaDocumento(fechaDocEntDoctos);
+				docSPCA.setFechaAcuse(fechaAcuseEntDoctos);
+				cDAO.guardaObjeto(docSPCA);
+			}
+		
+			//9 REPORTE DE CRUCE
+			lst = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 9);
+			if(lst.size() == 0){
+				docSPCA = new DocumentacionSPCartaAdhesion();
+				docSPCA.setFolioCartaAdhesion(folioCartaAdhesion);
+				docSPCA.setIdExpediente(9);
+				docSPCA.setFechaDocumento(fechaDocEntDoctos);
+				docSPCA.setFechaAcuse(fechaAcuseEntDoctos);
+				cDAO.guardaObjeto(docSPCA);
+			}			
+			
 			if(estatusCA == 4){				
 				//Verifica si algun documento de la carta de adhesion se encuentra observada
 				if(spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion, 0, 0, true).size()==0){
@@ -1595,9 +1680,12 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	}
 	
 	private void verificaEstadoDocumento(int idExpediente, boolean band, long idOficioObsSolPago,  boolean siCargoDocumento, String rutaDocumento) throws Exception{ 
-		if(!docSPCA.getObservacion() && !band){ // 0,0 No estaba observado y tampoco se marco como observado
+		if(docSPCA.getObservacion()==null){
+			docSPCA.setObservacion(false);
+		}
+		/*if(!docSPCA.getObservacion() && !band){ // 0,0 No estaba observado y tampoco se marco como observado
 			//no hace nada, solo para considerarlo
-		}else if(!docSPCA.getObservacion() && band){//0,1 No estaba observado y ahora si se marco como observado 
+		}else*/ if(!docSPCA.getObservacion() && band){//0,1 No estaba observado y ahora si se marco como observado 
 			if(siCargoDocumento){
 				//Subir archivo a servidor
 				cargarArchivos(idExpediente, band);
@@ -3460,5 +3548,14 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 	public void setEspecialista(String especialista) {
 		this.especialista = especialista;
 	}
+
 	
+	public Anexo32D getAnexo32d() {
+		return anexo32d;
+	}
+	
+
+	public void setAnexo32d(Anexo32D anexo32d) {
+		this.anexo32d = anexo32d;
+	}
 }

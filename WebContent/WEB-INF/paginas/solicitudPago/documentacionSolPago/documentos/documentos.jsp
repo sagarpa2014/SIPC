@@ -215,15 +215,19 @@
 									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 								</s:if>
 							</td>																					
-							<td>									
-								<label class=""><span class="norequerido">*</span>Cargar Documento</label>
+							<td>				
+								<s:if test="%{idExpediente!=5 && idExpediente!=8 && idExpediente!=9 }">
+									<label class=""><span class="norequerido">*</span>Cargar Documento</label>
+								</s:if>													
 							</td>
 							<td>
 								<s:if test="%{#idPrograma1 < 41}">
-									<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									<s:if test="%{idExpediente!=5 }">
+										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+									</s:if>
 								</s:if>
 								<s:else>
-									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+									<s:if test="%{idExpediente!=8 && idExpediente!=9 && idExpediente!=5 }"><!-- Diferente de la relacion de compras, reporte de cruce y anexo 32-->
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									</s:if>
 								</s:else>
@@ -264,7 +268,7 @@
 									<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>									
 								</s:if>
 								<s:else>
-									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+									<s:if test="%{idExpediente!=8 && idExpediente!=9 && idExpediente!=5}"><!-- Diferente de la relacion de compras, reporte de cruce y anexo 32D -->
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
 									</s:if>
@@ -296,6 +300,11 @@
 											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
 										</s:if>
 									</s:elseif>
+									<s:elseif test="%{idExpediente==5}" ><!-- ANEXO 32D -->
+										<s:if test="%{anexo32d != null}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{anexo32d.rutaArchivo+anexo32d.nombreArchivo}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>
+									</s:elseif>
 									<s:else>
 										<s:if test="observacion==true">
 											<label class="">Documento Corregido</label>
@@ -310,7 +319,7 @@
 										<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 									</s:if>
 									<s:else>
-										<s:if test="%{idExpediente!=8 && idExpediente!=9 }">
+										<s:if test="%{idExpediente!=8 && idExpediente!=9 && idExpediente!=5 }">
 											<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 										</s:if>
 									</s:else>
@@ -339,19 +348,27 @@
 									<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 								</s:if>
 								<s:else><!-- PROGRAMAS QUE YA CONTEMPLAN RELACION DE COMPRAS COMO UN MODULO  -->
-									<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
-										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
-									</s:if>
-									<s:elseif test="idExpediente==8"><!-- RELACION DE COMPRAS -->
+<%-- 									<s:if test="%{idExpediente!=8 && idExpediente!=9 && idExpediente!=5}"><!-- Diferente de la relacion de compras y reporte de cruce --> --%>
+<%-- 										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a> --%>
+<%-- 									</s:if> --%>
+									<s:if test="idExpediente==8"><!-- RELACION DE COMPRAS -->
 										<s:if test="%{#archivoRelacionCompras1 !=null && #archivoRelacionCompras1 !=''}">
 											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#archivoRelacionCompras1}"/>" title="Descargar Archivo">Descargar Archivo</a>
 										</s:if>
-									</s:elseif>
+									</s:if>
 									<s:elseif test="idExpediente==9"><!-- RELACION DE CRUCE-->
 										<s:if test="%{#reporteCruce1 == 'true'}">
 											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
 										</s:if>		
 									</s:elseif>
+									<s:elseif test="idExpediente==5"><!-- ANEXO 32 D-->
+										<s:if test="%{anexo32d != null}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{anexo32d.rutaArchivo+anexo32d.nombreArchivo}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>		
+									</s:elseif>
+									<s:else>
+										<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
+									</s:else>
 								</s:else>						
 							</td>
 							<td>
@@ -386,6 +403,11 @@
 											<a href='<s:url value="/relaciones/verReportesCruce?folioCartaAdhesion=%{folioCartaAdhesion}"/>' title="" target="winload" onclick="window.open(this.href, this.target, 'width=600,height=400,scrollbars=yes'); return false;">Ver Reportes de Cruce</a>
 										</s:if>		
 									</s:elseif>
+									<s:elseif test="idExpediente==5"><!-- ANEXO 32D-->
+										<s:if test="%{#anexo32DyaCapturado == 'true'}">
+											<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{anexo32d.rutaArchivo+anexo32d.nombreArchivo}"/>" title="Descargar Archivo">Descargar Archivo</a>
+										</s:if>		
+									</s:elseif>
 								</s:else>
 							</td>
 							<td>								
@@ -398,7 +420,7 @@
 										<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>										
 									</s:if>
 									<s:else>
-										<s:if test="%{idExpediente!=8 && idExpediente!=9}"><!-- Diferente de la relacion de compras y reporte de cruce -->
+										<s:if test="%{idExpediente!=8 && idExpediente!=9 && idExpediente!=5}"><!-- Diferente de la relacion de compras y reporte de cruce -->
 											<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 											<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>
 										</s:if>
@@ -483,7 +505,7 @@
 						</s:if>
 						
 					</s:if>
-					<s:if test="%{idExpediente == 3}">
+					<s:if test="%{idExpediente == 3}"> <!-- "SOLICITUD DE PAGO DEL APOYO" -->
 						<s:if test="%{idCriterioPago == 1 || idCriterioPago == 3}">
 							<tr class="datosVolumen">
 								<td>
@@ -522,30 +544,34 @@
 						</s:if>						
 					</s:if>
 					<s:if test="%{idExpediente == 5}">
-						<s:hidden id="anexo32DyaCapturado" name="anexo32DyaCapturado" value="%{anexo32DyaCapturado}"/>						
+<%-- 						<s:hidden id="anexo32DyaCapturado" name="anexo32DyaCapturado" value="%{anexo32DyaCapturado}"/>						 --%>
 						<tr class="datosAnexo5">						
 							<td>
 								<label class=""><span class="norequerido" id="spFE">*</span>Fecha de Expedici&oacute;n Anexo 32-D</label>
 							</td>
 							<td>								
-								<s:if test="%{fechaExpedicionAnexo==null}" >
-									<s:textfield name="fechaExpedicion" maxlength="10" size="10" id="fechaExpedicion" readonly="true" cssClass="dateBox" />
-									<img src="../images/calendar.gif" id="trgFechaExpedicion" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
-									<script type="text/javascript">
-										<!--
-											Calendar.setup({
-												inputField     :    "fechaExpedicion",     
-												ifFormat       :    "%d/%m/%Y",     
-												button         :    "trgFechaExpedicion",  
-												align          :    "Br",           
-												singleClick    :    true
-											});											   
-											//-->
-									</script>
-								</s:if>
-								<s:else>
-									<font class="arial12bold"><s:text name="fecha"><s:param value="%{fechaExpedicionAnexo}"/></s:text></font>
-								</s:else>																						
+<%-- 								<s:if test="%{fechaExpedicionAnexo==null}" > --%>
+<%-- 									<s:textfield name="fechaExpedicion" maxlength="10" size="10" id="fechaExpedicion" readonly="true" cssClass="dateBox" /> --%>
+<!-- 									<img src="../images/calendar.gif" id="trgFechaExpedicion" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" /> -->
+<%-- 									<script type="text/javascript"> --%>
+ 										<!--
+// 											Calendar.setup({
+// 												inputField     :    "fechaExpedicion",     
+// 												ifFormat       :    "%d/%m/%Y",     
+// 												button         :    "trgFechaExpedicion",  
+// 												align          :    "Br",           
+// 												singleClick    :    true
+// 											});											   
+// 											//-->
+<%-- 									</script> --%>
+<%-- 								</s:if> --%>
+<%-- 								<s:else> --%>
+<%-- 									<font class="arial12bold"><s:text name="fecha"><s:param value="%{fechaExpedicionAnexo}"/></s:text></font> --%>
+<%-- 								</s:else>	 --%>																			 
+								<s:if test="%{anexo32d != null}" >
+									<font class="arial12bold"><s:text name="fecha"><s:param value="%{anexo32d.fechaAnexo32d}"/></s:text></font>
+									<s:hidden id="fechaExpedicionAnexo" name="fechaExpedicionAnexo" value="%{anexo32d.fechaAnexo32d}"/>									
+								</s:if>													 
 							</td>							
 						</tr>						
 					</s:if>

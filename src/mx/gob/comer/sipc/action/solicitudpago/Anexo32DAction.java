@@ -9,6 +9,7 @@ import mx.gob.comer.sipc.dao.CatalogosDAO;
 import mx.gob.comer.sipc.dao.SolicitudPagoDAO;
 import mx.gob.comer.sipc.domain.Comprador;
 import mx.gob.comer.sipc.domain.Programa;
+import mx.gob.comer.sipc.domain.transaccionales.Anexo32D;
 import mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.DocumentacionSPCartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.ObservacionDocumentacionSP;
@@ -19,6 +20,7 @@ import mx.gob.comer.sipc.vistas.domain.AsignacionCAaEspecialistaV;
 import org.apache.struts2.interceptor.SessionAware;
 import org.hibernate.JDBCException;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 @SuppressWarnings("serial")
@@ -40,6 +42,8 @@ public class Anexo32DAction extends ActionSupport implements SessionAware{
 	private String msjOk;
 	private List<ObservacionDocumentacionSP> lstObservacionDocumentacionSP;
 	private Integer estatus;
+	private List<Anexo32D> lstAnexo32D;
+	private Anexo32D anexo32D;
 	
 	
 	public String capAnexo32D(){
@@ -47,9 +51,16 @@ public class Anexo32DAction extends ActionSupport implements SessionAware{
 			CartaAdhesion ca = spDAO.consultaCartaAdhesion(folioCartaAdhesion).get(0);
 			// Recupera los datos del comprador
 			comprador = cDAO.consultaComprador(ca.getIdComprador()).get(0);
-			//Verifica los datos del expediente
-			documento = spDAO.consultaExpedientesSPCartaAdhesion(idExpSPCartaAdhesion).get(0);
-			lstObservacionDocumentacionSP = spDAO.consultaObservacionDocumentacionSPByOficioNull(idExpSPCartaAdhesion);
+			//Verifica el ultimo archivo cargado			
+			lstAnexo32D = spDAO.getMaxFechaAnexo32D(folioCartaAdhesion);
+			if(lstAnexo32D.size() > 0){
+				anexo32D = lstAnexo32D.get(0); 
+			}
+			//documento = spDAO.consultaExpedientesSPCartaAdhesion(idExpSPCartaAdhesion).get(0);
+			//lstObservacionDocumentacionSP = spDAO.consultaObservacionDocumentacionSPByOficioNull(idExpSPCartaAdhesion);
+			
+			//Recupera los anexos 32 D
+			lstAnexo32D = spDAO.getAnexo32D(folioCartaAdhesion);
 			
 			estatus = ca.getEstatus();
 		}catch(JDBCException e){
@@ -68,35 +79,49 @@ public class Anexo32DAction extends ActionSupport implements SessionAware{
 	public String registraAnexo32D(){
 		try{			
 			System.out.println("registraAnexo32D");
-			documento = spDAO.consultaExpedientesSPCartaAdhesion(idExpSPCartaAdhesion).get(0);
+			session = ActionContext.getContext().getSession();
+		
 			File f1 = null, f2=null; 
 			String ext = "";
 			rutaCartaAdhesion = getRecuperaRutaCarta();		
 			//Guarda el archivo en la tabla de observaciones y actualiza el registro de fecha expedición
-			f1 = new File(documento.getRutaDocumento());
-			nombreArchivo = documento.getRutaDocumento().substring(documento.getRutaDocumento().lastIndexOf("/")+1);
-			System.out.println("nombre Archivo substring "+nombreArchivo);
-			nombreArchivo = "HCO"+nombreArchivo; //Archivo de Expediente
-			f2 = new File(rutaCartaAdhesion+nombreArchivo);
-			if(!f1.renameTo(f2)){
-				AppLogger.error("errores","No se pudo renombrar el archivo al sustituir el documento" );
-				addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
-				return SUCCESS;
-			}
-			//Guarda en historicos
-			ObservacionDocumentacionSP obsDoc = new ObservacionDocumentacionSP();
-			obsDoc.setIdExpSPCA(idExpSPCartaAdhesion);
-			obsDoc.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
-			cDAO.guardaObjeto(obsDoc);
+//			f1 = new File(documento.getRutaDocumento());
+//			nombreArchivo = documento.getRutaDocumento().substring(documento.getRutaDocumento().lastIndexOf("/")+1);
+//			System.out.println("nombre Archivo substring "+nombreArchivo);
+//			nombreArchivo = "HCO"+nombreArchivo; //Archivo de Expediente
+//			f2 = new File(rutaCartaAdhesion+nombreArchivo);
+//			if(!f1.renameTo(f2)){
+//				AppLogger.error("errores","No se pudo renombrar el archivo al sustituir el documento" );
+//				addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
+//				return SUCCESS;
+//			}
+//			//Guarda en historicos
+//			ObservacionDocumentacionSP obsDoc = new ObservacionDocumentacionSP();
+//			obsDoc.setIdExpSPCA(idExpSPCartaAdhesion);
+//			obsDoc.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
+//			cDAO.guardaObjeto(obsDoc);
 
 			ext = docFileName.toLowerCase().substring(docFileName.lastIndexOf(".") );
 			//Carga el nuevo documento 
 			nombreArchivo = 5+new java.text.SimpleDateFormat("yyyyMMddHHmm").format(new Date())+ext; //Archivo de Expediente
-			Utilerias.cargarArchivo(rutaCartaAdhesion, nombreArchivo, doc);
-			//Actualiza el registro a traves de idExpSPCartaAdhesion
-			documento.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
-			documento.setFechaExpedicionAnexo(fechaExpedicion);
-			cDAO.guardaObjeto(documento);
+			Utilerias.cargarArchivo(rutaCartaAdhesion, nombreArchivo, doc);			
+			//Guarda el registro en la tabla anexo_32d
+			anexo32D = new Anexo32D();
+			anexo32D.setFechaAnexo32d(fechaExpedicion);
+			anexo32D.setFechaRegistro(new Date());
+			anexo32D.setUsuarioRegistro((Integer) session.get("idUsuario"));	
+			anexo32D.setFolioCartaAdhesion(folioCartaAdhesion);
+			anexo32D.setRutaArchivo(rutaCartaAdhesion);
+			anexo32D.setNombreArchivo(nombreArchivo);
+			cDAO.guardaObjeto(anexo32D);
+			//Actualiza el registro a traves de idExpSPCartaAdhesion si es que se ha cargado en la relacion de compras
+			List<DocumentacionSPCartaAdhesion> lstDocumentos = spDAO.consultaExpedientesSPCartaAdhesion(folioCartaAdhesion,5);
+			if(lstDocumentos.size() > 0){
+				documento = spDAO.consultaExpedientesSPCartaAdhesion(idExpSPCartaAdhesion).get(0);
+				documento.setRutaDocumento(rutaCartaAdhesion+nombreArchivo);
+				documento.setFechaExpedicionAnexo(fechaExpedicion);
+				cDAO.guardaObjeto(documento);
+			}							
 			capAnexo32D();	
 			msjOk = "Se registró satisfactoriamente la información";
 			fechaExpedicion = null;
@@ -238,4 +263,22 @@ public class Anexo32DAction extends ActionSupport implements SessionAware{
 	public void setEstatus(Integer estatus) {
 		this.estatus = estatus;
 	}
+
+	public List<Anexo32D> getLstAnexo32D() {
+		return lstAnexo32D;
+	}
+
+	public void setLstAnexo32D(List<Anexo32D> lstAnexo32D) {
+		this.lstAnexo32D = lstAnexo32D;
+	}
+
+	public Anexo32D getAnexo32D() {
+		return anexo32D;
+	}
+
+	public void setAnexo32D(Anexo32D anexo32d) {
+		anexo32D = anexo32d;
+	}	
+	
+	
 }

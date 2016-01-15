@@ -10,6 +10,7 @@ import mx.gob.comer.sipc.domain.Expediente;
 import mx.gob.comer.sipc.domain.Programa;
 import mx.gob.comer.sipc.domain.catalogos.Bodegas;
 import mx.gob.comer.sipc.domain.catalogos.Variedad;
+import mx.gob.comer.sipc.domain.transaccionales.Anexo32D;
 import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartaEspecialista;
 import mx.gob.comer.sipc.domain.transaccionales.AsignacionCartasAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.AuditorSolicitudPago;
@@ -31,6 +32,7 @@ import mx.gob.comer.sipc.vistas.domain.CartasPrimerPagoV;
 import mx.gob.comer.sipc.vistas.domain.DocumentacionSPCartaAdhesionV;
 import mx.gob.comer.sipc.vistas.domain.EtapaIniEsquemaV;
 import mx.gob.comer.sipc.vistas.domain.ExpedientesProgramasV;
+import mx.gob.comer.sipc.vistas.domain.GrupoPorRelacion;
 import mx.gob.comer.sipc.vistas.domain.PagosV;
 import mx.gob.comer.sipc.vistas.domain.PrgEspecialistaNumCartasV;
 import mx.gob.comer.sipc.vistas.domain.ProgramaNumCartasV;
@@ -1305,5 +1307,32 @@ public class SolicitudPagoDAO {
 		return lst;
 		
 	}
+	
+	//CONSIGUE ANEXO 32 D
+
+	@SuppressWarnings("unchecked")
+	public List<Anexo32D> getMaxFechaAnexo32D(String folioCartaAdhesion)throws  JDBCException{
+		List<Anexo32D> lst = null;	
+		StringBuilder consulta = new StringBuilder()
+		.append("select * from anexo_32d ")
+		.append("where fecha_anexo_32d = (select max(fecha_anexo_32d) ")
+		.append("from anexo_32d ")
+		.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("') ")
+		.append(" and folio_carta_adhesion = '").append(folioCartaAdhesion).append("'");		  
+		lst= session.createSQLQuery(consulta.toString()).addEntity(Anexo32D.class).list();
+		return lst;
+	}	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Anexo32D> getAnexo32D(String folioCartaAdhesion)throws  JDBCException{
+		List<Anexo32D> lst = null;	
+		StringBuilder consulta = new StringBuilder()
+		.append(" FROM Anexo32D ")
+		.append("where folioCartaAdhesion = '").append(folioCartaAdhesion).append("' order by fechaAnexo32d desc ");		  
+		lst= session.createQuery(consulta.toString()).list();
+		return lst;
+	}	
+	
 	
 }//End clase

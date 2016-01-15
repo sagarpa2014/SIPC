@@ -241,6 +241,7 @@
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BoletasIncosistentes"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.FacturasIncosistentes"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.PagosIncosistentes"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.Anexo32D"/>
 		
 		<!-- Bitacora de la relacion de compras -->
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.BitacoraRelcompras"/>

@@ -22,8 +22,12 @@
 		</div>
 		<div class="clear"></div>
 		<div>
-			<label class="left1"><span class="norequerido">*</span>Anexo 32-D:</label>
-			<a href='<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{documento.rutaDocumento}"/>' title="">Descargar Archivo</a>
+			<label class="left1"><span class="norequerido">*</span>Anexo 32-D Actual:</label>
+			<s:if test="%{anexo32D != null}" >
+				<a href='<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{anexo32D.rutaArchivo+anexo32D.nombreArchivo}"/>' title="">Descargar Archivo</a>
+			</s:if>
+			<s:else><font class="arial12bold">No hay ning&uacute;n archivo cargado</font></s:else>
+			
 		</div>
 		<s:if test='%{estatus!=9}'>
 			<div class="clear"></div>
@@ -35,18 +39,17 @@
 		<div class="clear"></div>
 		<div>
 			<label class="left1"><span class="norequerido">*</span>Fecha Expedici&oacute;n Actual:</label>
-			<font class="arial12bold"><s:text name="fecha"><s:param value="%{documento.fechaExpedicionAnexo}"/></s:text></font>
+			<s:if test="%{anexo32D != null}" >
+				<font class="arial12bold"><s:text name="fecha"><s:param value="%{anexo32D.fechaAnexo32d}"/></s:text></font>
+			</s:if>
+			<s:else></s:else>
+			 
 		</div>
 		<s:if test='%{estatus!=9}'>
 			<div class="clear"></div>
 			<div>
 				<label class="left1"><span class="norequerido">*</span>Nueva Fecha Expedici&oacute;n:</label>
-				<s:if test="%{fechaExpedicion==null}" >
-					<s:textfield name="fechaExpedicion" maxlength="10" size="10" id="fechaExpedicion" readonly="true" cssClass="dateBox"/>
-				</s:if>
-				<s:else>
-					<s:textfield key="fechaExpedicion" value="%{fechaExpedicion}"  maxlength="10" size="10" id="fechaExpedicion" readonly="true" cssClass="dateBox" />
-				</s:else>
+				<s:textfield name="fechaExpedicion" maxlength="10" size="10" id="fechaExpedicion" readonly="true" cssClass="dateBox"/>
 				<img src="../images/calendar.gif" id="trg1" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
 				<script type="text/javascript">
 					<!--
@@ -72,15 +75,21 @@
 	<div class="clear"></div>
 </s:form>
 <div class="clear"></div>
-<s:if test="%{lstObservacionDocumentacionSP.size > 0}" >
+<s:if test="%{lstAnexo32D.size() > 0}" >
 	<fieldset>
 	<legend>Anexo 32-D</legend>	
-		<display:table id="row" name="lstObservacionDocumentacionSP"  list="lstObservacionDocumentacionSP"  pagesize="50" sort="list" requestURI=""  class="displaytag">
+		<display:table id="row" name="lstAnexo32D"  list="lstAnexo32D"  pagesize="50" sort="list" requestURI=""  class="displaytag">
 			<display:column title="No." >
   	     		<s:property value="%{#attr.row_rowNum}"/>
   			</display:column>
-	 		<display:column title="Archivos Anteriores">
-				<a href='<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#attr.row.rutaDocumento}"/>' title="">Descargar Archivo</a>
+  			<display:column title="Fecha de Expedición"> 	     		 	     		
+  	     		<s:if test="%{#attr.row.fechaAnexo32d!=null}">
+				<s:text name="fecha"><s:param value="%{#attr.row.fechaAnexo32d}"/></s:text>
+			</s:if>	
+  			</display:column>
+  			
+	 		<display:column title="Archivo Anexo 32D">
+				<a href='<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{#attr.row.rutaArchivo+#attr.row.nombreArchivo}"/>' title="">Descargar Archivo</a>
 			</display:column>
 		</display:table>			
 	</fieldset>
