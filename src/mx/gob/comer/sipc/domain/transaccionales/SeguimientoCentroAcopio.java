@@ -22,6 +22,7 @@ public class SeguimientoCentroAcopio {
 	private Integer idCultivo;
 	private Double volumenMercadoLibre;
 	private Double volumenAXC;
+	private Double transferencia;
 	private Double acopioTotalTon;
 	private Integer idComprador;
 	private Double pagadoTon;
@@ -32,6 +33,7 @@ public class SeguimientoCentroAcopio {
 	private Double mcamion;
 	private Double mmaritimo;
 	private Double mautoconsumo;
+	private Double mtransferencia;
 	private Double mtotal;
 	private Double existenciaAM;
 	private Integer idEstado;
@@ -124,8 +126,15 @@ public class SeguimientoCentroAcopio {
 	}
 	public void setVolumenAXC(Double volumenAXC) {
 		this.volumenAXC = volumenAXC;
-	}
+	}	
 	
+	@Column(name = "transferencia")
+	public Double getTransferencia() {
+		return transferencia;
+	}
+	public void setTransferencia(Double transferencia) {
+		this.transferencia = transferencia;
+	}
 	@Column(name = "acopio_total_ton")
 	public Double getAcopioTotalTon() {
 		return acopioTotalTon;
@@ -204,8 +213,15 @@ public class SeguimientoCentroAcopio {
 	}
 	public void setMautoconsumo(Double mautoconsumo) {
 		this.mautoconsumo = mautoconsumo;
+	}	
+	
+	@Column(name = "mov_transferencia")
+	public Double getMtransferencia() {
+		return mtransferencia;
 	}
-
+	public void setMtransferencia(Double mtransferencia) {
+		this.mtransferencia = mtransferencia;
+	}
 	@Column(name = "mov_total")
 	public Double getMtotal() {
 		return mtotal;

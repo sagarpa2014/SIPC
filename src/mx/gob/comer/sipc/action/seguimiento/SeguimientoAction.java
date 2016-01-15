@@ -75,6 +75,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private int idCultivoAux;
 	private Double volumenMercadoLibre;
 	private Double volumenAXC;
+	private Double transferencia;
 	private Double acopioTotalTon;
 	private int idComprador;
 	private Double pagadoTon;
@@ -85,6 +86,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private Double mcamion;
 	private Double mmaritimo;
 	private Double mautoconsumo;
+	private Double mtransferencia;
 	private Double mtotal;
 	private Double existenciaAM;
 	private double existenciaAMAnt;
@@ -155,6 +157,8 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 	private String rfcOperador;
 	private int regionalId;
 	private List<Regional> lstRegionales;
+	
+	
 
 	public SeguimientoAction() {
 		super();
@@ -287,6 +291,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setIdEstatus(1);
 						sca.setVolumenMercadoLibre(volumenMercadoLibre);
 						sca.setVolumenAXC(volumenAXC);
+						sca.setTransferencia(transferencia);
 						sca.setAcopioTotalTon(acopioTotalTon);
 						sca.setAvanceCosecha(avanceCosecha);
 						sca.setExistenciaAM(existenciaAM);
@@ -311,6 +316,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 						sca.setMfurgon(mfurgon);
 						sca.setMmaritimo(mmaritimo);
 						sca.setMautoconsumo(mautoconsumo);
+						sca.setMtransferencia(mtransferencia);
 						sca.setMtotal(mtotal);
 						//sca.setNombreReciboInfo(nombreReciboInfo);
 						sca.setObservaciones(observaciones);
@@ -353,6 +359,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setIdEstatus(1);
 					sca.setVolumenMercadoLibre(volumenMercadoLibre);
 					sca.setVolumenAXC(volumenAXC);
+					sca.setTransferencia(transferencia);
 					sca.setAcopioTotalTon(acopioTotalTon);
 					sca.setAvanceCosecha(avanceCosecha);
 					sca.setExistenciaAM(existenciaAM);
@@ -377,6 +384,7 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 					sca.setMfurgon(mfurgon);
 					sca.setMmaritimo(mmaritimo);
 					sca.setMautoconsumo(mautoconsumo);
+					sca.setMtransferencia(mtransferencia);
 					sca.setMtotal(mtotal);
 					//sca.setNombreReciboInfo(nombreReciboInfo);
 					sca.setObservaciones(observaciones);
@@ -1955,7 +1963,22 @@ public class SeguimientoAction extends ActionSupport implements ServletContextAw
 
 	public void setLstRegionales(List<Regional> lstRegionales) {
 		this.lstRegionales = lstRegionales;
-	}	
-	
+	}
+
+	public Double getTransferencia() {
+		return transferencia;
+	}
+
+	public void setTransferencia(Double transferencia) {
+		this.transferencia = transferencia;
+	}
+
+	public Double getMtransferencia() {
+		return mtransferencia;
+	}
+
+	public void setMtransferencia(Double mtransferencia) {
+		this.mtransferencia = mtransferencia;
+	}
 	
 }

@@ -160,6 +160,20 @@
 		</tr>
 		<tr>
 			<td>
+				<label class="left1">Transferencia:</label>
+			</td>
+			<td colspan="4">
+				<s:if test="%{sca.transferencia != null && sca.transferencia != ''}">
+					<s:textfield id="transferencia" name="transferencia" value="%{getText('volumenSinComas',{sca.transferencia})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'transferencia',1);"/> (T.M.)
+				</s:if>
+				<s:else>
+					<s:textfield id="transferencia" name="transferencia" value="" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalAcopio(this.value, 'transferencia',1);"/> (T.M.)
+				</s:else>
+				
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<label class="left1"><span class="requerido">*</span>Acopio Total Toneladas:</label>
 			</td>
 			<td colspan="4">
@@ -272,7 +286,15 @@
 				<s:else>
 					<s:textfield id="mautoconsumo" name="mautoconsumo" value="%{}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalMovilizado(this.value, 'mautoconsumo',1);" />
 				</s:else>				
-			</td>			
+			</td>
+			<td>
+				<s:if test="%{sca.mtransferencia != null && sca.mtransferencia != ''}">
+					<s:textfield id="mtransferencia" name="mtransferencia" value="%{getText('volumenSinComas',{sca.mtransferencia})}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalMovilizado(this.value, 'mtransferencia',1);"/>
+				</s:if>
+				<s:else>
+					<s:textfield id="mtransferencia" name="mtransferencia" value="%{}" maxlength="14" size="20"  cssClass="cantidad" onchange="getTotalMovilizado(this.value, 'mtransferencia',1);" />
+				</s:else>				
+			</td>					
 			<td>
 				<s:if test="%{sca.mtotal != null && sca.mtotal != ''}">
 					<s:textfield id="mtotal" name="mtotal"  value="%{getText('volumenSinComas',{sca.mtotal})}" maxlength="14" size="20"  cssClass="cantidad" disabled = "true" /> (T.M.)
@@ -295,6 +317,9 @@
 			</td>
 			<td>
 				<label class="left1"><span class="norequerido">*</span>Autoconsumo</label>			
+			</td>
+			<td>
+				<label class="left1"><span class="norequerido">*</span>Transferencia</label>			
 			</td>
 			<td>
 				<label class="left1"><span class="norequerido">*</span>Total</label>			

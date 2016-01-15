@@ -439,6 +439,7 @@ function getTotalMovilizado(volumen, id, msj){
 	var mcamion =  $('#mcamion').val();
 	var mmaritimo =  $('#mmaritimo').val();
 	var mautoconsumo =  $('#mautoconsumo').val();
+	var mtransferencia =  $('#mtransferencia').val();
 	if(mfurgon!=null && mfurgon !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mfurgon));	
 	}	
@@ -450,6 +451,9 @@ function getTotalMovilizado(volumen, id, msj){
 	}	
 	if(mautoconsumo!=null && mautoconsumo !=''){
 		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mautoconsumo));	
+	}		
+	if(mtransferencia!=null && mtransferencia !=''){
+		totalVolumenMovilizado = (totalVolumenMovilizado+parseFloat(mtransferencia));	
 	}	
 	totalVolumenMovilizado = parseFloat(totalVolumenMovilizado);
 	totalVolumenMovilizado = totalVolumenMovilizado.toFixed(3);
@@ -553,12 +557,18 @@ function getTotalAcopio(volumen, id, msj){
 	var totalVolumenAcopio = 0;	
 	var volumenMercadoLibre =  $('#volumenMercadoLibre').val();
 	var volumenAXC =  $('#volumenAXC').val();
+	var transferencia =  $('#transferencia').val();
 	if(volumenMercadoLibre!=null && volumenMercadoLibre !=''){
 		totalVolumenAcopio = (totalVolumenAcopio+parseFloat(volumenMercadoLibre));	
 	}	
 	if(volumenAXC!=null && volumenAXC !=''){
 		totalVolumenAcopio = (totalVolumenAcopio+parseFloat(volumenAXC));	 
-	}		
+	}
+	
+	if(transferencia!=null && transferencia !=''){
+		totalVolumenAcopio = (totalVolumenAcopio+parseFloat(transferencia));	 
+	}
+	
 	$('#acopioTotalTon').val(totalVolumenAcopio.toFixed(3));
 	var acopioTotalTon =  $('#acopioTotalTon').val();	
 	var totalExistencia = 0.0;	
