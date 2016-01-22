@@ -2998,21 +2998,33 @@ public class RelacionesDAO {
 //				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, curp_productor, p.rfc, r.rfc_fac_venta ");		
 //		
 		
-		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor,")
-				.append("r.materno_productor, r.nombre_productor, r.curp_productor, p.rfc rfc_productor, r.rfc_fac_venta , ")
-				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 ")
+//		consulta.append("SELECT row_number() OVER () AS id, r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor,")
+//				.append("r.materno_productor, r.nombre_productor, r.curp_productor, p.rfc rfc_productor, r.rfc_fac_venta , ")
+//				.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 ")
+//				.append("where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado  and ")  
+//				.append("r.folio_contrato = r1.folio_contrato   ")
+//				.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r1.curp_productor,r1.rfc_productor) ) as vol_total_fac_venta ") 
+//				.append("FROM relacion_compras_tmp r ")
+//				.append("LEFT JOIN productores p ON p.productor = r.productor ") 
+//				.append("	AND COALESCE(p.curp,p.rfc) <> COALESCE(r.curp_productor,r.rfc_fac_venta) ") 
+//				.append("AND EXISTS (select distinct 1 from predios_relaciones pr where pr.productor = p.productor and pr.id_programa = ").append(idPrograma).append( ")")
+//				.append("WHERE r.rfc_fac_venta is not null  ")
+//				.append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+//				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor,p.rfc, r.rfc_fac_venta ");
+
+
+		consulta.append("select row_number() OVER () AS id, r.clave_bodega, r.folio_contrato,  r.nombre_estado,  r.nombre_productor, r.paterno_productor, r.materno_productor, r.curp_productor,  r.rfc_productor, r.rfc_fac_venta, ")
+			.append("(select COALESCE(sum(vol_total_fac_venta),0) from relacion_compras_tmp r1 ")
 				.append("where r.clave_bodega = r1.clave_bodega and  r.nombre_estado = r1.nombre_estado and  r.nombre_estado = r1.nombre_estado  and ")  
 				.append("r.folio_contrato = r1.folio_contrato   ")
-				.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r1.curp_productor,r1.rfc_productor) ) as vol_total_fac_venta ") 
-				.append("FROM relacion_compras_tmp r ")
-				.append("LEFT JOIN productores p ON p.productor = r.productor ") 
-				.append("	AND COALESCE(p.curp,p.rfc) <> COALESCE(r.curp_productor,r.rfc_fac_venta) ") 
-				.append("AND EXISTS (select distinct 1 from predios_relaciones pr where pr.productor = p.productor and pr.id_programa = ").append(idPrograma).append( ")")
-				.append("WHERE r.rfc_fac_venta is not null  ")
-				.append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
-				.append("GROUP BY r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor,p.rfc, r.rfc_fac_venta ");
-
-
+				.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r1.curp_productor,r1.rfc_productor) ) as vol_total_fac_venta ")
+				.append("from relacion_compras_tmp r ")
+				.append("where r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and r.rfc_fac_venta is not null  ")
+				.append("and not exists ")
+				.append(" (select 1 from  predios_relaciones p where  r.folio_contrato = p.folio_contrato and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(p.curp,p.rfc)) ")
+					.append( " and r.id_programa = ").append(idPrograma)
+				.append("group by r.clave_bodega,  r.folio_contrato, r.nombre_estado, r.nombre_productor, r.paterno_productor, r.materno_productor, r.curp_productor, r.rfc_productor, r.rfc_fac_venta ");
+		
 		
 		
 		System.out.println("Consulta RFC "+consulta.toString());
@@ -6082,15 +6094,15 @@ public class RelacionesDAO {
 //			.append("order by b.clave_bodega, r.folio_contrato "); 
 
 			consulta.append(" select v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen, coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta,  ")
-					.append("case when coalesce(sum(r.vol_total_fac_venta),0) >  v.volumen then  coalesce(sum(r.vol_total_fac_venta),0)- v.volumen else 0 end as dif_volumen_finiquito ")
+					.append("case when coalesce(sum(r.vol_total_fac_venta),0) >  v.volumen then  coalesce(sum(r.vol_total_fac_venta),0)- v.volumen else 0 end as dif_volumen_finiquito, v.modalidad ")
 					.append("FROM  ")
-					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen  ") 
+					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad  ") 
 					.append("from bodegas_contratos b, contratos_relacion_compras c  ")
 					.append("where b.rfc_comprador = '").append(rfcComprador).append("' ")
 					.append("and b.folio_contrato = c.folio_contrato ")
-					.append("group by b.rfc_comprador, b.clave_bodega, b.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ) v ")
+					.append("group by b.rfc_comprador, b.clave_bodega, b.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad ) v ")
 					.append("left join relacion_compras_tmp r On r.folio_contrato =  v.folio_contrato and v.clave_bodega =  r.clave_bodega and r.rfc_comprador  = v.rfc_comprador ") 
-					.append("group by  v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen  ")
+					.append("group by  v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen,  v.modalidad  ")
 					.append("order by   v.folio_contrato, v.clave_bodega ");
 
 			System.out.println("VOLUMEN CUMPLIDO "+consulta.toString());
@@ -6113,7 +6125,9 @@ public class RelacionesDAO {
 		        valor = (BigDecimal) row.get("dif_volumen_finiquito");
 		        b.setDifVolumenFiniquito(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
-		        b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():0.0);		        
+		        b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():0.0);
+		        Boolean modalidad = (Boolean) row.get("modalidad");
+		        b.setModalidad(modalidad != null? "SOLO PUT":"NA");
 		        lst.add(b);	
 			}		
 			return lst;
@@ -6176,55 +6190,14 @@ public class RelacionesDAO {
 		
 		public List<PrecioPagPorTipoCambio> consultaPrecioPagPorTipoCambio(String folioCartaAdhesion)throws  JDBCException{
 			List<PrecioPagPorTipoCambio> lst = new ArrayList<PrecioPagPorTipoCambio>();
-			StringBuilder consulta= new StringBuilder();	
-//			consulta.append("select r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor, v1.vol_total_fac_venta, v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
-//			.append("from contrato_tipo_cambio_v v1, relacion_compras_tmp r ")
-//			.append("where r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
-//			.append("and COALESCE(r.folio_contrato,'X') = COALESCE(v1.folio_contrato,'X') ")
-//			.append("and COALESCE(r.clave_bodega,'X') = COALESCE(v1.clave_bodega,'X') ") // AHS 26062015			
-//			.append("and coalesce(r.paterno_productor,'X') = coalesce(v1.paterno_productor,'X') ")
-//			.append("and coalesce(r.materno_productor,'X') =  coalesce(v1.materno_productor,'X')  and coalesce(r.nombre_productor ,'X') = coalesce(v1.nombre_productor,'X') ")
-//			.append("and coalesce(r.curp_productor,'X') =  coalesce(v1.curp_productor,'X')  and coalesce(r.rfc_productor ,'X') = coalesce(v1.rfc_productor,'X') ")
-//			.append("and diferecia_importe_pagado > 1.00 ")
-//			.append("group by  r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor, r.curp_productor, r.rfc_productor,v1.vol_total_fac_venta,v1.precio_pactado_por_tonelada, v1.imp_sol_fac_venta, v1.importe_calculado_a_pagar, v1.diferecia_importe_pagado ")
-//			.append("order by r.clave_bodega, r.nombre_estado, r.folio_contrato, r.paterno_productor, r.materno_productor, r.nombre_productor ");
-//			
-//			consulta.append("SELECT p.folio_carta_adhesion, ")
-//		    .append("r.clave_bodega, ")
-//		    .append("r.nombre_estado, ")
-//		    .append("p.folio_contrato, ")
-//		    .append("p.paterno_productor, ")
-//		    .append("p.materno_productor, ")
-//		    .append("p.nombre_productor, ")
-//		    .append("p.curp_productor, ")
-//		    .append("p.rfc_productor, ")
-//		    .append("p.folio_factura_venta, ")
-//		    .append("p.vol_total_fac_venta, ")
-//		    .append("p.fecha_emision_fac, ")
-//		    .append("p.precio_fac_mxp_ton, ")
-//		    .append("p.imp_sol_fac_venta, ")
-//		    .append("p.precio_pactado_por_tonelada, ")
-//		    .append("p.tipo_cambio, ")
-//		    .append("p.importe_calculado_a_pagar, ")
-//		    .append("p.dif_monto_x_fac, ")
-//		    .append("( SELECT COALESCE(sum(p1.dif_monto_x_fac), 0) ")
-//		    .append("  FROM precio_pactado_contrato p1 ")
-//		    .append("WHERE p.folio_carta_adhesion = p1.folio_carta_adhesion and p.folio_contrato = p1.folio_contrato AND COALESCE(p.curp_productor, p.rfc_productor) = COALESCE(p1.curp_productor, p1.rfc_productor) AND p.folio_carta_adhesion = p1.folio_carta_adhesion) AS dif_monto_total ")
-//		    .append("FROM precio_pactado_contrato p, relacion_compras_tmp r ")
-//		    .append("WHERE p.folio_carta_adhesion = r.folio_carta_adhesion ")
-//		    .append("and p.folio_contrato = r.folio_contrato ")
-//		    .append("AND COALESCE(p.curp_productor, p.rfc_productor) = COALESCE(r.curp_productor, r.rfc_productor) ")
-//		    .append("and p.folio_factura_venta = r.folio_factura_venta ")
-//		    .append("and r.folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total > 1.00");
-			
+			StringBuilder consulta= new StringBuilder();				
 			consulta.append("SELECT * FROM dif_precio_pactado_contrato_v ")
-					 //.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_x_fac >1.00");
-					.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >1.00");
+					.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("'  and dif_monto_total >10.00");
+					
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			System.out.println("Tipo cambio "+consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-			List<?> data = query.list();
-			
+			List<?> data = query.list();			
 			for(Object object : data){
 				Map<?, ?> row = (Map<?, ?>)object;
 				PrecioPagPorTipoCambio b = new PrecioPagPorTipoCambio();	
@@ -6246,6 +6219,8 @@ public class RelacionesDAO {
 				b.setImpSolFacVenta(valor!=null ? valor.doubleValue():null);
 				valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
 				b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():null);
+				valor = (BigDecimal) row.get("precio_calculado_en_pesos");
+				b.setPrecioCalculadoEnPesos(valor!=null ? valor.doubleValue():null);
 				valor = (BigDecimal) row.get("tipo_cambio");
 				b.setTipoCambio(valor!=null ? valor.doubleValue():null);
 				valor = (BigDecimal) row.get("importe_calculado_a_pagar");

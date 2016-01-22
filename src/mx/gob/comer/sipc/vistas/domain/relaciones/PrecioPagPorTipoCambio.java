@@ -2,8 +2,9 @@ package mx.gob.comer.sipc.vistas.domain.relaciones;
 
 import java.util.Date;
 
-import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 
+
+@SuppressWarnings("rawtypes")
 public class PrecioPagPorTipoCambio implements Comparable{
 		
 	private String claveBodega;
@@ -21,6 +22,7 @@ public class PrecioPagPorTipoCambio implements Comparable{
 	private Double precioFacMxpTon;
 	private Double precioPactadoPorTonelada;
 	private Double tipoCambio;
+	private Double precioCalculadoEnPesos;
 	private Double importeCalculadoPagar;
 	private Double difMontoXFac;
 	private Double difMontoTotal;
@@ -113,6 +115,12 @@ public class PrecioPagPorTipoCambio implements Comparable{
 	}
 	public void setPrecioFacMxpTon(Double precioFacMxpTon) {
 		this.precioFacMxpTon = precioFacMxpTon;
+	}	
+	public Double getPrecioCalculadoEnPesos() {
+		return precioCalculadoEnPesos;
+	}
+	public void setPrecioCalculadoEnPesos(Double precioCalculadoEnPesos) {
+		this.precioCalculadoEnPesos = precioCalculadoEnPesos;
 	}
 	public Double getTipoCambio() {
 		return tipoCambio;

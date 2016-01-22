@@ -425,14 +425,12 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 				}
 //			}			
 			
-						
-			
+			verificarArchivoRelComprasYReporteCruce();
 			if(alcanceDocumentacion){
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 			}else if(estatusCA == 3){
 				llenarListaExpedientesProgramas();
-			}else if(estatusCA == 4 || estatusCA ==5 || estatusCA == 9){
-				verificarArchivoRelComprasYReporteCruce();						
+			}else if(estatusCA == 4 || estatusCA ==5 || estatusCA == 9){									
 				lstsExpedientesSPCartaAdhesionV = spDAO.consultaExpedientesSPCartaAdhesionV(folioCartaAdhesion, "DSP,DSPYF", "prioridadExpediente");
 				//recupera el oficio de observaciones
 				lstOficioObsSolicitudPago = spDAO.consultaOficioObsSolicitudPago(folioCartaAdhesion);
@@ -494,8 +492,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		//Indica si hay reporte de cruces
 		if(rDAO.consultaBitacoraRelacionHCO(folioCartaAdhesion).size() > 0){
 			reporteCruce = true;
-		}
-		
+		}		
 	}
 
 	public String recuperaDatosCartaAdhesion(String tipo){
@@ -790,7 +787,6 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 					addActionError("Debe cargar el anexo 32D, antes de marcar 'TRAMITAR OFICIO DE OBSERVACIONES Y PAGO' o 'TRAMITAR PAGO SIN OBSERVACIONES' ");
 					return SUCCESS;
 				}
-				
 			}
 			rutaCartaAdhesion = getRecuperaRutaCarta();			
 			File f1 = null, f2=null; 
@@ -1410,6 +1406,7 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 					anexo32d = lstAnexo32D.get(0);
 					System.out.println("primer anexo "+anexo32d.getFechaAnexo32d());
 					docSPCA.setFechaExpedicionAnexo(anexo32d.getFechaAnexo32d());
+					docSPCA.setRutaDocumento(anexo32d.getRutaArchivo()+anexo32d.getNombreArchivo());
 					cDAO.guardaObjeto(docSPCA);
 				}
 				
@@ -1478,12 +1475,12 @@ public class RelacionDoctosSolPagoAction extends ActionSupport implements Sessio
 		}catch(JDBCException e) {
 	    	e.printStackTrace();
 	    	AppLogger.error("errores","Ocurrio un error en base de datos en registraCapDocumentacion  debido a: "+e.getCause());
-	    	addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
+	    	addActionError("Ocurrio un error inesperado a, favor de reportar al administrador "+e.getMessage());
 	    	errorSistema = 1;
 	    }catch(Exception e) {
 			e.printStackTrace();
 			AppLogger.error("errores","Ocurrio un error en registraCapDocumentacion  debido a: "+e.getMessage());
-			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
+			addActionError("Ocurrio un error inesperado b, favor de reportar al administrador "+e.getMessage());
 			errorSistema = 1;
 		}
 		return SUCCESS;		

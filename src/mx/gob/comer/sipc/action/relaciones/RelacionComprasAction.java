@@ -824,8 +824,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						  if(verificarTipoDato(valor, lstGruposCamposDetalleRelacionV.get(contColumna).getTipoDato())){
 							  AppLogger.info("app", "fila "+contRow+" Columna"+contColumna+" grupo 7 campo 11 el valor es "+valor);
 							  try{
-									Double d = Double.parseDouble(valor);
-									valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+								  if(!valor.contains("D")&& !valor.contains("d") && !valor.contains("F") && !valor.contains("f")){
+									  Double d = Double.parseDouble(valor);
+									  valor = TextUtil.formateaNumeroComoCantidadSincomas(d);  
+								  }									
 								}catch (Exception e){
 									
 								}								  
@@ -2428,12 +2430,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue("Volumen Facturado");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Dif Volumen Finiquito");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Modalidad");
 							for(VolumenFiniquito p: lstVolumenCumplido){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(p.getClaveBodega()+";"+(siAplicaFolioContrato?p.getFolioContrato()+";":"")+p.getNombreComprador()+";"+p.getNombreVendedor()+";"
 										+(p.getPrecioPactadoPorTonelada()!=null?p.getPrecioPactadoPorTonelada()+";":0+";")+(p.getVolumen()!=null?p.getVolumen()+";":0)
-										+(p.getVolTotalFacVenta()!=null?p.getVolTotalFacVenta()+";":0)+(p.getDifVolumenFiniquito()!=null?p.getDifVolumenFiniquito()+";":0));								
+										+(p.getVolTotalFacVenta()!=null?p.getVolTotalFacVenta()+";":0)+(p.getDifVolumenFiniquito()!=null?p.getDifVolumenFiniquito()+";":0)
+										+(p.getModalidad()!=null?p.getModalidad()+";":"0"));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
@@ -2454,6 +2459,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell.setCellValue(p.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getVolTotalFacVenta())+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(p.getDifVolumenFiniquito()!=null?TextUtil.formateaNumeroComoVolumenSinComas(p.getDifVolumenFiniquito())+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getModalidad()!=null ? (!p.getModalidad().equals("NA")?p.getModalidad():""):"");
+								
 							}							
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
@@ -3353,6 +3361,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Tipo Cambio");
 							cell = row.createCell(++countColumn);
+							cell.setCellValue("Precio Calculado en Pesos");
+							cell = row.createCell(++countColumn);
 							cell.setCellValue("Total a Pagar X Fac");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Dif Monto X Fac");
@@ -3406,7 +3416,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(c.getPrecioPactadoPorTonelada()!=null?c.getPrecioPactadoPorTonelada()+"":"");								
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(c.getTipoCambio()!=null?c.getTipoCambio()+"":"");												
+								cell.setCellValue(c.getTipoCambio()!=null?c.getTipoCambio()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(c.getPrecioCalculadoEnPesos()!=null?c.getPrecioCalculadoEnPesos()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(c.getImporteCalculadoPagar()!=null?c.getImporteCalculadoPagar()+"":"");
 								cell = row.createCell(++countColumn);
@@ -4662,7 +4674,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 //				}
 				
 				//1812
-				//lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
+				lstBitacoraRelComprasPorGrupo = rDAO.consultaBitacoraRelcompras(folioCartaAdhesion);
 				//if(countStatus == lstBitacoraRelComprasPorGrupo.size()){
 					//cuadroSatisfactorio = "No se encontro ninguna incosistencia en el grupo seleccionado";
 				//	return SUCCESS;

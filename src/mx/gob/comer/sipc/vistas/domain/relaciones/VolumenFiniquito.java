@@ -14,6 +14,7 @@ public class VolumenFiniquito implements Comparable{
 	private Double volumen;
 	private Double volTotalFacVenta;
 	private Double difVolumenFiniquito;
+	private String modalidad;
 	
 
 	
@@ -69,6 +70,14 @@ public class VolumenFiniquito implements Comparable{
 	}
 	public void setDifVolumenFiniquito(Double difVolumenFiniquito) {
 		this.difVolumenFiniquito = difVolumenFiniquito;
+	}	
+	
+	
+	public String getModalidad() {
+		return modalidad;
+	}
+	public void setModalidad(String modalidad) {
+		this.modalidad = modalidad;
 	}
 	@Override
 	public int compareTo(Object o) {
