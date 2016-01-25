@@ -8,8 +8,7 @@
 		<s:set name="fechaTemp">
 			<s:text name="fecha"><s:param value="%{lstBitacoraRelComprasPorGrupo.get(0).fechaRegistro}"/></s:text>
 		</s:set>
-	</s:if>
-		
+	</s:if>		
 		<table class="clean">
 			<s:iterator value="lstBitacoraRelComprasPorGrupo" var="resultado"  status="itStatus">
 				<s:set name="fechaC"><s:text name="fecha"><s:param value="%{fechaRegistro}"/></s:text></s:set>
