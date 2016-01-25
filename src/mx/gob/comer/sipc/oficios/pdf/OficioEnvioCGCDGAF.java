@@ -95,7 +95,8 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 			enunciado.add(new Chunk("Coordinación General de Comercialización\n", TIMESROMANBOLD10));
 			enunciado.add(new Chunk("Dirección General de Desarrollo de\nMercados e Infraestructura Comercial\n", TIMESROMANBOLD9));
 			//enunciado.add(new Chunk("Dirección de Pago de Apoyos a la Comercialización\n", TIMESROMANBOLD9));
-			enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
+			//enunciado.add(new Chunk("\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL)); Desactivacion de Leyenda temporal
+			
 /*
 			if(ata.getLeyendaOficio().length()<=40){
 				enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
