@@ -1,15 +1,8 @@
-/solicitudPago.xml
-/struts.properties
-/struts.xml
-/mx
-/pagos.xml
-/relaciones.xml
-/reportes.xml
-/seguimiento.xml
+/catalogos.xml
 /displaytag.properties
 /hibernate.cfg.xml
 /inscripcion.xml
 /log4jconfig.properties
-/catalogos.xml
+/mx
 /Excel.class
 /Prueba.class

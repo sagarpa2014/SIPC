@@ -94,6 +94,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	private List<VolumenFiniquito> lstVolumenCumplido;
 	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
 	private List<RelacionComprasTMP> lstFGlobalVsFIndividual;
+	private List<RelacionComprasTMP> lstCurpRfcYONombresInconsistentes;
 	private List<PagMenorCompBases> lstPagMenorCompBases;
 	private boolean siAplicaFolioContrato;	
 	private PdfPCell cell;
@@ -366,27 +367,53 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					temFolioContrato = p.getFolioContrato();
 				}				
 			}				
-		}else if(rca.getIdCriterio() == 4){//"PRODUCTOR EXISTA EN BASE DE DATOS"
-			Collections.sort(lstProductorExisteBD);
-			for(ProductorExisteBD l: lstProductorExisteBD){
-				parrafo =  new Paragraph(l.getFolioProductor().toString(), TIMESROMAN08);
+		}else if(rca.getIdCriterio() == 30){//"CURP, RFC Y/O NOMBRES INCONSISTENTES"
+			Collections.sort(lstCurpRfcYONombresInconsistentes);
+			for(RelacionComprasTMP p: lstCurpRfcYONombresInconsistentes){
+				if(!claveBodegaTmp.equals(p.getClaveBodega())){
+					parrafo =  new Paragraph(p.getClaveBodega(), TIMESROMAN08);
+				}else{
+					parrafo =  new Paragraph("", TIMESROMAN08);
+				}				
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				if(!nomEstadoTmp.equals(p.getNombreEstado())){
+					parrafo =  new Paragraph(p.getNombreEstado(), TIMESROMAN08);
+				}else{
+					parrafo =  new Paragraph("", TIMESROMAN08);
+				}
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				if(siAplicaFolioContrato){
+					if(!temFolioContrato.equals(p.getFolioContrato())){					
+						parrafo =  new Paragraph(p.getFolioContrato(), TIMESROMAN08);
+					}else{
+						parrafo =  new Paragraph("", TIMESROMAN08);								
+					}				
+					cell = new PdfPCell(parrafo);
+					cell =createCell(parrafo, 0, 1, 1);
+					t.addCell(cell);
+				}				
+				parrafo =  new Paragraph(p.getPaternoProductor()+" "+p.getMaternoProductor()+" "+p.getNombreProductor(), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
 				cell =createCell(parrafo, 0, 2, 1);
 				t.addCell(cell);
-				parrafo =  new Paragraph(l.getPaternoProductor()+" "+l.getMaternoProductor()+" "+l.getNombreProductor(), TIMESROMAN08);
+				parrafo =  new Paragraph((p.getCurpProductor()!=null?p.getCurpProductor():""), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
-				cell =createCell(parrafo, 0, 2, 1);
-				t.addCell(cell);
-				parrafo =  new Paragraph(l.getCurpProductor(), TIMESROMAN08);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);				
+				parrafo =  new Paragraph((p.getRfcProductor()!=null?p.getRfcProductor():""), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
-				cell =createCell(parrafo, 0, 2, 1);
-				t.addCell(cell);
-				parrafo =  new Paragraph(l.getRfcProductor(), TIMESROMAN08);
-				cell = new PdfPCell(parrafo);
-				cell =createCell(parrafo, 0, 2, 1);
-				t.addCell(cell);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);				
+				claveBodegaTmp = p.getClaveBodega();
+				nomEstadoTmp = p.getNombreEstado();
+				if(siAplicaFolioContrato){				
+					temFolioContrato = p.getFolioContrato();
+				}				
 			}
-			
 		}else if(rca.getIdCriterio() == 5){//"Productores Estén asociados a Predios Validados"
 			Collections.sort(lstProductorPredioValidado);
 			for(ProductorPredioValidado l: lstProductorPredioValidado){
@@ -835,7 +862,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				contBitacoraDet ++;
 			}
 			
-		}else if(rca.getIdCriterio() == 30){//10.1 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS BASE DE DATOS
+		}else if(rca.getIdCriterio() == 30000){//10.1 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS BASE DE DATOS
 			Collections.sort(lstRfcProductorVsRfcFacturaSinContrato);			
 			for (RelacionComprasTMP l: lstRfcProductorVsRfcFacturaSinContrato){					
 				claveBodega = l.getClaveBodega();
@@ -2708,15 +2735,29 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					p.setFolioCartaExterna(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
 					lstPrediosProdsContNoExistenBD.add(p);
-				}else if(rca.getIdCriterio() == 5){
-					ProductorPredioValidado pro = new ProductorPredioValidado(); 
-					pro.setFolioProductor(Long.parseLong(bS[0]!=null&&!bS[0].isEmpty()&&!bS[0].equals("null")?bS[0]:""));
-					pro.setPaternoProductor(bS[1]!=null&&!bS[1].isEmpty()&&!bS[1].equals("null")?bS[1]:"");
-					pro.setMaternoProductor(bS[2]!=null&&!bS[2].isEmpty()&&!bS[2].equals("null")?bS[2]:"");
-					pro.setNombreProductor(bS[3]!=null&&!bS[3].isEmpty()&&!bS[3].equals("null")?bS[3]:"");
-					pro.setCurpProductor(bS[4]!=null&&!bS[4].isEmpty()&&!bS[4].equals("null")?bS[4]:"");
-					pro.setRfcProductor(bS[5]!=null&&!bS[5].isEmpty()&&!bS[5].equals("null")?bS[5]:"");
-					lstProductorPredioValidado.add(pro);					
+				}else if(rca.getIdCriterio() == 30){//7.6 CURP, RFC Y/O NOMBRES INCONSISTENTES
+					columna = 0;
+					RelacionComprasTMP p = new RelacionComprasTMP();
+					p.setClaveBodega(bS[columna]);
+					++columna;
+					p.setNombreEstado(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					if(siAplicaFolioContrato){
+						++columna;
+						p.setFolioContrato(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");	
+					}
+					++columna;
+					p.setPaternoProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					p.setMaternoProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					p.setNombreProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					p.setCurpProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					p.setRfcProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;					
+					lstCurpRfcYONombresInconsistentes.add(p);							
+					
 				}else if(rca.getIdCriterio() == 6){
 					ProductorPredioPagado pro = new ProductorPredioPagado(); 
 					pro.setFolioProductor(Long.parseLong(bS[0]!=null&&!bS[0].isEmpty()&&!bS[0].equals("null")?bS[0]:""));
@@ -2934,7 +2975,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					r.setVolTotalFacVenta(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")&&!bS[columna].equals("-")?bS[columna]:"0"));
 					lstRfcProductorVsRfcFactura2.add(r);
-				}else if(rca.getIdCriterio() == 30){
+				}else if(rca.getIdCriterio() == 3000){
 					columna = 0;
 					RelacionComprasTMP  r = new RelacionComprasTMP();
 					r.setClaveBodega(bS[columna]);
@@ -3594,9 +3635,14 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				float[] x1 = {8,5,30,14,14,15}; // %
 				w = x1;
 			}			
-		}else if(rca.getIdCriterio() == 4){//Productor exista en base de dato
-			float[] x1 = {20,40,20,20}; // %
-			w = x1;
+		}else if(rca.getIdCriterio() == 30){// 7.6 CURP, RFC Y/O NOMBRES INCONSISTENTES
+			if(siAplicaFolioContrato){
+				float[] x1 = {10,10,10,30,20,20}; // %
+				w = x1;
+			}else{
+				float[] x1 = {10,10,30,25,25}; // %
+				w = x1;
+			}
 		}else if(rca.getIdCriterio() == 5){//Productores Estén asociados a Predios Validados
 			float[] x1 = {25,25,25,25}; // %
 			w = x1;
@@ -3671,7 +3717,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				float[] x1 = {10,10,20,20,20,20}; // %
 				w = x1;
 			}
-		}else if(rca.getIdCriterio() == 30){//"Que el rfc corresponda al productor sin contrato"
+		}else if(rca.getIdCriterio() == 3000){//"Que el rfc corresponda al productor sin contrato"
 				if(siAplicaFolioContrato){
 					float[] x1 = {10,10,10,20,20,20,10}; // %
 					w = x1;
@@ -4107,19 +4153,12 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 3, 1);
 			t.addCell(cell);
-		}else if(rca.getIdCriterio() == 3){//"PREDIOS ESTEN PAGADOS"
-			parrafo =  new Paragraph("PREDIO", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 1, 1);
-			t.addCell(cell);
-			parrafo =  new Paragraph("SECUENCIAL", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 1, 1);
-			t.addCell(cell);
-			parrafo =  new Paragraph("PREDIO ALTERNO", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 1, 1);
-			t.addCell(cell);				
+		}else if(rca.getIdCriterio() == 30){// 7.6 CURP, RFC Y/O NOMBRES INCONSISTENTES
+			if(siAplicaFolioContrato){	
+				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-CURP;S-1-RFC;", "DET");
+			}else{
+				crearColumna("S-1-BODEGA;S-1-ESTADO;S-1-PRODUCTOR;S-1-CURP;S-1-RFC;", "DET");
+			}				
 		}else if(rca.getIdCriterio() == 4){//"PRODUCTOR EXISTA EN BASE DE DATOS"
 			parrafo =  new Paragraph("FOLIO PRODUCTOR", TIMESROMAN08BOLD);
 			cell = new PdfPCell(parrafo);
@@ -4709,6 +4748,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		lstVolNoProcedenteYApoyEnReg = new ArrayList<VolumenNoProcedente>();
 		lstFGlobalVsFIndividual = new ArrayList<RelacionComprasTMP>();
 		lstPagMenorCompBases = new ArrayList<PagMenorCompBases>();
+		lstCurpRfcYONombresInconsistentes = new ArrayList<RelacionComprasTMP>();
 	}
 
 	private void addEmptyLine(int number) throws DocumentException {

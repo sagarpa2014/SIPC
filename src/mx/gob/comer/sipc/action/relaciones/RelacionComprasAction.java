@@ -257,6 +257,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<PagMenorCompBases> lstPagMenorCompBases;
 	private List<Bodegas> lstBodegas;
 	private List<Estado> lstEdo;
+	private List<RelacionComprasTMP> lstCurpRfcYONombresInconsistentes;
 	
 	public String capturaCargaArchivoRelCompras(){ 
 		//Verifica que no exista la relacion en la base de datos
@@ -1627,7 +1628,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}						
-					}					
+					} 					
 					
 				}//end recorrido lstValidacionPorGrupo
 				nombreArchivoLogXls = "Predios.xls";
@@ -1853,69 +1854,81 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 					
 						}
-					}else if(l.getIdCriterio() == 30){ 
-//						sheet = wb.createSheet("RFC CORRESPONDE CURP PROD"); //10.2 DIFERENCIA DE RFC DE PRODUCTOR RELACIÓN DE COMPRAS VS CURP
-//						sheet = setMargenSheet(sheet);
-//						countRow = 0;
-//						countColumn =0;
-//						lstRfcVsCurpProductor = rDAO.verificaRFCVsCURPProductor(folioCartaAdhesion);  
-//						if(lstRfcVsCurpProductor.size()>0){//En el listado se guardan las facturas duplicadas por productor
-//							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
-//							msj = l.getCriterio();
-//							row = sheet.createRow(countRow);
-//							cell = row.createCell(countColumn);
-//							cell.setCellValue(msj);
-//							row = sheet.createRow(++countRow);
-//							cell = row.createCell(countColumn);
-//							cell.setCellValue("Clave Bodega");
-//							cell = row.createCell(++countColumn);
-//							cell.setCellValue("Estado");
-//							cell = row.createCell(++countColumn);
-//							cell.setCellValue("Productor");
-//							cell = row.createCell(++countColumn);
-//							cell.setCellValue("RFC Productor");
-//							cell = row.createCell(++countColumn);
-//							cell.setCellValue("CURP Productor");
-//							cell = row.createCell(++countColumn);
-//							cell.setCellValue("Peso Neto ana. (ton) Fac ");
-//							for(RelacionComprasTMP r: lstRfcVsCurpProductor){
-//								countColumn = 0;
-//								bd = new BitacoraRelcomprasDetalle();
-//								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
-//										+r.getNombreProductor()+";"
-//									+r.getRfcProductor()+";"+r.getCurpProductor()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
-//								b.getBitacoraRelcomprasDetalle().add(bd);
-//								//Actualiza el productor como inconsistente
-//								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
-//										r.getPaternoProductor(), r.getMaternoProductor(), r.getNombreProductor(), false, false, true, false);	
-//								row = sheet.createRow(++countRow);
-//								cell = row.createCell(countColumn);
-//								cell.setCellValue(r.getClaveBodega()!=null ? r.getClaveBodega()+"":"");
-//								cell = row.createCell(++countColumn);
-//								cell.setCellValue(r.getNombreEstado()!=null ? r.getNombreEstado()+"":"");								
-//								cell = row.createCell(++countColumn);
-//								cell.setCellValue((r.getPaternoProductor()!=null && !r.getPaternoProductor().isEmpty() ? r.getPaternoProductor()+" " :"" )
-//										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
-//										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
-//								cell = row.createCell(++countColumn);
-//								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
-//								cell = row.createCell(++countColumn);
-//								cell.setCellValue(r.getCurpProductor()!=null && !r.getCurpProductor().isEmpty()?r.getCurpProductor():"");
-//								cell = row.createCell(++countColumn);
-//								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
-//							}							
-//							b.setMensaje(msj);
-//							cDAO.guardaObjeto(b);
-//						}else{
-//							msj = "La validación es correcta \"RFC VS CURP SI CORRESPONDEN AL PRODUCTOR\"";							
-//							row = sheet.createRow(countRow);
-//							cell = row.createCell(0);
-//							cell.setCellValue(msj);
-//							llenarBitacora(false, l.getIdCriterio());
-//							b.setMensaje(msj);
-//							cDAO.guardaObjeto(b);
-//					
-//						}			
+					}else if(l.getIdCriterio()== 30){
+						sheet = wb.createSheet("CURP, RFC O NOMBRES INCONS"); // 7.6 CURP, RFC Y/O NOMBRES INCONSISTENTES
+						sheet = setMargenSheet(sheet);
+						countRow = 0;
+						countColumn = 0;
+						lstCurpRfcYONombresInconsistentes = rDAO.getCurpRfcYONombresInconsistentes(folioCartaAdhesion, idPrograma);
+						if(lstCurpRfcYONombresInconsistentes.size()>0){//En el listado se guardan los productores inconsistentes por curp, rfc o nombre
+							//Guardar en bitacora
+							llenarBitacora(true, l.getIdCriterio());							
+							msj = l.getCriterio();
+							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue(msj);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("Clave Bodega");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Estado");
+							if(siAplicaFolioContrato){
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Folio Contrato");
+							}
+							cell = row.createCell(++countColumn);							
+							cell.setCellValue("Nombre Productor");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("CURP");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("RFC");						
+							for(RelacionComprasTMP p: lstCurpRfcYONombresInconsistentes){
+								countColumn = 0;
+								bd = new BitacoraRelcomprasDetalle();
+								bd.setMensaje(p.getClaveBodega()+";"+p.getNombreEstado()+";"+(siAplicaFolioContrato?p.getFolioContrato()+";":"")+p.getPaternoProductor()+";"
+										+p.getMaternoProductor()+";"+p.getNombreProductor()+";"
+										+p.getCurpProductor()+";"
+										+(p.getRfcProductor()!=null&&!p.getRfcProductor().isEmpty()?p.getRfcProductor():"null;"));								
+								b.getBitacoraRelcomprasDetalle().add(bd);
+								//Actualiza el productor como inconsistente
+								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+										p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor(), false, false, true, false);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(p.getClaveBodega()!=null ? p.getClaveBodega()+"":"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getNombreEstado()!=null ? p.getNombreEstado()+"":"");
+								if(siAplicaFolioContrato){
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(p.getFolioContrato()!=null ? p.getFolioContrato()+"":"");
+								}								
+								cell = row.createCell(++countColumn);
+								cell.setCellValue((p.getPaternoProductor()!=null && !p.getPaternoProductor().isEmpty() ? p.getPaternoProductor()+" " :"" )
+										+(p.getMaternoProductor()!=null ? p.getMaternoProductor()+" " :"") 
+										+(p.getNombreProductor()!=null ? p.getNombreProductor() :""));
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getCurpProductor()!=null ?p.getCurpProductor():p.getRfcProductor());
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(p.getRfcProductor()!=null && !p.getRfcProductor().isEmpty()?p.getRfcProductor():"");
+							}							
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}else{
+							countColumn = 0;
+							msj = "La validación es correcta \"CURP, RFC O NOMBRES SON CONSISTENTES\"";
+							row = sheet.createRow(countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue(msj);
+							llenarBitacora(false, l.getIdCriterio());
+							b.setMensaje(msj);
+							cDAO.guardaObjeto(b);
+						}						
 					/*}else if(l.getIdCriterio() == 31){
 						sheet = wb.createSheet("RFC PROD VS RFC COMPRADOR"); //10.1 DIFERENCIA DE RFC DE PRODUCTOR VS RFC FACTURA
 						sheet = setMargenSheet(sheet);
@@ -2112,7 +2125,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cDAO.guardaObjeto(b);
 						}else{
 							countColumn = 0;
-							msj = "La validación es correcta \"NO HAY INCONSISTENCIAS DE BOLETAS EN LOS PRODUCTORES\"";
+							msj = "La validación es correcta \"NO SE ENCONTRARON INCONSISTENCIAS EN LA INFORMACION\"";
 							row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
 							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
@@ -5851,7 +5864,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			List<RelacionComprasTMP> lstFGlobalVsFIndividual) {
 		this.lstFGlobalVsFIndividual = lstFGlobalVsFIndividual;
 	}
-	
+
+	public List<RelacionComprasTMP> getLstCurpRfcYONombresInconsistentes() {
+		return lstCurpRfcYONombresInconsistentes;
+	}
+
+	public void setLstCurpRfcYONombresInconsistentes(
+			List<RelacionComprasTMP> lstCurpRfcYONombresInconsistentes) {
+		this.lstCurpRfcYONombresInconsistentes = lstCurpRfcYONombresInconsistentes;
+	}	
 	
 		
 }
