@@ -352,6 +352,13 @@
 		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/personalizacion/listPersonalizacionRelaciones.jsp"/>
 	</definition>
 	
+<!-- 	CONFIGURACION DE REPORTES DE CRUCE -->
+	<definition name="confReportesCruce" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/personalizacion/confReportesCruce.jsp"/>
+	</definition>
+
+
+	
 	<!-- RELACIONES  CAPTURA -->
 	<definition name="listProgramaCap" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/captura/listProgramaCap.jsp"/>

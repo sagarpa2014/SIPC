@@ -14,6 +14,10 @@
 	<s:if test="%{lstPrediosProdsContNoExistenBD.size() > 0}"><!-- Predios/Productores/Contratos que no existen en base de datos -->
 		<span class="requerido">LOS PREDIOS/PRODUCTORES/CONTRATOS NO SE ENCUENTRAN EN LA BASE DE DATOS ASERCA</span><br>
 	</s:if>	
+	<s:if test="%{lstCurpRfcYONombresInconsistentes.size() > 0}"><!-- CURP, RFC Y/O NOMBRES INCONSISTENTES -->
+		<span class="requerido">CURP, RFC Y/O NOMBRES INCONSISTENTES</span><br>
+	</s:if>	
+	
 	<s:if test="%{lstProductorExisteBD.size() > 0}"> <!--Productor exista en base de datos -->
 		<span class="requerido">LOS PRODUCTORES NO SE ENCONTRARON EN LA BASE DE DATOS DE ASERCA</span><br>
 	</s:if>

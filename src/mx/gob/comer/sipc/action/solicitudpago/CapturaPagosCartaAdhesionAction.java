@@ -729,6 +729,29 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		}		
 		p.setSolicitudesAtendidas(solicitudesAtendidas);
 		p.setProductoresBeneficiados(productoresBeneficiados);
+		
+		// AHS CAMBIO 27012016 [INICIO]
+		p.setIdEjercicio(cDAO.consultaEjercicio(Integer.parseInt(new java.text.SimpleDateFormat("yyyy").format(new Date()))).get(0).getIdEjercicio());
+		Integer trimestre=0;
+		if(Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 1 ||
+		   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 2 ||
+		   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 3){
+			trimestre = 1;
+		} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 4 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 5 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 6){
+			trimestre = 2;
+		} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 7 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 8 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 9){
+			trimestre = 3;
+		} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 10 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 11 ||
+				   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 12){
+			trimestre = 4;
+		}
+		p.setTrimestre(trimestre);
+		// AHS CAMBIO 27012016 [FIN]
 		if (criterioPago==1){
 			Set<Integer> idsCapVolumen = capVolumen.keySet();
 			Iterator<Integer> it = idsCapVolumen.iterator();

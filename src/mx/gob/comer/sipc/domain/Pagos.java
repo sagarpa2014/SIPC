@@ -62,6 +62,7 @@ public class Pagos {
 	private Double porcentajeFianza;
 	private Integer idEjercicio; // AHS CAMBIO 29062015
 	private Date fechaReintegro; // AHS CAMBIO 29062015
+	private Integer trimestre; // AHS CAMBIO 27012016
 	
 	public Pagos (){
 		
@@ -391,4 +392,15 @@ public class Pagos {
 		this.fechaReintegro = fechaReintegro;
 	}
 // AHS CAMBIO 29062015 [FIN]
+	
+// AHS CAMBIO 27012016 [INICIO]
+	@Column(name = "trimestre")
+	public Integer getTrimestre() {
+		return trimestre;
+	}
+
+	public void setTrimestre(Integer trimestre) {
+		this.trimestre = trimestre;
+	}
+// AHS CAMBIO 27012016 [FIN]		
 }

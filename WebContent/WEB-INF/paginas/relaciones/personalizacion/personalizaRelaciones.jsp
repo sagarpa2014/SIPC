@@ -27,7 +27,12 @@
 		<div>
 			<label class="left1"><span class="requerido">*</span>Tipo de Relaci&oacute;n:</label>
 			<s:select id="idRelacion" name="idRelacion" list="lstRelaciones" listKey="idRelacion" listValue="%{relacion}" headerKey="-1" headerValue="-- Seleccione una opción --" onchange="recuperaConfRelacionD()" onclik="recuperaConfRelacionD()" />   
-		</div>
+		</div>		
+<%-- 		<s:if test="registrar==2 || registrar==3"> --%>
+<!-- 			<div class="derecha"> -->
+<%-- 				<a href="<s:url value="/relaciones/getConfReportesCruce?idPrograma=%{idPrograma}"/>" class="" title="" >Configurar Reportes de Cruce</a> --%>
+<!-- 			</div> -->
+<%-- 		</s:if> --%>
 		<div class="clear"></div>
 		<div id="recuperaConfRelacionD">
 			<s:if test="registrar==2 || registrar==3">
