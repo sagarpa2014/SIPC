@@ -32,7 +32,9 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 	// Configuracion de fuentes
 	//private final Font ARIALBOLD10 = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
 	private final Font TIMESROMAN10BOLD = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN08BOLD = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD, Color.BLACK);
 	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN08NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08 = FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
 	private final Font TIMESROMAN08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
@@ -140,8 +142,8 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			table1.setWidthPercentage(100);
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
-			enunciado.add(new Chunk("A S E R C A\nCoordinación General de Comercialización", TIMESROMAN10BOLD));
-			enunciado.add(new Chunk("\n"+ata.getDireccionEmisor(), TIMESROMAN10NORMAL));
+			enunciado.add(new Chunk("A S E R C A\nCOORDINACIÓN GENERAL DE COMERCIALIZACIÓN", TIMESROMAN08BOLD));
+			enunciado.add(new Chunk("\n"+ata.getDireccionEmisor().toUpperCase(), TIMESROMAN08NORMAL));
 			enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 			cell =	createCell(null, 0, 2, 1, sagarpa);
 			table1.addCell(cell);
