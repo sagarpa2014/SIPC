@@ -30,6 +30,32 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success" type="tiles">personalizaRelaciones</result>
             <result name="input" type="tiles">personalizaRelaciones</result> 
+        </action>
+<!--     Configuracion de Reportes de Cruce -->
+		<action name="getConfReportesCruce" method="getConfReportesCruce" class="mx.gob.comer.sipc.action.relaciones.ConfReportesCruceAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">confReportesCruce</result>
+            <result name="input" type="tiles">confReportesCruce</result> 
+        </action>    
+    
+    	<action name=" registrarConfReportesCruce" method=" registrarConfReportesCruce" class="mx.gob.comer.sipc.action.relaciones.ConfReportesCruceAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">confReportesCruce</result>
+            <result name="input" type="tiles">confReportesCruce</result> 
+        </action>
+        
+        
+        
+       
+
+
+        <action name="getDetallePersonalizacionRel" method="getDetallePersonalizacionRel" class="mx.gob.comer.sipc.action.relaciones.PersonalizacionRelacionAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">personalizaRelaciones</result>
+            <result name="input" type="tiles">personalizaRelaciones</result> 
         </action>        
         <action name="consigueNumCiclos" method="consigueNumCiclos" class="mx.gob.comer.sipc.action.relaciones.InicializacionProgramaRelAction">
 			<interceptor-ref name="chksession"/> 

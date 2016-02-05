@@ -78,6 +78,7 @@
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CultivoVariedadEsquema"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AlcanceSolicitudInscripcion"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CnfReportesCruce"/>
 		
 		
 		<!-- *********Vistas******** -->
