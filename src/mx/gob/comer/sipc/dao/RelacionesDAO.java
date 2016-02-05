@@ -5965,7 +5965,7 @@ public class RelacionesDAO {
 //			.append("from volumen_no_procedente_v r ")
 //			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
 //			.append("and id_programa = ").append(idPrograma).append(" and volumen_no_procedente > 0");
-			consulta.append("SELECT distinct rc.id_programa, ")
+			consulta.append("SELECT  rc.id_programa, ")
 					.append("rc.clave_bodega, ")
 					.append("rc.nombre_estado, ")
 					.append("rc.estado_acopio,")
@@ -5978,7 +5978,9 @@ public class RelacionesDAO {
 					.append("rc.curp_productor, ")
 					.append("final.vol_total_fac_venta, ")
 					.append("final.rendimiento_maximo, ")
-					.append("final.volumen_no_procedente ")
+					.append("final.volumen_no_procedente, ")
+					.append("final.rendimiento_maximo, final.volumen_no_procedente, (sum(rc.vol_total_fac_venta)*100/ final.vol_total_fac_venta) as porcentaje, ")
+					.append("(((sum(rc.vol_total_fac_venta)*100/ final.vol_total_fac_venta)*final.volumen_no_procedente)/100) as volumen_no_procedente_final ")
 			.append("FROM relacion_compras_tmp rc, ")
 			.append("(SELECT rf.id_programa, ")
 			.append(" rf.folio_contrato, ")
@@ -6027,9 +6029,13 @@ public class RelacionesDAO {
 				.append("and COALESCE(rc.nombre_productor,'X')= COALESCE(final.nombre_productor,'X')	  ")   
 				.append("AND COALESCE(rc.curp_productor, rc.rfc_productor) = COALESCE(final.curp_productor, final.rfc_productor) ") 
 				.append("and rc.id_programa =").append(idPrograma).append(" ")  
-				.append("AND rc.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and final.volumen_no_procedente > 0 ");
+				.append("AND rc.folio_carta_adhesion = '").append(folioCartaAdhesion).append("' and final.volumen_no_procedente > 0 ")
+				.append("group by rc.id_programa, rc.clave_bodega, rc.nombre_estado, rc.estado_acopio,rc.folio_contrato, rc.folio_carta_adhesion, rc.rfc_productor, rc.paterno_productor, ") 
+				.append("rc.materno_productor, rc.nombre_productor, rc.curp_productor,  final.vol_total_fac_venta, final.rendimiento_maximo, final.volumen_no_procedente ")
+				.append("order by rc.folio_contrato,rc.paterno_productor, rc.materno_productor, rc.nombre_productor, rc.curp_productor ");
+ 
 			
-			System.out.println("Query volumen no procedente "+consulta.toString());
+			System.out.println("Query volumen no procedente por rendimiento "+consulta.toString());
 			SQLQuery query = session.createSQLQuery(consulta.toString());
 			query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 			List<?> data = query.list();
@@ -6049,7 +6055,7 @@ public class RelacionesDAO {
 		        b.setVolTotalFacturado(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("rendimiento_maximo"); 
 		        b.setRendimientoMaximoAceptable(valor!=null ? valor.doubleValue():0.0);
-		        valor = (BigDecimal) row.get("volumen_no_procedente"); 
+		        valor = (BigDecimal) row.get("volumen_no_procedente_final"); 
 		        b.setVolNoProcedente(valor!=null ? valor.toString():"0.0");	// AHS [LINEA] - 17022015
 		        
 		        lst.add(b);	
