@@ -117,14 +117,14 @@ public class OficioEnvioCGCDGAF extends PdfPageEventHelper {
 		document.add(parrafo);
 	}
 	private void getLugarYFecha() throws DocumentException {
-		parrafo = new Paragraph("México, D.F. "+ata.getFechaActual(), TIMESROMAN12);
+		parrafo = new Paragraph("Ciudad de México, "+ata.getFechaActual(), TIMESROMAN12);
 		parrafo.setAlignment(Rectangle.ALIGN_LEFT);
 		document.add(parrafo);	
 	}
 	private void getDestinatario() throws DocumentException {
 		
 		texto = new StringBuilder()
-		.append(ata.getDestinatario().getIniProfesion().toUpperCase()+" "+ata.getDestinatario().getNombre()).append("\n")
+		.append(ata.getDestinatario().getIniProfesion().toUpperCase()+" "+ata.getDestinatario().getNombre())//.append("\n")
 		.append(ata.getDestinatario().getPuesto()).append("\n")
 		.append("PRESENTE");
 		parrafo = new Paragraph(texto.toString(), TIMESROMANBOLD12);

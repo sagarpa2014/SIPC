@@ -39,7 +39,7 @@
 		</p>
 		<span class="izquierda">
 			<font class="arial12normal">
-				México, D.F. <s:property value="fechaActual"/><br>
+				Ciudad de México, <s:property value="fechaActual"/><br>
 			</font>
 		</span>
 		<br>
@@ -86,7 +86,7 @@
 				<s:property value="emisor.iniProfesion.toUpperCase()"/>&nbsp;<s:property value="emisor.nombre"/><br>
 			</font>
 <!-- 			<font class="arial8normal">			 -->
-<!-- <!-- 				El Director General de Desarrollo de Mercados e Infraestructura Comercial, antes Director General de Desarrollo de Mercados, <br> --> -->
+<!-- <!-- 				El Director General de Desarrollo de Mercados e Infraestructura Comercial, antes Director General de Desarrollo de Mercados, <br> --> 
 <%-- 					<s:property value="leyendaConformidad"/> --%>
 <!-- 			</font>			 -->
 		</center>

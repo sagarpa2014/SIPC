@@ -153,7 +153,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			document.add(table1);
 	}
 	private void getLugarYFecha() throws DocumentException {
-		parrafo = new Paragraph("N° de Oficio "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio()+"\nMéxico, D.F. "+ata.getFechaActual(), TIMESROMAN12);
+		parrafo = new Paragraph("N° de Oficio "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio()+"\nCiudad de México, "+ata.getFechaActual(), TIMESROMAN12);
 		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 	}
