@@ -2130,4 +2130,31 @@ public class CatalogosDAO {
 		return lst;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<ProgAviso> getProgAviso(Integer id) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<ProgAviso> lst=null;
+		if (id != 0 && id != -1){
+			consulta.append("where id = ").append(id);
+		}
+		consulta.insert(0, "From ProgAviso ").append(" ORDER BY nombre");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ApoyoAviso> getApoyoAviso(int id) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<ApoyoAviso> lst=null;
+		if (id != 0 && id != -1){
+			consulta.append("where id = ").append(id);
+		}
+		consulta.insert(0, "From ApoyoAviso ").append(" ORDER BY nombre");
+		lst= session.createQuery(consulta.toString()).list();
+		
+		return lst;
+	}
+	
+	
 }

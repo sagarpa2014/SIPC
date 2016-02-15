@@ -422,5 +422,17 @@
 	<!-- RELACION DE VENTAS (ESPECIALISTA) -->
 	<definition name="capRelacionVentas" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/relVentas/capRelacionVentas.jsp" />
-	</definition>		
+	</definition>	
+	
+	<!-- AVISOS DOF -->
+	<definition name="ltsAvisosDof" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/avisosDof/lstAvisosDof.jsp" />
+	</definition>
+	
+	<definition name="capturaAvisosDof" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/avisosDof/capturaAvisosDof.jsp" />
+	</definition>	
+	
+	
+	
 </tiles-definitions>

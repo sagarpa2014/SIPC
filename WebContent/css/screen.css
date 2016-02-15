@@ -6,8 +6,8 @@ body {font-family:Helvetica; color: #777;   }
 #encabezado {float:right;}
 #logo {float: left; background-color: #F5F5F5 }
 #bienvenida{margin:auto;width:100%; }
-#bienvenida #principal {float:left; width:30%;}
-#bienvenida #secundario {float:left; width:70%;}
+#bienvenida #principal {float:left; width:25%;}
+#bienvenida #secundario {float:left; width:75%;}
 .datosComprador{margin:auto;width:100%;}
 .datosComprador .datosBancariosE {float:left; width:50%;}
 .datosComprador .datosFiscalesE {float:left; width:50%;}

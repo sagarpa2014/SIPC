@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="avisosDof" namespace="/avisosDof" extends="hibernate-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>            
+		<interceptors>
+			<interceptor name="chksession" class="mx.gob.comer.sipc.interceptor.SessionInterceptor" />
+		</interceptors>	
+		<global-results>
+			<result name="session" type="redirect"><param name="location">/</param></result>
+		</global-results>
+		
+		<action name="ltsAvisosDof" method="ltsAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">ltsAvisosDof</result>
+            <result name="input" type="tiles">ltsAvisosDof</result> 
+        </action>
+        
+        <action name="buscarAvisoDof" method="buscarAvisoDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">ltsAvisosDof</result>
+            <result name="input" type="tiles">ltsAvisosDof</result> 
+        </action>
+      
+		<action name="capturaAvisosDof" method="capturaAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaAvisosDof</result>
+            <result name="input" type="tiles">capturaAvisosDof</result> 
+        </action>
+         
+        <action name="registrarAvisosDof" method="registrarAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/avisosDof/repuestaRegistroAvisoDof.jsp</result>
+            <result name="input">/WEB-INF/paginas/avisosDof/repuestaRegistroAvisoDof.jsp</result>
+        </action>        
+        <action name="getTablaAvisosDof" method="getTablaAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/avisosDof/tablaAvisoDof.jsp</result>
+            <result name="input">/WEB-INF/paginas/avisosDof/tablaAvisoDof.jsp</result> 
+        </action>       
+    </package>
+</struts>

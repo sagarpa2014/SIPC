@@ -66,6 +66,8 @@
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.TiposAsentamiento"/>
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.EstatusSeguimiento"/>
 		<mapping class="mx.gob.comer.sipc.domain.catalogos.Regional"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.ProgAviso"/>
+		<mapping class="mx.gob.comer.sipc.domain.catalogos.ApoyoAviso"/>
 		 
 		<!-- Transaccionales -->
 		<mapping class="mx.gob.comer.sipc.domain.Pagos"/>
@@ -79,6 +81,8 @@
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CartaAdhesion"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AlcanceSolicitudInscripcion"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CnfReportesCruce"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AvisosDof"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AvisosDofDetalle"/>
 		
 		
 		<!-- *********Vistas******** -->
@@ -124,7 +128,8 @@
 		<mapping class="mx.gob.comer.sipc.vistas.domain.AsignacionCartasAdhesionEspecialistaV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.CartaAdhesionEtapaVolImpV"/>		
 		<mapping class="mx.gob.comer.sipc.vistas.domain.PagosCartasAdhesionV"/>
-		
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AvisosDofV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AvisosDofDetalleV"/>
 		
 		<!-- Historicos -->
 		<mapping class="mx.gob.comer.sipc.domain.historico.HcoCuotasEsquema"/>

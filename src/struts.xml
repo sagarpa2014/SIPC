@@ -58,5 +58,6 @@
     <include file="solicitudPago.xml"/>
     <include file="seguimiento.xml"/>
     <include file="relaciones.xml"/>
+    <include file="avisosDof.xml"/>
    
 </struts>

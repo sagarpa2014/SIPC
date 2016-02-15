@@ -66,6 +66,7 @@
 		</li>
 	</s:elseif>
 	<s:elseif test='#session.idPerfil==10'>
+		<li ><a href="<s:url value="/avisosDof/ltsAvisosDof"/>">Avance Pagos</a></li>
 		<li><a  href="#">Pagos</a>
 			<ul>
 				<li><a href="<s:url value="/pagos/capturaPagos"/>">Captura</a></li>
