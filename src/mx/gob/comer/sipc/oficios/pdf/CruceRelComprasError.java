@@ -90,6 +90,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	private List<FacturasCamposRequeridos> lstFacturasCamposRequeridos;
 	private List<PagosCamposRequeridos> lstPagosCamposRequeridos;
 	private List<GeneralToneladasTotalesPorBodFac> lstGeneralToneladasTotalesPorBodFac;
+	private List<GeneralToneladasTotPorBodega> lstGeneralTonTotPorBodega;
 	private List<BoletasFacturasPagosIncosistentes> lstBoletasFacturasPagosIncosistentes;
 	private List<VolumenFiniquito> lstVolumenCumplido;
 	private List<PrecioPagPorTipoCambio> lstPrecioPagPorTipoCambio;
@@ -108,9 +109,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	private int contBitacoraDet; 
 	private String [] configTotales;
 	private double totalVolPorContrato, totalVolPorContrato1, totalVolPorContrato2, totalVolPorContrato3, totalVolPorContrato4, totalVolPorContrato5, totalVolPorContrato6,totalVolPorContrato7;   
-	private double totalVolPorContratoPredioNoPag, totalVolPorContratoDifFacGlobal, totalVolPorContraTotalObs;
-	private double totalVolPorBodegaPredioNoPag, totalVolPorBodegaDifFacGlobal, totalVolPorBodegaTotalObs;
-	private double granTotalVolNoPag, granTotalVolDifFacGlobal, granTotalVolObs;
+	private double totalVolPorContratoPredioNoPag, totalVolPorContratoDifFacGlobal, totalVolPorContraTotalObs, totalVolPorContratoPredioIncons;
+	private double totalVolPorBodegaPredioNoPag, totalVolPorBodegaDifFacGlobal, totalVolPorBodegaTotalObs, totalVolPorBodegaPredioIncos;
+	private double granTotalVolNoPag, granTotalVolDifFacGlobal, granTotalVolObs, granTotalVolPredioIncos;
 	private double totalVolPorBodega, totalVolPorBodega1, totalVolPorBodega2,totalVolPorBodega3, totalVolPorBodega4, totalVolPorBodega5,totalVolPorBodega6,totalVolPorBodega7;
 	
 	private double granTotalVol,granTotalVol1, granTotalVol2, granTotalVol3, granTotalVol4, granTotalVol5, granTotalVol6,granTotalVol7;
@@ -140,7 +141,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	
 	public void generarCruce() throws Exception{	
 		reporteAplica = "";
-		if(rca.getIdCriterio()==10 || rca.getIdCriterio()==13 || rca.getIdCriterio()==15 || rca.getIdCriterio()==20 
+		if(rca.getIdCriterio()==10 || rca.getIdCriterio()==12 || rca.getIdCriterio()==13 || rca.getIdCriterio()==15 || rca.getIdCriterio()==20 
 				|| rca.getIdCriterio()==21 || rca.getIdCriterio() == 23 || rca.getIdCriterio() == 28 || rca.getIdCriterio() == 29){
 			document = new Document(new Rectangle(792, 612));
 		}else{
@@ -161,10 +162,28 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		getEncabezado();
 		getLugarYFecha();
 		getConfiguracionTabla();
-		getDatosGeneralesCartaAdehsion();
+		getDatosGeneralesCartaAdehsion(null);
 		addEmptyLine(2);		
 		getCuerpo();
 		addEmptyLine(1);
+		
+		if(rca.getIdCriterio() == 21 ){
+			document.newPage();
+			getEncabezado();
+			getLugarYFecha();
+			getConfiguracionTabla();
+			getDatosGeneralesCartaAdehsion("1 TONELADAS TOTALES POR CONTRATO DE BOLETAS Y FACTURAS");
+			addEmptyLine(2);
+			creaEncabezadoDetalle(2);
+			colocaDetalleEnTabla(2);			
+			document.add(t);
+			addEmptyLine(1);
+			
+			
+			addEmptyLine(1);
+		}		
+		
+		
 		document.close();			
 	}
 
@@ -200,7 +219,8 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		document.add(parrafo);	
 	}
 	
-	private void getDatosGeneralesCartaAdehsion() throws DocumentException {
+	private void getDatosGeneralesCartaAdehsion(String mensaje) throws DocumentException {
+		
 		String msj = rca.getLstBitacoraRelCompras().get(0).getMensaje();
 		if(rca.getIdCriterio() == 9){
 			if(msj.contains("/")){
@@ -217,8 +237,12 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		parrafo = new Paragraph(rca.getPrograma().getDescripcionLarga()+"\n\t", TIMESROMAN08);
 		cell = createCell(parrafo, w.length, 1, 1, null,0);
 		t.addCell(cell);
+		if(mensaje != null && !mensaje.isEmpty()){
+			parrafo = new Paragraph(mensaje+"\n\t", TIMESROMAN08);
+		}else{
+			parrafo = new Paragraph(msj+"\n\t", TIMESROMAN08);
+		}
 		
-		parrafo = new Paragraph(msj+"\n\t", TIMESROMAN08);
 		cell = createCell(parrafo, w.length, 1, 1, null,0);
 		t.addCell(cell);				
 	}
@@ -226,14 +250,14 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	private void getCuerpo() throws DocumentException, ParseException{	
 				
 		inicializarArrayList();					
-		colocarInfoEnPojo();
-		colocaDetalleEnTabla();			
+		colocarInfoEnPojo() ;
+		colocaDetalleEnTabla(1);			
 		document.add(t);
 		addEmptyLine(1);
 	}
 	  
 	@SuppressWarnings("unchecked")
-	private void colocaDetalleEnTabla() {
+	private void colocaDetalleEnTabla(int tipo) {
 		claveBodegaTmp = ""; nomEstadoTmp="";  temFCProductor =""; temFolioContrato= "" ;
 		int posicionTotal = 0;
 		if(rca.getIdCriterio() == 1){//VALIDA QUE EXISTA PREDIO EN BASE DE DATOS 7.4 DIFERENCIAS PREDIOS/PRODUCTOR/COMPRADOR 
@@ -812,15 +836,92 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				paternoProductor = l.getPaternoProductor();
 				maternoProductor = l.getMaternoProductor();
 				nombreProductor = l.getNombreProductor();
-				colocarPrimerasColumnasDetalle(configTotales, w.length);							
+				if(contBitacoraDet != 0){
+					if(siAplicaFolioContrato){					
+						if(!temFolioContrato.equals(folioContrato) && contBitacoraDet > 1){
+							posicionTotal = (siAplicaFolioContrato?9:8);
+							totalesContrato = new StringBuilder();
+							totalesContrato.append("1,TOTAL CON;"+(siAplicaFolioContrato?(++posicionTotal)+","+totalVolPorContrato+",v;":""));
+							colocarTotales(totalesContrato.toString(),  w.length);
+							totalVolPorContrato = 0;
+						}
+					}
+				}
+				if(!claveBodegaTmp.equals(claveBodega) && contBitacoraDet > 1){
+					if(siAplicaFolioContrato && temFolioContrato.equals(folioContrato)){
+						posicionTotal = (siAplicaFolioContrato?9:8);
+						totalesContrato = new StringBuilder();
+						totalesContrato.append("1,TOTAL CON;"+(siAplicaFolioContrato?(++posicionTotal)+","+totalVolPorContrato+",v;":""));
+						colocarTotales(totalesContrato.toString(),  w.length);
+					}	
+					posicionTotal = (siAplicaFolioContrato?9:8);
+					totalesBodega = new StringBuilder();
+					totalesBodega.append("1,TOTAL BOD;"+(++posicionTotal)+","+totalVolPorBodega+",v;");
+					colocarTotales(totalesBodega.toString(),  w.length);
+					totalVolPorBodega = 0;	
+					if(siAplicaFolioContrato){
+						totalVolPorContrato = 0;
+					}
+				}
+				
+					
+				if(!claveBodegaTmp.equals(claveBodega)){
+					parrafo =  new Paragraph(claveBodega, TIMESROMAN08);
+				}else{
+					parrafo =  new Paragraph("", TIMESROMAN08);
+				}				
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);							
+				if(!nomEstadoTmp.equals(nombreEstado)){
+					parrafo =  new Paragraph(nombreEstado, TIMESROMAN08);
+				}else{
+					parrafo =  new Paragraph("", TIMESROMAN08);
+				}				
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				if(siAplicaFolioContrato){
+					if(!temFolioContrato.equals(folioContrato)){					
+						parrafo =  new Paragraph(folioContrato, TIMESROMAN08);			
+					}else if(!claveBodegaTmp.equals(claveBodega)){
+						parrafo =  new Paragraph(folioContrato, TIMESROMAN08);								
+					}else{
+						parrafo =  new Paragraph("", TIMESROMAN08);								
+					}				
+					cell = new PdfPCell(parrafo);
+					cell =createCell(parrafo, 0, 1, 1);
+					t.addCell(cell);
+				}
+				parrafo =  new Paragraph(paternoProductor+" "+maternoProductor+" "+nombreProductor, TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 2, 1);
+				t.addCell(cell);		
+						
+				parrafo =  new Paragraph(l.getCurpProductor(), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				
+				parrafo =  new Paragraph(l.getCurpProductorBD(), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
+				
 				parrafo =  new Paragraph(l.getRfcProductor(), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
 				cell =createCell(parrafo, 0, 1, 1);
 				t.addCell(cell);
-				parrafo =  new Paragraph(l.getRfcFacVenta(), TIMESROMAN08);
+				
+				parrafo =  new Paragraph(l.getRfcProductorBD(), TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
 				cell =createCell(parrafo, 0, 1, 1);
-				t.addCell(cell);				
+				t.addCell(cell);
+				
+				parrafo =  new Paragraph(l.getLeyenda(), TIMESROMAN08);
+				cell = new PdfPCell(parrafo);
+				cell =createCell(parrafo, 0, 1, 1);
+				t.addCell(cell);
 				parrafo =  new Paragraph(l.getVolTotalFacVenta() != null ? TextUtil.formateaNumeroComoVolumen(l.getVolTotalFacVenta()):"", TIMESROMAN08);
 				cell = new PdfPCell(parrafo);
 				cell =createCell(parrafo, 0, 3, 1);
@@ -829,9 +930,25 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				nomEstadoTmp = l.getNombreEstado();
 				if(siAplicaFolioContrato){				
 					temFolioContrato = l.getFolioContrato();
-				}				
+				}
+				totalVolPorContrato += l.getVolTotalFacVenta();
+				totalVolPorBodega += l.getVolTotalFacVenta();
+				granTotalVol += l.getVolTotalFacVenta();
 				contBitacoraDet ++;
-			}			
+			}	//end for
+			posicionTotal = (siAplicaFolioContrato?9:8);
+			if(siAplicaFolioContrato){
+				colocarTotales("1,TOTAL CON;"+(++posicionTotal)+","+totalVolPorContrato+",v", w.length);
+				posicionTotal = (siAplicaFolioContrato?9:8);
+				colocarTotales("1,TOTAL BOD;"+(++posicionTotal)+","+totalVolPorBodega+",v", w.length);
+				posicionTotal = (siAplicaFolioContrato?9:8);
+				colocarTotales("1,GRAN TOTAL;"+(++posicionTotal)+","+granTotalVol+",v", w.length);
+			}else{
+				posicionTotal = (siAplicaFolioContrato?8:7);
+				colocarTotales("1,TOTAL BOD;"+(++posicionTotal)+","+totalVolPorBodega+",v", w.length);
+				posicionTotal = (siAplicaFolioContrato?8:7);
+				colocarTotales("1,GRAN TOTAL;"+(++posicionTotal)+","+granTotalVol+",v", w.length);
+			}
 		}else if(rca.getIdCriterio() == 31){//"10.1 DIFERENCIA DE RFC DE PRODUCTOR VS RFC FACTURA"
 			Collections.sort(lstRfcProductorVsRfcFactura2);			
 			for (RelacionComprasTMP l: lstRfcProductorVsRfcFactura2){					
@@ -1591,6 +1708,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							if(reporteAplica.contains( ",1,")){
 								totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioNoPag+",v;");
 							}
+							if(reporteAplica.contains( ",26,")){
+								totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioIncons+",v;");
+							}
 							if(reporteAplica.contains(",19,")){
 								totalesContrato.append((++posicionTotal)+","+totalVolPorContratoDifFacGlobal+",v;");
 							}							
@@ -1609,6 +1729,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							if(reporteAplica.contains( ",1,")){
 								totalVolPorContratoPredioNoPag = 0;
 							}
+							if(reporteAplica.contains( ",26,")){
+								totalVolPorContratoPredioIncons = 0;
+							}
 							if(reporteAplica.contains(",19,")){
 								totalVolPorContratoDifFacGlobal = 0;
 							}							
@@ -1624,6 +1747,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 										+(++posicionTotal)+","+totalVolPorContrato7+",v;");				
 								if(reporteAplica.contains( ",1,")){
 									totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioNoPag+",v;");
+								}
+								if(reporteAplica.contains( ",26,")){
+									totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioIncons+",v;");
 								}
 								if(reporteAplica.contains(",19,")){
 									totalesContrato.append((++posicionTotal)+","+totalVolPorContratoDifFacGlobal+",v;");
@@ -1641,6 +1767,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 									+(++posicionTotal)+","+totalVolPorBodega7+",v;");
 							if(reporteAplica.contains( ",1,")){
 								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioNoPag+",v;");
+							}
+							if(reporteAplica.contains( ",26,")){
+								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioIncos+",v;");
 							}
 							if(reporteAplica.contains(",19,")){
 								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaDifFacGlobal+",v;");
@@ -1675,6 +1804,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							if(reporteAplica.contains( ",1,")){
 								totalVolPorBodegaPredioNoPag = 0;
 							}
+							
+							if(reporteAplica.contains( ",26,")){
+								totalVolPorBodegaPredioIncos = 0;
+							}
 							if(reporteAplica.contains(",19,")){
 								totalVolPorBodegaDifFacGlobal = 0;
 							}				
@@ -1690,6 +1823,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 									+(++posicionTotal)+","+totalVolPorBodega7+",v;");
 							if(reporteAplica.contains( ",1,")){
 								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioNoPag+",v;");
+							}							
+							if(reporteAplica.contains( ",26,")){
+								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioIncos+",v;");
 							}
 							if(reporteAplica.contains(",19,")){
 								totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaDifFacGlobal+",v;");
@@ -1711,6 +1847,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 							if(reporteAplica.contains( ",1,")){
 								totalVolPorBodegaPredioNoPag = 0;
 							}
+							if(reporteAplica.contains( ",26,")){
+								totalVolPorBodegaPredioIncos = 0;
+							}
+							
 							if(reporteAplica.contains(",19,")){
 								totalVolPorBodegaDifFacGlobal = 0;
 							}							
@@ -1757,6 +1897,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					crearColumna("V-3-"+l.getPredioNoPagado()+";", "DET");						
 				}
 				
+				if(rca.getCriteriosByPrograma().contains( ",26,")){
+					crearColumna("V-3-"+l.getPredioInconsistente()+";", "DET");						
+				}
+				
 				if(rca.getCriteriosByPrograma().contains( ",19,")){//Diferencia de facturas globales VS individuales
 					crearColumna("V-3-"+l.getDifFacGlobalIndividual()+";", "DET");						
 				}				
@@ -1779,6 +1923,12 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					totalVolPorContratoPredioNoPag += (l.getPredioNoPagado()!=null?l.getPredioNoPagado():0);
 					totalVolPorBodegaPredioNoPag += (l.getPredioNoPagado()!=null?l.getPredioNoPagado():0);
 					granTotalVolNoPag += (l.getPredioNoPagado()!=null?l.getPredioNoPagado():0);
+				}
+				
+				if(reporteAplica.contains( ",26,")){
+					totalVolPorContratoPredioIncons += (l.getPredioInconsistente()!=null?l.getPredioInconsistente():0);
+					totalVolPorBodegaPredioIncos += (l.getPredioInconsistente()!=null?l.getPredioInconsistente():0);
+					granTotalVolPredioIncos += (l.getPredioInconsistente()!=null?l.getPredioInconsistente():0);
 				}
 				if(reporteAplica.contains(",19,")){
 					totalVolPorContratoDifFacGlobal += (l.getDifFacGlobalIndividual()!=null?l.getDifFacGlobalIndividual():0);
@@ -1820,6 +1970,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				if(reporteAplica.contains( ",1,")){
 					totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioNoPag+",v;");
 				}
+				
+				if(reporteAplica.contains( ",26,")){
+					totalesContrato.append((++posicionTotal)+","+totalVolPorContratoPredioIncons+",v;");
+				}
 				if(reporteAplica.contains(",19,")){
 					totalesContrato.append((++posicionTotal)+","+totalVolPorContratoDifFacGlobal+",v;");
 				}							
@@ -1834,6 +1988,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					+(++posicionTotal)+","+totalVolPorBodega7+",v;");
 			if(reporteAplica.contains( ",1,")){
 				totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioNoPag+",v;");
+			}
+			if(reporteAplica.contains( ",26,")){
+				totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaPredioIncos+",v;");
 			}
 			if(reporteAplica.contains(",19,")){
 				totalesBodega.append((++posicionTotal)+","+totalVolPorBodegaDifFacGlobal+",v;");
@@ -1850,85 +2007,176 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			if(reporteAplica.contains( ",1,")){
 				totalesGran.append((++posicionTotal)+","+granTotalVolNoPag+",v;");
 			}
+			if(reporteAplica.contains( ",26,")){
+				totalesGran.append((++posicionTotal)+","+granTotalVolPredioIncos+",v;");
+			}
 			if(reporteAplica.contains(",19,")){
 				totalesGran.append((++posicionTotal)+","+granTotalVolDifFacGlobal+",v;");
 			}							
 			totalesGran.append((++posicionTotal)+","+granTotalVolObs+",v;");
 			colocarTotales(totalesGran.toString(),  w.length);			
 				
-		}else if(rca.getIdCriterio() == 21){//TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS
-			Collections.sort(lstGeneralToneladasTotalesPorBodFac);
-			contBitacoraDet = 1;
-			for(GeneralToneladasTotalesPorBodFac l: lstGeneralToneladasTotalesPorBodFac){			
-				if(contBitacoraDet != 0){
-					if(siAplicaFolioContrato){
-						if(!temFolioContrato.equals(l.getFolioContrato()) && contBitacoraDet > 1){
-							colocarTotales("1,TOTAL;5,"+totalVolPorContrato+",v;6,"+totalVolPorContrato1+",v;"
-									+"7,"+totalVolPorContrato2+",c;"+"8,"+totalVolPorContrato3+",c;"
-									+"9,"+totalVolPorContrato4+",c;"+"10,"+totalVolPorContrato5+",c;", w.length);			
-							totalVolPorContrato = 0;
-							totalVolPorContrato1 = 0;
-							totalVolPorContrato2 = 0;
-							totalVolPorContrato3 = 0;
-							totalVolPorContrato4 = 0;
-							totalVolPorContrato5 = 0;
+		}else if(rca.getIdCriterio() == 21){	
+			if(tipo == 1){// TONELADAS TOTALES POR BODEGA DE BOLETAS PAGOS Y FACTURAS		
+				//TONELADAS TOTALES POR BODEGA DE BOLETAS PAGOS Y FACTURAS		
+				Collections.sort(lstGeneralTonTotPorBodega);
+				contBitacoraDet = 1;			
+				totalVolPorContrato = 0;
+				totalVolPorContrato1 = 0;
+				totalVolPorContrato2 = 0;
+				totalVolPorContrato3 = 0;
+				totalVolPorContrato4 = 0;
+				totalVolPorContrato5 = 0;
+							
+				granTotalVol = 0;
+				granTotalVol1 = 0;
+				granTotalVol2 = 0;
+				granTotalVol3 = 0;
+				granTotalVol4 = 0;
+				granTotalVol5 = 0;
+				 
+				for(GeneralToneladasTotPorBodega l: lstGeneralTonTotPorBodega){			
+					if(contBitacoraDet != 0){
+						if(!claveBodegaTmp.equals(l.getClaveBodega()) && contBitacoraDet > 1){
+							posicionTotal = (siAplicaFolioContrato?3:2);
+							if(siAplicaFolioContrato){
+								colocarTotales("1,TOTAL;"+(++posicionTotal)+","+totalVolPorBodega+",v;"+(++posicionTotal)+","+totalVolPorBodega1+",v;"
+										+(++posicionTotal)+","+totalVolPorBodega2+",c;"+(++posicionTotal)+","+totalVolPorBodega3+",c;"
+										+(++posicionTotal)+","+totalVolPorBodega4+",c;"+(++posicionTotal)+","+totalVolPorBodega5+",c;", w.length);
+							}
+							totalVolPorBodega = 0;
+							totalVolPorBodega1 = 0;
+							totalVolPorBodega2 = 0;
+							totalVolPorBodega3 = 0;
+							totalVolPorBodega4 = 0;
+							totalVolPorBodega5 = 0;
 						}
-					}					
-				}				
-				if(siAplicaFolioContrato){
-					if(!temFolioContrato.equals(l.getFolioContrato())){					
-						crearColumna("S-1-"+l.getFolioContrato(),"DET");	
+											
+					}
+					 
+					if(!claveBodegaTmp.equals(l.getClaveBodega())){
+						crearColumna("S-1-"+l.getClaveBodega(),"DET");	
 					}else{
-						crearColumna("S-1-\t;","DET");								
-					}				
-				}	
-				if(!claveBodegaTmp.equals(l.getClaveBodega())){
-					crearColumna("S-1-"+l.getClaveBodega()+";S-1-"+l.getNombreBodega(),"DET");	
-				}else if(siAplicaFolioContrato && !temFolioContrato.equals(l.getFolioContrato())){
-					crearColumna("S-1-"+l.getClaveBodega()+";S-1-"+l.getNombreBodega(),"DET");	
-				}else{
-					crearColumna("S-1-\t;S-1-\t","DET");	
-				}	
-				if(!nomEstadoTmp.equals(l.getNombreEstado())){
-					crearColumna("S-1-"+l.getNombreEstado(),"DET");	
-				}else{
-					crearColumna("S-1-"+"\t","DET");
-				}	
-				crearColumna("V-3-"+l.getPesoNetoAnaBol()+";"+"V-3-"+l.getPesoNetoAnaFac()+";"+"C-3-"+l.getTotalBoletas()+";"+"C-3-"+l.getTotalFacturas()+";"
-							+"C-3-"+l.getTotalRegistros()+";"+"C-3-"+l.getNumeroProdBenef(), "DET");
-				claveBodegaTmp = l.getClaveBodega();
-				nomEstadoTmp = l.getNombreEstado();
-				if(siAplicaFolioContrato){				
-					temFolioContrato = l.getFolioContrato();
-				}
-				totalVolPorContrato += l.getPesoNetoAnaBol();
-				totalVolPorContrato1 += l.getPesoNetoAnaFac();
-				totalVolPorContrato2 += l.getTotalBoletas();
-				totalVolPorContrato3 += l.getTotalFacturas();
-				totalVolPorContrato4 += l.getTotalRegistros();
-				totalVolPorContrato5 += l.getNumeroProdBenef();
-				granTotalVol += l.getPesoNetoAnaBol();
-				granTotalVol1 += l.getPesoNetoAnaFac();
-				granTotalVol2 += l.getTotalBoletas();
-				granTotalVol3 += l.getTotalFacturas();
-				granTotalVol4 += l.getTotalRegistros();
-				granTotalVol5 += l.getNumeroProdBenef();
-				contBitacoraDet ++;						
-			}			
-
-			if(siAplicaFolioContrato){
-				colocarTotales("1,TOTAL;5,"+totalVolPorContrato+",v;6,"+totalVolPorContrato1+",v;"
-						+"7,"+totalVolPorContrato2+",c;"+"8,"+totalVolPorContrato3+",c;"
-						+"9,"+totalVolPorContrato4+",c;"+"10,"+totalVolPorContrato5+",c;", w.length);
-				colocarTotales("1,GRAN TOTAL;5,"+granTotalVol+",v;6,"+granTotalVol1+",v;"
-						+"7,"+granTotalVol2+",c;"+"8,"+granTotalVol3+",c;"
-						+"9,"+granTotalVol4+",c;"+"10,"+granTotalVol5+",c;", w.length);	
-			}else{
-				colocarTotales("1,GRAN TOTAL;4,"+granTotalVol+",v;5,"+granTotalVol1+",v;"
-						+"6,"+granTotalVol2+",c;"+"7,"+granTotalVol3+",c;"
-						+"8,"+granTotalVol4+",c;"+"9,"+granTotalVol5+",c;", w.length);
-			}
+						crearColumna("S-1-\t","DET");
+					}
 					
+					if(siAplicaFolioContrato){
+						if(!temFolioContrato.equals(l.getFolioContrato())){					
+							crearColumna("S-1-"+l.getFolioContrato(),"DET");	
+						}else{
+							crearColumna("S-1-\t;","DET");								
+						}				
+					}		
+					if(!nomEstadoTmp.equals(l.getNombreEstado())){
+						crearColumna("S-1-"+l.getNombreEstado(),"DET");	
+					}else{
+						crearColumna("S-1-"+"\t","DET");
+					}	
+					crearColumna("V-3-"+l.getPesoNetoAnaBol()+";"+"V-3-"+l.getPesoNetoAnaFac()+";"+"C-3-"+l.getTotalBoletas()+";"+"C-3-"+l.getTotalFacturas()+";"
+								+"C-3-"+l.getTotalRegistros()+";"+"C-3-"+l.getNumeroProdBenef(), "DET");
+					claveBodegaTmp = l.getClaveBodega();
+					nomEstadoTmp = l.getNombreEstado();
+					if(siAplicaFolioContrato){				
+						temFolioContrato = l.getFolioContrato();
+					}
+					totalVolPorBodega += l.getPesoNetoAnaBol();
+					totalVolPorBodega1 += l.getPesoNetoAnaFac();
+					totalVolPorBodega2 += l.getTotalBoletas();
+					totalVolPorBodega3 += l.getTotalFacturas();
+					totalVolPorBodega4 += l.getTotalRegistros();
+					totalVolPorBodega5 += l.getNumeroProdBenef();
+					granTotalVol += l.getPesoNetoAnaBol();
+					granTotalVol1 += l.getPesoNetoAnaFac();
+					granTotalVol2 += l.getTotalBoletas();
+					granTotalVol3 += l.getTotalFacturas();
+					granTotalVol4 += l.getTotalRegistros();
+					granTotalVol5 += l.getNumeroProdBenef();
+					contBitacoraDet ++;						
+				}		
+				posicionTotal = (siAplicaFolioContrato?3:2);	
+				colocarTotales("1,TOTAL;"+(++posicionTotal)+","+totalVolPorBodega+",v;"+(++posicionTotal)+","+totalVolPorBodega1+",v;"
+						+(++posicionTotal)+","+totalVolPorBodega2+",c;"+(++posicionTotal)+","+totalVolPorBodega3+",c;"
+						+(++posicionTotal)+","+totalVolPorBodega4+",c;"+(++posicionTotal)+","+totalVolPorBodega5+",c;", w.length);
+				posicionTotal = (siAplicaFolioContrato?3:2);	
+				colocarTotales("1,GRAN TOTAL;"+(++posicionTotal)+","+granTotalVol+",v;"+(++posicionTotal)+","+granTotalVol1+",v;"
+						+(++posicionTotal)+","+granTotalVol2+",c;"+(++posicionTotal)+","+granTotalVol3+",c;"
+						+(++posicionTotal)+","+granTotalVol4+",c;"+(++posicionTotal)+","+granTotalVol5+",c;", w.length);
+			}else{
+				//TONELADAS TOTALES POR CONTRATO DE BOLETAS PAGOS Y FACTURAS		
+				Collections.sort(lstGeneralToneladasTotalesPorBodFac);
+				contBitacoraDet = 1;
+				for(GeneralToneladasTotalesPorBodFac l: lstGeneralToneladasTotalesPorBodFac){			
+					if(contBitacoraDet != 0){
+						if(siAplicaFolioContrato){
+							if(!temFolioContrato.equals(l.getFolioContrato()) && contBitacoraDet > 1){
+								colocarTotales("1,TOTAL;4,"+totalVolPorContrato+",v;5,"+totalVolPorContrato1+",v;"
+										+"6,"+totalVolPorContrato2+",c;"+"7,"+totalVolPorContrato3+",c;"
+										+"8,"+totalVolPorContrato4+",c;"+"9,"+totalVolPorContrato5+",c;", w.length);			
+								totalVolPorContrato = 0;
+								totalVolPorContrato1 = 0;
+								totalVolPorContrato2 = 0;
+								totalVolPorContrato3 = 0;
+								totalVolPorContrato4 = 0;
+								totalVolPorContrato5 = 0;
+							}
+						}					
+					}				
+					if(siAplicaFolioContrato){
+						if(!temFolioContrato.equals(l.getFolioContrato())){					
+							crearColumna("S-1-"+l.getFolioContrato(),"DET");	
+						}else{
+							crearColumna("S-1-\t;","DET");								
+						}				
+					}	
+					if(!claveBodegaTmp.equals(l.getClaveBodega())){
+						crearColumna("S-1-"+l.getClaveBodega(),"DET");	
+					}else if(siAplicaFolioContrato && !temFolioContrato.equals(l.getFolioContrato())){
+						crearColumna("S-1-"+l.getClaveBodega(),"DET");	
+					}else{
+						crearColumna("S-1-\t;S-1-\t","DET");	
+					}	
+					if(!nomEstadoTmp.equals(l.getNombreEstado())){
+						crearColumna("S-1-"+l.getNombreEstado(),"DET");	
+					}else{
+						crearColumna("S-1-"+"\t","DET");
+					}	
+					crearColumna("V-3-"+l.getPesoNetoAnaBol()+";"+"V-3-"+l.getPesoNetoAnaFac()+";"+"C-3-"+l.getTotalBoletas()+";"+"C-3-"+l.getTotalFacturas()+";"
+								+"C-3-"+l.getTotalRegistros()+";"+"C-3-"+l.getNumeroProdBenef(), "DET");
+					claveBodegaTmp = l.getClaveBodega();
+					nomEstadoTmp = l.getNombreEstado();
+					if(siAplicaFolioContrato){				
+						temFolioContrato = l.getFolioContrato();
+					}
+					totalVolPorContrato += l.getPesoNetoAnaBol();
+					totalVolPorContrato1 += l.getPesoNetoAnaFac();
+					totalVolPorContrato2 += l.getTotalBoletas();
+					totalVolPorContrato3 += l.getTotalFacturas();
+					totalVolPorContrato4 += l.getTotalRegistros();
+					totalVolPorContrato5 += l.getNumeroProdBenef();
+					granTotalVol += l.getPesoNetoAnaBol();
+					granTotalVol1 += l.getPesoNetoAnaFac();
+					granTotalVol2 += l.getTotalBoletas();
+					granTotalVol3 += l.getTotalFacturas();
+					granTotalVol4 += l.getTotalRegistros();
+					granTotalVol5 += l.getNumeroProdBenef();
+					contBitacoraDet ++;						
+				}			
+
+				if(siAplicaFolioContrato){
+					colocarTotales("1,TOTAL;4,"+totalVolPorContrato+",v;5,"+totalVolPorContrato1+",v;"
+							+"6,"+totalVolPorContrato2+",c;"+"7,"+totalVolPorContrato3+",c;"
+							+"8,"+totalVolPorContrato4+",c;"+"9,"+totalVolPorContrato5+",c;", w.length);
+					colocarTotales("1,GRAN TOTAL;4,"+granTotalVol+",v;5,"+granTotalVol1+",v;"
+							+"6,"+granTotalVol2+",c;"+"7,"+granTotalVol3+",c;"
+							+"8,"+granTotalVol4+",c;"+"9,"+granTotalVol5+",c;", w.length);	
+				}else{
+					colocarTotales("1,GRAN TOTAL;3,"+granTotalVol+",v;4,"+granTotalVol1+",v;"
+							+"5,"+granTotalVol2+",c;"+"6,"+granTotalVol3+",c;"
+							+"7,"+granTotalVol4+",c;"+"8,"+granTotalVol5+",c;", w.length);
+				}
+
+			}
+						
 		}else if(rca.getIdCriterio() == 22){//"4.3 VALORES NULOS REQUERIDOS EN BOLETAS"
 			int contBitacoraDet = 1;
 			for(BoletasCamposRequeridos l: lstBoletasCamposRequeridos){
@@ -2662,7 +2910,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	}
 
 	private void colocarInfoEnPojo() throws ParseException {
-		creaEncabezadoDetalle();
+		creaEncabezadoDetalle(1);
 		for(BitacoraRelcompras b: rca.getLstBitacoraRelCompras() ){ 
 			List<BitacoraRelcomprasDetalle> lstBitacoraDetalle = rDAO.consultaBitacoraRelcomprasDetalle(b.getIdBitacoraRelcompras());			
 			for(BitacoraRelcomprasDetalle bd :lstBitacoraDetalle){
@@ -2946,9 +3194,13 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					r.setCurpProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
 					++columna;
+					r.setCurpProductorBD(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
 					r.setRfcProductor(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
 					++columna;
-					r.setRfcFacVenta(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					r.setRfcProductorBD(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					++columna;
+					r.setLeyenda(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
 					++columna;
 					r.setVolTotalFacVenta(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")&&!bS[columna].equals("-")?bS[columna]:"0"));
 					lstRfcProductorVsRfcFactura.add(r);
@@ -3297,35 +3549,74 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 					++columna;
 					p.setPredioNoPagado(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					++columna;
+					p.setPredioInconsistente(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					++columna;
 					p.setDifFacGlobalIndividual(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					++columna;
 					p.setVolumenObservado(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
 					lstBoletasFacturasPagosIncosistentes.add(p);
 				}else if(rca.getIdCriterio() == 21){
 					columna = 0;
-					GeneralToneladasTotalesPorBodFac bo  = new GeneralToneladasTotalesPorBodFac();
-					if(siAplicaFolioContrato){
-						bo.setFolioContrato(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+					GeneralToneladasTotalesPorBodFac bo = null;
+					GeneralToneladasTotPorBodega b1 = null;
+					if(bS[0].equals("1")){
+						 bo  = new GeneralToneladasTotalesPorBodFac();
+						//La columna 0, determina el tipo de reporte
 						++columna;
+						if(siAplicaFolioContrato){
+							bo.setFolioContrato(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+							++columna;
+						}								
+						 bo.setClaveBodega(bS[columna]);
+						++columna;
+						bo.setNombreEstado(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+						++columna;
+						bo.setPesoNetoAnaBol(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						bo.setPesoNetoAnaFac(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						bo.setTotalBoletas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						bo.setTotalFacturas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						bo.setTotalRegistros(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						bo.setNumeroProdBenef(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					}else{
+						b1  = new GeneralToneladasTotPorBodega();
+						++columna;
+						
+						b1.setClaveBodega(bS[columna]);	
+						System.out.println("Bodega "+bS[columna]);
+						//La columna 0, determina el tipo de reporte
+						if(siAplicaFolioContrato){
+							++columna;
+							b1.setFolioContrato(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");	
+							System.out.println("Folio "+bS[columna]);
+						}								
+						++columna;
+						b1.setNombreEstado(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
+						System.out.println("Estado "+bS[columna]);
+						++columna;
+						System.out.println("Peso"+bS[columna]);
+						b1.setPesoNetoAnaBol(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						b1.setPesoNetoAnaFac(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						b1.setTotalBoletas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						b1.setTotalFacturas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						b1.setTotalRegistros(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+						++columna;
+						b1.setNumeroProdBenef(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
+					}									
+					if(bS[0].equals("1")){
+						lstGeneralToneladasTotalesPorBodFac.add(bo);
+					}else{						
+						lstGeneralTonTotPorBodega.add(b1);
 					}
-					bo.setClaveBodega(bS[columna]);
-					++columna;
-					bo.setNombreBodega(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
-					++columna;
-					bo.setNombreEstado(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"");
-					++columna;
-					bo.setPesoNetoAnaBol(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					++columna;
-					bo.setPesoNetoAnaFac(Double.parseDouble(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					++columna;
-					bo.setTotalBoletas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					++columna;
-					bo.setTotalFacturas(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					++columna;
-					bo.setTotalRegistros(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					++columna;
-					bo.setNumeroProdBenef(Integer.parseInt(bS[columna]!=null&&!bS[columna].isEmpty()&&!bS[columna].equals("null")?bS[columna]:"0"));
-					lstGeneralToneladasTotalesPorBodFac.add(bo);					
+										
 				}else if(rca.getIdCriterio() == 22){//VALORES NULOS EN BOLETAS	
 					columna = 0;
 					BoletasCamposRequeridos bo = new BoletasCamposRequeridos();
@@ -3703,10 +3994,10 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			}			
 		}else if(rca.getIdCriterio() == 12){//"Que el rfc corresponda al productor"
 			if(siAplicaFolioContrato){
-				float[] x1 = {8,5,8,20,15,17,17,10}; // %
+				float[] x1 = {8,5,8,20,10,10,10,10,10,9}; // %
 				w = x1;
 			}else{
-				float[] x1 = {10,10,20,20,20,20}; // %
+				float[] x1 = {8,5,8,20,12,12,12,12,12}; // %
 				w = x1;
 			}
 		}else if(rca.getIdCriterio() == 31){//"Que el rfc productor vs rfc factura"
@@ -3816,14 +4107,18 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				double c = 0;	
 				StringBuilder composicionArreglo = new StringBuilder();
 				if(siAplicaFolioContrato){
-					composicionArreglo.append("8,3,8,17,10,6,6,6,6,6,6,6,6,"); //Campos Default
+					composicionArreglo.append("8,3,8,16,11,6,6,6,6,6,6,6,6,"); //Campos Default
 				}else{
 					composicionArreglo.append("8,5,20,10,6,6,6,6,6,6,6,6,"); //Campos Default
 				}
 				if(rca.getCriteriosByPrograma().contains( ",1,")){
 					reporteAplica =  ",1,";
 					composicionArreglo.append("6,");
-				}				
+				}
+				if(rca.getCriteriosByPrograma().contains( ",26,")){
+					reporteAplica =  ",26,";
+					composicionArreglo.append("6,");
+				}
 				if(rca.getCriteriosByPrograma().contains(",19,")){
 					reporteAplica += ",19,";
 					composicionArreglo.append("6,");
@@ -3855,13 +4150,11 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 //				
 //			}
 		}else if(rca.getIdCriterio() == 21){//"//TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS
-			System.out.println("configurando numero de campos en la tabla");
 			if(siAplicaFolioContrato){
-				//float[] x1 = {7,4,7,10,9,9,9,9,9,9,9,9}; // %
-				float[] x1 = {10,10,10,10,10,10,10,10,10,10}; // %
+				float[] x1 = {11,11,11,11,11,11,11,11,11}; // %
 				w = x1;
 			}else{
-				float[] x1 = {10,10,10,10,10,10,10,10,10}; // %
+				float[] x1 = {12,12,12,12,12,12,12,12}; // %
 				w = x1;
 			}		
 		
@@ -4101,7 +4394,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		 }	 				
 	}
 		
-	private void creaEncabezadoDetalle() {
+	private void creaEncabezadoDetalle(int tipo) {
 		if(rca.getIdCriterio() == 1){//Valida que exista predio en base de datos 7.4
 			crearColumna("S-1-ESTADO;S-1-PRODUCTOR;S-1-CURP/RFC;S-3-PREDIO;S-3-OBSERVACIÓN;", "DET");
 //			parrafo =  new Paragraph("ESTADO", TIMESROMAN08BOLD);
@@ -4282,20 +4575,11 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 			cell = new PdfPCell(parrafo);
 			cell =createCell(parrafo, 0, 3, 1);
 			t.addCell(cell);
-		}else if(rca.getIdCriterio() == 12){//"QUE EL RFC CORRESPONDA AL PRODUCTOR"
-			colocarPrimerasColumnasEncDetalle();	
-			parrafo =  new Paragraph("RFC PRODUCTOR", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 3, 1);
-			t.addCell(cell);
-			parrafo =  new Paragraph("RFC FACTURA", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 3, 1);
-			t.addCell(cell);	
-			parrafo =  new Paragraph("PESO NETO ANA. (TON) FAC", TIMESROMAN08BOLD);
-			cell = new PdfPCell(parrafo);
-			cell =createCell(parrafo, 0, 3, 1);
-			t.addCell(cell);	
+		}else if(rca.getIdCriterio() == 12){//"QUE EL RFC CORRESPONDA AL PRODUCTOR"			
+			if(siAplicaFolioContrato){	
+				crearColumna("S-1-BODEGA;S-1-EDO;S-1-FOLIO CONTRATO;S-1-PRODUCTOR;S-1-CURP REL;S-1-CURP BD;S-1-RFC REL;"
+						+ "S-1-RFC BD;S-1-LEYENDA;S-3-PESO NETO ANA. (TON) FAC;", "DET");
+				}
 		}else if(rca.getIdCriterio() == 31){//"QUE EL RFC CORRESPONDA AL PRODUCTOR"
 			colocarPrimerasColumnasEncDetalle();	
 			parrafo =  new Paragraph("RFC PRODUCTOR", TIMESROMAN08BOLD);
@@ -4481,6 +4765,9 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				if(reporteAplica.contains( ",1,")){
 					encabezado.append("S-3-PREDIO NO PAG;");
 				}
+				if(reporteAplica.contains( ",26,")){
+					encabezado.append("S-3-PREDIO INC;");
+				}
 				if(reporteAplica.contains(",19,")){
 					encabezado.append("S-3-DIF FAC GLOB VS IND;");
 				}				
@@ -4498,14 +4785,22 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 //				}
 //				
 //			}	
-		}else if(rca.getIdCriterio() == 21){//TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS	
-			if(siAplicaFolioContrato){	
-				crearColumna("S-1-FOLIO CONTRATO;S-1-BODEGA;S-1-NOMBRE BODEGA;S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
-					+ "S-1-TOTAL DE REGISTROS;S-1-PRODUCT BENEFICI", "ENC");
+		}else if(rca.getIdCriterio() == 21){//TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS
+			if(tipo == 1){
+				crearColumna("S-1-BODEGA;"+(siAplicaFolioContrato?"S-1-FOLIO CONTRATO;":"")+"S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
+						+ "S-1-TOTAL DE REGISTROS;S-1-PRODUCT BENEFICI", "ENC");
 			}else{
-				crearColumna("S-1-BODEGA;S-1-NOMBRE BODEGA;S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
-						+ "S-3-TOTAL DE REGISTROS;S-3-PRODUCT BENEFICI", "ENC");		
-			}			
+				crearColumna((siAplicaFolioContrato?"S-1-FOLIO CONTRATO;":"")+"S-1-BODEGA;"+"S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
+						+ "S-1-TOTAL DE REGISTROS;S-1-PRODUCT BENEFICI", "ENC");
+			}
+			
+//			if(siAplicaFolioContrato){	
+//				crearColumna("S-1-FOLIO CONTRATO;S-1-BODEGA;S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
+//					+ "S-1-TOTAL DE REGISTROS;S-1-PRODUCT BENEFICI", "ENC");
+//			}else{
+//				crearColumna("S-1-BODEGA;S-1-ESTADO;S-3-PESO NETO ANA (BOL);S-3-PESO NETO ANA (FAC);S-3-TOTAL DE BOLETAS;S-3-TOTAL DE FACTURAS;"
+//						+ "S-3-TOTAL DE REGISTROS;S-3-PRODUCT BENEFICI", "ENC");		
+//			}			
 		}else if(rca.getIdCriterio() == 22){
 			colocarPrimerasColumnasEncDetalle();
 			parrafo =  new Paragraph("BOLETA", TIMESROMAN08BOLD);
@@ -4738,6 +5033,7 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 		lstFacturasCamposRequeridos = new ArrayList<FacturasCamposRequeridos>();
 		lstPagosCamposRequeridos = new ArrayList<PagosCamposRequeridos>();
 		lstGeneralToneladasTotalesPorBodFac = new ArrayList<GeneralToneladasTotalesPorBodFac>();
+		lstGeneralTonTotPorBodega = new ArrayList<GeneralToneladasTotPorBodega>();
 		lstBoletasFacturasPagosIncosistentes = new ArrayList<BoletasFacturasPagosIncosistentes>();
 		lstRendimientosProcedente = new ArrayList<RendimientosProcedente>();
 		lstVolumenCumplido = new ArrayList<VolumenFiniquito>();
@@ -4989,5 +5285,6 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 	public void setSiAplicaFolioContrato(boolean siAplicaFolioContrato) {
 		this.siAplicaFolioContrato = siAplicaFolioContrato;
 	}
+	
 
 }

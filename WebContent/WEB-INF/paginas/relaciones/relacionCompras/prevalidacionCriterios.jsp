@@ -92,6 +92,9 @@
 		<span class="requerido">PRECIO PAGADO MENOR</span><br>
 	</s:if>
 	<s:if test="%{lstGeneralToneladasTotalesPorBodFac.size() > 0}"> <!--TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS"-->
+		<span class="requerido">TONELADAS TOTALES POR CONTRATO DE BOLETAS Y FACTURAS</span><br>
+	</s:if>
+	<s:if test="%{lstGeneralTonTotPorBodega.size() > 0}"> <!--TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS"-->
 		<span class="requerido">TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS</span><br>
 	</s:if>
 	<s:if test="%{lstBoletasFacturasPagosIncosistentes.size() > 0}"> <!--BOLETAS, FACTURAS Y PAGOS INCONSISTENTES POR PRODUCTOR"-->

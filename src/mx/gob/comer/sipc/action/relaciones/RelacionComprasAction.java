@@ -63,6 +63,7 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPagoAdendum
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasCamposRequeridos;
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasIgualesFacAserca;
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasVsPago;
+import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotPorBodega;
 import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotalesPorBodFac;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagMenorCompBases;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagosCamposRequeridos;
@@ -225,6 +226,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<FacturasCamposRequeridos> lstFacturasCamposRequeridos;
 	private List<PagosCamposRequeridos> lstPagosCamposRequeridos;
 	private List<GeneralToneladasTotalesPorBodFac> lstGeneralToneladasTotalesPorBodFac;
+	private List<GeneralToneladasTotalesPorBodFac> lstGeneralTonTotPorBodega;
 	
 	private HSSFWorkbook wbLog; //inicializar excel para log 
 	private HSSFSheet sheetLog;
@@ -1592,7 +1594,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(p.getFolioCartaExterna()!=null&&!p.getFolioCartaExterna().isEmpty()?p.getFolioCartaExterna():"null;"));								
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
-								rDAO.actualizaPredioIncosistente(p.getId(), folioCartaAdhesion);
+								rDAO.actualizaPredioIncosistente(folioCartaAdhesion, p.getClaveBodega(), p.getNombreEstado(), p.getFolioContrato(),
+										p.getPaternoProductor(), p.getMaternoProductor(), p.getNombreProductor(), p.getCurpProductor(), p.getRfcProductor());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(p.getClaveBodega()!=null ? p.getClaveBodega()+"":"");
@@ -1798,19 +1801,25 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Productor");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("CURP/RFC");
+							cell.setCellValue("Curp Relación");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("RFC Productor");
+							cell.setCellValue("Curp BD");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("RFC Factura");
+							cell.setCellValue("Rfc Relación");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Rfc BD");
+							cell = row.createCell(++countColumn);
+							cell.setCellValue("Observación");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Peso Neto ana. (ton) Fac ");
 							for(RfcProductorVsRfcFactura r: lstRfcProductorVsRfcFactura){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
 								bd.setMensaje(r.getClaveBodega()+";"+r.getNombreEstado()+";"+(siAplicaFolioContrato?r.getFolioContrato()+";":"")+r.getPaternoProductor()+";"+r.getMaternoProductor()+";"
-										+r.getNombreProductor()+";"+r.getCurpProductor()+";"
-									+r.getRfcProductor()+";"+r.getRfcFacVenta()+";"+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
+										+r.getNombreProductor()+";"+r.getCurpProductor()+";"+r.getCurpProductorBD()+";"
+										+r.getRfcProductor()+";"+r.getRfcProductorBD()+";"
+										+(r.getLeyenda()!=null?r.getLeyenda()+";":";")
+										+(r.getVolTotalFacVenta()!=null?r.getVolTotalFacVenta():0));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								//Actualiza el productor como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, r.getClaveBodega(), r.getNombreEstado(), r.getFolioContrato(),
@@ -1829,11 +1838,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(r.getMaternoProductor()!=null ?r.getMaternoProductor()+" " :"") 
 										+(r.getNombreProductor()!=null ?r.getNombreProductor() :""));
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getCurpProductor()!=null ?r.getCurpProductor():r.getRfcProductor());
+								cell.setCellValue(r.getCurpProductor()!=null ?r.getCurpProductor():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getCurpProductorBD()!=null ?r.getCurpProductorBD():"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(r.getRfcProductor()!=null && !r.getRfcProductor().isEmpty()?r.getRfcProductor():"");
 								cell = row.createCell(++countColumn);
-								cell.setCellValue(r.getRfcFacVenta()!=null && !r.getRfcFacVenta().isEmpty()?r.getRfcFacVenta():"");
+								cell.setCellValue(r.getRfcProductorBD()!=null && !r.getRfcProductorBD().isEmpty()?r.getRfcProductorBD():"");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue(r.getLeyenda()!=null && !r.getLeyenda().isEmpty()?r.getLeyenda():"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(r.getVolTotalFacVenta()!=null?TextUtil.formateaNumeroComoVolumenSinComas(r.getVolTotalFacVenta())+"":"");
 							}							
@@ -2051,9 +2064,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell = row.createCell(++countColumn);
 								cell.setCellValue("Precio no Pagado");
 							}
+
 							if(criteriosByPrograma.contains(",19,")){
 								cell = row.createCell(++countColumn);
 								cell.setCellValue("Diferencia Fac Global Vs Individual");
+							}
+							
+							if(criteriosByPrograma.contains(",26,")){
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Predios Inconsistentes");
 							}
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Volumen Observado");
@@ -2062,7 +2081,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								countColumn = 0;
 								Double array [] =  {bod.getVolBolTicket(), bod.getVolTotalFacVenta(), 
 										bod.getVolEnpagos(), bod.getVolumenNoProcedente(), bod.getDiferenciaEntreVolumen(), bod.getDiferenciaEntreImportes(),
-										bod.getDiferenciaEntreRFC(), bod.getPredioNoPagado(), (criteriosByPrograma.contains(",19,")?bod.getDifFacGlobalIndividual():0)};
+										bod.getDiferenciaEntreRFC(), bod.getPredioNoPagado(), (criteriosByPrograma.contains(",19,")?bod.getDifFacGlobalIndividual():0), bod.getPredioInconsistente()};
 								valorMaximo = calcularMaximo(array);
 								
 								bd = new BitacoraRelcomprasDetalle();
@@ -2074,6 +2093,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(bod.getDiferenciaEntreImportes()!=null ?bod.getDiferenciaEntreImportes()+";":"0;")
 										+(bod.getDiferenciaEntreRFC()!=null?bod.getDiferenciaEntreRFC()+";":"0;")
 										+(bod.getPredioNoPagado()!=null?bod.getPredioNoPagado()+";":"0;")
+										+(bod.getPredioInconsistente()!=null?bod.getPredioInconsistente()+";":"0;")
 										+(bod.getDifFacGlobalIndividual()!=null?bod.getDifFacGlobalIndividual()+";":"0;")
 										+valorMaximo);
 								b.getBitacoraRelcomprasDetalle().add(bd);															
@@ -2116,6 +2136,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									cell = row.createCell(++countColumn);
 									cell.setCellValue(bod.getDifFacGlobalIndividual()!=null?bod.getDifFacGlobalIndividual()+"":"");										
 								}
+								if(criteriosByPrograma.contains(",26,")){ //Predios inconsistentes
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(bod.getPredioInconsistente()!=null?bod.getPredioInconsistente()+"":"");										
+								}
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(valorMaximo);
 							}					
@@ -2136,35 +2160,130 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							b.setMensaje(msj);
 							cDAO.guardaObjeto(b);
 						}					
-					}else if(l.getIdCriterio() == 21){//TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS
-						sheet = wb.createSheet("TONELADAS TOTALES");
+					}else if(l.getIdCriterio() == 21){//"1 TONELADAS TOTALES POR BODEGA DE BOLETAS Y FACTURAS"
+						
+						if(siAplicaFolioContrato){
+							//REPORTE AGRUPADO POR CONTRATO						
+							sheet = wb.createSheet("TON TOTALES POR CONTRATO");
+							sheet = setMargenSheet(sheet);
+							countRow = 0;
+							lstGeneralToneladasTotalesPorBodFac = rDAO.consultaGeneralToneladasTotalesPorContrato(folioCartaAdhesion);
+							if(lstGeneralToneladasTotalesPorBodFac.size()>0){
+								llenarBitacora(true, l.getIdCriterio());
+								msj = l.getCriterio();
+								msj = msj.replaceAll("BODEGA", "CONTRATO");
+						    	countColumn =0;
+						    	row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(msj);
+								row = sheet.createRow(++countRow);
+								if(siAplicaFolioContrato){
+									cell = row.createCell(countColumn);
+									cell.setCellValue("Folio Contrato");
+								}
+								if(siAplicaFolioContrato){
+									cell = row.createCell(++countColumn);
+								}else{
+									cell = row.createCell(countColumn);
+								}							
+								cell.setCellValue("Clave Bodega");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Estado");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Peso Neto Ana (Bol)");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Peso Neto Ana (Fac)");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Total de Boletas");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Total de Facturas");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Total de Registros");
+								cell = row.createCell(++countColumn);
+								cell.setCellValue("Productores Beneficiados");
+								
+								for(GeneralToneladasTotalesPorBodFac g: lstGeneralToneladasTotalesPorBodFac){
+									countColumn = 0;
+									bd = new BitacoraRelcomprasDetalle();
+									bd.setMensaje("1;"+(siAplicaFolioContrato?g.getFolioContrato()+";":"")+g.getClaveBodega()+";"
+											+g.getNombreEstado()+";"+g.getPesoNetoAnaBol()+";"+g.getPesoNetoAnaFac()+";"+g.getTotalBoletas()+";"
+											+g.getTotalFacturas()+";"+g.getTotalRegistros()+";"+(g.getNumeroProdBenef()!=null?g.getNumeroProdBenef():"-1"));
+									b.getBitacoraRelcomprasDetalle().add(bd);
+									row = sheet.createRow(++countRow);
+									if(siAplicaFolioContrato){
+										cell = row.createCell(countColumn);
+										cell.setCellValue(g.getFolioContrato()!=null ? g.getFolioContrato()+"":"");
+										cell = row.createCell(++countColumn);
+									}else{
+										cell = row.createCell(countColumn);
+									}								
+									cell.setCellValue(g.getClaveBodega()!=null ? g.getClaveBodega()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getNombreEstado()!=null ? g.getNombreEstado()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getPesoNetoAnaBol()!=null ? g.getPesoNetoAnaBol()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getPesoNetoAnaFac()!=null ? g.getPesoNetoAnaFac()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getTotalBoletas()!=null ? g.getTotalBoletas()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getTotalFacturas()!=null ? g.getTotalFacturas()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getTotalRegistros()!=null ? g.getTotalRegistros()+"":"");
+									cell = row.createCell(++countColumn);
+									cell.setCellValue(g.getNumeroProdBenef()!=null ? g.getNumeroProdBenef()+"":"");
+								}
+								b.setMensaje(msj);
+								//cDAO.guardaObjeto(b);					
+							}else{
+								countColumn = 0;
+								msj = "NO SE ENCONTRARON REGISTROS EN TONELADAS TOTALES POR CONTRATO ";
+								row = sheet.createRow(countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(msj);
+								llenarBitacora(false, l.getIdCriterio());
+								b.setMensaje(msj);
+								//cDAO.guardaObjeto(b);
+							}
+						}//end si aplica contrato												
+						//REPORTE AGRUPADO POR BODEGA						
+						sheet = wb.createSheet("TON TOTALES POR BOD");
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
-						lstGeneralToneladasTotalesPorBodFac = rDAO.consultaGeneralToneladasTotalesPorBodFac(folioCartaAdhesion);
-						if(lstGeneralToneladasTotalesPorBodFac.size()>0){
-							llenarBitacora(true, l.getIdCriterio());
+						lstGeneralTonTotPorBodega = rDAO.consultaToneladasTotalesPorBodega(folioCartaAdhesion);
+						if(lstGeneralTonTotPorBodega.size()>0){
+							//llenarBitacora(true, l.getIdCriterio());
+							if(!siAplicaFolioContrato){
+								llenarBitacora(true, l.getIdCriterio());
+							}
 							msj = l.getCriterio();
 					    	countColumn =0;
 					    	row = sheet.createRow(countRow);
 							cell = row.createCell(countColumn);
-							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);
+							cell.setCellValue("FOLIO CARTA ADHESIÓN: "+folioCartaAdhesion);							
 							row = sheet.createRow(++countRow);
 							cell = row.createCell(countColumn);
-							cell.setCellValue(msj);
+							cell.setCellValue(msj);		
+							
 							row = sheet.createRow(++countRow);
+							cell = row.createCell(countColumn);
+							cell.setCellValue("Clave Bodega");
+							
 							if(siAplicaFolioContrato){
-								cell = row.createCell(countColumn);
+								cell = row.createCell(++countColumn);
 								cell.setCellValue("Folio Contrato");
 							}
 							if(siAplicaFolioContrato){
 								cell = row.createCell(++countColumn);
 							}else{
-								cell = row.createCell(countColumn);
-							}							
-							cell.setCellValue("Clave Bodega");
-							cell = row.createCell(++countColumn);
-							cell.setCellValue("Nombre Bodega");
-							cell = row.createCell(++countColumn);
+								cell = row.createCell(++countColumn);
+							}						
 							cell.setCellValue("Estado");
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Peso Neto Ana (Bol)");
@@ -2177,27 +2296,24 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell = row.createCell(++countColumn);
 							cell.setCellValue("Total de Registros");
 							cell = row.createCell(++countColumn);
-							cell.setCellValue("Productores Beneficiados");
-							
-							for(GeneralToneladasTotalesPorBodFac g: lstGeneralToneladasTotalesPorBodFac){
+							cell.setCellValue("Productores Beneficiados");							
+							for(GeneralToneladasTotalesPorBodFac g: lstGeneralTonTotPorBodega){
 								countColumn = 0;
 								bd = new BitacoraRelcomprasDetalle();
-								bd.setMensaje((siAplicaFolioContrato?g.getFolioContrato()+";":"")+g.getClaveBodega()+";"+g.getNombreBodega()+";"
+								bd.setMensaje("2;"+g.getClaveBodega()+";"+(siAplicaFolioContrato?g.getFolioContrato()+";":"")
 										+g.getNombreEstado()+";"+g.getPesoNetoAnaBol()+";"+g.getPesoNetoAnaFac()+";"+g.getTotalBoletas()+";"
 										+g.getTotalFacturas()+";"+g.getTotalRegistros()+";"+(g.getNumeroProdBenef()!=null?g.getNumeroProdBenef():"-1"));
 								b.getBitacoraRelcomprasDetalle().add(bd);
 								row = sheet.createRow(++countRow);
+								cell = row.createCell(countColumn);
+								cell.setCellValue(g.getClaveBodega()!=null ? g.getClaveBodega()+"":"");																
 								if(siAplicaFolioContrato){
-									cell = row.createCell(countColumn);
+									cell = row.createCell(++countColumn);
 									cell.setCellValue(g.getFolioContrato()!=null ? g.getFolioContrato()+"":"");
 									cell = row.createCell(++countColumn);
 								}else{
-									cell = row.createCell(countColumn);
-								}								
-								cell.setCellValue(g.getClaveBodega()!=null ? g.getClaveBodega()+"":"");
-								cell = row.createCell(++countColumn);
-								cell.setCellValue(g.getNombreBodega()!=null ? g.getNombreBodega()+"":"");
-								cell = row.createCell(++countColumn);
+									cell = row.createCell(++countColumn);
+								}							
 								cell.setCellValue(g.getNombreEstado()!=null ? g.getNombreEstado()+"":"");
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(g.getPesoNetoAnaBol()!=null ? g.getPesoNetoAnaBol()+"":"");
@@ -2212,8 +2328,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								cell = row.createCell(++countColumn);
 								cell.setCellValue(g.getNumeroProdBenef()!=null ? g.getNumeroProdBenef()+"":"");
 							}
-							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);					
+							b.setMensaje(msj);												
 						}else{
 							countColumn = 0;
 							msj = "NO SE ENCONTRARON REGISTROS PARA EL REPORTE GENERAL ";
@@ -2225,8 +2340,10 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 							cell.setCellValue(msj);
 							llenarBitacora(false, l.getIdCriterio());
 							b.setMensaje(msj);
-							cDAO.guardaObjeto(b);
+							//cDAO.guardaObjeto(b);
 						}						
+						cDAO.guardaObjeto(b);
+						
 					}else if(l.getIdCriterio() == 25){// "REPORTE DE RENDIMIENTO"
 						sheet = wb.createSheet("VOLUMEN NO PROCEDENTE");
 						sheet = setMargenSheet(sheet);
@@ -2413,7 +2530,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
-						lstVolumenCumplido = rDAO.consultaVolumenCumplido(rfcComprador);
+						lstVolumenCumplido = rDAO.consultaVolumenCumplido(rfcComprador, idPrograma);
 						if(lstVolumenCumplido.size()>0){//En el listado se guardan el volumen no cumplido
 							//Guardar en bitacora
 							llenarBitacora(true, l.getIdCriterio());							
@@ -5872,6 +5989,15 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setLstCurpRfcYONombresInconsistentes(
 			List<RelacionComprasTMP> lstCurpRfcYONombresInconsistentes) {
 		this.lstCurpRfcYONombresInconsistentes = lstCurpRfcYONombresInconsistentes;
+	}
+
+	public List<GeneralToneladasTotalesPorBodFac> getLstGeneralTonTotPorBodega() {
+		return lstGeneralTonTotPorBodega;
+	}
+
+	public void setLstGeneralTonTotPorBodega(
+			List<GeneralToneladasTotalesPorBodFac> lstGeneralTonTotPorBodega) {
+		this.lstGeneralTonTotPorBodega = lstGeneralTonTotPorBodega;
 	}	
 	
 		
