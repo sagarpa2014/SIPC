@@ -62,6 +62,8 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	private Boolean bandera;
 
 	private String cultivo;
+
+	private int errorDetalleRepetido;
 	
 	public String ltsAvisosDof(){
 		try{			
@@ -88,8 +90,6 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 				//consigue el aviso
 				av = aDAO.getAvisosDof(claveAviso).get(0);
 				lstAvisosDofDetalleV = aDAO.getAvisosDofDetalle(claveAviso);
-				
-				
 			}
 			lstApoyoAviso = cDAO.getApoyoAviso(0);
 			
@@ -114,17 +114,22 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 				avisosDof = aDAO.getAvisosDof(claveAviso).get(0);
 				avisosDof.setFechaActualizacion(new Date());
 				avisosDof.setUsuarioActualizacion((Integer) session.get("idUsuario"));
-				
-				//Verifica que 
+				//Verifica que no se haya capturado la llave unica (claveAcceso, ciclo, ejercicio, programa, cultivo y estado)
+				lstAvisosDofDetalleV =  aDAO.getAvisosDofDetalle(claveAviso, avd.getPrograma(), avd.getIdCultivo(),
+						avd.getCiclo(), avd.getEjercicio(), avd.getIdEstado(), null);
+				if(lstAvisosDofDetalleV.size() > 0){
+					errorDetalleRepetido = 1;
+					return SUCCESS;
+				}
 			}				
 			avisosDof.setIdApoyo(av.getIdApoyo());
 			System.out.println("Leyendad "+av.getLeyenda());
 			avisosDof.setLeyenda(av.getLeyenda());
 			avisosDof.setFechaPublicacion(av.getFechaPublicacion());
 			
-			if(registrar == 0){
+			//if(registrar == 0){
 				avisosDofDetalle = new AvisosDofDetalle();
-			}		
+			//}		
 			avisosDofDetalle.setClaveAviso(av.getClaveAviso());
 			avisosDofDetalle.setPrograma(avd.getPrograma());
 			avisosDofDetalle.setIdCultivo(avd.getIdCultivo());
@@ -292,6 +297,15 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	public void setCultivo(String cultivo) {
 		this.cultivo = cultivo;
 	}
+	
+
+	public int getErrorDetalleRepetido() {
+		return errorDetalleRepetido;
+	}
+
+	public void setErrorDetalleRepetido(int errorDetalleRepetido) {
+		this.errorDetalleRepetido = errorDetalleRepetido;
+	}
 
 	@Override
 	public void setSession(Map<String, Object> arg0) {	
@@ -301,6 +315,7 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	public void setServletContext(ServletContext arg0) {
 		
 	}	
+	
 	
 	
 }

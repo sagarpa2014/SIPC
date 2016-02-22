@@ -38,14 +38,30 @@
         <action name="registrarAvisosDof" method="registrarAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
 			<interceptor-ref name="chksession"/> 
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
-            <result name="success">/WEB-INF/paginas/avisosDof/repuestaRegistroAvisoDof.jsp</result>
-            <result name="input">/WEB-INF/paginas/avisosDof/repuestaRegistroAvisoDof.jsp</result>
+            <result name="success">/WEB-INF/paginas/avancePagos/avisosDof/repuestaRegistroAvisoDof.jsp</result>
+            <result name="input">/WEB-INF/paginas/avancePagos/avisosDof/repuestaRegistroAvisoDof.jsp</result>
         </action>        
         <action name="getTablaAvisosDof" method="getTablaAvisosDof" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
 			<interceptor-ref name="chksession"/> 
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
-            <result name="success">/WEB-INF/paginas/avisosDof/tablaAvisoDof.jsp</result>
-            <result name="input">/WEB-INF/paginas/avisosDof/tablaAvisoDof.jsp</result> 
-        </action>       
+            <result name="success">/WEB-INF/paginas/avancePagos/avisosDof/tablaAvisoDof.jsp</result>
+            <result name="input">/WEB-INF/paginas/avancePagos/avisosDof/tablaAvisoDof.jsp</result> 
+        </action>        
+        <!-- Carga masiva de avance de pagos -->
+        <action name="capturaAvancePagos" method="capturaAvancePagos" class="mx.gob.comer.sipc.action.avisosdof.CapturaAvancesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success" type="tiles">capturaAvancePagos</result>
+            <result name="input" type="tiles">capturaAvancePagos</result> 
+        </action>   
+         <action name="registraArchivoAvancePagos" method="registraArchivoAvancePagos" class="mx.gob.comer.sipc.action.avisosdof.CapturaAvancesAction">
+			<interceptor-ref name="chksession"/>        
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">37748736</param>
+			</interceptor-ref> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaRegistroArchivoAvancePagos.jsp</result>
+            <result name="input">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaRegistroArchivoAvancePagos.jsp</result>
+        </action>             
     </package>
 </struts>

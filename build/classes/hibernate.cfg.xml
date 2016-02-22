@@ -83,6 +83,7 @@
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.CnfReportesCruce"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AvisosDof"/>
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AvisosDofDetalle"/>
+		<mapping class="mx.gob.comer.sipc.domain.transaccionales.AvancePagos"/>
 		
 		
 		<!-- *********Vistas******** -->

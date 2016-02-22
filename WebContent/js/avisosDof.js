@@ -8,6 +8,27 @@ $(document).ready(function(){
 });
 
 
+
+function chkArchivoAvancePagos(){
+
+	var patron = /^(xlsx)$/;
+	var doc = $('#doc').val();
+	if(doc == null || doc == ""){
+		$('#dialogo_1').html('Seleccione el archivo de avance de pagos');
+		abrirDialogo();
+		return false;
+	}else{
+		var ext = doc.toLowerCase().substring(doc.lastIndexOf(".")+1);
+		if(!ext.match(patron)){
+			$('#dialogo_1').html('Extensión no permitida, solo puede cargar archivos con extensiones xlsx');
+	   		abrirDialogo();
+			return false;
+		}
+	}
+
+	
+}
+
 function chkCampoBuscarAvisoDof(){
 	var claveAviso = $('#claveAviso').val();
 	
@@ -18,6 +39,8 @@ function chkCampoBuscarAvisoDof(){
 	}
 	
 }
+
+
 $(function() {	
 	function validaCamposAvisoDof( ) {
 		
@@ -111,7 +134,7 @@ $(function() {
 		if(!validaCamposAvisoDof()){
 			return false;
 		}
-		var error = 1, programa="", estado ="", cultivo ="";
+		var error = 1, programa="", estado ="", cultivo ="", errorDetalleRepetido =1;
 		$.ajax({
 			   async: false,
 			   type: "POST",
@@ -131,15 +154,17 @@ $(function() {
 			   success: function(data){
 				   var $response=$(data);
 				   error = $response.filter('#error').text();	
+				   errorDetalleRepetido = $response.filter('#errorDetalleRepetido').text();
 				   programa = $response.filter('#programa').text();
 				   estado = $response.filter('#estado').text();	
 				   cultivo = $response.filter('#cultivo').text();
+
 					$('#repuestaRegistroAvisosDof').html(data).ready(function () {
 						$("#repuestaRegistroAvisosDof").fadeIn('slow');
 					});					
 			   }
 			});//fin ajax
-		if ( error == 0 ) {
+		if ( error == 0 && errorDetalleRepetido == 0) {
 			var tds = "";
 			tds += '<tr>';
 			tds += '<td >'+programa+'</td>';
@@ -154,9 +179,14 @@ $(function() {
 			$( "#tabAvisosDof tbody" )
 			.append(tds);        
 			$( "#dialog-form" ).dialog( "close" );      
-		}  else{			
-			$('#dialogo_1').html('Ocurrio un error inesperado, favor de reportar al administrador ');			
-			abrirDialogo();
+		}  else{
+			if(errorDetalleRepetido != 0){
+				$('#dialogo_1').html('Ya se han capturado estos datos, por favor verifique');			
+				abrirDialogo();
+			}else if( error !=0){
+				
+			}
+			
 			//$( "#dialog-form" ).dialog( "close" );    
 		}    
 		return valid;    
