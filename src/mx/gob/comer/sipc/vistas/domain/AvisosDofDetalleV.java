@@ -13,14 +13,22 @@ public class AvisosDofDetalleV {
 	private Integer id;
 	@Column(name = "clave_aviso")
 	private String claveAviso;
+	@Column(name = "id_prog_aviso")
+	private Integer idProgAviso;
 	@Column(name =  "programa")
 	private String programa;
 	@Column(name =  "ciclo")
 	private String ciclo;
+	@Column(name =  "ciclo_agricola")
+	private String cicloAgricola;
 	@Column(name =  "ejercicio")
 	private Integer ejercicio;
+	@Column(name =  "id_cultivo")
+	private Integer idCultivo;
 	@Column(name =  "cultivo")
 	private String cultivo;
+	@Column(name =  "id_estado")
+	private Integer idEstado;
 	@Column(name =  "estado")
 	private String estado;
 	@Column(name =  "volumen")
@@ -41,9 +49,16 @@ public class AvisosDofDetalleV {
 	}
 	public void setClaveAviso(String claveAviso) {
 		this.claveAviso = claveAviso;
+	}	
+	
+	public Integer getIdProgAviso() {
+		return idProgAviso;
 	}
-	
-	
+
+	public void setIdProgAviso(Integer idProgAviso) {
+		this.idProgAviso = idProgAviso;
+	}
+
 	public String getPrograma() {
 		return programa;
 	}
@@ -59,20 +74,44 @@ public class AvisosDofDetalleV {
 		this.ciclo = ciclo;
 	}	
 	
+	public String getCicloAgricola() {
+		return cicloAgricola;
+	}
+
+	public void setCicloAgricola(String cicloAgricola) {
+		this.cicloAgricola = cicloAgricola;
+	}
+
 	public Integer getEjercicio() {
 		return ejercicio;
 	}
 
 	public void setEjercicio(Integer ejercicio) {
 		this.ejercicio = ejercicio;
-	}
+	}	
 	
+	public Integer getIdCultivo() {
+		return idCultivo;
+	}
+
+	public void setIdCultivo(Integer idCultivo) {
+		this.idCultivo = idCultivo;
+	}
+
 	public String getCultivo() {
 		return cultivo;
 	}
 
 	public void setCultivo(String cultivo) {
 		this.cultivo = cultivo;
+	}
+
+	public Integer getIdEstado() {
+		return idEstado;
+	}
+
+	public void setIdEstado(Integer idEstado) {
+		this.idEstado = idEstado;
 	}
 
 	public String getEstado() {
@@ -95,4 +134,6 @@ public class AvisosDofDetalleV {
 	public void setImporte(Double importe) {
 		this.importe = importe;
 	}
+	
+	
 }
