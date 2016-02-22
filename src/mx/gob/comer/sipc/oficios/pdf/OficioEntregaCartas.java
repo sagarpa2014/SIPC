@@ -31,15 +31,16 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 	
 	// Configuracion de fuentes
 	//private final Font ARIALBOLD10 = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
-	private final Font TIMESROMAN10BOLD = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
-	private final Font TIMESROMAN08BOLD = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.BOLD, Color.BLACK);
-	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, Color.BLACK);
-	private final Font TIMESROMAN08NORMAL = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN10BOLD = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN08BOLD = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD, Color.BLACK);
+	private final Font TIMESROMAN10NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN08NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08 = FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL, Color.BLACK);
 	//private final Font ARIALNORMAL08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
 	private final Font TIMESROMAN08LIGTH= FontFactory.getFont(FontFactory.HELVETICA,  8, Font.NORMAL	, Color.LIGHT_GRAY);
-	private final Font TIMESROMAN08	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 8,Font.NORMAL, Color.BLACK);
-	private final Font TIMESROMAN12	= FontFactory.getFont(FontFactory.TIMES_ROMAN, 11,Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN08	= FontFactory.getFont(FontFactory.HELVETICA, 8,Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN12	= FontFactory.getFont(FontFactory.HELVETICA, 11,Font.NORMAL, Color.BLACK);
+	private final Font TIMESROMAN12BOLD	= FontFactory.getFont(FontFactory.HELVETICA, 11,Font.BOLD, Color.BLACK);
 	//private final Font ARIALBOLD12 = FontFactory.getFont(FontFactory.HELVETICA, 1, Font.NORMAL, Color.BLACK);
 	
 
@@ -61,23 +62,23 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		getEncabezado();
 		addEmptyLine(1);
 		getLugarYFecha();
-		addEmptyLine(1);
+		addEmptyLine(3);
 		getDestinatario();
 		addEmptyLine(1);
 		Image img1 = Image.getInstance(ata.getRutaMarcaAgua()); 
 		img1.setAlignment(Image.MIDDLE | Image.UNDERLYING); 
 		document.add(img1);
-		if(ata.getLstCartasV().size()>8){
+		//if(ata.getLstCartasV().size()>8){
 			getCuerpo();
-			addEmptyLine(1);
+			addEmptyLine(5);
 			getEmisor();
 			document.newPage();
 			getAnexoDetallePagos();
-		} else {
-			getCuerpoCompleto();
-			addEmptyLine(1);
-			getEmisor();			
-		}
+//		} else {
+//			getCuerpoCompleto();
+//			addEmptyLine(1);
+//			getEmisor();			
+//		}
 		document.close();
 	}
 	private void getAnexoDetallePagos() throws DocumentException {
@@ -143,7 +144,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			//enunciado=new Paragraph("ASERCA\nCoordinación General de Comercialización", TIMESROMAN12);
 			enunciado = new Paragraph();
 			enunciado.add(new Chunk("A S E R C A\nCOORDINACIÓN GENERAL DE COMERCIALIZACIÓN", TIMESROMAN08BOLD));
-			enunciado.add(new Chunk("\n"+ata.getDireccionEmisor().toUpperCase(), TIMESROMAN08NORMAL));
+			enunciado.add(new Chunk("\n"+ata.getDireccionEmisor().toUpperCase(), TIMESROMAN08BOLD));
 			enunciado.add(new Chunk("\n\n"+ata.getLeyendaOficio(), TIMESROMAN10NORMAL));
 			cell =	createCell(null, 0, 2, 1, sagarpa);
 			table1.addCell(cell);
@@ -153,7 +154,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 			document.add(table1);
 	}
 	private void getLugarYFecha() throws DocumentException {
-		parrafo = new Paragraph("N° de Oficio "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio()+"\nCiudad de México, "+ata.getFechaActual(), TIMESROMAN12);
+		parrafo = new Paragraph("N° de Oficio "+ata.getClaveOficio()+ata.getNoOficio()+ata.getAnioOficio()+"\nCiudad de México, "+ata.getFechaActual()+".", TIMESROMAN12);
 		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 	}
@@ -163,7 +164,7 @@ public class OficioEntregaCartas extends PdfPageEventHelper {
 		.append(ata.getDestinatario().getNombre()).append("\n")
 		.append(ata.getDestinatario().getPuesto()).append("\n")
 		.append("P R E S E N T E");
-		parrafo = new Paragraph(texto.toString(), TIMESROMAN12);
+		parrafo = new Paragraph(texto.toString(), TIMESROMAN12BOLD);
 		parrafo.setLeading(1,1);
 		document.add(parrafo);	
 	
