@@ -6367,7 +6367,7 @@ public class RelacionesDAO {
 //			.append("order by b.clave_bodega, r.folio_contrato "); 
 
 			consulta.append(" select v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen, coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta,  ")
-					.append("case when coalesce(sum(r.vol_total_fac_venta),0) >  v.volumen then  coalesce(sum(r.vol_total_fac_venta),0)- v.volumen else 0 end as dif_volumen_finiquito, v.modalidad ")
+					.append("abs(coalesce(sum(r.vol_total_fac_venta),0)- v.volumen) as diferencia_finiquito, v.modalidad ")
 					.append("FROM  ")
 					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad  ") 
 					.append("from bodegas_contratos b, contratos_relacion_compras c  ")
