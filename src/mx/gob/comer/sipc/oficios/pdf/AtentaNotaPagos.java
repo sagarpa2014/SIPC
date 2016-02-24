@@ -543,7 +543,7 @@ public class AtentaNotaPagos extends PdfPageEventHelper {
 			enunciado = new Paragraph();
 			enunciado.add(new Chunk("ASERCA\nCoordinación General de Comercialización\nDirección General de Desarrollo de\nMercados e Infraestructura Comercial\nDirección de Pagos de Apoyos a la Comercialización", TIMESROMAN12));
 			//enunciado.add(new Chunk("\n\n"+apa.getLeyendaOficio().substring(0, 41)+"\n"+apa.getLeyendaOficio().substring(41, apa.getLeyendaOficio().length()), TIMESROMAN10NORMAL));
-			enunciado.add(new Chunk("\n\n\n\nMéxico, D.F. "+apa.getFechaActual(), TIMESROMAN12));
+			enunciado.add(new Chunk("\n\n\n\nCiudad de México, "+apa.getFechaActual(), TIMESROMAN12));
 			cell =	createCell(null, 0, 2, 1, sagarpa);
 			table1.addCell(cell);
 			cell =	createCell(enunciado, 0, 3, 1, null);
