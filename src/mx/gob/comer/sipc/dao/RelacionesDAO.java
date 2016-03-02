@@ -4913,9 +4913,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r1.estado_acopio ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r1.folio_contrato,'X') ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r1.curp_productor,r1.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X') ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X')  and r.folio_carta_adhesion = r1.folio_carta_adhesion ) as vol_total_fac_venta, ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r1.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r1.materno_productor,'X') ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r1.nombre_productor,'X') ")
 			.append("and r.folio_carta_adhesion = r1.folio_carta_adhesion ) as vol_total_fac_venta, ")
 			.append("(select COALESCE(sum(r2.vol_bol_ticket),0) ")
 			.append("from relacion_compras_tmp r2 ")
@@ -4924,9 +4924,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r2.estado_acopio ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r2.folio_contrato,'X') ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r2.curp_productor,r2.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r2.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r2.materno_productor,'X') ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r2.nombre_productor,'X') and r.folio_carta_adhesion = r2.folio_carta_adhesion ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r2.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r2.materno_productor,'X') ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r2.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r2.folio_carta_adhesion ")
 			.append("and  r2.boleta_incosistente= true ")
 			.append(") as volumen_boletas_inc, ")
@@ -4937,9 +4937,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r3.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r3.folio_contrato,'X')  ") 
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r3.curp_productor,r3.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r3.paterno_productor,'X')  ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r3.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r3.nombre_productor,'X') and r.folio_carta_adhesion = r3.folio_carta_adhesion ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r3.paterno_productor,'X')  ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r3.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r3.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r3.folio_carta_adhesion ")
 			.append("and  r3.factura_inconsistente= true ")
 			.append(") as volumen_facturas_inc, ")
@@ -4950,9 +4950,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r4.estado_acopio ") 
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r4.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r4.curp_productor,r4.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r4.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r4.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r4.nombre_productor,'X')   and r.folio_carta_adhesion = r4.folio_carta_adhesion ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r4.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r4.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r4.nombre_productor,'X')    ")
 			.append("and r.folio_carta_adhesion = r4.folio_carta_adhesion ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -4962,9 +4962,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r41.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r41.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r41.curp_productor,r41.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r41.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r41.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r41.nombre_productor,'X')   ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r41.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r41.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r41.nombre_productor,'X')   ")
 			.append("and  r41.pago_inconsistente= true and r.folio_carta_adhesion = r41.folio_carta_adhesion ")
 			.append(") ")
 			.append(") as  vol_en_pagos, ")
@@ -4975,9 +4975,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r5.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r5.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r5.curp_productor,r5.rfc_productor)  ")
-//			.APPEND("AND  COALESCE(R.PATERNO_PRODUCTOR,'X') =  COALESCE(R5.PATERNO_PRODUCTOR,'X') ")
-//			.APPEND("AND  COALESCE(R.MATERNO_PRODUCTOR,'X') =  COALESCE(R5.MATERNO_PRODUCTOR,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r5.nombre_productor,'X') and  r.folio_carta_adhesion = r5.folio_carta_adhesion  ")
+			.append("AND  COALESCE(R.PATERNO_PRODUCTOR,'X') =  COALESCE(R5.PATERNO_PRODUCTOR,'X') ")
+			.append("AND  COALESCE(R.MATERNO_PRODUCTOR,'X') =  COALESCE(R5.MATERNO_PRODUCTOR,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r5.nombre_productor,'X') ")
 			.append("and  r.folio_carta_adhesion = r5.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ") 
 			.append("select 1 ")
@@ -4987,9 +4987,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r51.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r51.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r51.curp_productor,r51.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r51.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r51.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r51.nombre_productor,'X') and r.folio_carta_adhesion = r51.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r51.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r51.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r51.nombre_productor,'X')   ")
 			.append("and r.folio_carta_adhesion = r51.folio_carta_adhesion  ")
 			.append("and  r51.facturas_mayores_boletas = true ")
 			.append(") ")
@@ -5001,9 +5001,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')  and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') ")
 			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -5013,9 +5013,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
 			.append("and  r61.pagos_menores_facturas = true and r.folio_carta_adhesion = r61.folio_carta_adhesion")
 			.append(") ")
 			.append(") as  pagos_menores_facturas, ")
@@ -5027,9 +5027,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -5039,9 +5039,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
 			.append("and  r61.rfc_inconsistente = true ")
 			.append(") ")
@@ -5054,9 +5054,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -5066,9 +5066,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')   ")
 			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
 			.append("and  r61.predio_no_pagado = true ")
 			.append(") ")
@@ -5082,9 +5082,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')   ")
 			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -5094,9 +5094,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')    ")
 			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
 			.append("and  r61.predio_inconsistente = true ")
 			.append(") ")
@@ -5110,9 +5110,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r6.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r6.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r6.curp_productor,r6.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X') and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r6.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r6.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r6.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r6.folio_carta_adhesion  ")
 			.append("and  EXISTS ( ")
 			.append("select 1 ")
@@ -5122,9 +5122,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r61.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r61.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r61.curp_productor,r61.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r61.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r61.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r61.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r61.folio_carta_adhesion  ")
 			.append("and  r61.dif_volumen_fglobal_vs_find is not null ")
 			.append(") ")
@@ -5149,9 +5149,9 @@ public class RelacionesDAO {
 			.append("and  r.estado_acopio = r7.estado_acopio  ")
 			.append("and  COALESCE(r.folio_contrato,'X') = COALESCE(r7.folio_contrato,'X')  ")
 			.append("and COALESCE(r.curp_productor, r.rfc_productor) = COALESCE(r7.curp_productor,r7.rfc_productor)  ")
-//			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r7.paterno_productor,'X') ")
-//			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r7.materno_productor,'X')  ")
-//			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r7.nombre_productor,'X') and r.folio_carta_adhesion = r7.folio_carta_adhesion  ")
+			.append("and  COALESCE(r.paterno_productor,'X') =  COALESCE(r7.paterno_productor,'X') ")
+			.append("and  COALESCE(r.materno_productor,'X') =  COALESCE(r7.materno_productor,'X')  ")
+			.append("and  COALESCE(r.nombre_productor,'X') =  COALESCE(r7.nombre_productor,'X')  ")
 			.append("and r.folio_carta_adhesion = r7.folio_carta_adhesion  ")
 			.append(") as  volumen_no_procedente ")
 			
@@ -5265,6 +5265,26 @@ public class RelacionesDAO {
 				}
 								
 				set.deleteCharAt(set.length()-1);		
+				StringBuilder hql = new StringBuilder()			
+				.append("UPDATE  relacion_compras_tmp  ").append(set.toString())
+				.append(" where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ");
+				elementosActuializados = session.createSQLQuery(hql.toString()).executeUpdate();
+				
+			}catch (JDBCException e){
+				transaction.rollback();
+				throw e;
+			}	
+			return elementosActuializados;
+		}
+		
+		
+		
+		public int actualizaCampoDifVolGlobal(String folioCartaAdhesion)throws JDBCException {
+			int elementosActuializados = 0;
+			try{
+				StringBuilder set  = new StringBuilder();
+				set.append("set dif_volumen_fglobal_vs_find = null" );
+					
 				StringBuilder hql = new StringBuilder()			
 				.append("UPDATE  relacion_compras_tmp  ").append(set.toString())
 				.append(" where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ");
@@ -6595,6 +6615,9 @@ public class RelacionesDAO {
 			.append("(select sum(r1.volumen_no_procedente) from volumen_no_procedente_y_apoyado_reg r1 ") 
 			.append("where r1.folio_carta_adhesion = r.folio_carta_adhesion and r1.id_programa = r.id_programa and r1.volumen_no_procedente > 0 ")
 			.append("and r1.clave_bodega = r.clave_bodega and r1.nombre_estado = r.nombre_estado and coalesce(r1.folio_contrato, 'X') = coalesce(r.folio_contrato, 'X') ")
+			.append("and coalesce(r1.paterno_productor, 'X') = coalesce(r.paterno_productor, 'X') ")
+			.append("and coalesce(r1.materno_productor, 'X') = coalesce(r.materno_productor, 'X') ")
+			.append("and coalesce(r1.nombre_productor, 'X') = coalesce(r.nombre_productor, 'X') ")
 			.append("and COALESCE(r1.curp_productor, r1.rfc_productor) = COALESCE(r.curp_productor, r.rfc_productor) ) as volumen_no_procedente_tot ")		
 			.append("from volumen_no_procedente_y_apoyado_reg r ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ")
@@ -6753,7 +6776,7 @@ public class RelacionesDAO {
 
 
 	public int actDifVolumenXFacGlobalVsFacIndividual(String folioCartaAdhesion, String claveBodega, String nombreEstado, String folioContrato,
-		String paternoProductor, String maternoProductor, String nombreProductor,  String curpProductor, String rfcProductor, double difVolumenFacMayor)throws JDBCException {	// AHS [LINEA] - 17022015
+		String paternoProductor, String maternoProductor, String nombreProductor,  String curpProductor, String rfcProductor, double difVolumenFacMayor,  String numeroFacGlobal  )throws JDBCException {	// AHS [LINEA] - 17022015
 		int elementosActuializados = 0;
 		StringBuilder where = new StringBuilder();
 		try{
@@ -6829,7 +6852,16 @@ public class RelacionesDAO {
 					}
 				}
 				
-			}		
+			}	
+			
+			if (numeroFacGlobal != null && !numeroFacGlobal.isEmpty()){
+				if(where.length()>0){
+					where.append(" and numero_fac_global ='").append(numeroFacGlobal).append("' ");
+				}else{
+					where.append(" where numero_fac_global ='").append(numeroFacGlobal).append("' ");
+				}
+			}
+			
 			
 			StringBuilder hql = new StringBuilder()			
 			.append("UPDATE  relacion_compras_tmp  ").append(" set dif_volumen_fglobal_vs_find = "+difVolumenFacMayor).append(where.toString()); 

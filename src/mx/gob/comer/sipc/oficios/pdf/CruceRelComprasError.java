@@ -2102,7 +2102,22 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 						+(++posicionTotal)+","+granTotalVol2+",c;"+(++posicionTotal)+","+granTotalVol3+",c;"
 						+(++posicionTotal)+","+granTotalVol4+",c;"+(++posicionTotal)+","+granTotalVol5+",c;", w.length);
 			}else{
-				//TONELADAS TOTALES POR CONTRATO DE BOLETAS PAGOS Y FACTURAS		
+				//TONELADAS TOTALES POR CONTRATO DE BOLETAS PAGOS Y FACTURAS
+				//Inicializar totales
+				totalVolPorContrato = 0;
+				totalVolPorContrato1 = 0;
+				totalVolPorContrato2 = 0;
+				totalVolPorContrato3 = 0;
+				totalVolPorContrato4 = 0;
+				totalVolPorContrato5 = 0;
+			
+				granTotalVol = 0;
+				granTotalVol1 = 0;
+				granTotalVol2 = 0;
+				granTotalVol3 = 0;
+				granTotalVol4 = 0;
+				granTotalVol5 = 0;
+				
 				Collections.sort(lstGeneralToneladasTotalesPorBodFac);
 				contBitacoraDet = 1;
 				for(GeneralToneladasTotalesPorBodFac l: lstGeneralToneladasTotalesPorBodFac){			

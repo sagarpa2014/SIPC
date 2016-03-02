@@ -3038,6 +3038,9 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					rDAO.actualizaBolFactPagEnRelacionComprasTMP(folioCartaAdhesion, false, true, false);
 					//Actualiza campo facturas_mayores_boletas en la tabla relacion_compras_tmp
 					rDAO.actualizaCamposIconsistentes(folioCartaAdhesion, true, false,false, false);
+					//Actualiza campo dif_volumen_fglobal_vs_find en la tabla relacion_compras_tmp
+					rDAO.actualizaCampoDifVolGlobal(folioCartaAdhesion);
+					
 					//Borra el registro de la bitacora
 					for(BitacoraRelcompras b: lstBitacoraRelCompras){						
 						cDAO.borrarObjeto(b);						
@@ -3629,7 +3632,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								b.getBitacoraRelcomprasDetalle().add(bd);								
 								//Actualiza el campo dif_volumen_fglobal_vs_find del productor por la diferencia de volumen
 								rDAO.actDifVolumenXFacGlobalVsFacIndividual(folioCartaAdhesion, f.getClaveBodega(), f.getNombreEstado(), f.getFolioContrato(),
-										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(), f.getRfcProductor(), f.getDifVolumenFglobalVSFind());													
+										f.getPaternoProductor(), f.getMaternoProductor(), f.getNombreProductor(), f.getCurpProductor(), f.getRfcProductor(), f.getDifVolumenFglobalVSFind(), f.getNumeroFacGlobal());													
 							 	row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(f.getClaveBodega()!=null ? f.getClaveBodega()+"":"");
