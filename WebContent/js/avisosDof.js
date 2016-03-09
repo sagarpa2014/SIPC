@@ -134,7 +134,7 @@ $(function() {
 		if(!validaCamposAvisoDof()){
 			return false;
 		}
-		var error = 1, programa="", estado ="", cultivo ="", errorDetalleRepetido =1;
+		var error = 1, programa="", estado ="", cultivo ="", errorDetalleRepetido =1, errorAvisoYaCapturado = 1;
 		$.ajax({
 			   async: false,
 			   type: "POST",
@@ -155,16 +155,18 @@ $(function() {
 				   var $response=$(data);
 				   error = $response.filter('#error').text();	
 				   errorDetalleRepetido = $response.filter('#errorDetalleRepetido').text();
+				   errorAvisoYaCapturado = $response.filter('#errorAvisoYaCapturado').text();
 				   programa = $response.filter('#programa').text();
 				   estado = $response.filter('#estado').text();	
 				   cultivo = $response.filter('#cultivo').text();
-
+				   registrar = $response.filter('#registrar').text();
+				   $('#registrar').val(registrar);			   
 					$('#repuestaRegistroAvisosDof').html(data).ready(function () {
 						$("#repuestaRegistroAvisosDof").fadeIn('slow');
 					});					
 			   }
 			});//fin ajax
-		if ( error == 0 && errorDetalleRepetido == 0) {
+		if ( error == 0 && errorDetalleRepetido == 0 && errorAvisoYaCapturado == 0) {
 			var tds = "";
 			tds += '<tr>';
 			tds += '<td >'+programa+'</td>';
@@ -174,7 +176,8 @@ $(function() {
 			tds += '<td>'+estado+'</td>';
 			tds += '<td>'+volumenC+'</td>';
 			tds += '<td >'+importeC+'</td>';
-//			tds += '<td><a href="#"  id="4" class="botonVerDetalles" title=""></a></td>';
+			tds += '<td ></td>';
+			
 			tds += '</tr>';			
 			$( "#tabAvisosDof tbody" )
 			.append(tds);        
@@ -183,11 +186,13 @@ $(function() {
 			if(errorDetalleRepetido != 0){
 				$('#dialogo_1').html('Ya se han capturado estos datos, por favor verifique');			
 				abrirDialogo();
+			}else if( errorAvisoYaCapturado !=0){
+				$('#dialogo_1').html('La clave de aviso ya se ha capturado, por favor verifique');
+				abrirDialogo();
 			}else if( error !=0){
-				
+				$('#dialogo_1').html('Ocurrio un error inesperado, favor de reportar al administrador');
+				abrirDialogo();
 			}
-			
-			//$( "#dialog-form" ).dialog( "close" );    
 		}    
 		return valid;    
 	}     
@@ -238,3 +243,34 @@ $(function() {
 			});//fin ajax
 	}
 }); //end funcion principal	
+
+
+
+function eliminarArchivo(){	
+	var claveAviso =  $('#claveAviso').val();
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: "eliminarArchivoAvance",
+		   data: "claveAviso="+claveAviso,
+		   success: function(data){
+				$('#eliminarArchivoAvance').html(data).ready(function () {
+					$("#eliminarArchivoAvance").fadeIn('slow');
+				});
+		   }
+		});
+}
+
+function eliminarDetalleAviso(id, count){	
+	$.ajax({
+		   async: false,
+		   type: "POST",
+		   url: "eliminarDetalleAviso",
+		   data: "id="+id,
+		   success: function(data){
+				$('#eliminarDetalleAviso'+count).html(data).ready(function () {
+					$("#eliminarDetalleAviso"+count).fadeIn('slow');
+				});
+		   }
+		});
+}

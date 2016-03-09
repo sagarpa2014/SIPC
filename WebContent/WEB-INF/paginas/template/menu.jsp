@@ -154,6 +154,7 @@
 				<li><a href="<s:url value="/solicitudPago/listarPrograma"/>">Relaci&oacute;n de Documentos</a></li>
 				<li><a href="<s:url value="/solicitudPago/listarProgramasPagosCartaAdhesion"/>">Trámite de Pago</a></li>
 				<li><a href="<s:url value="/pagos/busquedaPagos"/>">Consulta de Pagos</a></li>		 		 
+				<li><a href="<s:url value="/relaciones/consultaPredios"/>">Consulta de Predios</a></li>		 		 
 			</ul>
 		</li>	
 		<li><a  href="#">Cat&aacute;logos</a>

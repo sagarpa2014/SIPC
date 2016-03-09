@@ -2,12 +2,17 @@
 <script type="text/javascript" src="<s:url value="/js/avisosDof.js"/>"></script>	
 <div id="dialog-form"></div> 
 <div class="borderBottom"><h1>REGISTRO DE AVISOS</h1></div><br>
-<s:hidden id="claveAviso" name="claveAviso" value="%{claveAviso}"/>
+<s:hidden id="registrar" name="registrar" value="%{registrar}"/>
 <fieldset>	
 	<legend>DATOS DEL AVISO</legend>
 	<div>
 		<label class="left1"><span class="requerido">*</span>Clave del Aviso:</label>
-		<s:textfield name="" maxlength="6" size="30" id="claveAviso" value="%{av.claveAviso}"/>		
+		<s:if test="%{av.claveAviso!=null && av.claveAviso != ''}" >
+			<s:textfield id="claveAviso" name="claveAviso" maxlength="6" size="30"  value="%{av.claveAviso}" disabled="true"/>
+		</s:if>
+		<s:else>
+			<s:textfield id="claveAviso" name="claveAviso" maxlength="6" size="30"  value="%{av.claveAviso}"/>
+		</s:else>	
 	</div>
 	<div class="clear"></div>
 	<div>
@@ -58,6 +63,9 @@
 		      	<th>Estado</th>        
 		      	<th>Volumen</th>      
 		      	<th>Importe</th>
+<%-- 		      	<s:if test="%{registrar!=0}" > --%>
+		      		<th>Eliminar Registro</th>
+<%-- 		      	</s:if> --%>
 		      </tr>    
 			 </thead>    
 			 <tbody>
@@ -73,7 +81,12 @@
 			 			</td>				
 			 			<td>
 			 				<s:text name="importe"><s:param value="%{importe}"/></s:text>
-			 			</td>					
+			 			</td>
+<%-- 			 			<s:if test="%{registrar!=0}" > --%>
+			 				<td class="center" id="eliminarDetalleAviso<s:property value="%{#itStatus.count}"/>" >
+			 					<img id="imgBodegaOff" src="<s:url value="/images/eliminarOn.png"/>" onclick="if (confirm('¿Esta seguro de eliminar el registro?')){eliminarDetalleAviso(<s:property value="%{id}"/>,<s:property value="%{#itStatus.count}"/>);}else{return false;}"/>
+			 				</td>
+<%-- 			 			</s:if>					 --%>
 			 		</tr>
 			 	</s:iterator>   
 			 </tbody>
@@ -85,10 +98,3 @@
 </div>	
 
 
-<s:if test="registrar != 0"> <!-- Consulta -->
-	<script>
-		$(document).ready(function() {	
-			$("#claveAviso").attr('disabled','disabled');
-		});	 	
-	</script>
-</s:if>

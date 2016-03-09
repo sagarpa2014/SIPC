@@ -33,6 +33,7 @@ $(document).ready(function(){
 <div id="dialogo_1"></div>
 <div id="capturaCargaArchivoAvancePagos">
 <s:form action="registraArchivoAvancePagos" onsubmit="return chkArchivoAvancePagos();" method="post" enctype="multipart/form-data">
+<s:hidden id="claveAviso" name="claveAviso" value="%{claveAviso}"/>
 	<div class="borderBottom"><h1>REGISTRO DE AVISOS</h1></div><br>
 	<fieldset>	
 		<legend>DATOS DEL AVISO</legend>
@@ -57,14 +58,34 @@ $(document).ready(function(){
 		</div>	
 	</fieldset>
 	<fieldset>	
-		<legend>ARCHIVO AVANCE DE PAGOS</legend>	
+		<legend>ARCHIVO AVANCE DE PAGOS</legend>
+		<div class="derecha">
+			<img id="imgBodegaOff" src="<s:url value="/images/eliminarOn.png"/>" onclick="if (confirm('¿Esta seguro de eliminar el último archivo?')){eliminarArchivo();}else{return false;}"/>
+		</div>
+		<div class="derecha">
+			<font class="fuente1">Eliminar &uacute;ltimo archivo cargado</font>
+		</div>
+		<div class="clear"></div>	
+		<div id="eliminarArchivoAvance" class="derecha"></div>
+		<div class="clear"></div>	
 		<div>
 			<label class="left1">Archivo:</label>
 			<s:file name="doc" id="doc"/>
 		</div>	
 		<div class="clear"></div>
+		<s:if test="%{nombreArchivoLogCargaXls!=null}">
+			<fieldset>
+				<legend>Descargar Log de procesos</legend>	
+				<div class="exporta_csv">			
+					<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaLog+nombreArchivoLogCargaXls}"/>" title="Descargar Archivo" ></a>
+				</div>
+				<div id="logCargaArchivo">
+					<s:include value="listarLog.jsp"/>
+				</div>
+			</fieldset>
+		</s:if>
 		<div class="accion">
-			<s:submit  value="Guardar" cssClass="boton2" />
+			<s:submit  value="Guardar" cssClass="boton2" /> 
 			<a href="<s:url value="/solicitudPago/selecAccionDocumentacion?folioCartaAdhesion=%{folioCartaAdhesion}"/>" class="boton" title="">Cancelar</a>
 		</div>
 	</fieldset>

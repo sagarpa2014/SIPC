@@ -46,6 +46,12 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success">/WEB-INF/paginas/avancePagos/avisosDof/tablaAvisoDof.jsp</result>
             <result name="input">/WEB-INF/paginas/avancePagos/avisosDof/tablaAvisoDof.jsp</result> 
+        </action> 
+         <action name="eliminarDetalleAviso" method="eliminarDetalleAviso" class="mx.gob.comer.sipc.action.avisosdof.AvisosDofAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/avancePagos/avisosDof/respuestaEliminaDetalleAviso.jsp</result>
+            <result name="input">/WEB-INF/paginas/avancePagos/avisosDof/respuestaEliminaDetalleAviso.jsp</result> 
         </action>        
         <!-- Carga masiva de avance de pagos -->
         <action name="capturaAvancePagos" method="capturaAvancePagos" class="mx.gob.comer.sipc.action.avisosdof.CapturaAvancesAction">
@@ -62,6 +68,14 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaRegistroArchivoAvancePagos.jsp</result>
             <result name="input">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaRegistroArchivoAvancePagos.jsp</result>
-        </action>             
+        </action>
+        <action name="eliminarArchivoAvance" method="eliminarArchivoAvance" class="mx.gob.comer.sipc.action.avisosdof.CapturaAvancesAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaEliminaArchivoAvancePagos.jsp</result>
+            <result name="input">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaEliminaArchivoAvancePagos.jsp</result> 
+        </action>
+       
+                     
     </package>
 </struts>

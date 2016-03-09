@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,22 +17,12 @@ import javax.servlet.ServletContext;
 
 import mx.gob.comer.sipc.dao.AvancePagosDAO;
 import mx.gob.comer.sipc.dao.CatalogosDAO;
-import mx.gob.comer.sipc.domain.Cultivo;
-import mx.gob.comer.sipc.domain.Ejercicios;
-import mx.gob.comer.sipc.domain.Estado;
-import mx.gob.comer.sipc.domain.catalogos.ApoyoAviso;
-import mx.gob.comer.sipc.domain.catalogos.ClienteDeParticipante;
-import mx.gob.comer.sipc.domain.catalogos.ProgAviso;
 import mx.gob.comer.sipc.domain.transaccionales.AvancePagos;
-import mx.gob.comer.sipc.domain.transaccionales.AvisosDof;
-import mx.gob.comer.sipc.domain.transaccionales.AvisosDofDetalle;
 import mx.gob.comer.sipc.log.AppLogger;
 import mx.gob.comer.sipc.utilerias.TextUtil;
 import mx.gob.comer.sipc.utilerias.Utilerias;
 import mx.gob.comer.sipc.vistas.domain.AvisosDofDetalleV;
 import mx.gob.comer.sipc.vistas.domain.AvisosDofV;
-import mx.gob.comer.sipc.vistas.domain.relaciones.RelacionVentas;
-
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -46,13 +35,10 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;
-import org.hibernate.JDBCException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 @SuppressWarnings("serial")
@@ -87,7 +73,13 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 	private int idEstado;
 	private int programa;
 	private int idCultivo;
-	private String cicloAgricola;	
+	private String cicloAgricola;
+
+	private String rutaLog;
+
+	private String folioArchivo;
+
+	private int registrosBorrados;	
 
 	public String capturaAvancePagos(){
 		try{			
@@ -110,7 +102,8 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 			ext = docFileName.toLowerCase().substring(docFileName.lastIndexOf("."));
 			if(ext.equals(".xlsx")||ext.equals(".XLSX")){
 				wbXSSF =  new XSSFWorkbook (inp);	
-			}			
+			}	
+			folioArchivo = new java.text.SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 			for(int i = 0; i < wbXSSF.getNumberOfSheets(); i++){
 				sheetXSSF = wbXSSF.getSheetAt(i);
 				rowIterator = sheetXSSF.iterator();
@@ -120,18 +113,21 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 				countRowLog = 0;
 				crearCeldaenLogXls();
 				leerPagina(rowIterator);
-				guardarAvancePagos((i+1));
+				guardarAvancePagos(i+1);
 			}			
-			nombreArchivoLogCargaXls = "LogCargaArchivoRelVentas.xls";  
-			FileOutputStream out = new FileOutputStream(new File(nombreArchivoLogCargaXls));
+			nombreArchivoLogCargaXls = "LogCargaArchivoAvancePagos.xls";  
+			rutaLog = "/SIPC/logs/";
+			FileOutputStream out = new FileOutputStream(new File(rutaLog+nombreArchivoLogCargaXls));
 		    wbLog.write(out);
 		    out.close();
+		    capturaAvancePagos();
 	    } catch(Exception e) {
 			e.printStackTrace();
 			AppLogger.error("errores","Ocurrio un error en registraArchivoRelVentas  debido a: "+e.getMessage());
 			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
 			errorSistema = 1;
 		}
+		
 		return SUCCESS;
 	}
 		
@@ -141,13 +137,13 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 			 cDAO.guardaObjeto(a);
 			 numRegGuardados++;
 		 }
-		 totalRegistrosDetalle = (contRow - 1 );
+		 totalRegistrosDetalle = (contRow - 1);
 		 msj = "Se guardaron "+numRegGuardados+" registros en la base de datos de la hoja "+numeroHoja;
 		 lstLog.add(msj);
 		 crearCeldaenLogXls();		
 		 numRegNoGuardados = totalRegistrosDetalle-numRegGuardados;
 		 if(numRegNoGuardados > 0){
-				msj = "No fue posible guardar "+(numRegNoGuardados == 1?"registro":"registros")+" en la base de datos de la hoja"+numeroHoja+", por favor verifique";
+				msj = "No fue posible guardar "+(numRegNoGuardados == 1?numRegNoGuardados+" registro":numRegNoGuardados+" registros")+" en la base de datos de la hoja"+numeroHoja+", por favor verifique";
 				lstLog.add(msj);
 				crearCeldaenLogXls();
 		}	
@@ -157,155 +153,253 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 		 crearCeldaenLogXls();
 	}
 	
+	@SuppressWarnings("unused")
 	private void leerPagina(Iterator<Row> rowIterator) throws ParseException {
 		contRow = 0;
 		contColumna = 0;
 		String valor = "";
-		
+		boolean bandFinArchivo = false;
 		lstAvancePagos = new ArrayList<AvancePagos>();
 		while(rowIterator.hasNext()){
 			contColumna = 0;	
 			Row row = rowIterator.next();
+			errorEnCampo = false;
 			Iterator<Cell> cellIterator = row.cellIterator();
 			while(cellIterator.hasNext()){
 				valor =  recuperarDatoDeCelda(cellIterator.next());
 				 if (valor != null && !valor.equals("")){
-					   //bandFinArchivo = true;
+					   bandFinArchivo = true;
 				 }	
 				 if(contRow > 0 && contColumna < 10 ){
 					 if(contColumna == 0){
 						 ap = new AvancePagos();
+						 ap.setFolioArchivo(folioArchivo);
+						 ap.setFechaRegistro(new Date());
 					 }
-					 getValidacionDetalle(valor);
-					 //valida que el avance se haya registrado previamente en la configuracion del aviso					 
-					 if(!errorEnCampo){
-						List<AvisosDofDetalleV> lstAvisoDofDetalle = aDAO.getAvisosDofDetalle(claveAviso, programa, idCultivo,
-									null, 0, idEstado, cicloAgricola);
-						if(lstAvisoDofDetalle.size() > 0){
-							 msj = "Configuración no valida: Fila :"+(contRow+2)+" Columna: "+(contColumna+1);
-							 crearCeldaenLogXls();
-							errorEnCampo = true;
-						}			
-					 }					 
-					 if(contColumna == 9){
+					 getValidacionDetalle(valor);			 
+					 if(contColumna == 9){						 
 	 					if(!errorEnCampo){
-	 						lstAvancePagos.add(ap);
+	 						 //valida que el avance se haya registrado previamente en la configuracion del aviso
+ 							List<AvisosDofDetalleV> lstAvisoDofDetalle = aDAO.getAvisosDofDetalle(claveAviso, programa, idCultivo,
+ 										null, 0, idEstado, cicloAgricola,0);
+ 							if(lstAvisoDofDetalle.size() == 0){
+ 								 msj = "Configuración no existe registrada para el aviso "+claveAviso+": Fila :"+(contRow+2);
+ 								 crearCeldaenLogXls();
+ 								errorEnCampo = true;
+ 							}else{
+ 								lstAvancePagos.add(ap);
+ 							}				 
 		 				}
 		 			}
 				 }				 
 				 contColumna++;
-				 if(contColumna == 10){
+				 if(contColumna == 10){			 					 
 					break; //en caso de que haya mas columnas en el archivo omitir	
 				 } 				 
 			}//end while cellIterator
-		}//while(rowIterator.hasNext())
-		
-		
+			
+//			if(contRow >= 1){
+//				if(bandFinArchivo){
+//					if(contColumna < 8){
+//						msj = "Fila:"+(contRow+1)+". Se esperaban "+9+", se encontraron solo " + contColumna;
+//						 errorEnCampo  = true;
+//						 crearCeldaenLogXls();
+//					}
+//				}else{
+//					break;
+//				}
+//			}
+			contRow++;
+		}//while(rowIterator.hasNext())		
 	}	
 	
-	private void getValidacionDetalle(String valor) throws ParseException {
-		  if(valor!=null && !valor.isEmpty()){	  
+	private void getValidacionDetalle(String valor) throws ParseException {  
 			  switch(contColumna){
-				  case 0:{
-					  
-					  ap.setClaveAviso(valor);
-					 break;
+				  case 0:{	
+					  String claveAvisoTmp = "";
+					if(valor !=null && !valor.isEmpty()){					
+						try{
+							  double vDouble = Double.parseDouble(valor);
+							  Long vLong = (long) vDouble;
+							  claveAvisoTmp  = vLong.toString();
+						  }catch(Exception e){
+							  claveAvisoTmp = valor; 
+						  }	
+						if(claveAvisoTmp.equals(claveAviso)){
+							ap.setClaveAviso(claveAvisoTmp);
+						}else{
+							msj = "Clave de aviso "+claveAvisoTmp+" invalido, no corresponde a "+claveAviso+" seleccionado: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+							crearCeldaenLogXls();
+							errorEnCampo = true;
+						}
+					}else{
+						msj = "Clave de aviso es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						crearCeldaenLogXls();
+						errorEnCampo = true;
+					}
+					break;
 				  }
 				  case 1:{
-					//Verifica el id del estado
-					  if(verificarTipoDato(valor, "numero")){
-						 idEstado = Integer.parseInt(valor);
-						 ap.setIdEstado(Integer.parseInt(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						  //Verifica el id del estado
+						  if(verificarTipoDato(valor, "numero")){
+							  Double d = Double.parseDouble(valor);
+							  valor = TextUtil.formateaNumeroComoCantidadSincomas(d);  
+							 idEstado = Integer.parseInt(valor);
+							 ap.setIdEstado(idEstado);
+						  }else{
+							 msj = "id del estado invalido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+							 crearCeldaenLogXls();
+							 errorEnCampo = true;
+						  }	
 					  }else{
-						 msj = "id del estado invalido: Fila :"+(contRow+2)+" Columna: "+(contColumna+1);
-						 crearCeldaenLogXls();
-						 errorEnCampo = true;
-					  }	
+						  msj = "Id del estado es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						  crearCeldaenLogXls();
+						  errorEnCampo = true;
+					  }
 					  break;
 				  }
 				  case 2:{
-					//Verifica el id del PROGRAMA
-					  if(verificarTipoDato(valor, "numero")){
-						 programa = Integer.parseInt(valor);
-						 ap.setPrograma(Integer.parseInt(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						//Verifica el id del PROGRAMA
+						  if(verificarTipoDato(valor, "numero")){
+							  Double d = Double.parseDouble(valor);
+							  valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+							  programa = Integer.parseInt(valor);
+							  ap.setPrograma(programa);
+						  }else{
+							 msj = "id del programa invalido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+							 crearCeldaenLogXls();
+							 errorEnCampo = true;
+						  }
 					  }else{
-						 msj = "id del programa invalido: Fila :"+(contRow+2)+" Columna: "+(contColumna+1);
-						 crearCeldaenLogXls();
-						 errorEnCampo = true;
+						  msj = "Id del programa es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						  crearCeldaenLogXls();
+						  errorEnCampo = true;
 					  }
 					  break;
 				  }
 				  case 3:{
-					  //Valida el id del cultivo
-					  if(verificarTipoDato(valor, "numero")){
-						  idCultivo = Integer.parseInt(valor);
-						 ap.setIdCultivo(Integer.parseInt(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						  //Valida el id del cultivo
+						  if(verificarTipoDato(valor, "numero")){
+							  Double d = Double.parseDouble(valor);
+							  valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+							  idCultivo = Integer.parseInt(valor);
+							 ap.setIdCultivo(idCultivo);
 						}else{
-							 msj = "id del cultivo invalido: Fila :"+(contRow+2)+" Columna: "+(contColumna+1);
+							 msj = "id del cultivo invalido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
 							 crearCeldaenLogXls();
 							 errorEnCampo = true;
 						 }	
+					  }else{
+						  msj = "Id del cultivo es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						  crearCeldaenLogXls();
+						  errorEnCampo = true;
+					  }
 					  break;
 				  }case 4:{
-					  //Valida Ciclo
-					  cicloAgricola = valor;
-					  ap.setCicloAgricola(valor);
+					  if(valor !=null && !valor.isEmpty()){
+						  //Valida Ciclo
+						  cicloAgricola = valor;
+						  ap.setCicloAgricola(valor);
+					  }else{
+						  msj = "Ciclo Agricola es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						  crearCeldaenLogXls();
+						  errorEnCampo = true;
+					  }
 					  break;
 				  }case 5:{
-					  //Verifica  Solucitudes
-					  if(verificarTipoDato(valor, "numero")){
-							 ap.setSolicitudes(Integer.parseInt(valor));
-						}else{
-							 msj = "Tipo de dato en solicitud invalido: Fila :"+(contRow+2)+" Columna: "+(contColumna+1);
-							 crearCeldaenLogXls();
-							 errorEnCampo = true;
+					  if(valor !=null && !valor.isEmpty()){
+						  //Verifica  Solucitudes
+						  if(verificarTipoDato(valor, "numero")){
+							  	Double d = Double.parseDouble(valor);
+							  	valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+								ap.setSolicitudes(Integer.parseInt(valor));
+						  }else{
+								 msj = "Tipo de dato en solicitudes invalido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+								 crearCeldaenLogXls();
+								 errorEnCampo = true;
 						 }
+					  }else{
+						  msj = "Número de solicitudes es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
+						  crearCeldaenLogXls();
+						  errorEnCampo = true;
+					  }
 					  break;
 				  }case 6:{
-					  //Verifica el volumen
-					  if(verificarTipoDato(valor, "volumen")){
-						  ap.setVolumen(Double.parseDouble(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						  //Verifica el volumen
+						  if(verificarTipoDato(valor, "volumen")){
+							  ap.setVolumen(Double.parseDouble(valor)	);
+						  }else{
+							  msj = "Volumen de la Factura: Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Volumen no valido";
+							  crearCeldaenLogXls();
+							  errorEnCampo = true;
+						  }
 					  }else{
-						  msj = "Volumen de la Factura: Fila :"+(contRow+2)+" Columna: "+(contColumna+1)+". Volumen no valido";
+						  msj = "Volumen es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
 						  crearCeldaenLogXls();
 						  errorEnCampo = true;
 					  }
 					  break;
 				  }case 7:{
-					  //Verifica el importe
-					  if(verificarTipoDato(valor, "importe")){
-						  ap.setImporte(Double.parseDouble(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						  //Verifica el importe
+						  if(verificarTipoDato(valor, "importe")){
+							  ap.setImporte(Double.parseDouble(valor));
+						  }else{
+							  msj = "Importe: Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Importe no valido";
+							  crearCeldaenLogXls();
+							  errorEnCampo = true;
+						  }
 					  }else{
-						  msj = "Importe: Fila :"+(contRow+2)+" Columna: "+(contColumna+1)+". Importe no valido";
+						  msj = "Importe es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
 						  crearCeldaenLogXls();
 						  errorEnCampo = true;
 					  }
 					  break;
 				  }case 8:{
-					  //Valida tipo de dato de productores
-					  if(verificarTipoDato(valor, "numero")){
-						  ap.setProductores(Integer.parseInt(valor));
+					  if(valor !=null && !valor.isEmpty()){
+						  //Valida tipo de dato de productores
+						  if(verificarTipoDato(valor, "numero")){
+							  Double d = Double.parseDouble(valor);
+							  valor = TextUtil.formateaNumeroComoCantidadSincomas(d);
+							  ap.setProductores(Integer.parseInt(valor));
+						  }else{
+							  msj = "Productores: Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Tipo de dato no valido";
+							  crearCeldaenLogXls();
+							  errorEnCampo = true;
+						  }
 					  }else{
-						  msj = "Productores: Fila :"+(contRow+2)+" Columna: "+(contColumna+1)+". Tipo de dato no valido";
+						  msj = "Número de productores es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
 						  crearCeldaenLogXls();
 						  errorEnCampo = true;
 					  }
 					  break;
 				  }case 9:{
-					  //Verifica la fecha de registro
-					  if(verificarTipoDato(valor, "fecha")){
-						  ap.setFechaRegistro(Utilerias.convertirStringToDateMMDDYYY(valor));  
+					  if(valor !=null && !valor.isEmpty()){
+						  //Verifica la fecha de avance
+						  if(verificarTipoDato(valor, "fecha")){
+							  ap.setFechaAvance(Utilerias.convertirStringToDateMMDDYYY(valor));  
+						  }else{
+							  msj = "Fecha de avance Fila :"+(contRow+1)+" Columna: "+(contColumna+1)+". Fecha invalida";
+							  crearCeldaenLogXls();
+							  errorEnCampo = true;
+						  }
 					  }else{
-						  msj = "Fecha de registro Fila :"+(contRow+2)+" Columna: "+(contColumna+1)+". Fecha invalida";
+						  msj = "Fecha de avance es valor requerido: Fila :"+(contRow+1)+" Columna: "+(contColumna+1);
 						  crearCeldaenLogXls();
 						  errorEnCampo = true;
-					  }	
+					  }
 					  break;
 				  }
 			  }
-		  }
+		  
 		
 	}
+	
+	
 	private String  recuperarDatoDeCelda(Cell cell) {
 		String valor = "";
          switch(cell.getCellType()) {
@@ -336,6 +430,12 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 		
 	}
 	
+	
+	public String eliminarArchivoAvance(){
+		//Verifica, que no se haya capturado un avance para 		
+		registrosBorrados = aDAO.borrarUltimoArchivoAvancePagos(claveAviso);
+		return SUCCESS;
+	}
 	private void crearCeldaenLogXls() {		
 		rowLog = sheetLog.createRow(++countRowLog);
 		cellLog = rowLog.createCell(0);
@@ -388,7 +488,6 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 		return esTipoDatoPermitido;
 	}
 
-	
     public String getClaveAviso() {
 		return claveAviso;
 	}
@@ -428,6 +527,30 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 	public void setErrorSistema(int errorSistema) {
 		this.errorSistema = errorSistema;
 	}
+	
+	public String getRutaLog() {
+		return rutaLog;
+	}
+
+	public void setRutaLog(String rutaLog) {
+		this.rutaLog = rutaLog;
+	}
+
+	public String getNombreArchivoLogCargaXls() {
+		return nombreArchivoLogCargaXls;
+	}
+
+	public void setNombreArchivoLogCargaXls(String nombreArchivoLogCargaXls) {
+		this.nombreArchivoLogCargaXls = nombreArchivoLogCargaXls;
+	}
+	
+	public List<String> getLstLog() {
+		return lstLog;
+	}
+
+	public void setLstLog(List<String> lstLog) {
+		this.lstLog = lstLog;
+	}
 
 	@Override
 	public void setSession(Map<String, Object> arg0) {
@@ -437,6 +560,16 @@ public class CapturaAvancesAction extends ActionSupport implements ServletContex
 	@Override
 	public void setServletContext(ServletContext arg0) {
 		
+	}
+
+	
+	public int getRegistrosBorrados() {
+		return registrosBorrados;
+	}
+
+	
+	public void setRegistrosBorrados(int registrosBorrados) {
+		this.registrosBorrados = registrosBorrados;
 	}
 		
 	

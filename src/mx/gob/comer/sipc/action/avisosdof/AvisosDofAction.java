@@ -60,10 +60,13 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	private int error;
 	private List<AvisosDofV> lstAvisosDofV;
 	private Boolean bandera;
-
 	private String cultivo;
-
 	private int errorDetalleRepetido;
+	private int errorAvisoYaCapturado;
+	private int registrosBorrados;
+	private int id;
+	private int avanceCapturados;
+	
 	
 	public String ltsAvisosDof(){
 		try{			
@@ -92,8 +95,6 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 				lstAvisosDofDetalleV = aDAO.getAvisosDofDetalle(claveAviso);
 			}
 			lstApoyoAviso = cDAO.getApoyoAviso(0);
-			
-			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -105,6 +106,11 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 			session = ActionContext.getContext().getSession();
 			
 			if(registrar == 0){
+				 //Verifica si la clave de aviso no se ha capturado
+				if( aDAO.getAvisosDof(av.getClaveAviso()).size()>0){
+					errorAvisoYaCapturado = 1;
+					return SUCCESS;
+				}				
 				 avisosDof = new AvisosDof();
 				 avisosDof.setClaveAviso(av.getClaveAviso());
 				 avisosDof.setFechaRegistro(new Date());
@@ -114,16 +120,16 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 				avisosDof = aDAO.getAvisosDof(claveAviso).get(0);
 				avisosDof.setFechaActualizacion(new Date());
 				avisosDof.setUsuarioActualizacion((Integer) session.get("idUsuario"));
-				//Verifica que no se haya capturado la llave unica (claveAcceso, ciclo, ejercicio, programa, cultivo y estado)
-				lstAvisosDofDetalleV =  aDAO.getAvisosDofDetalle(claveAviso, avd.getPrograma(), avd.getIdCultivo(),
-						avd.getCiclo(), avd.getEjercicio(), avd.getIdEstado(), null);
-				if(lstAvisosDofDetalleV.size() > 0){
-					errorDetalleRepetido = 1;
-					return SUCCESS;
-				}
-			}				
+			}			
+			//Verifica que no se haya capturado la llave unica (claveAcceso, ciclo, ejercicio, programa, cultivo y estado)
+			lstAvisosDofDetalleV =  aDAO.getAvisosDofDetalle(av.getClaveAviso(), avd.getPrograma(), avd.getIdCultivo(),
+					avd.getCiclo(), avd.getEjercicio(), avd.getIdEstado(), null,0);
+			if(lstAvisosDofDetalleV.size() > 0){
+				errorDetalleRepetido = 1;
+				return SUCCESS;
+			}
+			
 			avisosDof.setIdApoyo(av.getIdApoyo());
-			System.out.println("Leyendad "+av.getLeyenda());
 			avisosDof.setLeyenda(av.getLeyenda());
 			avisosDof.setFechaPublicacion(av.getFechaPublicacion());
 			
@@ -135,18 +141,17 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 			avisosDofDetalle.setIdCultivo(avd.getIdCultivo());
 			avisosDofDetalle.setCiclo(avd.getCiclo());
 			avisosDofDetalle.setEjercicio(avd.getEjercicio());	
-			System.out.println("avd.getEjercicio().toString().substring(2,4) "+avd.getEjercicio().toString().substring(2,4));
 			avisosDofDetalle.setCicloAgricola(avd.getCiclo()+ avd.getEjercicio().toString().substring(2,4));
 			avisosDofDetalle.setIdEstado(avd.getIdEstado());
 			avisosDofDetalle.setVolumen(avd.getVolumen());
 			avisosDofDetalle.setImporte(avd.getImporte());			
 			avisosDof.getAvisoDofDetalle().add(avisosDofDetalle);			
-			cDAO.guardaObjeto(avisosDof);
-			
+			cDAO.guardaObjeto(avisosDof);			
 			programa = cDAO.getProgAviso(avd.getPrograma()).get(0).getNombre();
 			estado = cDAO.consultaEstado(avd.getIdEstado()).get(0).getNombre();
 			cultivo = cDAO.consultaCultivo(avd.getIdCultivo()).get(0).getCultivo();
-			error = 0;	
+			error = 0;
+			registrar = 1; 
 		}catch(Exception e){			
 			error = 1;
 			addActionError("Ocurrio un error inesperado, favor de reportar al administrador");
@@ -171,7 +176,26 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	}
 	
 	
-	
+	public String eliminarDetalleAviso(){	
+		
+		try {
+			//Verifica que no se haya captura un avance con esta configuracion
+			lstAvisosDofDetalleV =  aDAO.getAvisosDofDetalle(id);
+			AvisosDofDetalleV ad = lstAvisosDofDetalleV.get(0);
+			avanceCapturados  = aDAO.getAvanceExistente(ad.getClaveAviso(), ad.getIdProgAviso(), ad.getIdCultivo(), ad.getIdEstado(), ad.getCicloAgricola());
+			if(avanceCapturados > 0){
+				registrosBorrados = -1;
+			}else{
+				registrosBorrados = aDAO.borrarDetalleAviso(id);	
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return SUCCESS;
+	}
 	
 	public List<Ejercicios> getLstEjercicios() {
 		return lstEjercicios;
@@ -314,8 +338,45 @@ public class AvisosDofAction extends ActionSupport implements ServletContextAwar
 	@Override
 	public void setServletContext(ServletContext arg0) {
 		
-	}	
-	
-	
-	
+	}
+
+	public int getRegistrosBorrados() {
+		return registrosBorrados;
+	}
+
+	public void setRegistrosBorrados(int registrosBorrados) {
+		this.registrosBorrados = registrosBorrados;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getErrorAvisoYaCapturado() {
+		return errorAvisoYaCapturado;
+	}
+
+	public void setErrorAvisoYaCapturado(int errorAvisoYaCapturado) {
+		this.errorAvisoYaCapturado = errorAvisoYaCapturado;
+	}
+
+	public String getClaveAviso() {
+		return claveAviso;
+	}
+
+	public void setClaveAviso(String claveAviso) {
+		this.claveAviso = claveAviso;
+	}
+
+	public int getAvanceCapturados() {
+		return avanceCapturados;
+	}
+
+	public void setAvanceCapturados(int avanceCapturados) {
+		this.avanceCapturados = avanceCapturados;
+	}
 }

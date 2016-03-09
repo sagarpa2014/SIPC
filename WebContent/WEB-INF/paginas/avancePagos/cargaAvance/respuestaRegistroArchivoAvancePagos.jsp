@@ -7,11 +7,10 @@
 	<div id="mjsS"><div  class="msjSatisfactorio"><s:property value="%{msjOk}"/></div></div>	
 </s:if>
 
-<s:if test="%{errorSistema==0}">ok
+<s:if test="%{errorSistema==0}">
 	<s:include value="capturaAvancePagos.jsp"/>
 </s:if>
 <s:else>
-error
 	<!-- hubo un error, por favor verifique -->
 </s:else>	
 

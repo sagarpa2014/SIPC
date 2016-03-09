@@ -532,6 +532,21 @@
             <result name="success">/WEB-INF/paginas/relaciones/relVentas/respuestaRegistroRelVentasArchivo.jsp</result>
             <result name="input">/WEB-INF/paginas/relaciones/relVentas/respuestaRegistroRelVentasArchivo.jsp</result>
         </action>     
+        <!-- CONSULTA DE PREDIOS -->
+        <action name="consultaPredios" method="consultaPredios" class="mx.gob.comer.sipc.action.relaciones.ConsultaPrediosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">consultaPredios</result>
+        	<result name="input" type="tiles">consultaPredios</result>            
+        </action>
+         <action name="ejecutaConsultaPredios" method="ejecutaConsultaPredios" class="mx.gob.comer.sipc.action.relaciones.ConsultaPrediosAction">
+			<interceptor-ref name="chksession"/> 
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+        	<result name="success" type="tiles">consultaPredios</result>
+        	<result name="input" type="tiles">consultaPredios</result>            
+        </action>
+        
+           
          
     </package>
 </struts>

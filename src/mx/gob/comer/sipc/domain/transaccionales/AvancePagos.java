@@ -17,7 +17,7 @@ public class AvancePagos {
 	@SequenceGenerator(name = "avance_pagos_id_seq", sequenceName = "avance_pagos_id_seq")
 	@Column(name =  "id")
 	private Integer id;
-	@Column(name = "clave_aviso", updatable=false, insertable=false)
+	@Column(name = "clave_aviso")
 	private String claveAviso;
 	@Column(name =  "programa")
 	private Integer programa;
@@ -35,8 +35,12 @@ public class AvancePagos {
 	private Double importe;
 	@Column(name =  "productores")
 	private Integer productores;
+	@Column(name =  "fecha_avance")
+	private Date fechaAvance;
 	@Column(name =  "fecha_registro")
 	private Date fechaRegistro;
+	@Column(name =  "folio_archivo")
+	private String folioArchivo;
 	
 	public Integer getId() {
 		return id;
@@ -117,4 +121,21 @@ public class AvancePagos {
 	public void setFechaRegistro(Date fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
 	}
+
+	public Date getFechaAvance() {
+		return fechaAvance;
+	}
+
+	public void setFechaAvance(Date fechaAvance) {
+		this.fechaAvance = fechaAvance;
+	}
+
+	public String getFolioArchivo() {
+		return folioArchivo;
+	}
+
+	public void setFolioArchivo(String folioArchivo) {
+		this.folioArchivo = folioArchivo;
+	}
+		
 }

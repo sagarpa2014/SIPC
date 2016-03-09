@@ -434,6 +434,9 @@
 	<definition name="capturaAvancePagos" extends="masterTemplate">
 		<put-attribute name="body" value="/WEB-INF/paginas/avancePagos/cargaAvance/capturaAvancePagos.jsp"/>
 	</definition>
-	
+	<!-- CONSULTA PREDIOS -->
+	<definition name="consultaPredios" extends="masterTemplate">
+		<put-attribute name="body" value="/WEB-INF/paginas/relaciones/consultaPredios/consultaPredios.jsp"/>
+	</definition>
 	
 </tiles-definitions>
