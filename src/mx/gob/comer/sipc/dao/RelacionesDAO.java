@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import mx.gob.comer.sipc.domain.Programa;
 import mx.gob.comer.sipc.domain.catalogos.CatCriteriosValidacion;
 import mx.gob.comer.sipc.domain.catalogos.Predios;
 import mx.gob.comer.sipc.domain.catalogos.Productores;
@@ -2700,7 +2701,7 @@ public class RelacionesDAO {
 		return lst;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<BitacoraRelcompras> consultaReportesCruces(String folioCartaAdhesion)throws  JDBCException{		
 		List<BitacoraRelcompras> lst = new ArrayList<BitacoraRelcompras>();
 		StringBuilder consulta= new StringBuilder();	
@@ -2836,8 +2837,6 @@ public class RelacionesDAO {
 	
 	}	
 
-
-	@SuppressWarnings("unchecked")
 	public List<BoletasDuplicadas> verificaBoletaDuplicadasEnRelComprasTmp(String folioCartaAdhesion)throws  JDBCException{
 		List<BoletasDuplicadas> lst = new ArrayList<BoletasDuplicadas>();
 		StringBuilder consulta= new StringBuilder();
@@ -7064,6 +7063,70 @@ public class RelacionesDAO {
 		
 		return lst;		
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Programa> getProgramaEnPredio() throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<Programa> lst=null;
+		consulta.append("select * from programas where id_programa in (")
+		.append("select id_programa ")
+		.append("from predios_relaciones ")
+		.append("group by id_programa) ")
+		.append("order by descripcion_corta");				
+		lst= session.createSQLQuery(consulta.toString()).addEntity(Programa.class).list();
+		return lst;				  
+					
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<PrediosRelaciones> getPredioCurpYOrfc(int idPrograma, String predio, String curp, String rfc) throws JDBCException {
+		StringBuilder consulta= new StringBuilder();
+		List<PrediosRelaciones> lst = new ArrayList<PrediosRelaciones>();
+		if(idPrograma != -1 && idPrograma != 0 ){
+			consulta.append("where id_programa = ").append(idPrograma);
+		}		
+		if(predio!=null && !predio.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and predio='").append(predio).append("'");
+			}else{
+				consulta.append("where predio='").append(predio).append("'");
+			}
+		}		
+		if(curp!=null && !curp.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and curp='").append(curp).append("'");
+			}else{
+				consulta.append("where curp='").append(curp).append("'");
+			}
+		}
+		if(rfc!=null && !rfc.equals("")){
+			if(consulta.length()>0){
+				consulta.append(" and rfc='").append(rfc).append("'");
+			}else{
+				consulta.append("where rfc='").append(rfc).append("'");
+			}
+		}	
+		
+		consulta.insert(0, "select * from  predios_relaciones_v ").append(" ORDER BY descripcion_corta, folio_contrato, predio");    
+		SQLQuery query = session.createSQLQuery(consulta.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		List<?> data = query.list();
+		for(Object object : data){
+			Map<?, ?> row = (Map<?, ?>)object;
+			PrediosRelaciones p = new PrediosRelaciones();			
+			p.setDescripcionCorta((String) row.get("descripcion_corta"));
+			p.setFolioContrato((String) row.get("folio_contrato"));
+			p.setPredio((String) row.get("predio"));
+			p.setCurp((String) row.get("curp"));
+			p.setRfc((String) row.get("rfc"));			
+			lst.add(p);
+		}
+		
+		return lst;				  
+	}
+	
+	
+	
 	
 	
 	
