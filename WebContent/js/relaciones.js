@@ -141,7 +141,7 @@ function chkCamposCapturaPersonalizacionRel(){
 		selectPGrupoEncAll.push(tmp);
 	});
 	
-	//Valida que el grupo 1 (NOMBRE DEL PARTICIPANTE) y 2 (CLAVE DE LA CARTA DE ADHESIÓN) sean capturados
+	//Valida que el grupo 1 (NOMBRE DEL PARTICIPANTE) y 2 (CLAVE DE LA CARTA DE ADHESIï¿½N) sean capturados
 	for(i=0; i<selectPGrupoEncAll.length; i++){
 		var grEnc = $('#grEnc'+i).val();
 		var grEncValor = $('#grEncValor'+i).val();
@@ -256,7 +256,7 @@ function chkCamposCapturaPersonalizacionRel(){
 	for(i=0; i<selectPGrupoEnc.length-1; i++){
 		if(i==0){
 			if(selectPGrupoEnc[i]!=1){
-				$('#dialogo_1').html('El número de la posición, debe comenzar desde uno.');
+				$('#dialogo_1').html('El nï¿½mero de la posición, debe comenzar desde uno.');
 				abrirDialogo();
 			    return false;
 				
@@ -900,7 +900,7 @@ function chkCamposCapturaRelaciones(){
 			patron = /^([A-Z, a-z]{3,4})([0-9]{6})([A-Z,a-z,0-9]{3})$/;
 			rfcProductor.toUpperCase();
 			if (!rfcProductor.match(patron)){
-				$('#dialogo_1').html('El RFC del Productor es inválido, capture correctamente el RFC con homoclave, ejemplo (ABCD123456R12)');
+				$('#dialogo_1').html('El RFC del Productor es invï¿½lido, capture correctamente el RFC con homoclave, ejemplo (ABCD123456R12)');
 				//$('#rfcR').val(null);
 				abrirDialogo();
 				return false;
@@ -1267,7 +1267,7 @@ function chkCamposCapturaRelaciones(){
 		}
 		if($('#noTickets').length){
 			if($('#noTickets').val()==null || $('#noTickets').val()== ""){
-				$('#dialogo_1').html('Capture el número de tickets de bascula de entrada en almacén');
+				$('#dialogo_1').html('Capture el número de tickets de bascula de entrada en almacen');
 				abrirDialogo();
 				return false;
 			}
@@ -1696,7 +1696,7 @@ function validaCaracter(caracter, count){
 /*function validaNumero(numero, id, msj){
 	var patron = /^([0-9]{1,10})$/;
 	if (!numero.match(patron)){
-		$('#dialogo_1').html('El valor del campo '+count+' es inválido, no se aceptan decimales');
+		$('#dialogo_1').html('El valor del campo '+count+' es invï¿½lido, no se aceptan decimales');
 		abrirDialogo();
 		$('#errorBlur').val(6);
 		$('#numero'+count).val(null);
@@ -1728,7 +1728,7 @@ function validaNumero(numero, id, msj){
 function validaTicket(ticket, count){
 	var patron = /^([A-Z, a-z,0-9,-]{1,10})$/;
 	if (!ticket.match(patron)){
-		$('#dialogo_1').html('Capture correctamente el n° de boleta o ticket de bascula, solo se aceptan letras, números y guión ejemplo (AB-123456)');
+		$('#dialogo_1').html('Capture correctamente el no. de boleta o ticket de bascula, solo se aceptan letras, números y guión ejemplo (AB-123456)');
 		abrirDialogo();
 		$('#errorBlur').val(7);
 		$('#ticket'+count).val(null);
@@ -3240,7 +3240,7 @@ function chkCamposBitacoraRelCompras (){
 		abrirDialogo();
 	 	return false;
 	}
-	if (confirm('¿Esta seguro de generar el reporte de los cruces previamente validados?')){}else{return false;}
+	if (confirm('Esta seguro de generar el reporte de los cruces previamente validados?')){}else{return false;}
 }
 function recuperaVistaValidacion (){
 	var grupoCriterio = $('#grupoCriterio').val();
@@ -3349,4 +3349,18 @@ function ajaxVerificaSiRecuperaPeriodoPorGrupo(grupoCriterio, folioCartaAdhesion
 			});
 		}
 	}); //termina ajax
+}
+
+function chkConsultaPredios(){
+	var idPrograma = $('#idPrograma').val();
+	var predio = $('#predio').val();
+	var curp = $('#curp').val();
+	var rfc = $('#rfc').val();	
+	if(idPrograma == -1 && (predio == "" || predio == null)
+			&& (curp == "" || curp == null)
+			&& (rfc == "" || rfc == null)){
+		$('#dialogo_1').html('Debe seleccionar por lo menos un criterio de busqueda');
+		abrirDialogo();
+	    return false;
+	}
 }
