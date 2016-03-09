@@ -21,7 +21,7 @@
 	<div class="clear"></div>
 	<div>
 		<label class="left1"><span class="requerido">*</span>Folio Inscripci&oacute;n:</label>
-		<s:textfield id="folioSI" name="folioSI"  maxlength="20" size="20"  value="%{folioSI}" onchange="validarFolioInscripcion();" />
+		<s:textfield id="folioSI" name="folioSI"  maxlength="21" size="21"  value="%{folioSI}" onchange="validarFolioInscripcion();" />
 	</div>
 	<div class="clear"></div>
 	<div id="validarFolioInscripcion"></div>		
