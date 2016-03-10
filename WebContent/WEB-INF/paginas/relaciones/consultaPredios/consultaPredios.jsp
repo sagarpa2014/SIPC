@@ -37,6 +37,9 @@
 	</fieldset>
 	<s:if test="%{bandera==true}">
 		<s:if test="lstPrediosRelaciones.size() > 0">
+			<div class="exporta_csv">
+				<label class="label2"> Exportar Datos </label> <a href="<s:url value="/relaciones/exportaConsultaPredios"/>" title="Exportar Datos" ></a>
+			</div>
 			<div class="clear"></div>
 			<br/>
 			<fieldset>

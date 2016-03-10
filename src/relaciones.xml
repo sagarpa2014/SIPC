@@ -545,7 +545,12 @@
         	<result name="success" type="tiles">consultaPredios</result>
         	<result name="input" type="tiles">consultaPredios</result>            
         </action>
-        
+        <action name="exportaConsultaPredios" method="exportaConsultaPredios" class="mx.gob.comer.sipc.action.relaciones.ConsultaPrediosAction">
+        	<interceptor-ref name="chksession"/>
+        	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
+            <result name="success">index</result>
+            <result name="input">index</result>
+        </action>
            
          
     </package>

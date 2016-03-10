@@ -108,6 +108,7 @@
 				<li><a href="<s:url value="/solicitudPago/listarAsignacionCAEspecialista"/>">Asignaci&oacute;n a Especialista</a></li>
 				<li><a href="<s:url value="/solicitudPago/listarPrograma"/>">Relaci&oacute;n de Documentos</a></li>		 
 				<li><a href="<s:url value="/solicitudPago/listarProgramasPagosCartaAdhesion"/>">Ajuste Pago de Fianza</a></li><!-- Trámite de Pago -->
+				<li><a href="<s:url value="/relaciones/consultaPredios"/>">Consulta de Predios</a></li>
 			</ul>
 		</li>
 		<li><a  href="#">Cat&aacute;logos</a>

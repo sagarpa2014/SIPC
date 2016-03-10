@@ -74,8 +74,10 @@
         	<interceptor-ref name="defaultStackHibernateStrutsValidation"/>
             <result name="success">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaEliminaArchivoAvancePagos.jsp</result>
             <result name="input">/WEB-INF/paginas/avancePagos/cargaAvance/respuestaEliminaArchivoAvancePagos.jsp</result> 
-        </action>
-       
-                     
+        </action>       
+        <action name="googleGraphChart" method="googleGraphChart" class="mx.gob.comer.sipc.action.avisosdof.GraficasAvancePagos" >       		
+       		<result name="success" type="tiles">graficas</result>
+            <result name="input" type="tiles">graficas</result>
+       </action>                     
     </package>
 </struts>
