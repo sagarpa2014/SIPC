@@ -6366,7 +6366,7 @@ public class RelacionesDAO {
 			return lst;
 		}
 		
-		public List<VolumenFiniquito> consultaVolumenCumplido(String rfcComprador, int idPrograma)throws  JDBCException{
+		public List<VolumenFiniquito> consultaVolumenCumplido(String folioCartaAdhesion, String rfcComprador, int idPrograma)throws  JDBCException{
 			List<VolumenFiniquito> lst = new ArrayList<VolumenFiniquito>();
 			StringBuilder consulta= new StringBuilder();
 			//Antes solo bodegas de la relacion de compras
@@ -6384,18 +6384,30 @@ public class RelacionesDAO {
 //			.append("c.folio_contrato = r.folio_contrato ") 
 //			.append("group by b.clave_bodega, r.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen ")  			
 //			.append("order by b.clave_bodega, r.folio_contrato "); 
+			
+			consulta.append("select r.rfc_comprador,r.folio_contrato,  r.clave_bodega,b.nombre_comprador, b.nombre_vendedor, coalesce(c.precio_pactado_por_tonelada,0) as precio_pactado_por_tonelada, coalesce(b.volumen,0) as volumen, ") 
+			.append("coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta, ")
+			.append("coalesce(abs(coalesce(sum(r.vol_total_fac_venta),0)- coalesce(b.volumen,0)),0) as dif_volumen_finiquito, ")
+			.append("c.modalidad ")
+			.append("from relacion_compras_tmp r ")
+			.append("left join bodegas_contratos b ON r.folio_contrato =  b.folio_contrato and r.clave_bodega =  b.clave_bodega and r.rfc_comprador = b.rfc_comprador ")
+			.append("left join contratos_relacion_compras c on r.folio_contrato = c.folio_contrato ")
+			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
+			.append("group by r.rfc_comprador, r.folio_contrato, r.clave_bodega, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad ")
+			.append("order by r.folio_contrato, r.clave_bodega ");
 
-			consulta.append(" select v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen, coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta,  ")
-					.append("abs(coalesce(sum(r.vol_total_fac_venta),0)- v.volumen) as dif_volumen_finiquito, v.modalidad ")
-					.append("FROM  ")
-					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad  ") 
-					.append("from bodegas_contratos b, contratos_relacion_compras c  ")
-					.append("where b.rfc_comprador = '").append(rfcComprador).append("' ")
-					.append("and b.folio_contrato = c.folio_contrato and b.id_programa = ").append(idPrograma)
-					.append(" group by b.rfc_comprador, b.clave_bodega, b.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad ) v ")
-					.append("left join relacion_compras_tmp r On r.folio_contrato =  v.folio_contrato and v.clave_bodega =  r.clave_bodega and r.rfc_comprador  = v.rfc_comprador ") 
-					.append("group by  v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen,  v.modalidad  ")
-					.append("order by   v.folio_contrato, v.clave_bodega ");
+ // Antes todos los contratos asociados al comprador
+//			consulta.append(" select v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen, coalesce(sum(r.vol_total_fac_venta),0) as vol_total_fac_venta,  ")
+//					.append("abs(coalesce(sum(r.vol_total_fac_venta),0)- v.volumen) as dif_volumen_finiquito, v.modalidad ")
+//					.append("FROM  ")
+//					.append("(select  b.rfc_comprador, b.clave_bodega, b.folio_contrato,  b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad  ") 
+//					.append("from bodegas_contratos b, contratos_relacion_compras c  ")
+//					.append("where b.rfc_comprador = '").append(rfcComprador).append("' ")
+//					.append("and b.folio_contrato = c.folio_contrato and b.id_programa = ").append(idPrograma)
+//					.append(" group by b.rfc_comprador, b.clave_bodega, b.folio_contrato, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad ) v ")
+//					.append("left join relacion_compras_tmp r On r.folio_contrato =  v.folio_contrato and v.clave_bodega =  r.clave_bodega and r.rfc_comprador  = v.rfc_comprador ") 
+//					.append("group by  v.rfc_comprador, v.clave_bodega, v.folio_contrato,  v.nombre_comprador, v.nombre_vendedor, v.precio_pactado_por_tonelada, v.volumen,  v.modalidad  ")
+//					.append("order by   v.folio_contrato, v.clave_bodega ");
 
 			System.out.println("VOLUMEN CUMPLIDO "+consulta.toString());
 			
@@ -6417,6 +6429,7 @@ public class RelacionesDAO {
 		        valor = (BigDecimal) row.get("dif_volumen_finiquito");
 		        b.setDifVolumenFiniquito(valor!=null ? valor.doubleValue():0.0);
 		        valor = (BigDecimal) row.get("precio_pactado_por_tonelada");
+		        System.out.println("Valor precio pactado "+valor);
 		        b.setPrecioPactadoPorTonelada(valor!=null ? valor.doubleValue():0.0);
 		        Boolean modalidad = (Boolean) row.get("modalidad");
 		        b.setModalidad(modalidad != null? "SOLO PUT":"NA");

@@ -2530,7 +2530,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
-						lstVolumenCumplido = rDAO.consultaVolumenCumplido(rfcComprador, idPrograma);
+						lstVolumenCumplido = rDAO.consultaVolumenCumplido(folioCartaAdhesion, null,0);
 						if(lstVolumenCumplido.size()>0){//En el listado se guardan el volumen no cumplido
 							//Guardar en bitacora
 							llenarBitacora(true, l.getIdCriterio());							
