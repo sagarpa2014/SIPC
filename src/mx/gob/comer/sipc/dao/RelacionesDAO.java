@@ -6390,7 +6390,7 @@ public class RelacionesDAO {
 			.append("coalesce(abs(coalesce(sum(r.vol_total_fac_venta),0)- coalesce(b.volumen,0)),0) as dif_volumen_finiquito, ")
 			.append("c.modalidad ")
 			.append("from relacion_compras_tmp r ")
-			.append("left join bodegas_contratos b ON r.folio_contrato =  b.folio_contrato and r.clave_bodega =  b.clave_bodega and r.rfc_comprador = b.rfc_comprador ")
+			.append("left join bodegas_contratos b ON r.folio_contrato =  b.folio_contrato and r.clave_bodega =  b.clave_bodega ")//and r.rfc_comprador = b.rfc_comprador ")
 			.append("left join contratos_relacion_compras c on r.folio_contrato = c.folio_contrato ")
 			.append("where folio_carta_adhesion = '").append(folioCartaAdhesion).append("' ") 
 			.append("group by r.rfc_comprador, r.folio_contrato, r.clave_bodega, b.nombre_comprador, b.nombre_vendedor, c.precio_pactado_por_tonelada, b.volumen, c.modalidad ")
@@ -7091,7 +7091,7 @@ public class RelacionesDAO {
 					
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<PrediosRelaciones> getPredioCurpYOrfc(int idPrograma, String predio, String curp, String rfc) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<PrediosRelaciones> lst = new ArrayList<PrediosRelaciones>();
