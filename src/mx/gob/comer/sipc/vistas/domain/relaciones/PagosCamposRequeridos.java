@@ -5,6 +5,7 @@ package mx.gob.comer.sipc.vistas.domain.relaciones;
 @SuppressWarnings("rawtypes")
 public class PagosCamposRequeridos implements Comparable{	
 	
+	private Long idRelacionComprasTmp;
 	private String claveBodega;	
 	private String nombreEstado;
 	private String folioContrato;
@@ -22,7 +23,13 @@ public class PagosCamposRequeridos implements Comparable{
 	private String impPrecioTonPagoSinaxc;
 	private Double impTotalPagoSinaxcD;
 	private Double volTotalFacVentaD;
-	  
+	
+	public Long getIdRelacionComprasTmp() {
+		return idRelacionComprasTmp;
+	}
+	public void setIdRelacionComprasTmp(Long idRelacionComprasTmp) {
+		this.idRelacionComprasTmp = idRelacionComprasTmp;
+	}
 	public String getClaveBodega() {
 		return claveBodega;
 	}

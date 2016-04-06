@@ -36,7 +36,6 @@ import mx.gob.comer.sipc.domain.transaccionales.ComprasFacVenta;
 import mx.gob.comer.sipc.domain.transaccionales.ComprasFacVentaGlobal;
 import mx.gob.comer.sipc.domain.transaccionales.ComprasPagoProdSinAxc;
 import mx.gob.comer.sipc.domain.transaccionales.ComprasPredio;
-import mx.gob.comer.sipc.domain.transaccionales.DocumentacionSPCartaAdhesion;
 import mx.gob.comer.sipc.domain.transaccionales.RelacionComprasTMP;
 import mx.gob.comer.sipc.log.AppLogger;
 import mx.gob.comer.sipc.oficios.pdf.CruceRelComprasError;
@@ -63,7 +62,6 @@ import mx.gob.comer.sipc.vistas.domain.relaciones.FacturaFueraPeriodoPagoAdendum
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasCamposRequeridos;
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasIgualesFacAserca;
 import mx.gob.comer.sipc.vistas.domain.relaciones.FacturasVsPago;
-import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotPorBodega;
 import mx.gob.comer.sipc.vistas.domain.relaciones.GeneralToneladasTotalesPorBodFac;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagMenorCompBases;
 import mx.gob.comer.sipc.vistas.domain.relaciones.PagosCamposRequeridos;
@@ -102,7 +100,6 @@ import org.hibernate.Transaction;
 
 import com.googlecode.s2hibernate.struts2.plugin.annotations.SessionTarget;
 import com.googlecode.s2hibernate.struts2.plugin.annotations.TransactionTarget;
-import com.lowagie.text.Paragraph;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -149,6 +146,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<RelacionComprasTMP>  lstRCTemp;
 	private String nombreComprador;
 	private String nombrePrograma;
+	@SuppressWarnings("unused")
 	private String rfcComprador;
 	@SessionTarget
 	Session sessionTarget;
@@ -236,7 +234,6 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private int countColumn;
 	private boolean bandera;
 	private RelacionComprasTMP relacionComprasTMP;
-	@SuppressWarnings("unused")
 	private String claveBodegaTmp="", nomEstadoTmp="";
 	private boolean claveBodegaCorrecta, estadoCorrecto;
 	private RelacionComprasTMP rcTmp;
@@ -4164,7 +4161,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						countRow = 0;
 						countColumn = 0;	
 						lstFacturasVsPago = rDAO.verificaFacturasVsPago(folioCartaAdhesion); 
-						int i = 0;
+						//int i = 0;
 						if(lstFacturasVsPago.size()>0){//En el listado se guarda las facturas menores a lo pagado
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
@@ -4314,8 +4311,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(camposQueAplica.contains("16,")?bo.getFechaDocPagoSinaxc()+";":"")+(camposQueAplica.contains("29,")?bo.getBancoSinaxc()+";":"")
 										+(camposQueAplica.contains("66,")?bo.getImpDocPagoSinaxc()+";":"")+(camposQueAplica.contains("68,")?bo.getImpPrecioTonPagoSinaxc()+";":";")+bo.getImpTotalPagoSinaxcD());								
 								b.getBitacoraRelcomprasDetalle().add(bd);	
-								actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, bo.getClaveBodega(),bo.getNombreEstado(),bo.getFolioContrato(), 
-										bo.getPaternoProductor(), bo.getMaternoProductor(), bo.getNombreProductor(), bo.getCurpProductor(), bo.getRfcProductor(), bo.getFolioDocPago());
+								actualizarRelacionComprasTMPByPagosIncosistentesByValNulos( bo.getIdRelacionComprasTmp());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bo.getClaveBodega()!=null ? bo.getClaveBodega()+"":"");
@@ -4644,7 +4640,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 									String paternoProductor, String maternoProductor, 
 									String nombreProductor, String curpProductor, String rfcProductor, String folioFacturaVenta) {
 		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,
-				paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, folioFacturaVenta, null, null);
+				paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, folioFacturaVenta, null, null,-1);
 		
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getFacturaInconsistente()!=null){
@@ -4671,7 +4667,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 			String nombreEstado, String folioContrato, 
 			String paternoProductor, String maternoProductor, 
 			String nombreProductor, String curpProductor, String rfcProductor, String folioDocumento) {
-		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor, null, null,folioDocumento, null);	
+		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor, null, null,folioDocumento, null,-1);	
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getPagoInconsistente()!=null){
 				if(r.getPagoInconsistente()){
@@ -4690,11 +4686,31 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		bandera = false;	
 	}//end actualizarRelacionComprasTMPByPagosIncosistentes
 
+	private void actualizarRelacionComprasTMPByPagosIncosistentesByValNulos(long idRelacionComprasTmp) {
+		lstRCTemp = rDAO.consultaRelacionComprasTMP(idRelacionComprasTmp);	
+		for(RelacionComprasTMP r: lstRCTemp){
+			if(r.getPagoInconsistente()!=null){
+				if(r.getPagoInconsistente()){
+					relacionComprasTMP = lstRCTemp.get(0);
+					bandera = true;
+					break;
+				} 
+			}
+		}
+		if(!bandera){
+			relacionComprasTMP = lstRCTemp.get(0);
+			//Actualizar el registro a pago_inconsistente = true
+			relacionComprasTMP.setPagoInconsistente(true);
+			cDAO.guardaObjeto(relacionComprasTMP);
+		}	
+		bandera = false;	
+	}//end actualizarRelacionComprasTMPByPagosIncosistentes
+
 	private void actualizarRelacionComprasTMPByPagosDuplicados(String folioCartaAdhesion, String claveBodega, 
 			String nombreEstado, String folioContrato, 
 			String paternoProductor, String maternoProductor, 
 			String nombreProductor, String curpProductor, String rfcProductor,  String folioDocumento, String banco) {
-		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, null,folioDocumento, banco);	
+		lstRCTemp = rDAO.consultaRelacionComprasTMP(folioCartaAdhesion, claveBodega, nombreEstado, folioContrato,paternoProductor, maternoProductor, nombreProductor, curpProductor, rfcProductor,null, null,folioDocumento, banco,-1);	
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getPagoInconsistente()!=null){
 				if(r.getPagoInconsistente()){
@@ -4739,6 +4755,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public String  generarBitacoraRelCompras() {
 		try{
 			int countStatus = 0, countStatusBad = 0;
