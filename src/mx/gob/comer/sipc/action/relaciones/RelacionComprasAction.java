@@ -183,6 +183,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	private List<ProductorPredioPagado> lstProductorPredioPagado;
 	private boolean aplicaAdendum;
 	private boolean aplicaComplemento;
+	private boolean aplicaImportePago;
 	private List<FacturaFueraPeriodoPagoAdendum> lstFacturaFueraPeriodoPagoAdendum;
 	private List<ChequeFueraPeriodoContrato> lstChequeFueraPeriodoPagoAdendum;
 	private List<ChequesDuplicadoBancoPartipante> lstChequesDuplicadoBancoPartipante;
@@ -3037,7 +3038,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 					rDAO.actualizaCamposIconsistentes(folioCartaAdhesion, true, false,false, false);
 					//Actualiza campo dif_volumen_fglobal_vs_find en la tabla relacion_compras_tmp
 					rDAO.actualizaCampoDifVolGlobal(folioCartaAdhesion);
-					
+					//Actualiza campo aplica_importe_pagos en la tabla relacion_compras_tmp
+					rDAO.actualizaRegresoAplicaImportePago(folioCartaAdhesion);
 					//Borra el registro de la bitacora
 					for(BitacoraRelcompras b: lstBitacoraRelCompras){						
 						cDAO.borrarObjeto(b);						
@@ -3453,9 +3455,8 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 						sheet = setMargenSheet(sheet);
 						countRow = 0;
 						countColumn = 0;
-						lstPrecioPagPorTipoCambio = rDAO.consultaPrecioPagPorTipoCambio(folioCartaAdhesion);
-						if(lstPrecioPagPorTipoCambio.size()>0){
-							
+						lstPrecioPagPorTipoCambio = rDAO.consultaPrecioPagPorTipoCambio(folioCartaAdhesion, aplicaImportePago);
+						if(lstPrecioPagPorTipoCambio.size()>0){							
 							llenarBitacora(true, l.getIdCriterio()); //Guardar en bitacora
 							msj = l.getCriterio();
 							row = sheet.createRow(countRow);
@@ -3519,6 +3520,11 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 								//Actualiza el productor en campo factura_inconsistente como inconsistente
 								rDAO.actualizaFacMayBolOPagMenFac(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(),
 										c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getCurpProductor(), c.getRfcProductor(), false, false, false, true);
+								if(aplicaImportePago){
+									//Actualiza el campo de aplica_importe_pago
+									rDAO.actualizaAplicaImportePagos(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(),
+											c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getCurpProductor(), c.getRfcProductor());
+								}
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
@@ -3977,8 +3983,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 											+ c.getFolioDocPago()+";"+c.getBancoSinaxc()+";"+(c.getFechaDocPagoSinaxc()!=null?new SimpleDateFormat("yyyy-MM-dd").format(c.getFechaDocPagoSinaxc())+";":"")
 											+ c.getVolTotalFacVenta()+";"+(c.getImpTotalPagoSinaxc()!=null?c.getImpTotalPagoSinaxc():"-"));
 									b.getBitacoraRelcomprasDetalle().add(bd);									
-									actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, c.getClaveBodega(), c.getNombreEstado(), c.getFolioContrato(), 
-											c.getPaternoProductor(), c.getMaternoProductor(), c.getNombreProductor(), c.getCurpProductor(), c.getRfcProductor(), c.getFolioDocPago());									
+									actualizarRelacionComprasTMPByPagosIncosistentes1(c.getId());									
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(c.getClaveBodega()!=null ? c.getClaveBodega()+"":"");
@@ -4108,8 +4113,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 												+(bfp.getFechaDocPagoSinaxc()!=null?new SimpleDateFormat("yyyy-MM-dd").format(bfp.getFechaDocPagoSinaxc()).toString():"")+";"
 												+bfp.getVolTotalFacVenta()+";"+bfp.getImpTotalPagoSinaxc());
 									b.getBitacoraRelcomprasDetalle().add(bd);
-									actualizarRelacionComprasTMPByPagosIncosistentes(folioCartaAdhesion, bfp.getClaveBodega(), bfp.getNombreEstado(), bfp.getFolioContrato(), 
-											bfp.getPaternoProductor(), bfp.getMaternoProductor(), bfp.getNombreProductor(), bfp.getCurpProductor(), bfp.getRfcProductor(), bfp.getFolioDocPago());		
+									actualizarRelacionComprasTMPByPagosIncosistentes1(bfp.getId());		
 									row = sheet.createRow(++countRow);
 									cell = row.createCell(countColumn);
 									cell.setCellValue(bfp.getClaveBodega()!=null ? bfp.getClaveBodega()+"":"");
@@ -4311,7 +4315,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 										+(camposQueAplica.contains("16,")?bo.getFechaDocPagoSinaxc()+";":"")+(camposQueAplica.contains("29,")?bo.getBancoSinaxc()+";":"")
 										+(camposQueAplica.contains("66,")?bo.getImpDocPagoSinaxc()+";":"")+(camposQueAplica.contains("68,")?bo.getImpPrecioTonPagoSinaxc()+";":";")+bo.getImpTotalPagoSinaxcD());								
 								b.getBitacoraRelcomprasDetalle().add(bd);	
-								actualizarRelacionComprasTMPByPagosIncosistentesByValNulos( bo.getIdRelacionComprasTmp());
+								actualizarRelacionComprasTMPByPagosIncosistentes1( bo.getIdRelacionComprasTmp());
 								row = sheet.createRow(++countRow);
 								cell = row.createCell(countColumn);
 								cell.setCellValue(bo.getClaveBodega()!=null ? bo.getClaveBodega()+"":"");
@@ -4686,7 +4690,7 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 		bandera = false;	
 	}//end actualizarRelacionComprasTMPByPagosIncosistentes
 
-	private void actualizarRelacionComprasTMPByPagosIncosistentesByValNulos(long idRelacionComprasTmp) {
+	private void actualizarRelacionComprasTMPByPagosIncosistentes1(long idRelacionComprasTmp) {
 		lstRCTemp = rDAO.consultaRelacionComprasTMP(idRelacionComprasTmp);	
 		for(RelacionComprasTMP r: lstRCTemp){
 			if(r.getPagoInconsistente()!=null){
@@ -6018,7 +6022,16 @@ public class RelacionComprasAction extends ActionSupport implements SessionAware
 	public void setLstGeneralTonTotPorBodega(
 			List<GeneralToneladasTotalesPorBodFac> lstGeneralTonTotPorBodega) {
 		this.lstGeneralTonTotPorBodega = lstGeneralTonTotPorBodega;
+	}
+
+	public boolean isAplicaImportePago() {
+		return aplicaImportePago;
+	}
+
+	public void setAplicaImportePago(boolean aplicaImportePago) {
+		this.aplicaImportePago = aplicaImportePago;
 	}	
+	
 	
 		
 }

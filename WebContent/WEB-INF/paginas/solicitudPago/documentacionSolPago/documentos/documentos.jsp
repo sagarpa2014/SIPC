@@ -21,39 +21,64 @@
 					<tr>
 						<td>
 							<label class=""><span class="requerido">*</span><s:property value="%{expediente}"/></label>
-						</td>
+						</td>	
 						<td>
 							<s:if test="(estatusCA == 3)">
 								<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
 								<s:hidden id="docRequerido%{idExpediente}" name="docRequerido" value="%{}"/>								
-				 			</s:if>
-				 			<s:else>
+					 		</s:if>
+					 		<s:else>
 								<a href="<s:url value="/devuelveArchivoByRuta?rutaCompleta=%{rutaDocumento}"/>" title="Descargar Archivo">Descargar Archivo</a>
 							</s:else>							
 						</td>
+						<s:if  test="sustituirArchivo==true">	
+							<td>				
+								<label class=""><span class="norequerido">*</span>Cargar Documento</label>													
+							</td>
+							<td>
+								<s:file name="doc%{idExpediente}" id="doc%{idExpediente}"/>
+							</td>
+						</s:if>						
 					</tr>
 					<tr>
 						<td>
 							<label class=""><span class="requerido">*</span>Fecha Documento</label>
 						</td>
-						<td>							
-							<s:if test="%{fechaDocumento==null}" >
-								<s:textfield name="fechaDocEntDoctos" maxlength="10" size="10" id="fechaDocEntDoctos" readonly="true" cssClass="dateBox"/>
-								<img src="../images/calendar.gif" id="trg1" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
-								<script type="text/javascript">
-									<!--
-										Calendar.setup({
-											inputField     :    "fechaDocEntDoctos",     
-											ifFormat       :    "%d/%m/%Y",     
-											button         :    "trg1",  
-											align          :    "Br",           
-											singleClick    :    true
-										});	
-									//-->
-								</script>		
+						<td>	
+							<s:if  test="sustituirArchivo==true">
+								<s:textfield name="fechaDocEntDoctos" maxlength="10" size="10" id="fechaDocEntDoctos" readonly="true" cssClass="dateBox" value="%{getText('fecha1',{fechaDocumento})}" />
+									<img src="../images/calendar.gif" id="trg1" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+									<script type="text/javascript">
+										<!--
+											Calendar.setup({
+												inputField     :    "fechaDocEntDoctos",     
+												ifFormat       :    "%d/%m/%Y",     
+												button         :    "trg1",  
+												align          :    "Br",           
+												singleClick    :    true
+											});	
+										//-->
+									</script>
 							</s:if>
-							<s:else>
-								<font class="arial12bold"><s:text name="fecha"><s:param value="%{fechaDocumento}"/></s:text></font>
+							<s:else>													
+								<s:if test="%{fechaDocumento==null}" >
+									<s:textfield name="fechaDocEntDoctos" maxlength="10" size="10" id="fechaDocEntDoctos" readonly="true" cssClass="dateBox"/>
+									<img src="../images/calendar.gif" id="trg1" style="cursor: pointer;" alt="Seleccione la fecha" border="0" class="dtalign" title="Seleccione la fecha" />
+									<script type="text/javascript">
+										<!--
+											Calendar.setup({
+												inputField     :    "fechaDocEntDoctos",     
+												ifFormat       :    "%d/%m/%Y",     
+												button         :    "trg1",  
+												align          :    "Br",           
+												singleClick    :    true
+											});	
+										//-->
+									</script>		
+								</s:if>
+								<s:else>
+									<font class="arial12bold"><s:text name="fecha"><s:param value="%{fechaDocumento}"/></s:text></font>
+								</s:else>
 							</s:else>								
 						</td>
 					</tr>

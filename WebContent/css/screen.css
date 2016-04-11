@@ -268,4 +268,5 @@ a.DescargaArchHist:link  {color: #088A08;  cursor: pointer; font-size:8px; font-
 a.DescargaArchHist:hover {text-decoration: none; color:#BA8537; font-size:8px; font-family:Helvetica; font-weight:bold;}
 #browserDesactualizado{ display: none; }
 #imgBodegaOff{cursor:pointer;}
+#edicion{cursor:pointer;}
 

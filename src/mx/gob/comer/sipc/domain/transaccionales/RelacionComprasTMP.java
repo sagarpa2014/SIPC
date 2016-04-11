@@ -142,6 +142,8 @@ public class RelacionComprasTMP  implements Comparable{
 	private String variedad;
 	@Column(name =  "dif_volumen_fglobal_vs_find")
 	private Double difVolumenFglobalVSFind;
+	@Column(name =  "aplica_importe_pagos")
+	private Boolean aplicaImportePagos;
 		
 	public RelacionComprasTMP() {
 		super();
@@ -574,6 +576,15 @@ public class RelacionComprasTMP  implements Comparable{
 
 	public void setDifVolumenFglobalVSFind(Double difVolumenFglobalVSFind) {
 		this.difVolumenFglobalVSFind = difVolumenFglobalVSFind;
+	}
+	
+
+	public Boolean getAplicaImportePagos() {
+		return aplicaImportePagos;
+	}
+
+	public void setAplicaImportePagos(Boolean aplicaImportePagos) {
+		this.aplicaImportePagos = aplicaImportePagos;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class ChequeFueraPeriodoAuditor implements Comparable {	
 	@Id
-	@Column(name =  "id")
+	@Column(name =  "id_relacion_compras_tmp")
 	private Long id;	
 	@Column(name =  "paterno_productor")
 	private String paternoProductor;
