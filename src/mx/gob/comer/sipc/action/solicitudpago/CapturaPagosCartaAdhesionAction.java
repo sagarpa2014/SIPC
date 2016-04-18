@@ -731,6 +731,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 		p.setProductoresBeneficiados(productoresBeneficiados);
 		
 		// AHS CAMBIO 27012016 [INICIO]
+/*		
 		p.setIdEjercicio(cDAO.consultaEjercicio(Integer.parseInt(new java.text.SimpleDateFormat("yyyy").format(new Date()))).get(0).getIdEjercicio());
 		Integer trimestre=0;
 		if(Integer.parseInt(new java.text.SimpleDateFormat("MM").format(new Date())) == 1 ||
@@ -751,6 +752,7 @@ public class CapturaPagosCartaAdhesionAction extends ActionSupport implements Se
 			trimestre = 4;
 		}
 		p.setTrimestre(trimestre);
+*/		
 		// AHS CAMBIO 27012016 [FIN]
 		if (criterioPago==1){
 			Set<Integer> idsCapVolumen = capVolumen.keySet();

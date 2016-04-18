@@ -355,6 +355,29 @@ public class GeneraArchivoPagosTesofeAction extends ActionSupport implements Ses
 		    			pagos.setClaveRastreo(claveRastreo);
 		    			pagos.setFechaPresentacion(fechaPresentacion);
 		    			pagos.setFechaPago(fechaAplicacionPago);
+		    			// AHS CAMBIO 13042016 [INICIO]
+		    			pagos.setIdEjercicio(cDAO.consultaEjercicio(Integer.parseInt(new java.text.SimpleDateFormat("yyyy").format(fechaAplicacionPago))).get(0).getIdEjercicio());
+    					Integer trimestre=0;
+    					if(Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 1 ||
+    					   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 2 ||
+    					   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 3){
+    						trimestre = 1;
+    					} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 4 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 5 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 6){
+    						trimestre = 2;
+    					} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 7 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 8 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 9){
+    						trimestre = 3;
+    					} else if (Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 10 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 11 ||
+    							   Integer.parseInt(new java.text.SimpleDateFormat("MM").format(fechaAplicacionPago)) == 12){
+    						trimestre = 4;
+    					}
+    					pagos.setTrimestre(trimestre);		
+    					// AHS CAMBIO 13042016 [FIN]
+		    			
 		    			cDAO.guardaObjeto(pagos);
 		
 		    			// Agrega registro detalle al archivo de salida

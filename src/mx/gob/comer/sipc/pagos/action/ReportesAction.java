@@ -1035,51 +1035,51 @@ public class ReportesAction extends ActionSupport implements SessionAware,  Serv
 
 			totalVolumen1erTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(1, idPrograma, ejercicio);
 			totalVolumen1erTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(11, idPrograma, ejercicio);
-			totalVolumen1erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(12, idPrograma, ejercicio);
-			totalVolumen1erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(13, idPrograma, ejercicio);
-			totalVolumen1erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(14, idPrograma, ejercicio);
+			//totalVolumen1erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(12, idPrograma, ejercicio);
+			//totalVolumen1erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(13, idPrograma, ejercicio);
+			//totalVolumen1erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(14, idPrograma, ejercicio);
 			
 			totalImporte1erTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(2, idPrograma, ejercicio);
 			totalImporte1erTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(21, idPrograma, ejercicio);
-			totalImporte1erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(22, idPrograma, ejercicio);
-			totalImporte1erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(23, idPrograma, ejercicio);
-			totalImporte1erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(24, idPrograma, ejercicio);
+			//totalImporte1erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(22, idPrograma, ejercicio);
+			//totalImporte1erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(23, idPrograma, ejercicio);
+			//totalImporte1erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(24, idPrograma, ejercicio);
 			
 			totalVolumen2doTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(3, idPrograma, ejercicio);
 			totalVolumen2doTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(31, idPrograma, ejercicio);
-			totalVolumen2doTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(32, idPrograma, ejercicio);
-			totalVolumen2doTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(33, idPrograma, ejercicio);
-			totalVolumen2doTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(34, idPrograma, ejercicio);
+			//totalVolumen2doTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(32, idPrograma, ejercicio);
+			//totalVolumen2doTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(33, idPrograma, ejercicio);
+			//totalVolumen2doTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(34, idPrograma, ejercicio);
 			
 			totalImporte2doTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(4, idPrograma, ejercicio);
 			totalImporte2doTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(41, idPrograma, ejercicio);
-			totalImporte2doTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(42, idPrograma, ejercicio);
-			totalImporte2doTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(43, idPrograma, ejercicio);
-			totalImporte2doTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(44, idPrograma, ejercicio);
+			//totalImporte2doTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(42, idPrograma, ejercicio);
+			//totalImporte2doTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(43, idPrograma, ejercicio);
+			//totalImporte2doTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(44, idPrograma, ejercicio);
 			
 			totalVolumen3erTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(5, idPrograma, ejercicio);
 			totalVolumen3erTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(51, idPrograma, ejercicio);
-			totalVolumen3erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(52, idPrograma, ejercicio);
-			totalVolumen3erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(53, idPrograma, ejercicio);
-			totalVolumen3erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(54, idPrograma, ejercicio);
+			//totalVolumen3erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(52, idPrograma, ejercicio);
+			//totalVolumen3erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(53, idPrograma, ejercicio);
+			//totalVolumen3erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(54, idPrograma, ejercicio);
 			
 			totalImporte3erTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(6, idPrograma, ejercicio);
 			totalImporte3erTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(61, idPrograma, ejercicio);
-			totalImporte3erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(62, idPrograma, ejercicio);
-			totalImporte3erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(63, idPrograma, ejercicio);
-			totalImporte3erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(64, idPrograma, ejercicio);
+			//totalImporte3erTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(62, idPrograma, ejercicio);
+			//totalImporte3erTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(63, idPrograma, ejercicio);
+			//totalImporte3erTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(64, idPrograma, ejercicio);
 			
 			totalVolumen4toTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(7, idPrograma, ejercicio);
 			totalVolumen4toTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(71, idPrograma, ejercicio);
-			totalVolumen4toTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(72, idPrograma, ejercicio);
-			totalVolumen4toTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(73, idPrograma, ejercicio);
-			totalVolumen4toTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(74, idPrograma, ejercicio);
+			//totalVolumen4toTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(72, idPrograma, ejercicio);
+			//totalVolumen4toTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(73, idPrograma, ejercicio);
+			//totalVolumen4toTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(74, idPrograma, ejercicio);
 			
 			totalImporte4toTrimestreEtapaI = rDAO.consultaReporteDetConcetradoEtapasTotales(8, idPrograma, ejercicio);
 			totalImporte4toTrimestreEtapaII = rDAO.consultaReporteDetConcetradoEtapasTotales(81, idPrograma, ejercicio);
-			totalImporte4toTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(82, idPrograma, ejercicio);
-			totalImporte4toTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(83, idPrograma, ejercicio);
-			totalImporte4toTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(84, idPrograma, ejercicio);
+			//totalImporte4toTrimestreEtapaIII = rDAO.consultaReporteDetConcetradoEtapasTotales(82, idPrograma, ejercicio);
+			//totalImporte4toTrimestreEtapaIV = rDAO.consultaReporteDetConcetradoEtapasTotales(83, idPrograma, ejercicio);
+			//totalImporte4toTrimestreEtapaV = rDAO.consultaReporteDetConcetradoEtapasTotales(84, idPrograma, ejercicio);
 			
 			session.put("idPrograma", idPrograma);
 			session.put("ejercicio", ejercicio);
