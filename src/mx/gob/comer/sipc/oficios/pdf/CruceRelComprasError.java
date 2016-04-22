@@ -1195,6 +1195,26 @@ public class CruceRelComprasError extends PdfPageEventHelper {
 				fcProductor = l.getFolioContrato()+((l.getCurpProductor() != null && !l.getCurpProductor().isEmpty())?l.getCurpProductor():l.getRfcProductor());				
 				
 				if(contBitacoraDet != 0){
+					
+					if( !temFolioContrato.equals(l.getFolioContrato())&&contBitacoraDet>1){
+						posicionTotal = (siAplicaFolioContrato?6:5);	
+						totalesContrato = new StringBuilder();
+						totalesContrato.append("1,TOTAL CON;"+(siAplicaFolioContrato?(++posicionTotal)+","+totalVolPorContrato+",v;":"")+(++posicionTotal)+","+totalVolPorContrato1+",i;"
+								+(++posicionTotal)+","+totalVolPorContrato2+",i;"+(++posicionTotal)+","+totalVolPorContrato3+",i;"
+								+(++posicionTotal)+","+totalVolPorContrato4+",i;"+(++posicionTotal)+","+totalVolPorContrato5+",i;"+(++posicionTotal)+","+totalVolPorContrato6+",i;"
+								+(++posicionTotal)+","+totalVolPorContrato7+",i;");
+						colocarTotales(totalesContrato.toString(),  w.length);
+						totalVolPorContrato = 0;						
+						totalVolPorContrato1 = 0;						
+						totalVolPorContrato2 = 0;						
+						totalVolPorContrato3 = 0;						
+						totalVolPorContrato4 = 0;						
+						totalVolPorContrato5 = 0;						
+						totalVolPorContrato6 = 0;	
+						totalVolPorContrato7 = 0;
+					}
+					
+					
 					if(!claveBodegaTmp.equals(l.getClaveBodega()) && contBitacoraDet > 1){						
 						posicionTotal = (siAplicaFolioContrato?6:5);	
 						totalesContrato = new StringBuilder();

@@ -4,5 +4,7 @@
 <div id="errorAvisoYaCapturado" class="elementoOculto"><s:property value="%{errorAvisoYaCapturado}"/></div>
 <div id="registrar" class="elementoOculto"><s:property value="%{registrar}"/></div>
 <div id="programa" class="elementoOculto"><s:property value="%{programa}"/></div>
+<div id="apoyo" class="elementoOculto"><s:property value="%{apoyo}"/></div>
 <div id="estado" class="elementoOculto"><s:property value="%{estado}"/></div>
 <div id="cultivo" class="elementoOculto"><s:property value="%{cultivo}"/></div>
+<div id="cicloAgricola" class="elementoOculto"><s:property value="%{cicloAgricola}"/></div>

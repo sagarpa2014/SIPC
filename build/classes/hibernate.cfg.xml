@@ -111,6 +111,8 @@
 		<mapping class="mx.gob.comer.sipc.domain.transaccionales.OficioRespuestaSolicitudPago"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.AuditorSolicitudPagoV"/>
 		<mapping class="mx.gob.comer.sipc.vistas.domain.CartasPrimerPagoV"/>
+		<mapping class="mx.gob.comer.sipc.vistas.domain.AvancePagosV"/>
+		
 
 		
 		

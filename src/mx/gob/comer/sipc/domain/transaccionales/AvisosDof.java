@@ -7,21 +7,23 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 @Entity
 @Table(name = "avisos_dof")
 public class AvisosDof {
 	
-	@Id	
-	@Column(name =  "clave_aviso")
-	private String claveAviso;
+	@Id
+	@Column(name =  "id_avisos_dof")
+	@GeneratedValue(generator = "avisos_dof_id_avisos_dof_seq")
+	@SequenceGenerator(name = "avisos_dof_id_avisos_dof_seq", sequenceName = "avisos_dof_id_avisos_dof_seq")	
+	private Integer id;
 	@Column(name =  "leyenda")
 	private String leyenda;
-	@Column(name =  "id_apoyo")
-	private Integer idApoyo;
 	@Column(name =  "fecha_publicacion") 
 	private Date fechaPublicacion;
 	@Column(name =  "fecha_registro")
@@ -33,28 +35,23 @@ public class AvisosDof {
 	@Column(name =  "usuario_actualizacion")
 	private Integer usuarioActualizacion;
 	@OneToMany (cascade = {CascadeType.ALL},fetch = FetchType.LAZY)	
-	@JoinColumn(name="clave_aviso", nullable=false) 
+	@JoinColumn(name="id_avisos_dof", nullable=false) 
 	private Set<AvisosDofDetalle> avisoDofDetalle;
+		
 	
-	public String getClaveAviso() {
-		return claveAviso;
+	public Integer getId() {
+		return id;
 	}
-	public void setClaveAviso(String claveAviso) {
-		this.claveAviso = claveAviso;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public String getLeyenda() {
 		return leyenda;
 	}
 	public void setLeyenda(String leyenda) {
 		this.leyenda = leyenda;
-	}
-		
-	public Integer getIdApoyo() {
-		return idApoyo;
-	}
-	public void setIdApoyo(Integer idApoyo) {
-		this.idApoyo = idApoyo;
-	}
+	}		
+	
 	public Date getFechaPublicacion() {
 		return fechaPublicacion;
 	}

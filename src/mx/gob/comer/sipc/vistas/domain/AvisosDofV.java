@@ -11,8 +11,8 @@ import javax.persistence.Table;
 public class AvisosDofV {
 	
 	@Id	
-	@Column(name =  "clave_aviso")
-	private String claveAviso;
+	@Column(name =  "id_avisos_dof")
+	private Integer id;
 	@Column(name =  "leyenda")
 	private String leyenda;
 	@Column(name =  "apoyo")
@@ -20,11 +20,12 @@ public class AvisosDofV {
 	@Column(name =  "fecha_publicacion") 
 	private Date fechaPublicacion;
 	
-	public String getClaveAviso() {
-		return claveAviso;
+		
+	public Integer getId() {
+		return id;
 	}
-	public void setClaveAviso(String claveAviso) {
-		this.claveAviso = claveAviso;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public String getLeyenda() {
 		return leyenda;

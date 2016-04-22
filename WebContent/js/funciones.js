@@ -294,13 +294,13 @@ function validarVolumen(volumen, id, msj){
 
 function validarImporte(importe, id, msj){	
 	if(importe!=null && importe !=''){		
-		var patron =/^\d{1,7}((\.\d{1,2})|(\.))?$/;
+		var patron =/^\d{1,10}((\.\d{1,2})|(\.))?$/;
 		if (!importe.match(patron)){	
 			if(id!=0){
 				$('#'+id).val(null);
 			}
 			if(msj==1){
-				$('#dialogo_1').html('El valor capturado es incorrecto, se deben capturar decimales y aceptan hasta 7 digitos a la izquierda y 2 máximo a la derecha');
+				$('#dialogo_1').html('El valor capturado es incorrecto, se deben capturar decimales y aceptan hasta 10 digitos a la izquierda y 2 máximo a la derecha');
 				abrirDialogo();
 			}
 			return 0;

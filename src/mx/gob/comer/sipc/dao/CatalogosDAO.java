@@ -2131,11 +2131,19 @@ public class CatalogosDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ProgAviso> getProgAviso(Integer id) throws JDBCException {
+	public List<ProgAviso> getProgAviso(Integer id, String nombre) throws JDBCException {
 		StringBuilder consulta= new StringBuilder();
 		List<ProgAviso> lst=null;
 		if (id != 0 && id != -1){
 			consulta.append("where id = ").append(id);
+		}
+		
+		if (nombre != null && !nombre.isEmpty()) {
+			if (consulta.length() > 0) {
+				consulta.append(" and nombre = '").append(nombre).append("' ");
+			} else {
+				consulta.append(" where nombre = '").append(nombre).append("' ");	
+			}
 		}
 		consulta.insert(0, "From ProgAviso ").append(" ORDER BY nombre");
 		lst= session.createQuery(consulta.toString()).list();

@@ -11,18 +11,22 @@ public class AvisosDofDetalleV {
 	@Id	
 	@Column(name =  "id")
 	private Integer id;
-	@Column(name = "clave_aviso")
-	private String claveAviso;
+	@Column(name = "id_avisos_dof")
+	private Integer idAvisosDof;
 	@Column(name = "id_prog_aviso")
 	private Integer idProgAviso;
 	@Column(name =  "programa")
 	private String programa;
-	@Column(name =  "ciclo")
-	private String ciclo;
+	@Column(name =  "id_apoyo")
+	private Integer idApoyo;
+	@Column(name =  "apoyo")
+	private String apoyo;	
 	@Column(name =  "ciclo_agricola")
 	private String cicloAgricola;
-	@Column(name =  "ejercicio")
-	private Integer ejercicio;
+	@Column(name =  "ciclo")
+	private String ciclo;
+	@Column(name =  "anio")
+	private Integer anio;
 	@Column(name =  "id_cultivo")
 	private Integer idCultivo;
 	@Column(name =  "cultivo")
@@ -35,6 +39,11 @@ public class AvisosDofDetalleV {
 	private Double volumen;
 	@Column(name =  "importe")
 	private Double importe;
+	@Column(name =  "volumen_regional")
+	private Double volumenRegional;
+	@Column(name =  "importe_regional")
+	private Double importeRegional;
+	
 	
 	public Integer getId() {
 		return id;
@@ -44,13 +53,14 @@ public class AvisosDofDetalleV {
 		this.id = id;
 	}
 	
-	public String getClaveAviso() {
-		return claveAviso;
+	public Integer getIdAvisosDof() {
+		return idAvisosDof;
 	}
-	public void setClaveAviso(String claveAviso) {
-		this.claveAviso = claveAviso;
-	}	
-	
+
+	public void setIdAvisosDof(Integer idAvisosDof) {
+		this.idAvisosDof = idAvisosDof;
+	}
+
 	public Integer getIdProgAviso() {
 		return idProgAviso;
 	}
@@ -65,31 +75,48 @@ public class AvisosDofDetalleV {
 
 	public void setPrograma(String programa) {
 		this.programa = programa;
+	}			
+	
+	public Integer getIdApoyo() {
+		return idApoyo;
 	}
 
-	public String getCiclo() {
-		return ciclo;
+	public void setIdApoyo(Integer idApoyo) {
+		this.idApoyo = idApoyo;
 	}
-	public void setCiclo(String ciclo) {
-		this.ciclo = ciclo;
-	}	
-	
+
+	public String getApoyo() {
+		return apoyo;
+	}
+
+	public void setApoyo(String apoyo) {
+		this.apoyo = apoyo;
+	}
+
 	public String getCicloAgricola() {
 		return cicloAgricola;
 	}
 
 	public void setCicloAgricola(String cicloAgricola) {
 		this.cicloAgricola = cicloAgricola;
-	}
-
-	public Integer getEjercicio() {
-		return ejercicio;
-	}
-
-	public void setEjercicio(Integer ejercicio) {
-		this.ejercicio = ejercicio;
 	}	
 	
+	public String getCiclo() {
+		return ciclo;
+	}
+
+	public void setCiclo(String ciclo) {
+		this.ciclo = ciclo;
+	}
+
+	public Integer getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Integer anio) {
+		this.anio = anio;
+	}
+
 	public Integer getIdCultivo() {
 		return idCultivo;
 	}
@@ -134,6 +161,24 @@ public class AvisosDofDetalleV {
 	public void setImporte(Double importe) {
 		this.importe = importe;
 	}
+
+	public Double getVolumenRegional() {
+		return volumenRegional;
+	}
+
+	public void setVolumenRegional(Double volumenRegional) {
+		this.volumenRegional = volumenRegional;
+	}
+
+	public Double getImporteRegional() {
+		return importeRegional;
+	}
+
+	public void setImporteRegional(Double importeRegional) {
+		this.importeRegional = importeRegional;
+	}
+	
+	
 	
 	
 }

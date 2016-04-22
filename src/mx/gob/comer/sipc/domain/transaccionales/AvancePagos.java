@@ -17,10 +17,10 @@ public class AvancePagos {
 	@SequenceGenerator(name = "avance_pagos_id_seq", sequenceName = "avance_pagos_id_seq")
 	@Column(name =  "id")
 	private Integer id;
-	@Column(name = "clave_aviso")
-	private String claveAviso;
-	@Column(name =  "programa")
+	@Column(name =  "id_programa")
 	private Integer programa;
+	@Column(name =  "id_apoyo")
+	private Integer idApoyo;
 	@Column(name =  "id_cultivo")
 	private Integer idCultivo;
 	@Column(name =  "ciclo_agricola")
@@ -50,13 +50,14 @@ public class AvancePagos {
 		this.id = id;
 	}
 	
-	public String getClaveAviso() {
-		return claveAviso;
+	public Integer getIdApoyo() {
+		return idApoyo;
 	}
-	public void setClaveAviso(String claveAviso) {
-		this.claveAviso = claveAviso;
+
+	public void setIdApoyo(Integer idApoyo) {
+		this.idApoyo = idApoyo;
 	}
-	
+
 	public Integer getPrograma() {
 		return programa;
 	}

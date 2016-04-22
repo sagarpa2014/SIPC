@@ -316,6 +316,39 @@ function chkCamposDocumentacion(){
 	var sustituirArchivo = "";
 	if(($('#sustituirArchivo')).is(":checked")) {
 		sustituirArchivo = "true";
+		//Valida que la fecha de documento y fecha de acuse, se hayan capturado correctamente		
+		/*************FECHA DOCUMENTO DE OFICIO DE ENTREGA DE DOCUMENTOS ************/
+		var fechaDocEntDoctos = $('#fechaDocEntDoctos').val();
+		var fechaDocEntDoctosTemp = 0;
+		if(fechaDocEntDoctos == null || fechaDocEntDoctos==""){
+			$('#dialogo_1').html('Seleccione la fecha de documento del archivo de entrega de documentos');
+			abrirDialogo();
+			return false;
+		}else{
+			dia = fechaDocEntDoctos.substring(0,2);
+			mes = fechaDocEntDoctos.substring(3,5);
+			anio = fechaDocEntDoctos.substring(6,10);
+			fechaDocEntDoctosTemp = anio+""+""+mes+""+dia;
+		}
+		/*************FECHA ACUSE DE OFICIO DE ENTREGA DE DOCUMENTOS ************/
+		var fechaAcuseEntDoctos = $('#fechaAcuseEntDoctos').val();
+		var fechaAcuseEntDoctosTemp = 0;
+		if(fechaAcuseEntDoctos == null || fechaAcuseEntDoctos == ""){
+			$('#dialogo_1').html('Seleccione la fecha del acuse del archivo de entrega de documentos');
+			abrirDialogo();
+			return false;
+		}else{
+			dia = fechaAcuseEntDoctos.substring(0,2);
+			mes = fechaAcuseEntDoctos.substring(3,5);
+			anio = fechaAcuseEntDoctos.substring(6,10);
+			fechaAcuseEntDoctosTemp = anio+""+""+mes+""+dia;
+			if(parseInt(fechaAcuseEntDoctosTemp) < fechaDocEntDoctosTemp){
+				$('#dialogo_1').html('La fecha del acuse del archivo de entrega de documentos no debe ser menor a la fecha del documento');
+				abrirDialogo();
+				return false;
+			}
+		}		
+		
 	}else{
 		sustituirArchivo = "false";
 	}

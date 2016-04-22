@@ -33,32 +33,15 @@ $(document).ready(function(){
 <div id="dialogo_1"></div>
 <div id="capturaCargaArchivoAvancePagos">
 <s:form action="registraArchivoAvancePagos" onsubmit="return chkArchivoAvancePagos();" method="post" enctype="multipart/form-data">
-<s:hidden id="claveAviso" name="claveAviso" value="%{claveAviso}"/>
-	<div class="borderBottom"><h1>REGISTRO DE AVISOS</h1></div><br>
-	<fieldset>	
-		<legend>DATOS DEL AVISO</legend>
-		<div>
-			<label class="left1"><span class="requerido">*</span>Clave del Aviso:</label>	
-			<font class="arial12bold"><s:property value="%{adv.claveAviso}"/></font>			
-		</div>
-		<div class="clear"></div>
-		<div>
-			<label class="left1"><span class="requerido">*</span>Leyenda:</label>
-			<font class="arial12bold"><s:property value="%{adv.leyenda}"/></font>
-		</div>
-		<div class="clear"></div>
-		<div>
-			<label class="left1"><span class="requerido">*</span>Fecha de Publicaci&oacute;n:</label> 		
-			<font class="arial12bold"><s:text name="fecha"><s:param value="%{adv.fechaPublicacion}"/></s:text></font>		
-		</div>
-		<div class="clear"></div>
-		<div>
-			<label class="left1"><span class="requerido">*</span>Apoyo:</label>
-			<font class="arial12bold"><s:property value="%{adv.apoyo}"/></font>		
-		</div>	
-	</fieldset>
+	<s:if test="cuadroSatisfactorio!=null && cuadroSatisfactorio !=''">
+		<s:include value="/WEB-INF/paginas/template/abrirMensajeDialogoCorrecto.jsp" />
+	</s:if>	
+	<div class="borderBottom"><h1>AVANCE DE PAGOS</h1></div><br>
 	<fieldset>	
 		<legend>ARCHIVO AVANCE DE PAGOS</legend>
+		<div class="derecha"><a href="<s:url value="/avisosDof/consultaAvancePagos"/>"  title="Registrar Solicitud" >[Consultar Informaci&oacute;n Cargada]</a></div>
+		<div class="clear"></div>
+		<br>
 		<div class="derecha">
 			<img id="imgBodegaOff" src="<s:url value="/images/eliminarOn.png"/>" onclick="if (confirm('¿Esta seguro de eliminar el último archivo?')){eliminarArchivo();}else{return false;}"/>
 		</div>

@@ -11,12 +11,12 @@ public class Ejercicios {
 	/**
 	 * 
 	 */
-	private int idEjercicio;
-	private int ejercicio;
+	protected int idEjercicio;
+	protected int ejercicio;
 
 	@Id
 	@Column(name =  "id_ejercicio")
-	public int getIdEjercicio() {
+	public Integer getIdEjercicio() {
 		return idEjercicio;
 	}
 	public void setIdEjercicio(int idEjercicio) {
@@ -24,10 +24,14 @@ public class Ejercicios {
 	}
 	
 	@Column(name =  "ejercicio")
-	public int getEjercicio() {
+	public Integer getEjercicio() {
 		return ejercicio;
 	}
+	
 	public void setEjercicio(int ejercicio) {
 		this.ejercicio = ejercicio;
-	}	
+	}
+	
+	
+		
 }
